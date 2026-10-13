@@ -7,13 +7,7 @@ import { useCandidates, useRecordManagerDecision } from '@/features/candidates/h
 import { useCurrentUser } from '@/features/auth/hooks';
 import { StatCard } from '@/components/hro/stat-card';
 import { StatusBadge } from '@/components/hro/status-badge';
-import {
-  Card,
-  CardHeader,
-  CardTitle,
-  CardDescription,
-  CardContent,
-} from '@/components/ui/card';
+import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
@@ -108,11 +102,7 @@ export function ManagerDashboard() {
 
       {/* KPI Stat Cards */}
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
-        <StatCard
-          label="Active Requisitions"
-          value={activeOpenings.length}
-          delta="+1 this month"
-        />
+        <StatCard label="Active Requisitions" value={activeOpenings.length} delta="+1 this month" />
         <StatCard
           label="Awaiting Your Review"
           value={pendingReviewCandidates.length}
@@ -123,11 +113,7 @@ export function ManagerDashboard() {
           value={interviewCandidates.length}
           delta="Active schedule"
         />
-        <StatCard
-          label="Offers in Progress"
-          value={offerCandidates.length}
-          delta="Final stage"
-        />
+        <StatCard label="Offers in Progress" value={offerCandidates.length} delta="Final stage" />
       </div>
 
       {/* Main Two-Column Layout */}
@@ -162,7 +148,9 @@ export function ManagerDashboard() {
                 <div className="text-text-muted border-border/60 flex flex-col items-center justify-center rounded-[var(--radius-md)] border border-dashed py-8 text-center text-[13px]">
                   <CheckCircle2 className="text-success mb-2 h-8 w-8 opacity-80" />
                   <p className="font-medium">You are all caught up!</p>
-                  <p className="text-text-subtle text-[12px]">No candidate profiles are waiting for your review.</p>
+                  <p className="text-text-subtle text-[12px]">
+                    No candidate profiles are waiting for your review.
+                  </p>
                 </div>
               ) : (
                 pendingReviewCandidates.slice(0, 4).map((candidate) => (
@@ -172,18 +160,22 @@ export function ManagerDashboard() {
                   >
                     <div className="flex items-start gap-3">
                       <Avatar className="h-9 w-9 shrink-0">
-                        <AvatarFallback className="bg-surface-3 text-text font-semibold text-[12px]">
+                        <AvatarFallback className="bg-surface-3 text-text text-[12px] font-semibold">
                           {candidate.name.slice(0, 2).toUpperCase()}
                         </AvatarFallback>
                       </Avatar>
                       <div className="space-y-0.5">
                         <div className="flex items-center gap-2">
-                          <span className="text-text text-[14px] font-semibold">{candidate.name}</span>
+                          <span className="text-text text-[14px] font-semibold">
+                            {candidate.name}
+                          </span>
                           <StatusBadge status={candidate.stage} type="candidate" />
                         </div>
                         <p className="text-text-muted flex items-center gap-1.5 text-[12px]">
                           <Building2 className="h-3.5 w-3.5 shrink-0 opacity-70" />
-                          <span>{candidate.currentRole} at {candidate.currentCompany}</span>
+                          <span>
+                            {candidate.currentRole} at {candidate.currentCompany}
+                          </span>
                           <span>•</span>
                           <span>{candidate.experienceYears} yrs</span>
                         </p>
@@ -202,32 +194,35 @@ export function ManagerDashboard() {
                         <SheetContent side="right" className="w-full sm:max-w-md">
                           <SheetHeader>
                             <SheetTitle>{candidate.name}</SheetTitle>
-                            <SheetDescription>
-                              Candidate Profile & Review Sheet
-                            </SheetDescription>
+                            <SheetDescription>Candidate Profile & Review Sheet</SheetDescription>
                           </SheetHeader>
                           <div className="space-y-4 py-4 text-[13px]">
-                            <div className="border-border bg-surface-2 rounded-lg border p-3 space-y-2">
-                              <div className="flex items-center gap-2 text-text-muted">
+                            <div className="border-border bg-surface-2 space-y-2 rounded-lg border p-3">
+                              <div className="text-text-muted flex items-center gap-2">
                                 <Mail className="h-4 w-4" />
                                 <span>{candidate.email}</span>
                               </div>
-                              <div className="flex items-center gap-2 text-text-muted">
+                              <div className="text-text-muted flex items-center gap-2">
                                 <Phone className="h-4 w-4" />
                                 <span>{candidate.phone}</span>
                               </div>
-                              <div className="flex items-center gap-2 text-text-muted">
+                              <div className="text-text-muted flex items-center gap-2">
                                 <BriefcaseBusiness className="h-4 w-4" />
-                                <span>Role: {candidate.currentRole} ({candidate.currentCompany})</span>
+                                <span>
+                                  Role: {candidate.currentRole} ({candidate.currentCompany})
+                                </span>
                               </div>
-                              <div className="flex items-center gap-2 text-text-muted">
+                              <div className="text-text-muted flex items-center gap-2">
                                 <DollarSign className="h-4 w-4" />
-                                <span>Expected: {formatCtc(candidate.expectedCtc)} (Notice: {candidate.noticePeriod})</span>
+                                <span>
+                                  Expected: {formatCtc(candidate.expectedCtc)} (Notice:{' '}
+                                  {candidate.noticePeriod})
+                                </span>
                               </div>
                             </div>
 
                             <div className="space-y-1.5">
-                              <h4 className="font-semibold text-text">Source & Details</h4>
+                              <h4 className="text-text font-semibold">Source & Details</h4>
                               <div className="flex flex-wrap gap-1.5">
                                 <Badge variant="default" className="text-[11px]">
                                   Source: {candidate.source}
@@ -240,18 +235,20 @@ export function ManagerDashboard() {
 
                             {candidate.hrNotes && (
                               <div className="space-y-1.5">
-                                <h4 className="font-semibold text-text">HR Screening Notes</h4>
+                                <h4 className="text-text font-semibold">HR Screening Notes</h4>
                                 <p className="border-border bg-surface-2/60 text-text-muted rounded-md border p-3 leading-relaxed">
                                   {candidate.hrNotes}
                                 </p>
                               </div>
                             )}
 
-                            <div className="pt-4 flex gap-2">
+                            <div className="flex gap-2 pt-4">
                               <Button
                                 className="flex-1 gap-1.5"
                                 variant="primary"
-                                onClick={() => handleDecision(candidate.id, candidate.name, 'Shortlisted')}
+                                onClick={() =>
+                                  handleDecision(candidate.id, candidate.name, 'Shortlisted')
+                                }
                               >
                                 <CheckCircle2 className="h-4 w-4" />
                                 <span>Shortlist</span>
@@ -259,7 +256,9 @@ export function ManagerDashboard() {
                               <Button
                                 className="flex-1 gap-1.5"
                                 variant="destructive"
-                                onClick={() => handleDecision(candidate.id, candidate.name, 'Rejected')}
+                                onClick={() =>
+                                  handleDecision(candidate.id, candidate.name, 'Rejected')
+                                }
                               >
                                 <XCircle className="h-4 w-4" />
                                 <span>Reject</span>
@@ -318,7 +317,9 @@ export function ManagerDashboard() {
                 <div className="text-text-muted border-border/60 flex flex-col items-center justify-center rounded-[var(--radius-md)] border border-dashed py-8 text-center text-[13px]">
                   <Briefcase className="text-text-muted mb-2 h-8 w-8 opacity-60" />
                   <p className="font-medium">No active requisitions</p>
-                  <p className="text-text-subtle text-[12px]">Create a new requisition to begin hiring.</p>
+                  <p className="text-text-subtle text-[12px]">
+                    Create a new requisition to begin hiring.
+                  </p>
                 </div>
               ) : (
                 activeOpenings.slice(0, 3).map((opening) => (
@@ -330,7 +331,7 @@ export function ManagerDashboard() {
                       <div className="flex items-center gap-2">
                         <Link
                           href={`/openings/${opening.id}`}
-                          className="text-text hover:text-accent font-semibold text-[14px] transition-colors"
+                          className="text-text hover:text-accent text-[14px] font-semibold transition-colors"
                         >
                           {opening.title}
                         </Link>
@@ -341,7 +342,9 @@ export function ManagerDashboard() {
                         <span>•</span>
                         <span>{opening.location}</span>
                         <span>•</span>
-                        <span>{opening.headcount} position{opening.headcount > 1 ? 's' : ''}</span>
+                        <span>
+                          {opening.headcount} position{opening.headcount > 1 ? 's' : ''}
+                        </span>
                       </div>
                     </div>
 
@@ -363,7 +366,7 @@ export function ManagerDashboard() {
           {/* Upcoming Interviews Card */}
           <Card>
             <CardHeader className="pb-3">
-              <CardTitle className="text-[16px] flex items-center gap-2">
+              <CardTitle className="flex items-center gap-2 text-[16px]">
                 <Calendar className="text-accent h-4 w-4" />
                 <span>Interviews In Progress</span>
               </CardTitle>
@@ -380,19 +383,23 @@ export function ManagerDashboard() {
                 interviewCandidates.slice(0, 3).map((candidate) => (
                   <div
                     key={candidate.id}
-                    className="border-border bg-surface-2/50 rounded-lg border p-3 space-y-1.5"
+                    className="border-border bg-surface-2/50 space-y-1.5 rounded-lg border p-3"
                   >
                     <div className="flex items-center justify-between">
-                      <span className="text-text font-semibold text-[13px]">{candidate.name}</span>
+                      <span className="text-text text-[13px] font-semibold">{candidate.name}</span>
                       <Badge variant="accent" className="text-[11px] font-medium">
                         {candidate.interviewMode ?? 'Video'}
                       </Badge>
                     </div>
-                    <p className="text-text-muted text-[12px] flex items-center gap-1.5">
+                    <p className="text-text-muted flex items-center gap-1.5 text-[12px]">
                       <Clock className="h-3.5 w-3.5" />
-                      <span>{candidate.interviewDate ? new Date(candidate.interviewDate).toLocaleDateString() : 'Scheduled Soon'}</span>
+                      <span>
+                        {candidate.interviewDate
+                          ? new Date(candidate.interviewDate).toLocaleDateString()
+                          : 'Scheduled Soon'}
+                      </span>
                     </p>
-                    <div className="pt-1 flex items-center justify-between text-[11px]">
+                    <div className="flex items-center justify-between pt-1 text-[11px]">
                       <span className="text-text-subtle">{candidate.currentRole}</span>
                       <Link href="/pipeline" className="text-accent hover:underline">
                         Open Pipeline
@@ -407,27 +414,39 @@ export function ManagerDashboard() {
           {/* Quick Shortcuts */}
           <Card>
             <CardHeader className="pb-3">
-              <CardTitle className="text-[16px] flex items-center gap-2">
+              <CardTitle className="flex items-center gap-2 text-[16px]">
                 <Sparkles className="text-accent h-4 w-4" />
                 <span>Quick Actions</span>
               </CardTitle>
             </CardHeader>
             <CardContent className="space-y-2">
-              <Button asChild variant="outline" className="w-full justify-start gap-2 h-9 text-[13px]">
+              <Button
+                asChild
+                variant="outline"
+                className="h-9 w-full justify-start gap-2 text-[13px]"
+              >
                 <Link href="/openings/new">
-                  <Plus className="h-4 w-4 text-accent" />
+                  <Plus className="text-accent h-4 w-4" />
                   <span>Request New Headcount</span>
                 </Link>
               </Button>
-              <Button asChild variant="outline" className="w-full justify-start gap-2 h-9 text-[13px]">
+              <Button
+                asChild
+                variant="outline"
+                className="h-9 w-full justify-start gap-2 text-[13px]"
+              >
                 <Link href="/pipeline">
-                  <Users className="h-4 w-4 text-accent" />
+                  <Users className="text-accent h-4 w-4" />
                   <span>View Pipeline Kanban</span>
                 </Link>
               </Button>
-              <Button asChild variant="outline" className="w-full justify-start gap-2 h-9 text-[13px]">
+              <Button
+                asChild
+                variant="outline"
+                className="h-9 w-full justify-start gap-2 text-[13px]"
+              >
                 <Link href="/candidates">
-                  <Briefcase className="h-4 w-4 text-accent" />
+                  <Briefcase className="text-accent h-4 w-4" />
                   <span>Candidates Directory</span>
                 </Link>
               </Button>
@@ -438,4 +457,3 @@ export function ManagerDashboard() {
     </div>
   );
 }
-

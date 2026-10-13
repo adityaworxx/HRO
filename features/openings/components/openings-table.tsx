@@ -28,7 +28,6 @@ import {
   ArrowRightCircle,
   Building2,
   MapPin,
-  Clock,
 } from 'lucide-react';
 import { toast } from 'sonner';
 
@@ -43,8 +42,7 @@ export function OpeningsTable() {
   // Filter openings
   const filteredOpenings = React.useMemo(() => {
     return openings.filter((opening) => {
-      const matchesStatus =
-        selectedStatus === 'all' || opening.status === selectedStatus;
+      const matchesStatus = selectedStatus === 'all' || opening.status === selectedStatus;
       const matchesDepartment =
         selectedDepartment === 'all' || opening.department === selectedDepartment;
       return matchesStatus && matchesDepartment;
@@ -57,16 +55,19 @@ export function OpeningsTable() {
     return Array.from(set);
   }, [openings]);
 
-  const handleStatusChange = (id: string, newStatus: OpeningStatus, title: string) => {
-    updateStatus.mutate(
-      { id, status: newStatus },
-      {
-        onSuccess: () => {
-          toast.success(`Updated "${title}" status to ${newStatus}`);
-        },
-      }
-    );
-  };
+  const handleStatusChange = React.useCallback(
+    (id: string, newStatus: OpeningStatus, title: string) => {
+      updateStatus.mutate(
+        { id, status: newStatus },
+        {
+          onSuccess: () => {
+            toast.success(`Updated "${title}" status to ${newStatus}`);
+          },
+        }
+      );
+    },
+    [updateStatus]
+  );
 
   const columns = React.useMemo<ColumnDef<Opening>[]>(
     () => [
@@ -79,7 +80,7 @@ export function OpeningsTable() {
             <div className="space-y-0.5">
               <Link
                 href={`/openings/${opening.id}`}
-                className="text-text hover:text-accent font-semibold text-[14px] transition-colors"
+                className="text-text hover:text-accent text-[14px] font-semibold transition-colors"
                 onClick={(e) => e.stopPropagation()}
               >
                 {opening.title}
@@ -99,8 +100,8 @@ export function OpeningsTable() {
           const opening = row.original;
           return (
             <div className="space-y-0.5 text-[13px]">
-              <div className="flex items-center gap-1.5 text-text">
-                <MapPin className="h-3.5 w-3.5 text-text-muted" />
+              <div className="text-text flex items-center gap-1.5">
+                <MapPin className="text-text-muted h-3.5 w-3.5" />
                 <span>{opening.location}</span>
               </div>
               <span className="text-text-muted text-[12px]">{opening.employmentType}</span>
@@ -196,7 +197,7 @@ export function OpeningsTable() {
                           onClick={() => handleStatusChange(opening.id, nextStatus, opening.title)}
                           className="flex items-center gap-2"
                         >
-                          <ArrowRightCircle className="h-3.5 w-3.5 text-accent" />
+                          <ArrowRightCircle className="text-accent h-3.5 w-3.5" />
                           <span>Move to {nextStatus}</span>
                         </DropdownMenuItem>
                       ))}
@@ -237,7 +238,7 @@ export function OpeningsTable() {
                 >
                   <span>{status === 'all' ? 'All Openings' : status}</span>
                   <span
-                    className={`rounded-full px-1.5 py-0.2 text-[11px] font-mono ${
+                    className={`py-0.2 rounded-full px-1.5 font-mono text-[11px] ${
                       isSelected ? 'bg-bg/20 text-bg' : 'bg-surface-3 text-text-subtle'
                     }`}
                   >
@@ -254,7 +255,7 @@ export function OpeningsTable() {
           <select
             value={selectedDepartment}
             onChange={(e) => setSelectedDepartment(e.target.value)}
-            className="border-border bg-surface-2 text-text h-8 rounded-[var(--radius-sm)] border px-2.5 text-[12px] font-medium outline-none focus:ring-1 focus:ring-accent"
+            className="border-border bg-surface-2 text-text focus:ring-accent h-8 rounded-[var(--radius-sm)] border px-2.5 text-[12px] font-medium outline-none focus:ring-1"
           >
             <option value="all">All Departments</option>
             {departments.map((dep) => (

@@ -8,8 +8,6 @@ export default function DashboardPage() {
   const { role } = useUiStore();
 
   return (
-    <div className="space-y-6">
-      {role === 'manager' ? <ManagerDashboard /> : <HrDashboard />}
-    </div>
+    <div className="space-y-6">{role === 'manager' ? <ManagerDashboard /> : <HrDashboard />}</div>
   );
 }

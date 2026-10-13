@@ -8,13 +8,7 @@ import { useAllOnboarding } from '@/features/onboarding/hooks';
 import { useCurrentUser } from '@/features/auth/hooks';
 import { StatCard } from '@/components/hro/stat-card';
 import { StatusBadge } from '@/components/hro/status-badge';
-import {
-  Card,
-  CardHeader,
-  CardTitle,
-  CardDescription,
-  CardContent,
-} from '@/components/ui/card';
+import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Progress } from '@/components/ui/progress';
@@ -98,16 +92,8 @@ export function HrDashboard() {
 
       {/* KPI Stat Cards */}
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
-        <StatCard
-          label="Open Requisitions"
-          value={openRequisitions.length}
-          delta="+2 this month"
-        />
-        <StatCard
-          label="Active Candidates"
-          value={candidates.length}
-          delta="Across all stages"
-        />
+        <StatCard label="Open Requisitions" value={openRequisitions.length} delta="+2 this month" />
+        <StatCard label="Active Candidates" value={candidates.length} delta="Across all stages" />
         <StatCard
           label="On-Hold Requisitions"
           value={onHoldRequisitions.length}
@@ -156,7 +142,7 @@ export function HrDashboard() {
                     <div className="flex items-center gap-2">
                       <Link
                         href={`/openings/${opening.id}`}
-                        className="text-text hover:text-accent font-semibold text-[14px] transition-colors"
+                        className="text-text hover:text-accent text-[14px] font-semibold transition-colors"
                       >
                         {opening.title}
                       </Link>
@@ -167,7 +153,9 @@ export function HrDashboard() {
                       <span>•</span>
                       <span>{opening.location}</span>
                       <span>•</span>
-                      <span>Budget: ₹{opening.budgetRange.min}L - ₹{opening.budgetRange.max}L</span>
+                      <span>
+                        Budget: ₹{opening.budgetRange.min}L - ₹{opening.budgetRange.max}L
+                      </span>
                     </p>
                   </div>
 
@@ -195,7 +183,7 @@ export function HrDashboard() {
           {/* Pipeline Funnel Distribution */}
           <Card>
             <CardHeader className="pb-3">
-              <CardTitle className="text-[17px] flex items-center gap-2">
+              <CardTitle className="flex items-center gap-2 text-[17px]">
                 <TrendingUp className="text-accent h-4 w-4" />
                 <span>Active Pipeline Throughput</span>
               </CardTitle>
@@ -205,32 +193,32 @@ export function HrDashboard() {
             </CardHeader>
             <CardContent>
               <div className="grid grid-cols-2 gap-3 sm:grid-cols-5">
-                <div className="border-border bg-surface-2/40 rounded-lg border p-3 text-center space-y-1">
-                  <span className="text-text-muted text-[11px] font-medium uppercase tracking-wider">
+                <div className="border-border bg-surface-2/40 space-y-1 rounded-lg border p-3 text-center">
+                  <span className="text-text-muted text-[11px] font-medium tracking-wider uppercase">
                     Sourced
                   </span>
                   <p className="text-text text-xl font-bold">{stagesCount.sourced}</p>
                 </div>
-                <div className="border-border bg-surface-2/40 rounded-lg border p-3 text-center space-y-1">
-                  <span className="text-text-muted text-[11px] font-medium uppercase tracking-wider">
+                <div className="border-border bg-surface-2/40 space-y-1 rounded-lg border p-3 text-center">
+                  <span className="text-text-muted text-[11px] font-medium tracking-wider uppercase">
                     Shared w/ Mgr
                   </span>
                   <p className="text-text text-xl font-bold">{stagesCount.shared}</p>
                 </div>
-                <div className="border-border bg-surface-2/40 rounded-lg border p-3 text-center space-y-1">
-                  <span className="text-text-muted text-[11px] font-medium uppercase tracking-wider">
+                <div className="border-border bg-surface-2/40 space-y-1 rounded-lg border p-3 text-center">
+                  <span className="text-text-muted text-[11px] font-medium tracking-wider uppercase">
                     Interview
                   </span>
                   <p className="text-text text-xl font-bold">{stagesCount.interview}</p>
                 </div>
-                <div className="border-border bg-surface-2/40 rounded-lg border p-3 text-center space-y-1">
-                  <span className="text-text-muted text-[11px] font-medium uppercase tracking-wider">
+                <div className="border-border bg-surface-2/40 space-y-1 rounded-lg border p-3 text-center">
+                  <span className="text-text-muted text-[11px] font-medium tracking-wider uppercase">
                     Offer
                   </span>
                   <p className="text-text text-xl font-bold">{stagesCount.offer}</p>
                 </div>
-                <div className="border-border bg-surface-2/40 rounded-lg border p-3 text-center space-y-1">
-                  <span className="text-text-muted text-[11px] font-medium uppercase tracking-wider">
+                <div className="border-border bg-surface-2/40 space-y-1 rounded-lg border p-3 text-center">
+                  <span className="text-text-muted text-[11px] font-medium tracking-wider uppercase">
                     Joined
                   </span>
                   <p className="text-success text-xl font-bold">{stagesCount.hired}</p>
@@ -243,7 +231,7 @@ export function HrDashboard() {
           <Card>
             <CardHeader className="flex flex-row items-center justify-between pb-3">
               <div>
-                <CardTitle className="text-[17px] flex items-center gap-2">
+                <CardTitle className="flex items-center gap-2 text-[17px]">
                   <Clock className="text-warning h-4 w-4" />
                   <span>SLA Watchlist</span>
                 </CardTitle>
@@ -271,7 +259,7 @@ export function HrDashboard() {
                         </AvatarFallback>
                       </Avatar>
                       <div>
-                        <p className="text-text font-semibold text-[13px]">{candidate.name}</p>
+                        <p className="text-text text-[13px] font-semibold">{candidate.name}</p>
                         <p className="text-text-muted text-[11px]">
                           Stage: {candidate.stage} • Notice: {candidate.noticePeriod}
                         </p>
@@ -297,7 +285,7 @@ export function HrDashboard() {
           {/* Onboarding Health Tracker */}
           <Card>
             <CardHeader className="pb-3">
-              <CardTitle className="text-[16px] flex items-center gap-2">
+              <CardTitle className="flex items-center gap-2 text-[16px]">
                 <AlertTriangle className="text-accent h-4 w-4" />
                 <span>Onboarding Readiness</span>
               </CardTitle>
@@ -317,7 +305,7 @@ export function HrDashboard() {
                 </p>
               </div>
 
-              <div className="border-border border-t pt-3 space-y-2">
+              <div className="border-border space-y-2 border-t pt-3">
                 <p className="text-text text-[13px] font-semibold">Incoming Hires:</p>
                 {hiredCandidates.slice(0, 2).map((candidate) => (
                   <div key={candidate.id} className="flex items-center justify-between text-[12px]">
@@ -327,7 +315,7 @@ export function HrDashboard() {
                 ))}
               </div>
 
-              <Button asChild variant="outline" className="w-full text-[12px] h-8">
+              <Button asChild variant="outline" className="h-8 w-full text-[12px]">
                 <Link href="/onboarding">View Onboarding Checklist</Link>
               </Button>
             </CardContent>
@@ -336,27 +324,39 @@ export function HrDashboard() {
           {/* Quick Shortcuts */}
           <Card>
             <CardHeader className="pb-3">
-              <CardTitle className="text-[16px] flex items-center gap-2">
+              <CardTitle className="flex items-center gap-2 text-[16px]">
                 <Sparkles className="text-accent h-4 w-4" />
                 <span>HR Quick Links</span>
               </CardTitle>
             </CardHeader>
             <CardContent className="space-y-2">
-              <Button asChild variant="outline" className="w-full justify-start gap-2 h-9 text-[13px]">
+              <Button
+                asChild
+                variant="outline"
+                className="h-9 w-full justify-start gap-2 text-[13px]"
+              >
                 <Link href="/pipeline">
-                  <GitPullRequest className="h-4 w-4 text-accent" />
+                  <GitPullRequest className="text-accent h-4 w-4" />
                   <span>Kanban Pipeline Board</span>
                 </Link>
               </Button>
-              <Button asChild variant="outline" className="w-full justify-start gap-2 h-9 text-[13px]">
+              <Button
+                asChild
+                variant="outline"
+                className="h-9 w-full justify-start gap-2 text-[13px]"
+              >
                 <Link href="/candidates">
-                  <Users className="h-4 w-4 text-accent" />
+                  <Users className="text-accent h-4 w-4" />
                   <span>Candidate Directory</span>
                 </Link>
               </Button>
-              <Button asChild variant="outline" className="w-full justify-start gap-2 h-9 text-[13px]">
+              <Button
+                asChild
+                variant="outline"
+                className="h-9 w-full justify-start gap-2 text-[13px]"
+              >
                 <Link href="/reports">
-                  <TrendingUp className="h-4 w-4 text-accent" />
+                  <TrendingUp className="text-accent h-4 w-4" />
                   <span>Headcount & Reports</span>
                 </Link>
               </Button>
@@ -367,4 +367,3 @@ export function HrDashboard() {
     </div>
   );
 }
-

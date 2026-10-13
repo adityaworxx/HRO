@@ -113,3 +113,15 @@ export function useRecordInterviewOutcome() {
     },
   });
 }
+
+export function useUpdateCandidateStage() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: ({ id, stage }: { id: string; stage: CandidateStage }) =>
+      api.candidates.updateStage(id, stage),
+    onSuccess: (_, variables) => {
+      void queryClient.invalidateQueries({ queryKey: candidatesKeys.lists() });
+      void queryClient.invalidateQueries({ queryKey: candidatesKeys.detail(variables.id) });
+    },
+  });
+}

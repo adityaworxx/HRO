@@ -1,21 +1,17 @@
 'use client';
 
+import * as React from 'react';
 import { PageHeader } from '@/components/hro/page-header';
-import { EmptyState } from '@/components/hro/empty-state';
-import { Calendar } from 'lucide-react';
+import { InterviewsView } from '@/features/candidates';
 
 export default function InterviewsPage() {
   return (
-    <div>
+    <div className="space-y-6">
       <PageHeader
-        title="Interviews"
-        description="Schedule technical evaluations, track upcoming calls, and record hiring outcomes."
+        title="Technical Interviews Coordination"
+        description="Schedule candidate evaluations, view upcoming call times, and submit technical rubric scores."
       />
-      <EmptyState
-        icon={Calendar}
-        title="Interview Coordination Arrives in Phase 2"
-        description="Lightweight interview logging with video/phone modes and decision recording arrives in the next phase."
-      />
+      <InterviewsView />
     </div>
   );
 }

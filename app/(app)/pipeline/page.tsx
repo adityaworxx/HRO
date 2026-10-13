@@ -1,21 +1,17 @@
 'use client';
 
+import * as React from 'react';
 import { PageHeader } from '@/components/hro/page-header';
-import { EmptyState } from '@/components/hro/empty-state';
-import { GitPullRequest } from 'lucide-react';
+import { PipelineBoard } from '@/features/candidates';
 
 export default function PipelinePage() {
   return (
-    <div>
+    <div className="space-y-6">
       <PageHeader
-        title="Candidate Pipeline"
-        description="Kanban board visualization tracking candidates from Sourced to Joined."
+        title="Recruitment Pipeline Board"
+        description="Interactive drag-and-drop workflow tracking candidate progress across milestones."
       />
-      <EmptyState
-        icon={GitPullRequest}
-        title="Interactive Kanban Board Arrives in Phase 2"
-        description="Full drag-and-drop board powered by dnd-kit with keyboard movement menus will be unlocked in the dashboard & feature phase."
-      />
+      <PipelineBoard />
     </div>
   );
 }

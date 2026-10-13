@@ -1,21 +1,17 @@
 'use client';
 
+import * as React from 'react';
 import { PageHeader } from '@/components/hro/page-header';
-import { EmptyState } from '@/components/hro/empty-state';
-import { ListFilter } from 'lucide-react';
+import { ShortlistReview } from '@/features/candidates';
 
 export default function ShortlistPage() {
   return (
-    <div>
+    <div className="space-y-6">
       <PageHeader
-        title="Shortlist Review"
-        description="Review candidate profiles submitted by HR, evaluate skills, and record interview decisions."
+        title="Candidate Shortlist Review"
+        description="Evaluate candidates submitted by talent acquisition, review screening notes, and decide next interview rounds."
       />
-      <EmptyState
-        icon={ListFilter}
-        title="Shortlist Review Screen Arrives in Phase 2"
-        description="Split-view candidate assessment with keyboard shortcuts and decision comments will be delivered in the next phase."
-      />
+      <ShortlistReview />
     </div>
   );
 }

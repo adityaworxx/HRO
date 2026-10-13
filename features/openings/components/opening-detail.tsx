@@ -24,17 +24,14 @@ import {
 } from '@/components/ui/dropdown-menu';
 import {
   ArrowLeft,
-  Building2,
   MapPin,
   Clock,
   DollarSign,
   Users,
   Edit,
   ArrowRightCircle,
-  Briefcase,
   GitPullRequest,
   CheckCircle2,
-  Calendar,
   AlertCircle,
 } from 'lucide-react';
 import { toast } from 'sonner';
@@ -150,7 +147,9 @@ export function OpeningDetail({ id }: OpeningDetailProps) {
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end" className="w-48">
-                <DropdownMenuLabel className="text-[11px]">Transition Requisition</DropdownMenuLabel>
+                <DropdownMenuLabel className="text-[11px]">
+                  Transition Requisition
+                </DropdownMenuLabel>
                 <DropdownMenuSeparator />
                 {allowedTransitions.map((nextStatus) => (
                   <DropdownMenuItem
@@ -158,7 +157,7 @@ export function OpeningDetail({ id }: OpeningDetailProps) {
                     onClick={() => handleStatusChange(nextStatus)}
                     className="flex items-center gap-2"
                   >
-                    <CheckCircle2 className="h-3.5 w-3.5 text-accent" />
+                    <CheckCircle2 className="text-accent h-3.5 w-3.5" />
                     <span>Move to {nextStatus}</span>
                   </DropdownMenuItem>
                 ))}
@@ -171,17 +170,18 @@ export function OpeningDetail({ id }: OpeningDetailProps) {
       {/* Metric Stat Cards */}
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
         <div className="border-border bg-surface-1 rounded-[var(--radius-md)] border p-4">
-          <span className="text-text-muted text-[12px] font-medium flex items-center gap-1.5">
+          <span className="text-text-muted flex items-center gap-1.5 text-[12px] font-medium">
             <Users className="h-3.5 w-3.5" />
             <span>Target Headcount</span>
           </span>
           <p className="text-text mt-1.5 font-mono text-2xl font-bold">
-            {opening.headcount} <span className="text-text-subtle text-[13px] font-normal">positions</span>
+            {opening.headcount}{' '}
+            <span className="text-text-subtle text-[13px] font-normal">positions</span>
           </p>
         </div>
 
         <div className="border-border bg-surface-1 rounded-[var(--radius-md)] border p-4">
-          <span className="text-text-muted text-[12px] font-medium flex items-center gap-1.5">
+          <span className="text-text-muted flex items-center gap-1.5 text-[12px] font-medium">
             <Clock className="h-3.5 w-3.5" />
             <span>Experience Required</span>
           </span>
@@ -192,7 +192,7 @@ export function OpeningDetail({ id }: OpeningDetailProps) {
         </div>
 
         <div className="border-border bg-surface-1 rounded-[var(--radius-md)] border p-4">
-          <span className="text-text-muted text-[12px] font-medium flex items-center gap-1.5">
+          <span className="text-text-muted flex items-center gap-1.5 text-[12px] font-medium">
             <DollarSign className="h-3.5 w-3.5" />
             <span>Budget Band</span>
           </span>
@@ -202,13 +202,11 @@ export function OpeningDetail({ id }: OpeningDetailProps) {
         </div>
 
         <div className="border-border bg-surface-1 rounded-[var(--radius-md)] border p-4">
-          <span className="text-text-muted text-[12px] font-medium flex items-center gap-1.5">
+          <span className="text-text-muted flex items-center gap-1.5 text-[12px] font-medium">
             <MapPin className="h-3.5 w-3.5" />
             <span>Location & Format</span>
           </span>
-          <p className="text-text mt-1.5 truncate text-[15px] font-semibold">
-            {opening.location}
-          </p>
+          <p className="text-text mt-1.5 truncate text-[15px] font-semibold">{opening.location}</p>
           <span className="text-text-subtle text-[12px]">{opening.employmentType}</span>
         </div>
       </div>
@@ -217,9 +215,7 @@ export function OpeningDetail({ id }: OpeningDetailProps) {
       <Tabs defaultValue="specification" className="w-full">
         <TabsList className="w-full justify-start sm:w-auto">
           <TabsTrigger value="specification">Requirements & Scope</TabsTrigger>
-          <TabsTrigger value="candidates">
-            Candidates ({openingCandidates.length})
-          </TabsTrigger>
+          <TabsTrigger value="candidates">Candidates ({openingCandidates.length})</TabsTrigger>
           <TabsTrigger value="timeline">Audit & Timeline</TabsTrigger>
         </TabsList>
 
@@ -231,7 +227,7 @@ export function OpeningDetail({ id }: OpeningDetailProps) {
                 <CardHeader>
                   <CardTitle className="text-[17px]">Job Description & Responsibilities</CardTitle>
                 </CardHeader>
-                <CardContent className="space-y-4 text-[14px] leading-relaxed text-text">
+                <CardContent className="text-text space-y-4 text-[14px] leading-relaxed">
                   <p className="whitespace-pre-line">{opening.description}</p>
                 </CardContent>
               </Card>
@@ -279,15 +275,17 @@ export function OpeningDetail({ id }: OpeningDetailProps) {
                   <CardTitle className="text-[16px]">Requisition Metadata</CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-3.5 text-[13px]">
-                  <div className="flex justify-between border-b border-border pb-2.5">
+                  <div className="border-border flex justify-between border-b pb-2.5">
                     <span className="text-text-muted">Target Joining Date</span>
-                    <span className="text-text font-medium">{formatDate(opening.targetStartDate)}</span>
+                    <span className="text-text font-medium">
+                      {formatDate(opening.targetStartDate)}
+                    </span>
                   </div>
-                  <div className="flex justify-between border-b border-border pb-2.5">
+                  <div className="border-border flex justify-between border-b pb-2.5">
                     <span className="text-text-muted">Created On</span>
                     <span className="text-text font-medium">{formatDate(opening.createdAt)}</span>
                   </div>
-                  <div className="flex justify-between border-b border-border pb-2.5">
+                  <div className="border-border flex justify-between border-b pb-2.5">
                     <span className="text-text-muted">Department</span>
                     <span className="text-text font-medium">{opening.department}</span>
                   </div>
@@ -303,15 +301,23 @@ export function OpeningDetail({ id }: OpeningDetailProps) {
                   <CardTitle className="text-[16px]">Pipeline Actions</CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-2">
-                  <Button asChild variant="outline" className="w-full justify-start gap-2 h-9 text-[13px]">
+                  <Button
+                    asChild
+                    variant="outline"
+                    className="h-9 w-full justify-start gap-2 text-[13px]"
+                  >
                     <Link href="/pipeline">
-                      <GitPullRequest className="h-4 w-4 text-accent" />
+                      <GitPullRequest className="text-accent h-4 w-4" />
                       <span>Open Kanban Board</span>
                     </Link>
                   </Button>
-                  <Button asChild variant="outline" className="w-full justify-start gap-2 h-9 text-[13px]">
+                  <Button
+                    asChild
+                    variant="outline"
+                    className="h-9 w-full justify-start gap-2 text-[13px]"
+                  >
                     <Link href="/candidates">
-                      <Users className="h-4 w-4 text-accent" />
+                      <Users className="text-accent h-4 w-4" />
                       <span>View All Candidates</span>
                     </Link>
                   </Button>
@@ -345,7 +351,9 @@ export function OpeningDetail({ id }: OpeningDetailProps) {
                 <div className="text-text-muted border-border/60 flex flex-col items-center justify-center rounded-[var(--radius-md)] border border-dashed py-10 text-center text-[13px]">
                   <Users className="text-text-muted mb-2 h-8 w-8 opacity-60" />
                   <p className="font-medium">No candidates in this pipeline yet</p>
-                  <p className="text-text-subtle text-[12px]">Source or add candidates to start evaluating.</p>
+                  <p className="text-text-subtle text-[12px]">
+                    Source or add candidates to start evaluating.
+                  </p>
                 </div>
               ) : (
                 openingCandidates.map((candidate) => (
@@ -361,17 +369,22 @@ export function OpeningDetail({ id }: OpeningDetailProps) {
                       </Avatar>
                       <div>
                         <div className="flex items-center gap-2">
-                          <span className="text-text font-semibold text-[14px]">{candidate.name}</span>
+                          <span className="text-text text-[14px] font-semibold">
+                            {candidate.name}
+                          </span>
                           <StatusBadge status={candidate.stage} type="candidate" />
                         </div>
                         <p className="text-text-muted text-[12px]">
-                          {candidate.currentRole} at {candidate.currentCompany} • {candidate.experienceYears} yrs exp
+                          {candidate.currentRole} at {candidate.currentCompany} •{' '}
+                          {candidate.experienceYears} yrs exp
                         </p>
                       </div>
                     </div>
 
-                    <div className="flex items-center gap-4 text-[12px] text-text-muted self-end sm:self-center">
-                      <span className="font-mono text-text">Expected: {formatCtc(candidate.expectedCtc)}</span>
+                    <div className="text-text-muted flex items-center gap-4 self-end text-[12px] sm:self-center">
+                      <span className="text-text font-mono">
+                        Expected: {formatCtc(candidate.expectedCtc)}
+                      </span>
                       <span>Notice: {candidate.noticePeriod}</span>
                     </div>
                   </div>
@@ -393,14 +406,14 @@ export function OpeningDetail({ id }: OpeningDetailProps) {
             <CardContent className="space-y-4">
               <div className="border-border relative space-y-4 border-l pl-4 text-[13px]">
                 <div className="relative">
-                  <div className="bg-accent absolute -left-[21px] top-1 h-2.5 w-2.5 rounded-full ring-4 ring-surface-1" />
+                  <div className="bg-accent ring-surface-1 absolute top-1 -left-[21px] h-2.5 w-2.5 rounded-full ring-4" />
                   <p className="text-text font-medium">Requisition Created</p>
                   <p className="text-text-muted text-[12px]">
                     Created on {formatDate(opening.createdAt)} by Hiring Team
                   </p>
                 </div>
                 <div className="relative">
-                  <div className="bg-success absolute -left-[21px] top-1 h-2.5 w-2.5 rounded-full ring-4 ring-surface-1" />
+                  <div className="bg-success ring-surface-1 absolute top-1 -left-[21px] h-2.5 w-2.5 rounded-full ring-4" />
                   <p className="text-text font-medium">Published & Active</p>
                   <p className="text-text-muted text-[12px]">Current Status: {opening.status}</p>
                 </div>
