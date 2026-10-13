@@ -36,6 +36,24 @@ export function formatRelativeTime(dateString: string | null | undefined): strin
   }
 }
 
+export function formatCompactTime(dateString: string | null | undefined): string {
+  if (!dateString) return '';
+  try {
+    const parsed = parseISO(dateString);
+    if (!isValid(parsed)) return '';
+    const diffSec = Math.max(0, Math.floor((Date.now() - parsed.getTime()) / 1000));
+    if (diffSec < 60) return 'Just now';
+    const diffMin = Math.floor(diffSec / 60);
+    if (diffMin < 60) return `${diffMin}m ago`;
+    const diffHours = Math.floor(diffMin / 60);
+    if (diffHours < 24) return `${diffHours}h ago`;
+    const diffDays = Math.floor(diffHours / 24);
+    return `${diffDays}d ago`;
+  } catch {
+    return '';
+  }
+}
+
 export function formatCtcRange(min: number, max: number): string {
   return `₹${min} - ₹${max} LPA`;
 }
