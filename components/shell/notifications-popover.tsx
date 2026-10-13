@@ -1,7 +1,7 @@
 'use client';
 
 import * as React from 'react';
-import { Bell } from 'lucide-react';
+import { MessageNotificationIcon } from '@/components/ui/icons';
 import { Button } from '@/components/ui/button';
 import { useNotifications, useMarkNotificationAsRead } from '@/features/notifications/hooks';
 import { useUiStore } from '@/lib/store';
@@ -25,11 +25,13 @@ export function NotificationsPopover() {
         <Button
           variant="ghost"
           size="icon"
-          className="text-text-subtle hover:text-text relative h-9 w-9"
+          className="text-text-subtle hover:text-text hover:bg-surface-2 relative h-9 w-9 cursor-pointer"
+          title="Notifications"
+          aria-label="Notifications"
         >
-          <Bell className="h-4 w-4" />
+          <MessageNotificationIcon className="h-4.5 w-4.5" />
           {unreadCount > 0 && (
-            <span className="bg-accent absolute top-2 right-2 h-2 w-2 rounded-full" />
+            <span className="bg-accent ring-surface-1 absolute top-2 right-2 h-2 w-2 rounded-full ring-2" />
           )}
           <span className="sr-only">Notifications</span>
         </Button>

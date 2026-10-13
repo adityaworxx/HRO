@@ -4,6 +4,7 @@ import * as React from 'react';
 import { ThemeProvider as NextThemesProvider } from 'next-themes';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { Toaster } from 'sonner';
+import { useUiStore } from '@/lib/store';
 
 export function Providers({ children }: { children: React.ReactNode }) {
   const [queryClient] = React.useState(
@@ -17,6 +18,10 @@ export function Providers({ children }: { children: React.ReactNode }) {
         },
       })
   );
+
+  React.useEffect(() => {
+    useUiStore.getState().initFromStorage();
+  }, []);
 
   return (
     <NextThemesProvider

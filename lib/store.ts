@@ -9,48 +9,41 @@ interface UiState {
   setRole: (role: UserRole) => void;
   commandPaletteOpen: boolean;
   setCommandPaletteOpen: (open: boolean) => void;
+  initFromStorage: () => void;
 }
 
-export const useUiStore = create<UiState>((set) => {
-  // Read persisted role from localStorage safely in browser
-  let initialRole: UserRole = 'manager';
-  let initialSidebar = false;
-
-  if (typeof window !== 'undefined') {
+export const useUiStore = create<UiState>((set) => ({
+  sidebarCollapsed: false,
+  toggleSidebar: () =>
+    set((state) => {
+      const next = !state.sidebarCollapsed;
+      if (typeof window !== 'undefined') {
+        localStorage.setItem('hro:sidebar-collapsed', String(next));
+      }
+      return { sidebarCollapsed: next };
+    }),
+  setSidebarCollapsed: (collapsed) => {
+    if (typeof window !== 'undefined') {
+      localStorage.setItem('hro:sidebar-collapsed', String(collapsed));
+    }
+    set({ sidebarCollapsed: collapsed });
+  },
+  role: 'manager',
+  setRole: (role) => {
+    if (typeof window !== 'undefined') {
+      localStorage.setItem('hro:demo-role', role);
+    }
+    set({ role });
+  },
+  commandPaletteOpen: false,
+  setCommandPaletteOpen: (open) => set({ commandPaletteOpen: open }),
+  initFromStorage: () => {
+    if (typeof window === 'undefined') return;
     const savedRole = localStorage.getItem('hro:demo-role');
-    if (savedRole === 'manager' || savedRole === 'hr') {
-      initialRole = savedRole;
-    }
     const savedSidebar = localStorage.getItem('hro:sidebar-collapsed');
-    if (savedSidebar !== null) {
-      initialSidebar = savedSidebar === 'true';
-    }
-  }
-
-  return {
-    sidebarCollapsed: initialSidebar,
-    toggleSidebar: () =>
-      set((state) => {
-        const next = !state.sidebarCollapsed;
-        if (typeof window !== 'undefined') {
-          localStorage.setItem('hro:sidebar-collapsed', String(next));
-        }
-        return { sidebarCollapsed: next };
-      }),
-    setSidebarCollapsed: (collapsed) => {
-      if (typeof window !== 'undefined') {
-        localStorage.setItem('hro:sidebar-collapsed', String(collapsed));
-      }
-      set({ sidebarCollapsed: collapsed });
-    },
-    role: initialRole,
-    setRole: (role) => {
-      if (typeof window !== 'undefined') {
-        localStorage.setItem('hro:demo-role', role);
-      }
-      set({ role });
-    },
-    commandPaletteOpen: false,
-    setCommandPaletteOpen: (open) => set({ commandPaletteOpen: open }),
-  };
-});
+    set({
+      role: savedRole === 'manager' || savedRole === 'hr' ? savedRole : 'manager',
+      sidebarCollapsed: savedSidebar === 'true',
+    });
+  },
+}));

@@ -7,7 +7,7 @@ import { useUiStore } from '@/lib/store';
 import { NAVIGATION_ITEMS } from '@/lib/navigation';
 import { RoleSwitcher } from './role-switcher';
 import { cn } from '@/lib/utils';
-import { PanelLeftClose, PanelLeft } from 'lucide-react';
+import { PanelLeftClose } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 
 function SidebarNav({ collapsed }: { collapsed: boolean }) {
@@ -46,48 +46,73 @@ function SidebarNav({ collapsed }: { collapsed: boolean }) {
 export function Sidebar() {
   const { sidebarCollapsed, toggleSidebar } = useUiStore();
 
+  const mounted = React.useSyncExternalStore(
+    () => () => {},
+    () => true,
+    () => false
+  );
+
+  const isCollapsed = mounted ? sidebarCollapsed : false;
+
   return (
     <aside
       className={cn(
         'border-border bg-surface-1 relative sticky top-0 z-30 flex h-screen shrink-0 flex-col border-r transition-[width] duration-[150ms]',
-        sidebarCollapsed ? 'w-16' : 'w-60'
+        isCollapsed ? 'w-16' : 'w-60'
       )}
     >
       {/* Brand Header */}
-      <div className="border-border flex h-14 items-center justify-between border-b px-3.5">
-        <Link href="/" className="flex items-center gap-2.5 overflow-hidden">
-          <div className="bg-accent text-bg flex h-8 w-8 shrink-0 items-center justify-center rounded-[var(--radius-sm)] font-bold">
-            H
-          </div>
-          {!sidebarCollapsed && (
-            <span className="text-text truncate text-[15px] font-semibold tracking-tight">HRO</span>
-          )}
-        </Link>
+      <div
+        className={cn(
+          'border-border flex h-14 items-center border-b transition-all',
+          isCollapsed ? 'justify-center px-0' : 'justify-between px-3.5'
+        )}
+      >
+        {!isCollapsed ? (
+          <>
+            <Link href="/" className="flex items-center gap-2.5 overflow-hidden">
+              <div className="bg-accent text-bg flex h-8 w-8 shrink-0 items-center justify-center rounded-[var(--radius-sm)] font-bold shadow-xs">
+                H
+              </div>
+              <span className="text-text truncate text-[15px] font-semibold tracking-tight">
+                HRO
+              </span>
+            </Link>
 
-        <Button
-          variant="ghost"
-          size="icon"
-          onClick={toggleSidebar}
-          className="text-text-subtle hover:text-text hidden h-7 w-7 lg:flex"
-          title="Toggle sidebar (Ctrl+B)"
-        >
-          {sidebarCollapsed ? (
-            <PanelLeft className="h-4 w-4" />
-          ) : (
-            <PanelLeftClose className="h-4 w-4" />
-          )}
-          <span className="sr-only">Toggle sidebar</span>
-        </Button>
+            <Button
+              variant="ghost"
+              size="icon"
+              onClick={toggleSidebar}
+              className="text-text-subtle hover:text-text hidden h-7 w-7 cursor-pointer lg:flex"
+              title="Collapse sidebar (Ctrl+B)"
+            >
+              <PanelLeftClose className="h-4 w-4" />
+              <span className="sr-only">Collapse sidebar</span>
+            </Button>
+          </>
+        ) : (
+          <button
+            type="button"
+            onClick={toggleSidebar}
+            className="group hover:bg-surface-2 flex h-9 w-9 cursor-pointer items-center justify-center rounded-[var(--radius-md)] transition-colors"
+            title="Expand sidebar (Ctrl+B)"
+          >
+            <div className="bg-accent text-bg flex h-8 w-8 items-center justify-center rounded-[var(--radius-sm)] font-bold shadow-xs transition-transform group-hover:scale-105">
+              H
+            </div>
+            <span className="sr-only">Expand sidebar</span>
+          </button>
+        )}
       </div>
 
       {/* Navigation Items in Suspense Boundary */}
       <React.Suspense fallback={<div className="flex-1" />}>
-        <SidebarNav collapsed={sidebarCollapsed} />
+        <SidebarNav collapsed={isCollapsed} />
       </React.Suspense>
 
       {/* Sidebar Footer with Role Switcher */}
       <div className="border-border border-t p-2">
-        <RoleSwitcher isCollapsed={sidebarCollapsed} />
+        <RoleSwitcher isCollapsed={isCollapsed} />
       </div>
     </aside>
   );
