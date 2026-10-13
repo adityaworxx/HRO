@@ -52,61 +52,55 @@ export function ProfileDropdown() {
         </button>
       </DropdownMenuTrigger>
 
-      <DropdownMenuContent align="end" className="border-border bg-surface-1 w-56 p-1.5 shadow-xl">
+      <DropdownMenuContent align="end" className="w-60 p-1.5">
         {/* User Identity Header */}
-        <div className="px-2.5 py-2">
-          <p className="text-text-subtle text-[11px] font-medium">Signed in as</p>
-          <p className="text-text truncate text-[13px] font-semibold">{displayEmail}</p>
+        <div className="px-3 py-2">
+          <p className="text-text-subtle text-[12px] leading-[16px]">Signed in as</p>
+          <p className="text-text truncate text-[14px] leading-[20px] font-medium">{displayEmail}</p>
         </div>
 
         <DropdownMenuSeparator />
 
         {/* Roles / Teams Section */}
-        <DropdownMenuLabel className="text-text-subtle px-2.5 pt-1.5 pb-1 text-[11px] font-semibold tracking-wider uppercase">
-          Active Role
+        <DropdownMenuLabel>
+          Active role
         </DropdownMenuLabel>
 
         <DropdownMenuItem
           onClick={toggleRole}
-          className="flex cursor-pointer items-center justify-between px-2.5 py-1.5 text-[13px]"
+          className="justify-between"
         >
-          <div className="flex items-center gap-2">
-            <Shield className="text-accent h-3.5 w-3.5" />
+          <div className="flex items-center gap-3">
+            <Shield className="h-4 w-4 stroke-[1.75] text-text-subtle" />
             <span>Hiring Manager</span>
           </div>
-          {isManager && <Check className="text-accent h-3.5 w-3.5" />}
+          {isManager && <Check className="h-4 w-4 stroke-[1.75] text-text" />}
         </DropdownMenuItem>
 
         <DropdownMenuItem
           onClick={toggleRole}
-          className="flex cursor-pointer items-center justify-between px-2.5 py-1.5 text-[13px]"
+          className="justify-between"
         >
-          <div className="flex items-center gap-2">
-            <Shield className="text-accent h-3.5 w-3.5" />
+          <div className="flex items-center gap-3">
+            <Shield className="h-4 w-4 stroke-[1.75] text-text-subtle" />
             <span>HR Specialist</span>
           </div>
-          {!isManager && <Check className="text-accent h-3.5 w-3.5" />}
+          {!isManager && <Check className="h-4 w-4 stroke-[1.75] text-text" />}
         </DropdownMenuItem>
 
         <DropdownMenuSeparator />
 
         {/* Navigation Items */}
         <DropdownMenuItem asChild>
-          <Link
-            href="/settings"
-            className="flex cursor-pointer items-center gap-2 px-2.5 py-1.5 text-[13px]"
-          >
-            <Settings className="text-text-muted h-3.5 w-3.5" />
-            <span>Account & Settings</span>
+          <Link href="/settings">
+            <Settings className="h-4 w-4 stroke-[1.75] text-text-subtle" />
+            <span>Account & settings</span>
           </Link>
         </DropdownMenuItem>
 
-        <DropdownMenuItem
-          onClick={toggleRole}
-          className="flex cursor-pointer items-center gap-2 px-2.5 py-1.5 text-[13px]"
-        >
-          <ArrowLeftRight className="text-text-muted h-3.5 w-3.5" />
-          <span>Switch to {isManager ? 'HR View' : 'Manager View'}</span>
+        <DropdownMenuItem onClick={toggleRole}>
+          <ArrowLeftRight className="h-4 w-4 stroke-[1.75] text-text-subtle" />
+          <span>Switch to {isManager ? 'HR view' : 'Manager view'}</span>
         </DropdownMenuItem>
 
         <DropdownMenuSeparator />
@@ -114,10 +108,10 @@ export function ProfileDropdown() {
         {/* Logout */}
         <DropdownMenuItem
           onClick={() => toast.info('Demo session reset')}
-          className="text-danger focus:bg-danger/10 focus:text-danger flex cursor-pointer items-center gap-2 px-2.5 py-1.5 text-[13px]"
+          className="text-danger hover:bg-surface-2 focus:bg-surface-2 focus:text-danger"
         >
-          <LogOut className="h-3.5 w-3.5" />
-          <span>Logout</span>
+          <LogOut className="h-4 w-4 stroke-[1.75] text-danger" />
+          <span>Log out</span>
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>

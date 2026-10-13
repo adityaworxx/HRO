@@ -138,7 +138,7 @@ export function ManagerDashboard() {
       <div className="grid grid-cols-12 items-stretch gap-6">
         {/* ROW 1 LEFT (8 cols): Candidates Awaiting Review */}
         <div className="col-span-12 flex flex-col lg:col-span-8">
-          <div className="border-border bg-surface-1 flex h-full flex-col rounded-[var(--radius-lg)] border p-6">
+          <div className="border-border bg-surface-1 flex h-full flex-col rounded-[12px] border p-6">
             {/* Header Block: title, 4px subtitle, 16px to content */}
             <div className="mb-4 flex items-start justify-between">
               <div className="space-y-1">
@@ -163,9 +163,9 @@ export function ManagerDashboard() {
             <div className="flex-1">
               {isInitialLoading ? (
                 <div className="space-y-3 py-2">
-                  <Skeleton className="h-[64px] rounded-[var(--radius-md)]" />
-                  <Skeleton className="h-[64px] rounded-[var(--radius-md)]" />
-                  <Skeleton className="h-[64px] rounded-[var(--radius-md)]" />
+                  <Skeleton className="h-[64px] rounded-[8px]" />
+                  <Skeleton className="h-[64px] rounded-[8px]" />
+                  <Skeleton className="h-[64px] rounded-[8px]" />
                 </div>
               ) : pendingReviewCandidates.length === 0 ? (
                 <div className="flex h-48 flex-col items-center justify-center text-center">
@@ -180,7 +180,7 @@ export function ManagerDashboard() {
                   {pendingReviewCandidates.slice(0, 4).map((candidate) => (
                     <div
                       key={candidate.id}
-                      className="hover:bg-surface-2 -mx-3 flex flex-col justify-between gap-2.5 rounded-[var(--radius-md)] px-3 py-3 transition-colors sm:min-h-[64px] sm:flex-row sm:items-center"
+                      className="hover:bg-surface-2 -mx-3 flex flex-col justify-between gap-2.5 rounded-[8px] px-3 py-3 transition-colors sm:min-h-[64px] sm:flex-row sm:items-center"
                     >
                       {/* Candidate Avatar & Meta Info */}
                       <div className="flex min-w-0 items-start sm:items-center gap-3">
@@ -215,7 +215,7 @@ export function ManagerDashboard() {
                             <Button
                               variant="ghost"
                               size="sm"
-                              className="h-8 gap-1.5 rounded-[var(--radius-md)] px-2.5 text-[13px] font-medium"
+                              className="h-8 gap-1.5 rounded-[8px] px-2.5 text-[13px] font-medium"
                             >
                               <FileText className="h-4 w-4 stroke-[1.75]" />
                               <span>Profile</span>
@@ -295,7 +295,7 @@ export function ManagerDashboard() {
                           onClick={() =>
                             handleDecision(candidate.id, candidate.name, 'Shortlisted')
                           }
-                          className="border-border-strong text-text h-8 gap-1.5 rounded-[var(--radius-md)] px-2.5 text-[13px] font-medium"
+                          className="border-border-strong text-text h-8 gap-1.5 rounded-[8px] px-2.5 text-[13px] font-medium"
                           title="Shortlist candidate for interview"
                         >
                           <Check className="text-success h-4 w-4 stroke-[2]" />
@@ -307,7 +307,7 @@ export function ManagerDashboard() {
                           variant="ghost"
                           size="sm"
                           onClick={() => handleDecision(candidate.id, candidate.name, 'Rejected')}
-                          className="text-danger h-8 gap-1.5 rounded-[var(--radius-md)] px-2.5 text-[13px] font-medium hover:bg-[var(--badge-danger-bg)]"
+                          className="text-danger h-8 gap-1.5 rounded-[8px] px-2.5 text-[13px] font-medium hover:bg-[var(--badge-danger-bg)]"
                           title="Reject candidate"
                         >
                           <X className="h-4 w-4 stroke-[1.75]" />
@@ -337,7 +337,7 @@ export function ManagerDashboard() {
 
         {/* ROW 1 RIGHT (4 cols): Technical Interviews Scheduled */}
         <div className="col-span-12 flex flex-col lg:col-span-4">
-          <div className="border-border bg-surface-1 flex h-full flex-col rounded-[var(--radius-lg)] border p-6">
+          <div className="border-border bg-surface-1 flex h-full flex-col rounded-[12px] border p-6">
             {/* Header Block */}
             <div className="mb-4 space-y-1">
               <h2 className="text-text text-[16px] leading-[24px] font-semibold">
@@ -352,8 +352,8 @@ export function ManagerDashboard() {
             <div className="flex-1">
               {isInitialLoading ? (
                 <div className="space-y-3 py-2">
-                  <Skeleton className="h-[60px] rounded-[var(--radius-md)]" />
-                  <Skeleton className="h-[60px] rounded-[var(--radius-md)]" />
+                  <Skeleton className="h-[60px] rounded-[8px]" />
+                  <Skeleton className="h-[60px] rounded-[8px]" />
                 </div>
               ) : interviewCandidates.length === 0 ? (
                 <div className="flex h-48 flex-col items-center justify-center text-center">
@@ -372,7 +372,7 @@ export function ManagerDashboard() {
                     return (
                       <div
                         key={candidate.id}
-                        className="hover:bg-surface-2 -mx-3 flex flex-col justify-between gap-1.5 rounded-[var(--radius-md)] px-3 py-3 transition-colors"
+                        className="hover:bg-surface-2 -mx-3 flex flex-col justify-between gap-1.5 rounded-[8px] px-3 py-3 transition-colors"
                       >
                         <div className="flex items-center justify-between">
                           <span className="text-text truncate text-[14px] leading-[20px] font-semibold">
@@ -421,7 +421,7 @@ export function ManagerDashboard() {
 
         {/* ROW 2 LEFT (8 cols): Active Openings Overview */}
         <div className="col-span-12 flex flex-col lg:col-span-8">
-          <div className="border-border bg-surface-1 flex h-full flex-col rounded-[var(--radius-lg)] border p-6">
+          <div className="border-border bg-surface-1 flex h-full flex-col rounded-[12px] border p-6">
             {/* Header Block */}
             <div className="mb-4 flex items-start justify-between">
               <div className="space-y-1">
@@ -438,8 +438,8 @@ export function ManagerDashboard() {
             <div className="flex-1">
               {isInitialLoading ? (
                 <div className="space-y-3 py-2">
-                  <Skeleton className="h-[56px] rounded-[var(--radius-md)]" />
-                  <Skeleton className="h-[56px] rounded-[var(--radius-md)]" />
+                  <Skeleton className="h-[56px] rounded-[8px]" />
+                  <Skeleton className="h-[56px] rounded-[8px]" />
                 </div>
               ) : activeOpenings.length === 0 ? (
                 <div className="flex h-36 flex-col items-center justify-center text-center">
@@ -454,7 +454,7 @@ export function ManagerDashboard() {
                   {activeOpenings.slice(0, 3).map((opening) => (
                     <div
                       key={opening.id}
-                      className="hover:bg-surface-2 -mx-3 flex items-center justify-between rounded-[var(--radius-md)] px-3 py-3 transition-colors"
+                      className="hover:bg-surface-2 -mx-3 flex items-center justify-between rounded-[8px] px-3 py-3 transition-colors"
                     >
                       <div className="min-w-0 space-y-0.5 pr-4">
                         <div className="flex items-center gap-2">

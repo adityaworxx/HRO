@@ -3,6 +3,8 @@ import * as DialogPrimitive from '@radix-ui/react-dialog';
 import { X } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
+import { OVERLAY_BACKDROP_CLASS, OVERLAY_PANEL_CLASS } from './overlay-panel';
+
 export const Dialog = DialogPrimitive.Root;
 export const DialogTrigger = DialogPrimitive.Trigger;
 export const DialogPortal = DialogPrimitive.Portal;
@@ -14,10 +16,7 @@ export const DialogOverlay = React.forwardRef<
 >(({ className, ...props }, ref) => (
   <DialogPrimitive.Overlay
     ref={ref}
-    className={cn(
-      'data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 fixed inset-0 z-50 bg-black/60 backdrop-blur-[2px]',
-      className
-    )}
+    className={cn(OVERLAY_BACKDROP_CLASS, className)}
     {...props}
   />
 ));
@@ -32,14 +31,15 @@ export const DialogContent = React.forwardRef<
     <DialogPrimitive.Content
       ref={ref}
       className={cn(
-        'border-border bg-surface-1 data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 fixed top-[50%] left-[50%] z-50 grid w-full max-w-lg translate-x-[-50%] translate-y-[-50%] gap-4 rounded-[var(--radius-lg)] border p-6 shadow-xl duration-[150ms]',
+        OVERLAY_PANEL_CLASS,
+        'fixed top-[50%] left-[50%] z-50 grid w-full max-w-lg translate-x-[-50%] translate-y-[-50%] gap-4 p-6',
         className
       )}
       {...props}
     >
       {children}
-      <DialogPrimitive.Close className="text-text-muted hover:text-text focus:ring-accent absolute top-4 right-4 rounded-[var(--radius-sm)] p-1 transition-opacity focus:ring-2 focus:outline-none">
-        <X className="h-4 w-4" />
+      <DialogPrimitive.Close className="text-text-subtle hover:text-text focus:ring-accent absolute top-4 right-4 rounded-[var(--radius-sm)] p-1 transition-opacity focus:ring-2 focus:outline-none">
+        <X className="h-4 w-4 stroke-[1.75]" />
         <span className="sr-only">Close</span>
       </DialogPrimitive.Close>
     </DialogPrimitive.Content>

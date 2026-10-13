@@ -4,6 +4,8 @@ import { cva, type VariantProps } from 'class-variance-authority';
 import { X } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
+import { OVERLAY_BACKDROP_CLASS } from './overlay-panel';
+
 export const Sheet = SheetPrimitive.Root;
 export const SheetTrigger = SheetPrimitive.Trigger;
 export const SheetClose = SheetPrimitive.Close;
@@ -14,10 +16,7 @@ export const SheetOverlay = React.forwardRef<
   React.ComponentPropsWithoutRef<typeof SheetPrimitive.Overlay>
 >(({ className, ...props }, ref) => (
   <SheetPrimitive.Overlay
-    className={cn(
-      'data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 fixed inset-0 z-50 bg-black/60 backdrop-blur-[2px]',
-      className
-    )}
+    className={cn(OVERLAY_BACKDROP_CLASS, className)}
     {...props}
     ref={ref}
   />
@@ -25,7 +24,7 @@ export const SheetOverlay = React.forwardRef<
 SheetOverlay.displayName = SheetPrimitive.Overlay.displayName;
 
 const sheetVariants = cva(
-  'fixed z-50 gap-4 bg-surface-1 p-6 shadow-xl transition ease-in-out data-[state=closed]:duration-200 data-[state=open]:duration-300 data-[state=open]:animate-in data-[state=closed]:animate-out border-border',
+  'fixed z-50 gap-4 bg-surface-1 p-6 shadow-sm duration-140 data-[state=open]:animate-in data-[state=closed]:animate-out border-border',
   {
     variants: {
       side: {
@@ -56,8 +55,8 @@ export const SheetContent = React.forwardRef<
     <SheetOverlay />
     <SheetPrimitive.Content ref={ref} className={cn(sheetVariants({ side }), className)} {...props}>
       {children}
-      <SheetPrimitive.Close className="text-text-muted hover:text-text focus:ring-accent absolute top-4 right-4 rounded-[var(--radius-sm)] p-1 transition-opacity focus:ring-2 focus:outline-none">
-        <X className="h-4 w-4" />
+      <SheetPrimitive.Close className="text-text-subtle hover:text-text focus:ring-accent absolute top-4 right-4 rounded-[var(--radius-sm)] p-1 transition-opacity focus:ring-2 focus:outline-none">
+        <X className="h-4 w-4 stroke-[1.75]" />
         <span className="sr-only">Close</span>
       </SheetPrimitive.Close>
     </SheetPrimitive.Content>

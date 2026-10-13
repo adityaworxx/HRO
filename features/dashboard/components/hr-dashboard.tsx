@@ -131,7 +131,7 @@ export function HrDashboard() {
       <div className="grid grid-cols-12 items-stretch gap-6">
         {/* ROW 1 LEFT (8 cols): Openings Under Review */}
         <div className="col-span-12 flex flex-col lg:col-span-8">
-          <div className="border-border bg-surface-1 flex h-full flex-col rounded-[var(--radius-lg)] border p-6">
+          <div className="border-border bg-surface-1 flex h-full flex-col rounded-[12px] border p-6">
             {/* Header Block: title, 4px subtitle, 16px to content */}
             <div className="mb-4 flex items-start justify-between gap-4">
               <div>
@@ -162,7 +162,7 @@ export function HrDashboard() {
                   {openings.slice(0, 4).map((opening) => (
                     <div
                       key={opening.id}
-                      className="hover:bg-surface-2 flex flex-col justify-between gap-3 rounded-[var(--radius-md)] px-3 py-3.5 transition-colors sm:flex-row sm:items-center"
+                      className="hover:bg-surface-2 flex flex-col justify-between gap-3 rounded-[8px] px-3 py-3.5 transition-colors sm:flex-row sm:items-center"
                     >
                       <div className="min-w-0 flex-1 space-y-1">
                         <div className="flex flex-wrap items-center gap-2">
@@ -233,7 +233,7 @@ export function HrDashboard() {
 
         {/* ROW 1 RIGHT (4 cols): Onboarding Readiness */}
         <div className="col-span-12 flex flex-col lg:col-span-4">
-          <div className="border-border bg-surface-1 flex h-full flex-col rounded-[var(--radius-lg)] border p-6">
+          <div className="border-border bg-surface-1 flex h-full flex-col rounded-[12px] border p-6">
             {/* Header Block: title, 4px subtitle, 16px to content */}
             <div className="mb-4">
               <h2 className="text-text text-[16px] leading-[24px] font-semibold">
@@ -292,7 +292,7 @@ export function HrDashboard() {
 
         {/* ROW 2 LEFT (8 cols): Active Pipeline Throughput */}
         <div className="col-span-12 flex flex-col lg:col-span-8">
-          <div className="border-border bg-surface-1 flex h-full flex-col rounded-[var(--radius-lg)] border p-6">
+          <div className="border-border bg-surface-1 flex h-full flex-col rounded-[12px] border p-6">
             {/* Header Block: title, 4px subtitle, 16px to content */}
             <div className="mb-4">
               <h2 className="text-text text-[16px] leading-[24px] font-semibold">
@@ -306,7 +306,7 @@ export function HrDashboard() {
             {/* Content: 5 Stage Metric Blocks */}
             <div className="flex-1">
               <div className="grid grid-cols-2 gap-3 sm:grid-cols-5">
-                <div className="bg-surface-2/60 hover:bg-surface-2 flex flex-col items-center justify-center rounded-[var(--radius-md)] p-4 text-center transition-colors">
+                <div className="bg-surface-2/60 hover:bg-surface-2 flex flex-col items-center justify-center rounded-[8px] p-4 text-center transition-colors">
                   <span className="text-text-muted text-[12px] font-medium uppercase tracking-wider">
                     Sourced
                   </span>
@@ -314,7 +314,7 @@ export function HrDashboard() {
                     {stagesCount.sourced}
                   </p>
                 </div>
-                <div className="bg-surface-2/60 hover:bg-surface-2 flex flex-col items-center justify-center rounded-[var(--radius-md)] p-4 text-center transition-colors">
+                <div className="bg-surface-2/60 hover:bg-surface-2 flex flex-col items-center justify-center rounded-[8px] p-4 text-center transition-colors">
                   <span className="text-text-muted text-[12px] font-medium uppercase tracking-wider">
                     Shared w/ Mgr
                   </span>
@@ -322,7 +322,7 @@ export function HrDashboard() {
                     {stagesCount.shared}
                   </p>
                 </div>
-                <div className="bg-surface-2/60 hover:bg-surface-2 flex flex-col items-center justify-center rounded-[var(--radius-md)] p-4 text-center transition-colors">
+                <div className="bg-surface-2/60 hover:bg-surface-2 flex flex-col items-center justify-center rounded-[8px] p-4 text-center transition-colors">
                   <span className="text-text-muted text-[12px] font-medium uppercase tracking-wider">
                     Interview
                   </span>
@@ -330,7 +330,7 @@ export function HrDashboard() {
                     {stagesCount.interview}
                   </p>
                 </div>
-                <div className="bg-surface-2/60 hover:bg-surface-2 flex flex-col items-center justify-center rounded-[var(--radius-md)] p-4 text-center transition-colors">
+                <div className="bg-surface-2/60 hover:bg-surface-2 flex flex-col items-center justify-center rounded-[8px] p-4 text-center transition-colors">
                   <span className="text-text-muted text-[12px] font-medium uppercase tracking-wider">
                     Offer
                   </span>
@@ -338,7 +338,7 @@ export function HrDashboard() {
                     {stagesCount.offer}
                   </p>
                 </div>
-                <div className="bg-surface-2/60 hover:bg-surface-2 flex flex-col items-center justify-center rounded-[var(--radius-md)] p-4 text-center transition-colors">
+                <div className="bg-surface-2/60 hover:bg-surface-2 flex flex-col items-center justify-center rounded-[8px] p-4 text-center transition-colors">
                   <span className="text-text-muted text-[12px] font-medium uppercase tracking-wider">
                     Joined
                   </span>
@@ -364,7 +364,7 @@ export function HrDashboard() {
 
         {/* ROW 2 RIGHT (4 cols): Quick Actions */}
         <div className="col-span-12 flex flex-col lg:col-span-4">
-          <div className="border-border bg-surface-1 flex h-full flex-col rounded-[var(--radius-lg)] border p-6">
+          <div className="border-border bg-surface-1 flex h-full flex-col rounded-[12px] border p-6">
             {/* Header Block: title, 4px subtitle, 16px to content */}
             <div className="mb-4">
               <h2 className="text-text text-[16px] leading-[24px] font-semibold">Quick Actions</h2>
@@ -377,10 +377,10 @@ export function HrDashboard() {
             <div className="flex-1 space-y-1">
               <Link
                 href="/candidates"
-                className="hover:bg-surface-2 text-text flex h-10 items-center justify-between rounded-[var(--radius-md)] px-3 text-[14px] font-medium transition-colors"
+                className="hover:bg-surface-2 text-text flex h-10 items-center justify-between rounded-[8px] px-3 text-[14px] font-medium transition-colors"
               >
-                <div className="flex items-center gap-2.5">
-                  <Users className="text-text-muted h-4 w-4 stroke-[1.75]" />
+                <div className="flex items-center gap-3">
+                  <Users className="text-text-subtle h-4 w-4 stroke-[1.75]" />
                   <span>Candidate directory</span>
                 </div>
                 <ChevronRight className="text-text-subtle h-4 w-4 stroke-[1.75]" />
@@ -388,10 +388,10 @@ export function HrDashboard() {
 
               <Link
                 href="/pipeline"
-                className="hover:bg-surface-2 text-text flex h-10 items-center justify-between rounded-[var(--radius-md)] px-3 text-[14px] font-medium transition-colors"
+                className="hover:bg-surface-2 text-text flex h-10 items-center justify-between rounded-[8px] px-3 text-[14px] font-medium transition-colors"
               >
-                <div className="flex items-center gap-2.5">
-                  <GitPullRequest className="text-text-muted h-4 w-4 stroke-[1.75]" />
+                <div className="flex items-center gap-3">
+                  <GitPullRequest className="text-text-subtle h-4 w-4 stroke-[1.75]" />
                   <span>Pipeline Kanban board</span>
                 </div>
                 <ChevronRight className="text-text-subtle h-4 w-4 stroke-[1.75]" />
@@ -399,10 +399,10 @@ export function HrDashboard() {
 
               <Link
                 href="/reports"
-                className="hover:bg-surface-2 text-text flex h-10 items-center justify-between rounded-[var(--radius-md)] px-3 text-[14px] font-medium transition-colors"
+                className="hover:bg-surface-2 text-text flex h-10 items-center justify-between rounded-[8px] px-3 text-[14px] font-medium transition-colors"
               >
-                <div className="flex items-center gap-2.5">
-                  <BarChart3 className="text-text-muted h-4 w-4 stroke-[1.75]" />
+                <div className="flex items-center gap-3">
+                  <BarChart3 className="text-text-subtle h-4 w-4 stroke-[1.75]" />
                   <span>Headcount & reports</span>
                 </div>
                 <ChevronRight className="text-text-subtle h-4 w-4 stroke-[1.75]" />
@@ -424,7 +424,7 @@ export function HrDashboard() {
 
         {/* ROW 3 LEFT (8 cols): SLA Watchlist */}
         <div className="col-span-12 flex flex-col lg:col-span-8">
-          <div className="border-border bg-surface-1 flex h-full flex-col rounded-[var(--radius-lg)] border p-6">
+          <div className="border-border bg-surface-1 flex h-full flex-col rounded-[12px] border p-6">
             {/* Header Block: title, 4px subtitle, 16px to content */}
             <div className="mb-4 flex items-start justify-between gap-4">
               <div>
@@ -456,7 +456,7 @@ export function HrDashboard() {
                   {slaAlertCandidates.map((candidate) => (
                     <div
                       key={candidate.id}
-                      className="hover:bg-surface-2 flex flex-col justify-between gap-3 rounded-[var(--radius-md)] px-3 py-3 transition-colors sm:flex-row sm:items-center"
+                      className="hover:bg-surface-2 flex flex-col justify-between gap-3 rounded-[8px] px-3 py-3 transition-colors sm:flex-row sm:items-center"
                     >
                       <div className="flex items-center gap-3">
                         <div className="bg-surface-2 text-text-muted flex h-9 w-9 shrink-0 items-center justify-center rounded-full text-[13px] font-semibold">

@@ -102,7 +102,7 @@ export function DataTable<TData, TValue>({
       </div>
 
       {/* Table Container */}
-      <div className="border-border bg-surface-1 overflow-hidden rounded-[var(--radius-md)] border">
+      <div className="border-border bg-surface-1 overflow-hidden rounded-[12px] border">
         <div className="overflow-x-auto">
           <table className="w-full border-collapse text-left text-[13px]">
             <thead className="border-border bg-surface-2 text-text-muted sticky top-0 z-10 border-b select-none">
@@ -138,7 +138,7 @@ export function DataTable<TData, TValue>({
                     key={row.id}
                     onClick={() => onRowClick?.(row.original)}
                     className={cn(
-                      'hover:bg-surface-2/60 transition-colors',
+                      'hover:bg-surface-2 transition-colors',
                       onRowClick && 'cursor-pointer'
                     )}
                   >

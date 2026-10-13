@@ -1,6 +1,7 @@
 import * as React from 'react';
 import * as DropdownMenuPrimitive from '@radix-ui/react-dropdown-menu';
 import { cn } from '@/lib/utils';
+import { OVERLAY_PANEL_CLASS } from './overlay-panel';
 
 export const DropdownMenu = DropdownMenuPrimitive.Root;
 export const DropdownMenuTrigger = DropdownMenuPrimitive.Trigger;
@@ -18,7 +19,8 @@ export const DropdownMenuContent = React.forwardRef<
       ref={ref}
       sideOffset={sideOffset}
       className={cn(
-        'border-border bg-surface-3 text-text data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 z-50 min-w-[8rem] overflow-hidden rounded-[var(--radius-sm)] border p-1 shadow-lg',
+        OVERLAY_PANEL_CLASS,
+        'z-50 min-w-[8rem] p-1.5 space-y-0.5',
         className
       )}
       {...props}
@@ -36,7 +38,7 @@ export const DropdownMenuItem = React.forwardRef<
   <DropdownMenuPrimitive.Item
     ref={ref}
     className={cn(
-      'focus:bg-surface-2 focus:text-text relative flex cursor-pointer items-center rounded-[4px] px-2 py-1.5 text-[13px] transition-colors outline-none select-none data-[disabled]:pointer-events-none data-[disabled]:opacity-50',
+      'relative flex h-9 min-h-[36px] w-full cursor-pointer items-center gap-3 rounded-[8px] px-3 text-[14px] leading-[20px] font-medium text-text transition-colors outline-none select-none hover:bg-surface-2 focus:bg-surface-2 data-[highlighted]:bg-surface-2 data-[disabled]:pointer-events-none data-[disabled]:opacity-50 [&_svg]:h-4 [&_svg]:w-4 [&_svg]:stroke-[1.75] [&_svg]:text-text-subtle',
       inset && 'pl-8',
       className
     )}
@@ -51,7 +53,7 @@ export const DropdownMenuSeparator = React.forwardRef<
 >(({ className, ...props }, ref) => (
   <DropdownMenuPrimitive.Separator
     ref={ref}
-    className={cn('bg-border -mx-1 my-1 h-[1px]', className)}
+    className={cn('bg-border -mx-1.5 my-1 h-[1px]', className)}
     {...props}
   />
 ));
@@ -66,7 +68,7 @@ export const DropdownMenuLabel = React.forwardRef<
   <DropdownMenuPrimitive.Label
     ref={ref}
     className={cn(
-      'text-text-muted px-2 py-1.5 text-[11px] font-semibold tracking-wider uppercase',
+      'text-text-subtle px-3 py-2 text-[12px] leading-[16px] font-medium select-none',
       inset && 'pl-8',
       className
     )}
