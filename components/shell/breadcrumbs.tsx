@@ -1,56 +1,39 @@
 'use client';
 
 import * as React from 'react';
-import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { ChevronRight, Home } from 'lucide-react';
+
+const ROUTE_TITLES: Record<string, string> = {
+  '/': 'Dashboard',
+  '/openings': 'Openings',
+  '/openings/new': 'New Opening',
+  '/candidates': 'Candidates',
+  '/pipeline': 'Pipeline',
+  '/shortlist': 'Shortlist Review',
+  '/interviews': 'Interviews',
+  '/onboarding': 'Onboarding',
+  '/reports': 'Reports',
+  '/settings': 'Settings',
+};
 
 export function Breadcrumbs() {
   const pathname = usePathname();
 
-  const segments = React.useMemo(() => {
-    if (!pathname || pathname === '/') return [];
-    return pathname
-      .split('/')
-      .filter(Boolean)
-      .map((segment, index, array) => {
-        const href = `/${array.slice(0, index + 1).join('/')}`;
-        const isUuid = /^[0-9a-f-]{10,}$/i.test(segment);
-        const title = isUuid
-          ? 'Details'
-          : segment.replace(/-/g, ' ').replace(/\b\w/g, (c) => c.toUpperCase());
-        return { title, href };
-      });
+  const title = React.useMemo(() => {
+    if (!pathname || pathname === '/') return 'Dashboard';
+    if (ROUTE_TITLES[pathname]) return ROUTE_TITLES[pathname];
+    if (pathname.endsWith('/edit')) return 'Edit Opening';
+    if (pathname.startsWith('/openings/')) return 'Opening Details';
+
+    const segments = pathname.split('/').filter(Boolean);
+    const last = segments[segments.length - 1] || 'Dashboard';
+    return last.replace(/-/g, ' ').replace(/\b\w/g, (c) => c.toUpperCase());
   }, [pathname]);
 
   return (
-    <nav aria-label="Breadcrumbs" className="text-text-muted flex items-center text-[13px]">
-      <Link
-        href="/"
-        className="hover:text-text text-text-subtle flex items-center gap-1 transition-colors"
-      >
-        <Home className="h-3.5 w-3.5" />
-        <span className="sr-only">Home</span>
-      </Link>
-
-      {segments.map((segment, index) => {
-        const isLast = index === segments.length - 1;
-        return (
-          <React.Fragment key={segment.href}>
-            <ChevronRight className="text-text-subtle mx-1.5 h-3.5 w-3.5 shrink-0" />
-            {isLast ? (
-              <span className="text-text max-w-[200px] truncate font-medium">{segment.title}</span>
-            ) : (
-              <Link
-                href={segment.href}
-                className="hover:text-text max-w-[140px] truncate transition-colors"
-              >
-                {segment.title}
-              </Link>
-            )}
-          </React.Fragment>
-        );
-      })}
-    </nav>
+    <span className="text-text text-[15px] font-semibold tracking-tight select-none">
+      {title}
+    </span>
   );
 }
+
