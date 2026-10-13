@@ -4,7 +4,6 @@ import * as React from 'react';
 import { useUiStore } from '@/lib/store';
 import { ArrowLeftRight } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { toast } from 'sonner';
 
 export function RoleSwitcher({ isCollapsed = false }: { isCollapsed?: boolean }) {
   const { role, setRole } = useUiStore();
@@ -12,7 +11,6 @@ export function RoleSwitcher({ isCollapsed = false }: { isCollapsed?: boolean })
   const handleToggle = () => {
     const nextRole = role === 'manager' ? 'hr' : 'manager';
     setRole(nextRole);
-    toast.info(`Switched role to: ${nextRole === 'manager' ? 'Hiring Manager' : 'HR Specialist'}`);
   };
 
   const isManager = role === 'manager';

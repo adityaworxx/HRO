@@ -14,7 +14,6 @@ import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import { useCurrentUser } from '@/features/auth/hooks';
 import { useUiStore } from '@/lib/store';
 import { Check, Settings, LogOut, ArrowLeftRight, Shield } from 'lucide-react';
-import { toast } from 'sonner';
 
 export function ProfileDropdown() {
   const { data: user } = useCurrentUser();
@@ -32,7 +31,6 @@ export function ProfileDropdown() {
   const toggleRole = () => {
     const nextRole = role === 'manager' ? 'hr' : 'manager';
     setRole(nextRole);
-    toast.info(`Switched role to: ${nextRole === 'manager' ? 'Hiring Manager' : 'HR Specialist'}`);
   };
 
   return (
@@ -107,7 +105,6 @@ export function ProfileDropdown() {
 
         {/* Logout */}
         <DropdownMenuItem
-          onClick={() => toast.info('Demo session reset')}
           className="text-danger hover:bg-surface-2 focus:bg-surface-2 focus:text-danger"
         >
           <LogOut className="h-4 w-4 stroke-[1.75] text-danger" />

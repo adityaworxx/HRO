@@ -15,7 +15,6 @@ import {
   DropdownMenuContent,
 } from '@/components/ui/dropdown-menu';
 import { Users, Briefcase, Bell, CheckCircle2 } from 'lucide-react';
-import { toast } from 'sonner';
 import { cn } from '@/lib/utils';
 
 export function NotificationsPopover() {
@@ -28,11 +27,7 @@ export function NotificationsPopover() {
 
   const handleMarkAll = (e: React.MouseEvent) => {
     e.stopPropagation();
-    markAllAsRead.mutate(role, {
-      onSuccess: () => {
-        toast.success('All marked as read');
-      },
-    });
+    markAllAsRead.mutate(role);
   };
 
   const getNotificationIcon = (title: string) => {
