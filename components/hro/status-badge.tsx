@@ -9,6 +9,14 @@ export interface StatusBadgeProps {
   className?: string;
 }
 
+const DOT_COLOR_MAP: Record<string, string> = {
+  info: 'bg-info',
+  warning: 'bg-warning',
+  success: 'bg-success',
+  danger: 'bg-danger',
+  neutral: 'bg-text-subtle',
+};
+
 export function StatusBadge({ status, type = 'opening', className }: StatusBadgeProps) {
   let config: StatusConfig | undefined;
 
@@ -20,24 +28,16 @@ export function StatusBadge({ status, type = 'opening', className }: StatusBadge
 
   const label = config?.label ?? status;
   const token = config?.token ?? 'neutral';
-
-  const tokenClass =
-    {
-      neutral: 'border-border/80 bg-surface-2 text-text-muted',
-      info: 'border-border/80 bg-surface-2 text-text-muted',
-      warning: 'border-border/80 bg-surface-2 text-text-muted',
-      success: 'border-border/80 bg-surface-2 text-success',
-      danger: 'border-border/80 bg-surface-2 text-danger',
-    }[token] ?? 'border-border/80 bg-surface-2 text-text-muted';
+  const dotColor = DOT_COLOR_MAP[token] ?? 'bg-text-subtle';
 
   return (
     <span
       className={cn(
-        'inline-flex h-[22px] items-center rounded-[6px] border px-2 text-[12px] leading-none font-medium select-none',
-        tokenClass,
+        'inline-flex items-center gap-2 text-[13px] leading-[20px] font-normal text-text-muted select-none',
         className
       )}
     >
+      <span className={cn('h-1.5 w-1.5 shrink-0 rounded-full', dotColor)} />
       <span className="truncate">{label}</span>
     </span>
   );

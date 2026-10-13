@@ -7,6 +7,7 @@ import { useCandidates, useRecordManagerDecision } from '@/features/candidates/h
 import { StatCard } from '@/components/hro/stat-card';
 import { StatusBadge } from '@/components/hro/status-badge';
 import { MetaSeparator } from '@/components/hro/meta-separator';
+import { ActiveOpeningsCard } from '@/components/hro/active-openings-card';
 import { Button } from '@/components/ui/button';
 import { Skeleton } from '@/components/ui/skeleton';
 import {
@@ -138,40 +139,38 @@ export function ManagerDashboard() {
       <div className="grid grid-cols-12 items-stretch gap-6">
         {/* ROW 1 LEFT (8 cols): Candidates Awaiting Review */}
         <div className="col-span-12 flex flex-col lg:col-span-8">
-          <div className="border-border bg-surface-1 flex h-full flex-col rounded-[12px] border p-6">
-            {/* Header Block: title, 4px subtitle, 16px to content */}
-            <div className="mb-4 flex items-start justify-between">
-              <div className="space-y-1">
-                <div className="flex items-center gap-2.5">
-                  <h2 className="text-text text-[16px] leading-[24px] font-semibold">
-                    Candidates Awaiting Your Review
-                  </h2>
-                  {pendingReviewCandidates.length > 0 && (
-                    <span className="bg-surface-2 text-text-muted border-border/60 rounded-full border px-2 py-0.5 text-[12px] leading-[16px] font-medium select-none">
-                      {pendingReviewCandidates.length} Pending
-                    </span>
-                  )}
-                </div>
-                <p className="text-text-muted text-[13px] leading-[20px]">
-                  Profiles shared by talent acquisition. Evaluate credentials and advance or reject
-                  candidates.
+          <div className="border border-border bg-surface-1 flex h-full flex-col rounded-[12px] p-5">
+            {/* Header: title + subtitle left, text link right */}
+            <div className="flex items-start justify-between gap-4 pb-4">
+              <div>
+                <h2 className="text-text text-[16px] leading-[24px] font-medium tracking-[-0.01em]">
+                  Candidates Awaiting Your Review
+                </h2>
+                <p className="text-text-muted mt-[2px] text-[13px] leading-[20px]">
+                  {pendingReviewCandidates.length} candidate {pendingReviewCandidates.length === 1 ? 'profile' : 'profiles'} awaiting review
                 </p>
               </div>
+              <Link
+                href="/shortlist"
+                className="inline-flex items-center gap-1 text-[13px] leading-[20px] font-medium text-text-muted hover:text-text transition-colors shrink-0"
+              >
+                <span>View all</span>
+                <ChevronRight className="h-3.5 w-3.5" />
+              </Link>
             </div>
 
             {/* Content Area: flex-1 */}
             <div className="flex-1">
               {isInitialLoading ? (
                 <div className="space-y-3 py-2">
-                  <Skeleton className="h-[64px] rounded-[8px]" />
-                  <Skeleton className="h-[64px] rounded-[8px]" />
-                  <Skeleton className="h-[64px] rounded-[8px]" />
+                  <Skeleton className="h-[56px] rounded-[8px]" />
+                  <Skeleton className="h-[56px] rounded-[8px]" />
+                  <Skeleton className="h-[56px] rounded-[8px]" />
                 </div>
               ) : pendingReviewCandidates.length === 0 ? (
-                <div className="flex h-48 flex-col items-center justify-center text-center">
-                  <CheckCircle2 className="text-success mb-2 h-7 w-7 stroke-[1.75]" />
+                <div className="flex h-40 flex-col items-center justify-center text-center">
                   <p className="text-text text-[14px] font-medium">All caught up</p>
-                  <p className="text-text-subtle text-[12px]">
+                  <p className="text-text-subtle text-[12px] mt-1">
                     No candidate profiles currently awaiting your review.
                   </p>
                 </div>
@@ -180,44 +179,43 @@ export function ManagerDashboard() {
                   {pendingReviewCandidates.slice(0, 4).map((candidate) => (
                     <div
                       key={candidate.id}
-                      className="hover:bg-surface-2 -mx-3 flex flex-col justify-between gap-2.5 rounded-[8px] px-3 py-3 transition-colors sm:min-h-[64px] sm:flex-row sm:items-center"
+                      className="group -mx-2 flex flex-col justify-between gap-2.5 rounded-[8px] px-2 py-3 transition-colors hover:bg-surface-2 sm:min-h-[56px] sm:flex-row sm:items-center"
                     >
                       {/* Candidate Avatar & Meta Info */}
                       <div className="flex min-w-0 items-start sm:items-center gap-3">
-                        <div className="bg-surface-2 text-text flex h-9 w-9 shrink-0 items-center justify-center rounded-full text-[13px] font-semibold select-none mt-0.5 sm:mt-0">
+                        <div className="bg-surface-2 text-text flex h-8 w-8 shrink-0 items-center justify-center rounded-full text-[12px] font-medium select-none mt-0.5 sm:mt-0">
                           {candidate.name.slice(0, 2).toUpperCase()}
                         </div>
                         <div className="min-w-0 space-y-0.5">
                           <div className="flex items-center gap-2 flex-wrap">
-                            <span className="text-text text-[14px] leading-[20px] font-semibold">
+                            <span className="text-text text-[14px] leading-[20px] font-medium">
                               {candidate.name}
                             </span>
                             <span className="text-text-subtle text-[12px] leading-[16px]">
                               Shared 2d ago
                             </span>
                           </div>
-                          <div className="text-text-muted flex items-center text-[13px] leading-[20px]">
-                            <Building2 className="text-text-subtle mr-1.5 h-3.5 w-3.5 shrink-0 stroke-[1.75]" />
+                          <div className="text-text-muted flex items-center text-[13px] leading-[20px] truncate">
                             <span className="truncate">
                               {candidate.currentRole} at {candidate.currentCompany}
                             </span>
                             <MetaSeparator />
-                            <span className="shrink-0">{candidate.experienceYears}y exp</span>
+                            <span className="shrink-0 tabular-nums">{candidate.experienceYears}y exp</span>
                           </div>
                         </div>
                       </div>
 
-                      {/* Right-aligned Actions: 32px height, 8px gap */}
-                      <div className="flex shrink-0 items-center gap-2 pl-12 sm:pl-0">
+                      {/* Right-aligned Actions: ghost buttons that appear on hover */}
+                      <div className="flex shrink-0 items-center gap-1 pl-11 sm:pl-0 opacity-100 sm:opacity-0 group-hover:opacity-100 focus-within:opacity-100 transition-opacity">
                         {/* Profile Sheet Drawer */}
                         <Sheet>
                           <SheetTrigger asChild>
                             <Button
                               variant="ghost"
                               size="sm"
-                              className="h-8 gap-1.5 rounded-[8px] px-2.5 text-[13px] font-medium"
+                              className="h-8 gap-1.5 rounded-[6px] px-2 text-[13px] font-medium text-text-muted hover:text-text"
                             >
-                              <FileText className="h-4 w-4 stroke-[1.75]" />
+                              <FileText className="h-3.5 w-3.5" />
                               <span>Profile</span>
                             </Button>
                           </SheetTrigger>
@@ -229,24 +227,22 @@ export function ManagerDashboard() {
                               </SheetDescription>
                             </SheetHeader>
                             <div className="space-y-4 py-4 text-[13px]">
-                              <div className="border-border bg-surface-2 space-y-2 rounded-[var(--radius-md)] border p-3.5">
+                              <div className="border border-border bg-surface-2 space-y-2 rounded-[var(--radius-md)] p-3.5">
                                 <div className="text-text-muted flex items-center gap-2">
-                                  <Mail className="h-4 w-4 stroke-[1.75]" />
+                                  <Mail className="h-4 w-4" />
                                   <span>{candidate.email}</span>
                                 </div>
                                 <div className="text-text-muted flex items-center gap-2">
-                                  <PhoneCall className="h-4 w-4 stroke-[1.75]" />
+                                  <PhoneCall className="h-4 w-4" />
                                   <span>{candidate.phone}</span>
                                 </div>
                                 <div className="text-text-muted flex items-center gap-2">
-                                  <Briefcase className="h-4 w-4 stroke-[1.75]" />
                                   <span>
                                     Role: {candidate.currentRole} ({candidate.currentCompany})
                                   </span>
                                 </div>
                                 <div className="text-text-muted flex items-center gap-2">
-                                  <DollarSign className="h-4 w-4 stroke-[1.75]" />
-                                  <span>
+                                  <span className="tabular-nums">
                                     Expected: {formatCtc(candidate.expectedCtc)} (Notice:{' '}
                                     {candidate.noticePeriod})
                                   </span>
@@ -255,8 +251,8 @@ export function ManagerDashboard() {
 
                               {candidate.hrNotes && (
                                 <div className="space-y-1.5">
-                                  <h4 className="text-text font-semibold">HR Screening Notes</h4>
-                                  <p className="border-border bg-surface-2 text-text-muted rounded-[var(--radius-md)] border p-3 leading-relaxed">
+                                  <h4 className="text-text font-medium">HR Screening Notes</h4>
+                                  <p className="border border-border bg-surface-2 text-text-muted rounded-[var(--radius-md)] p-3 leading-relaxed">
                                     {candidate.hrNotes}
                                   </p>
                                 </div>
@@ -270,7 +266,7 @@ export function ManagerDashboard() {
                                     handleDecision(candidate.id, candidate.name, 'Shortlisted')
                                   }
                                 >
-                                  <Check className="h-4 w-4 stroke-[2]" />
+                                  <Check className="h-4 w-4" />
                                   <span>Shortlist</span>
                                 </Button>
                                 <Button
@@ -280,7 +276,7 @@ export function ManagerDashboard() {
                                     handleDecision(candidate.id, candidate.name, 'Rejected')
                                   }
                                 >
-                                  <X className="h-4 w-4 stroke-[2]" />
+                                  <X className="h-4 w-4" />
                                   <span>Reject</span>
                                 </Button>
                               </div>
@@ -290,15 +286,15 @@ export function ManagerDashboard() {
 
                         {/* Shortlist Action */}
                         <Button
-                          variant="secondary"
+                          variant="ghost"
                           size="sm"
                           onClick={() =>
                             handleDecision(candidate.id, candidate.name, 'Shortlisted')
                           }
-                          className="border-border-strong text-text h-8 gap-1.5 rounded-[8px] px-2.5 text-[13px] font-medium"
+                          className="text-text-muted hover:text-text h-8 gap-1 rounded-[6px] px-2 text-[13px] font-medium"
                           title="Shortlist candidate for interview"
                         >
-                          <Check className="text-success h-4 w-4 stroke-[2]" />
+                          <Check className="text-success h-3.5 w-3.5" />
                           <span>Shortlist</span>
                         </Button>
 
@@ -307,10 +303,10 @@ export function ManagerDashboard() {
                           variant="ghost"
                           size="sm"
                           onClick={() => handleDecision(candidate.id, candidate.name, 'Rejected')}
-                          className="text-danger h-8 gap-1.5 rounded-[8px] px-2.5 text-[13px] font-medium hover:bg-[var(--badge-danger-bg)]"
+                          className="text-text-muted hover:text-danger h-8 gap-1 rounded-[6px] px-2 text-[13px] font-medium"
                           title="Reject candidate"
                         >
-                          <X className="h-4 w-4 stroke-[1.75]" />
+                          <X className="h-3.5 w-3.5" />
                           <span>Reject</span>
                         </Button>
                       </div>
@@ -319,47 +315,42 @@ export function ManagerDashboard() {
                 </div>
               )}
             </div>
-
-            {/* Pinned Footer Link */}
-            {pendingReviewCandidates.length > 4 && (
-              <div className="border-border mt-auto border-t pt-4">
-                <Link
-                  href="/shortlist"
-                  className="text-accent inline-flex items-center gap-1.5 text-[13px] font-medium hover:underline"
-                >
-                  <span>View all {pendingReviewCandidates.length} in Shortlist</span>
-                  <ArrowRight className="h-3.5 w-3.5 stroke-[1.75]" />
-                </Link>
-              </div>
-            )}
           </div>
         </div>
 
         {/* ROW 1 RIGHT (4 cols): Technical Interviews Scheduled */}
         <div className="col-span-12 flex flex-col lg:col-span-4">
-          <div className="border-border bg-surface-1 flex h-full flex-col rounded-[12px] border p-6">
-            {/* Header Block */}
-            <div className="mb-4 space-y-1">
-              <h2 className="text-text text-[16px] leading-[24px] font-semibold">
-                Technical Interviews
-              </h2>
-              <p className="text-text-muted text-[13px] leading-[20px]">
-                Candidates in the technical evaluation round.
-              </p>
+          <div className="border border-border bg-surface-1 flex h-full flex-col rounded-[12px] p-5">
+            {/* Header: title + subtitle left, text link right */}
+            <div className="flex items-start justify-between gap-4 pb-4">
+              <div>
+                <h2 className="text-text text-[16px] leading-[24px] font-medium tracking-[-0.01em]">
+                  Technical Interviews
+                </h2>
+                <p className="text-text-muted mt-[2px] text-[13px] leading-[20px]">
+                  {interviewCandidates.length} scheduled evaluation
+                </p>
+              </div>
+              <Link
+                href="/interviews"
+                className="inline-flex items-center gap-1 text-[13px] leading-[20px] font-medium text-text-muted hover:text-text transition-colors shrink-0"
+              >
+                <span>View all</span>
+                <ChevronRight className="h-3.5 w-3.5" />
+              </Link>
             </div>
 
             {/* Content Area */}
             <div className="flex-1">
               {isInitialLoading ? (
                 <div className="space-y-3 py-2">
-                  <Skeleton className="h-[60px] rounded-[8px]" />
-                  <Skeleton className="h-[60px] rounded-[8px]" />
+                  <Skeleton className="h-[56px] rounded-[8px]" />
+                  <Skeleton className="h-[56px] rounded-[8px]" />
                 </div>
               ) : interviewCandidates.length === 0 ? (
-                <div className="flex h-48 flex-col items-center justify-center text-center">
-                  <Clock className="text-text-subtle mb-2 h-7 w-7 stroke-[1.75]" />
+                <div className="flex h-40 flex-col items-center justify-center text-center">
                   <p className="text-text text-[14px] font-medium">No interviews scheduled</p>
-                  <p className="text-text-subtle text-[12px]">
+                  <p className="text-text-subtle text-[12px] mt-1">
                     Shortlist candidates to begin scheduling technical discussions.
                   </p>
                 </div>
@@ -372,21 +363,20 @@ export function ManagerDashboard() {
                     return (
                       <div
                         key={candidate.id}
-                        className="hover:bg-surface-2 -mx-3 flex flex-col justify-between gap-1.5 rounded-[8px] px-3 py-3 transition-colors"
+                        className="hover:bg-surface-2 -mx-2 flex flex-col justify-between gap-1.5 rounded-[8px] px-2 py-3 transition-colors"
                       >
                         <div className="flex items-center justify-between">
-                          <span className="text-text truncate text-[14px] leading-[20px] font-semibold">
+                          <span className="text-text truncate text-[14px] leading-[20px] font-medium">
                             {candidate.name}
                           </span>
-                          <span className="bg-surface-2 text-text-muted border-border/60 inline-flex h-[22px] items-center gap-1 rounded-full border px-2 text-[12px] leading-[16px] font-medium">
-                            <ModeIcon className="h-3.5 w-3.5 stroke-[1.75]" />
+                          <span className="bg-surface-2 text-text-muted inline-flex h-[20px] items-center gap-1 rounded-[4px] px-1.5 text-[12px] leading-none font-medium select-none">
+                            <ModeIcon className="h-3 w-3" />
                             <span>{mode}</span>
                           </span>
                         </div>
 
                         <div className="text-text-muted flex items-center truncate text-[13px] leading-[20px]">
-                          <Clock className="text-text-subtle mr-1.5 h-3.5 w-3.5 shrink-0 stroke-[1.75]" />
-                          <span className="truncate">
+                          <span className="truncate tabular-nums">
                             {candidate.interviewDate
                               ? formatInterviewDateTime(candidate.interviewDate)
                               : 'Pending slot'}
@@ -400,123 +390,28 @@ export function ManagerDashboard() {
                 </div>
               )}
             </div>
-
-            {/* Pinned Footer Link */}
-            <div className="border-border mt-auto flex items-center justify-between border-t pt-4 text-[13px]">
-              <Link
-                href="/pipeline"
-                className="text-accent inline-flex items-center gap-1.5 font-medium hover:underline"
-              >
-                <span>View pipeline</span>
-                <ArrowRight className="h-3.5 w-3.5 stroke-[1.75]" />
-              </Link>
-              {interviewCandidates.length > 3 && (
-                <Link href="/interviews" className="text-text-muted hover:text-text font-medium">
-                  +{interviewCandidates.length - 3} more
-                </Link>
-              )}
-            </div>
           </div>
         </div>
 
-        {/* ROW 2 LEFT (8 cols): Active Openings Overview */}
-        <div className="col-span-12 flex flex-col lg:col-span-8">
-          <div className="border-border bg-surface-1 flex h-full flex-col rounded-[12px] border p-6">
-            {/* Header Block */}
-            <div className="mb-4 flex items-start justify-between">
-              <div className="space-y-1">
-                <h2 className="text-text text-[16px] leading-[24px] font-semibold">
-                  Active Openings
-                </h2>
-                <p className="text-text-muted text-[13px] leading-[20px]">
-                  Positions currently open and actively hiring in your department.
-                </p>
-              </div>
-            </div>
-
-            {/* Content Area */}
-            <div className="flex-1">
-              {isInitialLoading ? (
-                <div className="space-y-3 py-2">
-                  <Skeleton className="h-[56px] rounded-[8px]" />
-                  <Skeleton className="h-[56px] rounded-[8px]" />
-                </div>
-              ) : activeOpenings.length === 0 ? (
-                <div className="flex h-36 flex-col items-center justify-center text-center">
-                  <Briefcase className="text-text-subtle mb-2 h-7 w-7 stroke-[1.75]" />
-                  <p className="text-text text-[14px] font-medium">No active openings</p>
-                  <p className="text-text-subtle text-[12px]">
-                    Create a new opening to begin recruiting.
-                  </p>
-                </div>
-              ) : (
-                <div className="divide-border divide-y">
-                  {activeOpenings.slice(0, 3).map((opening) => (
-                    <div
-                      key={opening.id}
-                      className="hover:bg-surface-2 -mx-3 flex items-center justify-between rounded-[8px] px-3 py-3 transition-colors"
-                    >
-                      <div className="min-w-0 space-y-0.5 pr-4">
-                        <div className="flex items-center gap-2">
-                          <Link
-                            href={`/openings/${opening.id}`}
-                            className="text-text hover:text-accent truncate text-[14px] leading-[20px] font-semibold transition-colors"
-                          >
-                            {opening.title}
-                          </Link>
-                          <StatusBadge status={opening.status} type="opening" />
-                        </div>
-                        <div className="text-text-muted flex items-center truncate text-[13px] leading-[20px]">
-                          <span>{opening.department}</span>
-                          <MetaSeparator />
-                          <span>{opening.location}</span>
-                          <MetaSeparator />
-                          <span>
-                            {opening.headcount} opening{opening.headcount > 1 ? 's' : ''}
-                          </span>
-                        </div>
-                      </div>
-
-                      <Button
-                        asChild
-                        variant="ghost"
-                        size="sm"
-                        className="h-8 shrink-0 gap-1.5 rounded-[var(--radius-md)] px-2.5 text-[13px] font-medium"
-                      >
-                        <Link href={`/openings/${opening.id}`}>
-                          <span>Manage</span>
-                          <ArrowRight className="h-3.5 w-3.5 stroke-[1.75]" />
-                        </Link>
-                      </Button>
-                    </div>
-                  ))}
-                </div>
-              )}
-            </div>
-
-            {/* Pinned Footer Link */}
-            {activeOpenings.length > 3 && (
-              <div className="border-border mt-auto border-t pt-4">
-                <Link
-                  href="/openings"
-                  className="text-accent inline-flex items-center gap-1.5 text-[13px] font-medium hover:underline"
-                >
-                  <span>View all {activeOpenings.length} openings</span>
-                  <ArrowRight className="h-3.5 w-3.5 stroke-[1.75]" />
-                </Link>
-              </div>
-            )}
-          </div>
+        {/* ROW 2: Active Openings (12 cols full-width table card) */}
+        <div className="col-span-12 flex flex-col">
+          <ActiveOpeningsCard
+            openings={activeOpenings}
+            candidates={candidates}
+            title="Active Openings"
+            subtitle={`${activeOpenings.length} active positions in your department`}
+            viewAllHref="/openings"
+            isLoading={isInitialLoading}
+          />
         </div>
 
-        {/* ROW 2 RIGHT (4 cols): Quick Actions */}
+        {/* ROW 3: Quick Actions */}
         <div className="col-span-12 flex flex-col lg:col-span-4">
-          <div className="border-border bg-surface-1 flex h-full flex-col rounded-[var(--radius-lg)] border p-6">
-            {/* Header Block: NO icon in card title per Rule 8 */}
-            <div className="mb-4 space-y-1">
-              <h2 className="text-text text-[16px] leading-[24px] font-semibold">Quick Actions</h2>
-              <p className="text-text-muted text-[13px] leading-[20px]">
-                Direct links to high-frequency hiring workflows.
+          <div className="border border-border bg-surface-1 flex h-full flex-col rounded-[12px] p-5">
+            <div className="pb-4">
+              <h2 className="text-text text-[16px] leading-[24px] font-medium tracking-[-0.01em]">Quick Actions</h2>
+              <p className="text-text-muted mt-[2px] text-[13px] leading-[20px]">
+                Direct links to high-frequency hiring workflows
               </p>
             </div>
 
