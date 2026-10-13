@@ -1,0 +1,66 @@
+/* HRO Semantic Design Tokens
+   Strict adherence to PRD Part B Section 2.1 & 2.2.
+   Zero raw hex/rgb/hsl should exist outside this file.
+*/
+
+:root,
+[data-theme='dark'] {
+  /* Dark Theme (Default) */
+  --bg: #0f1115;
+  --surface-1: #151820;
+  --surface-2: #1b1f29;
+  --surface-3: #232836;
+  --border: #262b38;
+  --border-strong: #343b4d;
+  --text: #e6e8ee;
+  --text-muted: #a3a9b8;
+  --text-subtle: #6f7686;
+  --accent: #5b8def;
+  --accent-subtle: #1c2740;
+  --success: #3fb68b;
+  --warning: #e0a93b;
+  --danger: #e5584f;
+  --info: #5b8def;
+
+  /* Status Badges Tint Backgrounds (~14% opacity equivalents) */
+  --badge-info-bg: rgba(91, 141, 239, 0.14);
+  --badge-warning-bg: rgba(224, 169, 59, 0.14);
+  --badge-success-bg: rgba(63, 182, 139, 0.14);
+  --badge-danger-bg: rgba(229, 88, 79, 0.14);
+  --badge-neutral-bg: rgba(163, 169, 184, 0.14);
+
+  /* Radius Scale */
+  --radius-sm: 6px;
+  --radius-md: 8px;
+  --radius-lg: 12px;
+
+  /* Transitions */
+  --transition-fast: 120ms cubic-bezier(0.4, 0, 0.2, 1);
+  --transition-normal: 180ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+[data-theme='light'] {
+  /* Light Theme */
+  --bg: #f6f7f9;
+  --surface-1: #ffffff;
+  --surface-2: #f0f2f5;
+  --surface-3: #e8ebf0;
+  --border: #e1e4ea;
+  --border-strong: #cbd0da;
+  --text: #16181d;
+  --text-muted: #4b5262;
+  --text-subtle: #7a8194;
+  --accent: #3d6fdb;
+  --accent-subtle: #e6eefc;
+  --success: #1f8f68;
+  --warning: #b7791f;
+  --danger: #c93d35;
+  --info: #3d6fdb;
+
+  /* Status Badges Tint Backgrounds (~14% opacity equivalents) */
+  --badge-info-bg: rgba(61, 111, 219, 0.14);
+  --badge-warning-bg: rgba(183, 121, 31, 0.14);
+  --badge-success-bg: rgba(31, 143, 104, 0.14);
+  --badge-danger-bg: rgba(201, 61, 53, 0.14);
+  --badge-neutral-bg: rgba(75, 82, 98, 0.14);
+}
