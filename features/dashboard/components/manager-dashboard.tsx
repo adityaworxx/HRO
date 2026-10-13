@@ -4,7 +4,6 @@ import * as React from 'react';
 import Link from 'next/link';
 import { useOpenings } from '@/features/openings/hooks';
 import { useCandidates, useRecordManagerDecision } from '@/features/candidates/hooks';
-import { useCurrentUser } from '@/features/auth/hooks';
 import { StatCard } from '@/components/hro/stat-card';
 import { StatusBadge } from '@/components/hro/status-badge';
 import { MetaSeparator } from '@/components/hro/meta-separator';
@@ -20,7 +19,6 @@ import {
 } from '@/components/ui/sheet';
 import {
   ArrowRight,
-  Plus,
   Check,
   X,
   FileText,
@@ -43,7 +41,6 @@ import { toast } from 'sonner';
 import { formatCtc, formatInterviewDateTime } from '@/lib/format';
 
 export function ManagerDashboard() {
-  const { data: user, isLoading: loadingUser } = useCurrentUser();
   const { data: openings = [], isLoading: loadingOpenings } = useOpenings();
   const { data: candidates = [], isLoading: loadingCandidates } = useCandidates();
   const recordDecision = useRecordManagerDecision();
@@ -93,31 +90,11 @@ export function ManagerDashboard() {
     );
   };
 
-  const isInitialLoading = loadingUser || loadingOpenings || loadingCandidates;
+  const isInitialLoading = loadingOpenings || loadingCandidates;
 
   return (
     <div className="w-full">
-      {/* 1. Page Header Block: 24px bottom spacing */}
-      <div className="mb-6 flex flex-col justify-between gap-4 sm:flex-row sm:items-center">
-        <div>
-          <h1 className="text-text text-[24px] leading-[32px] font-semibold tracking-tight">
-            Welcome back, {user?.name?.split(' ')[0] ?? 'Manager'}
-          </h1>
-          <p className="text-text-muted mt-1 text-[14px] leading-[20px]">
-            Here is what needs your attention across your active hiring pipelines.
-          </p>
-        </div>
-        <div className="flex items-center gap-3">
-          <Button asChild variant="primary" className="h-9 gap-1.5 px-4 text-[13px] font-medium">
-            <Link href="/openings/new">
-              <Plus className="h-4 w-4 stroke-[1.75]" />
-              <span>New opening</span>
-            </Link>
-          </Button>
-        </div>
-      </div>
-
-      {/* 2. Stat Cards Grid: 24px gap throughout */}
+      {/* Stat Cards Grid: 24px gap throughout */}
       <div className="mb-6 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
         {isInitialLoading ? (
           <>

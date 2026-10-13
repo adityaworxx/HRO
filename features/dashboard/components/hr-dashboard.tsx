@@ -5,7 +5,6 @@ import Link from 'next/link';
 import { useOpenings, useUpdateOpeningStatus } from '@/features/openings/hooks';
 import { useCandidates } from '@/features/candidates/hooks';
 import { useAllOnboarding } from '@/features/onboarding/hooks';
-import { useCurrentUser } from '@/features/auth/hooks';
 import { StatCard } from '@/components/hro/stat-card';
 import { StatusBadge } from '@/components/hro/status-badge';
 import { MetaSeparator } from '@/components/hro/meta-separator';
@@ -25,7 +24,6 @@ import {
 import { toast } from 'sonner';
 
 export function HrDashboard() {
-  const { data: user, isLoading: loadingUser } = useCurrentUser();
   const { data: openings = [], isLoading: loadingOpenings } = useOpenings();
   const { data: candidates = [], isLoading: loadingCandidates } = useCandidates();
   const { data: onboardingItems = [], isLoading: loadingOnboarding } = useAllOnboarding();
@@ -85,31 +83,11 @@ export function HrDashboard() {
     );
   };
 
-  const isInitialLoading = loadingUser || loadingOpenings || loadingCandidates || loadingOnboarding;
+  const isInitialLoading = loadingOpenings || loadingCandidates || loadingOnboarding;
 
   return (
     <div className="w-full">
-      {/* 1. Page Header Block: 24px bottom spacing */}
-      <div className="mb-6 flex flex-col justify-between gap-4 sm:flex-row sm:items-center">
-        <div>
-          <h1 className="text-text text-[24px] leading-[32px] font-semibold tracking-tight">
-            Welcome back, {user?.name?.split(' ')[0] ?? 'HR Specialist'}
-          </h1>
-          <p className="text-text-muted mt-1 text-[14px] leading-[20px]">
-            Company-wide hiring health, pipeline throughput, and onboarding operations.
-          </p>
-        </div>
-        <div className="flex items-center gap-3">
-          <Button asChild variant="primary" className="h-9 gap-1.5 px-4 text-[13px] font-medium">
-            <Link href="/pipeline">
-              <GitPullRequest className="h-4 w-4 stroke-[1.75]" />
-              <span>Open Pipeline Board</span>
-            </Link>
-          </Button>
-        </div>
-      </div>
-
-      {/* 2. KPI Stat Cards Grid: 24px gap throughout */}
+      {/* KPI Stat Cards Grid: 24px gap throughout */}
       <div className="mb-6 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
         {isInitialLoading ? (
           <>

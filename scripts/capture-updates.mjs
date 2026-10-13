@@ -29,6 +29,7 @@ async function main() {
       { currentTheme: theme }
     );
 
+    // 1. Capture Manager Dashboard (Manager role)
     await page.goto('http://localhost:3000', { waitUntil: 'networkidle' });
     await page.evaluate(({ currentTheme }) => {
       document.documentElement.setAttribute('data-theme', currentTheme);
@@ -40,36 +41,32 @@ async function main() {
         document.documentElement.classList.remove('dark');
       }
     }, { currentTheme: theme });
-    await page.waitForTimeout(300);
+    await page.waitForTimeout(400);
 
-    // Switch to HR role if not already
-    const switchBtn = page.locator('button:has-text("Switch to HR View")');
-    if (await switchBtn.count() > 0) {
-      await switchBtn.click();
+    // Make sure role is Manager
+    const switchMgr = page.locator('button:has-text("Switch to Manager View")');
+    if (await switchMgr.count() > 0) {
+      await switchMgr.click();
       await page.waitForTimeout(400);
     }
+    const mgrDashPath = path.join(brainScreenshotsDir, `manager-dashboard-top-${theme}.png`);
+    await page.screenshot({ path: mgrDashPath });
+    console.log(`Saved: ${mgrDashPath}`);
 
-    // 1. Capture Candidates page
-    await page.goto('http://localhost:3000/candidates', { waitUntil: 'networkidle' });
-    await page.waitForTimeout(400);
-    const candidatesPath = path.join(brainScreenshotsDir, `candidates-page-${theme}.png`);
-    await page.screenshot({ path: candidatesPath });
-    console.log(`Saved: ${candidatesPath}`);
+    // 2. Switch to HR View and capture HR Dashboard
+    const switchHr = page.locator('button:has-text("Switch to HR View")');
+    if (await switchHr.count() > 0) {
+      await switchHr.click();
+      await page.waitForTimeout(400);
+    }
+    const hrDashPath = path.join(brainScreenshotsDir, `hr-dashboard-top-${theme}.png`);
+    await page.screenshot({ path: hrDashPath });
+    console.log(`Saved: ${hrDashPath}`);
 
-    // 2. Capture Notifications popover on Candidates page
-    const notifBtn = page.locator('button[title="Notifications"]');
-    await notifBtn.click();
-    await page.waitForTimeout(400);
-    const notifPath = path.join(brainScreenshotsDir, `clean-notifications-${theme}.png`);
-    await page.screenshot({ path: notifPath });
-    console.log(`Saved: ${notifPath}`);
-    await page.keyboard.press('Escape');
-    await page.waitForTimeout(200);
-
-    // 3. Capture Openings page
+    // 3. Capture Openings page with left-aligned breadcrumb
     await page.goto('http://localhost:3000/openings', { waitUntil: 'networkidle' });
-    await page.waitForTimeout(500);
-    const openingsPath = path.join(brainScreenshotsDir, `openings-page-${theme}.png`);
+    await page.waitForTimeout(400);
+    const openingsPath = path.join(brainScreenshotsDir, `openings-page-left-nav-${theme}.png`);
     await page.screenshot({ path: openingsPath });
     console.log(`Saved: ${openingsPath}`);
 
