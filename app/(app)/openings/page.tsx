@@ -1,21 +1,29 @@
 'use client';
 
+import * as React from 'react';
+import Link from 'next/link';
 import { PageHeader } from '@/components/hro/page-header';
-import { EmptyState } from '@/components/hro/empty-state';
-import { Briefcase } from 'lucide-react';
+import { OpeningsTable } from '@/features/openings';
+import { Button } from '@/components/ui/button';
+import { Plus } from 'lucide-react';
 
 export default function OpeningsPage() {
   return (
-    <div>
+    <div className="space-y-6">
       <PageHeader
-        title="Openings"
-        description="Manage active job openings, headcount allocations, and hiring requisitions."
+        title="Job Openings & Requisitions"
+        description="Oversee headcount requirements, pipeline progression, and department hiring budgets."
+        action={
+          <Button asChild variant="primary" className="gap-2">
+            <Link href="/openings/new">
+              <Plus className="h-4 w-4" />
+              <span>Create Requisition</span>
+            </Link>
+          </Button>
+        }
       />
-      <EmptyState
-        icon={Briefcase}
-        title="Openings List Screen Arrives in Phase 2"
-        description="The openings table with stage progression, filters, and requisition management will be introduced in the upcoming feature phase."
-      />
+
+      <OpeningsTable />
     </div>
   );
 }

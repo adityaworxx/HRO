@@ -1,21 +1,45 @@
 'use client';
 
+import * as React from 'react';
+import { useParams } from 'next/navigation';
+import { useOpening } from '@/features/openings';
+import { OpeningForm } from '@/features/openings';
 import { PageHeader } from '@/components/hro/page-header';
+import { Skeleton } from '@/components/ui/skeleton';
 import { EmptyState } from '@/components/hro/empty-state';
-import { Edit } from 'lucide-react';
+import { AlertCircle } from 'lucide-react';
 
 export default function EditOpeningPage() {
-  return (
-    <div className="mx-auto max-w-[960px]">
-      <PageHeader
-        title="Edit Opening"
-        description="Update hiring criteria, budget range, or headcount."
-      />
+  const params = useParams<{ id: string }>();
+  const id = params?.id ?? '';
+  const { data: opening, isLoading, isError } = useOpening(id);
+
+  if (isLoading) {
+    return (
+      <div className="mx-auto max-w-[840px] space-y-6">
+        <Skeleton className="h-12 w-64" />
+        <Skeleton className="h-96 w-full" />
+      </div>
+    );
+  }
+
+  if (isError || !opening) {
+    return (
       <EmptyState
-        icon={Edit}
-        title="Edit Opening Form Arrives in Phase 2"
-        description="Editable form prefilled with current requisition data will be constructed in the next phase."
+        icon={AlertCircle}
+        title="Requisition Not Found"
+        description="Could not locate the requested requisition for editing."
       />
+    );
+  }
+
+  return (
+    <div className="mx-auto max-w-[840px] space-y-6">
+      <PageHeader
+        title={`Edit: ${opening.title}`}
+        description="Modify hiring requirements, budget constraints, or headcount."
+      />
+      <OpeningForm initialData={opening} isEditing />
     </div>
   );
 }
