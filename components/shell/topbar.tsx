@@ -13,7 +13,7 @@ export function Topbar() {
   const { setCommandPaletteOpen } = useUiStore();
 
   return (
-    <header className="border-border bg-surface-1/95 sticky top-0 z-20 flex h-14 w-full items-center justify-between border-b px-4 backdrop-blur sm:px-6">
+    <header className="border-border bg-surface-1/95 sticky top-0 z-20 flex h-14 w-full items-center justify-between border-b px-4 backdrop-blur sm:px-6 lg:px-8">
       <div className="flex items-center gap-3">
         <React.Suspense fallback={null}>
           <Breadcrumbs />
