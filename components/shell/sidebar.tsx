@@ -27,14 +27,19 @@ function SidebarNav({ collapsed }: { collapsed: boolean }) {
             href={item.href}
             title={collapsed ? item.title : undefined}
             className={cn(
-              'flex h-9 items-center gap-3 rounded-[8px] px-3 text-[14px] leading-[20px] font-medium text-text select-none transition-colors',
+              'flex h-9 items-center gap-3 rounded-[8px] px-3 text-[14px] leading-[20px] font-medium select-none transition-colors',
               isActive
-                ? 'bg-surface-3 text-text'
-                : 'text-text hover:bg-surface-2',
+                ? 'bg-accent-subtle text-accent font-semibold'
+                : 'text-text-muted hover:bg-surface-2 hover:text-text',
               collapsed && 'w-9 justify-center px-0 mx-auto'
             )}
           >
-            <Icon className="h-4 w-4 shrink-0 stroke-[1.75] text-text-subtle" strokeWidth={1.75} />
+            <Icon
+              className={cn(
+                'h-4 w-4 shrink-0 transition-colors',
+                isActive ? 'text-accent stroke-[2]' : 'text-text-subtle stroke-[1.75]'
+              )}
+            />
             {!collapsed && <span className="truncate">{item.title}</span>}
           </Link>
         );
