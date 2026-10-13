@@ -44,14 +44,11 @@ export function ProfileDropdown() {
           aria-label="User profile menu"
           title={`${displayName} (${displayDepartment})`}
         >
-          <div className="relative">
-            <Avatar className="border-border/80 hover:border-border-strong h-8 w-8 border shadow-2xs transition-colors">
-              <AvatarFallback className="bg-surface-3 text-text text-[12px] font-bold">
-                {displayInitials}
-              </AvatarFallback>
-            </Avatar>
-            <span className="bg-success ring-surface-1 absolute -right-0.5 -bottom-0.5 h-2.5 w-2.5 rounded-full ring-2" />
-          </div>
+          <Avatar className="border-border/80 hover:border-border-strong h-8 w-8 border shadow-2xs transition-colors">
+            <AvatarFallback className="bg-surface-3 text-text text-[12px] font-bold">
+              {displayInitials}
+            </AvatarFallback>
+          </Avatar>
         </button>
       </DropdownMenuTrigger>
 
