@@ -17,15 +17,15 @@
   --text: #e6e8ee;
   --text-muted: #a3a9b8;
   --text-subtle: #6f7686;
-  --accent: #5b8def;
-  --accent-subtle: #1c2740;
+  --accent: #f97316;
+  --accent-subtle: rgba(249, 115, 22, 0.14);
   --success: #3fb68b;
   --warning: #e0a93b;
   --danger: #e5584f;
-  --info: #5b8def;
+  --info: #f97316;
 
   /* Status Badges Tint Backgrounds (~14% opacity equivalents) */
-  --badge-info-bg: rgba(91, 141, 239, 0.14);
+  --badge-info-bg: rgba(249, 115, 22, 0.14);
   --badge-warning-bg: rgba(224, 169, 59, 0.14);
   --badge-success-bg: rgba(63, 182, 139, 0.14);
   --badge-danger-bg: rgba(229, 88, 79, 0.14);
@@ -54,15 +54,15 @@
   --text: #16181d;
   --text-muted: #4b5262;
   --text-subtle: #7a8194;
-  --accent: #3d6fdb;
-  --accent-subtle: #e6eefc;
+  --accent: #c2410c;
+  --accent-subtle: rgba(194, 65, 12, 0.10);
   --success: #1f8f68;
   --warning: #b7791f;
   --danger: #c93d35;
-  --info: #3d6fdb;
+  --info: #c2410c;
 
   /* Status Badges Tint Backgrounds (~14% opacity equivalents) */
-  --badge-info-bg: rgba(61, 111, 219, 0.14);
+  --badge-info-bg: rgba(194, 65, 12, 0.12);
   --badge-warning-bg: rgba(183, 121, 31, 0.14);
   --badge-success-bg: rgba(31, 143, 104, 0.14);
   --badge-danger-bg: rgba(201, 61, 53, 0.14);
