@@ -21,7 +21,7 @@ import {
   DropdownMenuSeparator,
 } from '@/components/ui/dropdown-menu';
 import { formatCtcRange } from '@/lib/format';
-import { MoreHorizontal, Eye, Edit, ArrowRightCircle, Building2, MapPin } from 'lucide-react';
+import { MoreHorizontal, Eye, Edit, ArrowRightCircle, Building2, MapPin, Plus } from 'lucide-react';
 import { toast } from 'sonner';
 
 export function OpeningsTable() {
@@ -243,21 +243,30 @@ export function OpeningsTable() {
           )}
         </div>
 
-        {/* Department Filter */}
-        {departments.length > 0 && (
-          <select
-            value={selectedDepartment}
-            onChange={(e) => setSelectedDepartment(e.target.value)}
-            className="border-border bg-surface-2 text-text focus:ring-accent h-8 rounded-[var(--radius-sm)] border px-2.5 text-[12px] font-medium outline-none focus:ring-1"
-          >
-            <option value="all">All Departments</option>
-            {departments.map((dep) => (
-              <option key={dep} value={dep}>
-                {dep}
-              </option>
-            ))}
-          </select>
-        )}
+        {/* Department Filter & Action */}
+        <div className="flex items-center gap-2">
+          {departments.length > 0 && (
+            <select
+              value={selectedDepartment}
+              onChange={(e) => setSelectedDepartment(e.target.value)}
+              className="border-border bg-surface-2 text-text focus:ring-accent h-8 rounded-[var(--radius-sm)] border px-2.5 text-[12px] font-medium outline-none focus:ring-1"
+            >
+              <option value="all">All Departments</option>
+              {departments.map((dep) => (
+                <option key={dep} value={dep}>
+                  {dep}
+                </option>
+              ))}
+            </select>
+          )}
+
+          <Button asChild variant="primary" size="sm" className="h-8 gap-1.5 text-[13px]">
+            <Link href="/openings/new">
+              <Plus className="h-3.5 w-3.5" />
+              <span>New Opening</span>
+            </Link>
+          </Button>
+        </div>
       </div>
 
       {/* TanStack Data Table */}

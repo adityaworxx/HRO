@@ -15,39 +15,56 @@ export function Breadcrumbs() {
       .filter(Boolean)
       .map((segment, index, array) => {
         const href = `/${array.slice(0, index + 1).join('/')}`;
-        const title = segment.replace(/-/g, ' ').replace(/^\w/, (c) => c.toUpperCase());
+        const isUuid = /^[0-9a-f-]{10,}$/i.test(segment);
+        const title = isUuid
+          ? 'Details'
+          : segment.replace(/-/g, ' ').replace(/\b\w/g, (c) => c.toUpperCase());
         return { title, href };
       });
   }, [pathname]);
 
+  const isHome = !pathname || pathname === '/';
+
   return (
     <nav aria-label="Breadcrumbs" className="text-text-muted flex items-center text-[13px]">
-      <Link
-        href="/"
-        className="hover:text-text text-text-subtle flex items-center gap-1 transition-colors"
-      >
-        <Home className="h-3.5 w-3.5" />
-        <span className="sr-only">Home</span>
-      </Link>
+      {isHome ? (
+        <span className="text-text flex items-center gap-1.5 text-[14px] font-semibold">
+          <Home className="text-text-subtle h-3.5 w-3.5" />
+          <span>Dashboard</span>
+        </span>
+      ) : (
+        <>
+          <Link
+            href="/"
+            className="hover:text-text text-text-subtle flex items-center gap-1 transition-colors"
+            title="Dashboard"
+          >
+            <Home className="h-3.5 w-3.5" />
+            <span className="sr-only">Dashboard</span>
+          </Link>
 
-      {segments.map((segment, index) => {
-        const isLast = index === segments.length - 1;
-        return (
-          <React.Fragment key={segment.href}>
-            <ChevronRight className="text-text-subtle mx-1.5 h-3.5 w-3.5 shrink-0" />
-            {isLast ? (
-              <span className="text-text max-w-[150px] truncate font-medium">{segment.title}</span>
-            ) : (
-              <Link
-                href={segment.href}
-                className="hover:text-text max-w-[120px] truncate transition-colors"
-              >
-                {segment.title}
-              </Link>
-            )}
-          </React.Fragment>
-        );
-      })}
+          {segments.map((segment, index) => {
+            const isLast = index === segments.length - 1;
+            return (
+              <React.Fragment key={segment.href}>
+                <ChevronRight className="text-text-subtle mx-1.5 h-3.5 w-3.5 shrink-0" />
+                {isLast ? (
+                  <span className="text-text max-w-[200px] truncate text-[14px] font-semibold">
+                    {segment.title}
+                  </span>
+                ) : (
+                  <Link
+                    href={segment.href}
+                    className="hover:text-text max-w-[140px] truncate transition-colors"
+                  >
+                    {segment.title}
+                  </Link>
+                )}
+              </React.Fragment>
+            );
+          })}
+        </>
+      )}
     </nav>
   );
 }

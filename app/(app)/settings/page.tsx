@@ -1,7 +1,6 @@
 'use client';
 
 import * as React from 'react';
-import { PageHeader } from '@/components/hro/page-header';
 import { Button } from '@/components/ui/button';
 import { useCurrentUser, useResetDemoData } from '@/features/auth/hooks';
 import { useTheme } from 'next-themes';
@@ -24,11 +23,7 @@ export default function SettingsPage() {
   };
 
   return (
-    <div className="max-w-[720px] space-y-8">
-      <PageHeader
-        title="Settings"
-        description="Manage your demo preferences, active profile, and application theme."
-      />
+    <div className="max-w-[720px] space-y-6">
 
       {/* User Persona Profile */}
       <section className="border-border bg-surface-1 space-y-4 rounded-[var(--radius-md)] border p-5">

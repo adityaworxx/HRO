@@ -4,7 +4,6 @@ import * as React from 'react';
 import { useParams } from 'next/navigation';
 import { useOpening } from '@/features/openings';
 import { OpeningForm } from '@/features/openings';
-import { PageHeader } from '@/components/hro/page-header';
 import { Skeleton } from '@/components/ui/skeleton';
 import { EmptyState } from '@/components/hro/empty-state';
 import { AlertCircle } from 'lucide-react';
@@ -34,12 +33,9 @@ export default function EditOpeningPage() {
   }
 
   return (
-    <div className="mx-auto max-w-[840px] space-y-6">
-      <PageHeader
-        title={`Edit: ${opening.title}`}
-        description="Modify hiring requirements, budget constraints, or headcount."
-      />
+    <div className="mx-auto max-w-[840px]">
       <OpeningForm initialData={opening} isEditing />
     </div>
   );
 }
+

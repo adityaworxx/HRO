@@ -1,7 +1,6 @@
 'use client';
 
 import * as React from 'react';
-import { PageHeader } from '@/components/hro/page-header';
 import { useOpenings } from '@/features/openings/hooks';
 import { useCandidates } from '@/features/candidates/hooks';
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '@/components/ui/card';
@@ -68,11 +67,6 @@ export default function ReportsPage() {
 
   return (
     <div className="space-y-6">
-      <PageHeader
-        title="Hiring Reports & Velocity Analytics"
-        description="Comprehensive insights across recruitment funnel efficiency, channel effectiveness, and department headcounts."
-      />
-
       {/* Top Metrics Cards */}
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
         <StatCard

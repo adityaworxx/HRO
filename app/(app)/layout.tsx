@@ -13,13 +13,23 @@ function RouteGuard() {
   const pathname = usePathname();
   const router = useRouter();
   const { role } = useUiStore();
+  const [mounted, setMounted] = React.useState(false);
 
   React.useEffect(() => {
-    if (!isRouteAllowed(pathname, role)) {
+    setMounted(true);
+  }, []);
+
+  React.useEffect(() => {
+    if (!mounted) return;
+    const currentRole =
+      (typeof window !== 'undefined' &&
+        (localStorage.getItem('hro:demo-role') === 'hr' ? 'hr' : role)) ||
+      role;
+    if (!isRouteAllowed(pathname, currentRole)) {
       toast.error('You do not have access to that page.');
       router.replace('/');
     }
-  }, [pathname, role, router]);
+  }, [mounted, pathname, role, router]);
 
   return null;
 }
