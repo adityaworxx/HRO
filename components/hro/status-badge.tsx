@@ -18,36 +18,27 @@ export function StatusBadge({ status, type = 'opening', className }: StatusBadge
     config = CANDIDATE_STAGE_MAP[status as CandidateStage];
   }
 
-  if (!config) {
-    return (
-      <span
-        className={cn(
-          'bg-surface-2 text-text-muted border-border/60 inline-flex h-[22px] items-center gap-1.5 rounded-full border px-2 text-[12px] leading-[16px] font-medium select-none',
-          className
-        )}
-      >
-        <span className="bg-text-subtle h-1.5 w-1.5 shrink-0 rounded-full" />
-        <span className="truncate">{status}</span>
-      </span>
-    );
-  }
+  const label = config?.label ?? status;
+  const token = config?.token ?? 'neutral';
+
+  const tokenClass =
+    {
+      neutral: 'border-border/80 bg-surface-2 text-text-muted',
+      info: 'border-border/80 bg-surface-2 text-text-muted',
+      warning: 'border-border/80 bg-surface-2 text-text-muted',
+      success: 'border-border/80 bg-surface-2 text-success',
+      danger: 'border-border/80 bg-surface-2 text-danger',
+    }[token] ?? 'border-border/80 bg-surface-2 text-text-muted';
 
   return (
     <span
       className={cn(
-        'inline-flex h-[22px] items-center gap-1.5 rounded-full px-2 text-[12px] leading-[16px] font-medium select-none',
+        'inline-flex h-[22px] items-center rounded-[6px] border px-2 text-[12px] leading-none font-medium select-none',
+        tokenClass,
         className
       )}
-      style={{
-        backgroundColor: config.bgVar,
-        color: config.textVar,
-      }}
     >
-      <span
-        className="h-1.5 w-1.5 shrink-0 rounded-full"
-        style={{ backgroundColor: config.textVar }}
-      />
-      <span className="truncate">{config.label}</span>
+      <span className="truncate">{label}</span>
     </span>
   );
 }
