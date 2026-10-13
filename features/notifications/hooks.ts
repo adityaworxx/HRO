@@ -23,3 +23,14 @@ export function useMarkNotificationAsRead() {
     },
   });
 }
+
+export function useMarkAllNotificationsAsRead() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (role: UserRole) => api.notifications.markAllAsRead(role),
+    onSuccess: () => {
+      void queryClient.invalidateQueries({ queryKey: notificationsKeys.all });
+    },
+  });
+}
+

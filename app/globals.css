@@ -35,6 +35,16 @@
   outline-offset: 2px;
 }
 
+input:focus,
+input:focus-visible,
+textarea:focus,
+textarea:focus-visible,
+[cmdk-input]:focus,
+[cmdk-input]:focus-visible {
+  outline: none !important;
+  outline-offset: 0 !important;
+}
+
 body {
   background-color: var(--bg);
   color: var(--text);

@@ -15,6 +15,33 @@ function checkFailure(): void {
 
 let activeUser: User = PRIMARY_MANAGER;
 
+let mockNotifications = [
+  {
+    id: 'n1',
+    recipientRole: 'manager' as const,
+    title: '3 Candidates Shortlisted',
+    message: 'Hiring Manager shortlisted 3 candidates for Senior Backend Engineer.',
+    timestamp: new Date().toISOString(),
+    read: false,
+  },
+  {
+    id: 'n2',
+    recipientRole: 'manager' as const,
+    title: 'New Opening Submitted',
+    message: 'Frontend Tech Lead opening has been created and awaits sourcing.',
+    timestamp: new Date(Date.now() - 3600000).toISOString(),
+    read: true,
+  },
+  {
+    id: 'n3',
+    recipientRole: 'manager' as const,
+    title: 'Interview Scheduled',
+    message: 'Technical round with Rohan Mehta confirmed for tomorrow at 11:00 AM.',
+    timestamp: new Date(Date.now() - 7200000).toISOString(),
+    read: true,
+  },
+];
+
 export const mockApi: HroApiClient = {
   openings: {
     list: async (filter) => {
@@ -282,40 +309,30 @@ export const mockApi: HroApiClient = {
     list: async (role) => {
       await simulateLatency();
       checkFailure();
-      return [
-        {
-          id: 'n1',
-          recipientRole: role,
-          title: '3 Candidates Shortlisted',
-          message: 'Hiring Manager shortlisted 3 candidates for Senior Backend Engineer.',
-          timestamp: new Date().toISOString(),
-          read: false,
-        },
-        {
-          id: 'n2',
-          recipientRole: role,
-          title: 'New Opening Submitted',
-          message: 'Frontend Tech Lead opening has been created and awaits sourcing.',
-          timestamp: new Date(Date.now() - 3600000).toISOString(),
-          read: true,
-        },
-      ];
+      return mockNotifications.map((n) => ({ ...n, recipientRole: role }));
     },
 
     markAsRead: async (id) => {
       await simulateLatency();
-      return {
-        id,
-        recipientRole: 'manager',
-        title: 'Notification',
-        message: 'Marked as read',
-        timestamp: new Date().toISOString(),
-        read: true,
-      };
+      mockNotifications = mockNotifications.map((n) =>
+        n.id === id ? { ...n, read: true } : n
+      );
+      const found = mockNotifications.find((n) => n.id === id);
+      return (
+        found ?? {
+          id,
+          recipientRole: 'manager',
+          title: 'Notification',
+          message: 'Marked as read',
+          timestamp: new Date().toISOString(),
+          read: true,
+        }
+      );
     },
 
     markAllAsRead: async () => {
       await simulateLatency();
+      mockNotifications = mockNotifications.map((n) => ({ ...n, read: true }));
     },
   },
 
