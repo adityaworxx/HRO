@@ -16,55 +16,58 @@ const viewports = [
 ];
 
 const themes = ['dark', 'light'];
+const roles = ['hr', 'manager'];
 
 async function main() {
   const browser = await chromium.launch({ channel: 'msedge' });
 
-  for (const theme of themes) {
-    for (const vp of viewports) {
-      const page = await browser.newPage({
-        viewport: { width: vp.width, height: vp.height },
-      });
+  for (const role of roles) {
+    for (const theme of themes) {
+      for (const vp of viewports) {
+        const page = await browser.newPage({
+          viewport: { width: vp.width, height: vp.height },
+        });
 
-      // Pre-set role to manager and theme in localStorage
-      await page.addInitScript(
-        ({ currentTheme }) => {
-          localStorage.setItem('hro:demo-role', 'manager');
-          localStorage.setItem('theme', currentTheme);
-          document.documentElement.setAttribute('data-theme', currentTheme);
-          if (currentTheme === 'dark') {
-            document.documentElement.classList.add('dark');
-            document.documentElement.classList.remove('light');
-          } else {
-            document.documentElement.classList.add('light');
-            document.documentElement.classList.remove('dark');
-          }
-        },
-        { currentTheme: theme }
-      );
+        await page.addInitScript(
+          ({ currentTheme, currentRole }) => {
+            localStorage.setItem('hro:demo-role', currentRole);
+            localStorage.setItem('theme', currentTheme);
+            document.documentElement.setAttribute('data-theme', currentTheme);
+            if (currentTheme === 'dark') {
+              document.documentElement.classList.add('dark');
+              document.documentElement.classList.remove('light');
+            } else {
+              document.documentElement.classList.add('light');
+              document.documentElement.classList.remove('dark');
+            }
+          },
+          { currentTheme: theme, currentRole: role }
+        );
 
-      await page.goto('http://localhost:3000', { waitUntil: 'networkidle' });
+        await page.goto('http://localhost:3000', { waitUntil: 'networkidle' });
 
-      // Force theme on html root to guarantee accurate capture
-      await page.evaluate(({ currentTheme }) => {
-        document.documentElement.setAttribute('data-theme', currentTheme);
-        if (currentTheme === 'dark') {
-          document.documentElement.classList.add('dark');
-          document.documentElement.classList.remove('light');
-        } else {
-          document.documentElement.classList.add('light');
-          document.documentElement.classList.remove('dark');
-        }
-      }, { currentTheme: theme });
+        await page.evaluate(
+          ({ currentTheme }) => {
+            document.documentElement.setAttribute('data-theme', currentTheme);
+            if (currentTheme === 'dark') {
+              document.documentElement.classList.add('dark');
+              document.documentElement.classList.remove('light');
+            } else {
+              document.documentElement.classList.add('light');
+              document.documentElement.classList.remove('dark');
+            }
+          },
+          { currentTheme: theme }
+        );
 
-      // Small pause for any animations
-      await page.waitForTimeout(600);
+        await page.waitForTimeout(600);
 
-      const filePath = path.join(outDir, `manager-dashboard-${theme}-${vp.name}.png`);
-      await page.screenshot({ path: filePath, fullPage: true });
-      console.log(`Saved screenshot: ${filePath}`);
+        const filePath = path.join(outDir, `${role}-dashboard-${theme}-${vp.name}.png`);
+        await page.screenshot({ path: filePath, fullPage: true });
+        console.log(`Saved screenshot: ${filePath}`);
 
-      await page.close();
+        await page.close();
+      }
     }
   }
 
@@ -76,4 +79,3 @@ main().catch((err) => {
   console.error(err);
   process.exit(1);
 });
-
