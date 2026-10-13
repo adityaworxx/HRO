@@ -7,14 +7,7 @@ import { useCandidates } from '@/features/candidates/hooks';
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '@/components/ui/card';
 import { StatCard } from '@/components/hro/stat-card';
 import { Progress } from '@/components/ui/progress';
-import {
-  TrendingUp,
-  Briefcase,
-  Target,
-  Award,
-  Clock,
-  PieChart,
-} from 'lucide-react';
+import { TrendingUp, Briefcase, Target, Award, Clock, PieChart } from 'lucide-react';
 
 export default function ReportsPage() {
   const { data: openings = [] } = useOpenings();

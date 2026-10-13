@@ -22,12 +22,12 @@ export function StatusBadge({ status, type = 'opening', className }: StatusBadge
     return (
       <span
         className={cn(
-          'border-border bg-surface-2 text-text-muted inline-flex items-center gap-1.5 rounded-[var(--radius-sm)] border px-2 py-0.5 text-[12px] font-medium select-none',
+          'bg-surface-2 text-text-muted border-border/60 inline-flex h-[22px] items-center gap-1.5 rounded-full border px-2 text-[12px] leading-[16px] font-medium select-none',
           className
         )}
       >
-        <span className="bg-text-subtle h-1.5 w-1.5 rounded-full" />
-        {status}
+        <span className="bg-text-subtle h-1.5 w-1.5 shrink-0 rounded-full" />
+        <span className="truncate">{status}</span>
       </span>
     );
   }
@@ -35,7 +35,7 @@ export function StatusBadge({ status, type = 'opening', className }: StatusBadge
   return (
     <span
       className={cn(
-        'inline-flex items-center gap-1.5 rounded-[var(--radius-sm)] px-2.5 py-0.5 text-[12px] font-medium select-none',
+        'inline-flex h-[22px] items-center gap-1.5 rounded-full px-2 text-[12px] leading-[16px] font-medium select-none',
         className
       )}
       style={{
@@ -47,7 +47,7 @@ export function StatusBadge({ status, type = 'opening', className }: StatusBadge
         className="h-1.5 w-1.5 shrink-0 rounded-full"
         style={{ backgroundColor: config.textVar }}
       />
-      {config.label}
+      <span className="truncate">{config.label}</span>
     </span>
   );
 }

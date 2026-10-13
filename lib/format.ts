@@ -11,6 +11,17 @@ export function formatDate(dateString: string | null | undefined, pattern = 'dd 
   }
 }
 
+export function formatInterviewDateTime(dateString: string | null | undefined): string {
+  if (!dateString) return '-';
+  try {
+    const parsed = parseISO(dateString);
+    if (!isValid(parsed)) return '-';
+    return format(parsed, 'EEE, d MMM, hh:mm a');
+  } catch {
+    return '-';
+  }
+}
+
 export function formatRelativeTime(dateString: string | null | undefined): string {
   if (!dateString) return '-';
   try {

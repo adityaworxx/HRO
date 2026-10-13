@@ -18,15 +18,7 @@ import {
   DialogFooter,
 } from '@/components/ui/dialog';
 import { EmptyState } from '@/components/hro/empty-state';
-import {
-  Calendar,
-  Clock,
-  Video,
-  Phone,
-  CheckCircle2,
-  XCircle,
-  PauseCircle,
-} from 'lucide-react';
+import { Calendar, Clock, Video, Phone, CheckCircle2, XCircle, PauseCircle } from 'lucide-react';
 import { toast } from 'sonner';
 
 export function InterviewsView() {

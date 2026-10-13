@@ -21,14 +21,7 @@ import {
   DropdownMenuSeparator,
 } from '@/components/ui/dropdown-menu';
 import { formatCtcRange } from '@/lib/format';
-import {
-  MoreHorizontal,
-  Eye,
-  Edit,
-  ArrowRightCircle,
-  Building2,
-  MapPin,
-} from 'lucide-react';
+import { MoreHorizontal, Eye, Edit, ArrowRightCircle, Building2, MapPin } from 'lucide-react';
 import { toast } from 'sonner';
 
 export function OpeningsTable() {
