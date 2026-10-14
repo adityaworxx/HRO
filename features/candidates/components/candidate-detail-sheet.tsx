@@ -197,7 +197,10 @@ export function CandidateDetailSheet({ candidate, open, onOpenChange }: Candidat
                   </p>
                   <p>
                     <strong className="text-text">Outcome:</strong>{' '}
-                    <Badge variant="accent" className="text-[11px]">
+                    <Badge
+                      variant={candidate.interviewOutcome === 'Selected' ? 'success' : 'default'}
+                      className="text-[11px] font-medium"
+                    >
                       {candidate.interviewOutcome}
                     </Badge>
                   </p>

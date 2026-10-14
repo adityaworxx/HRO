@@ -150,11 +150,9 @@ export function InterviewsView() {
                   variant={
                     candidate.interviewOutcome === 'Selected'
                       ? 'success'
-                      : candidate.interviewOutcome === 'Rejected'
-                        ? 'danger'
-                        : 'accent'
+                      : 'default'
                   }
-                  className="text-[11px]"
+                  className="text-[11px] font-medium"
                 >
                   {candidate.interviewOutcome}
                 </Badge>
@@ -171,13 +169,16 @@ export function InterviewsView() {
                           : 'Slot not assigned yet'}
                       </span>
                     </span>
-                    <span className="text-text flex items-center gap-1 font-medium">
-                      {candidate.interviewMode === 'Video' ? (
-                        <VideoCameraIcon className="text-accent h-3.5 w-3.5" />
+                    <span
+                      className="text-text-muted flex items-center"
+                      title={`${candidate.interviewMode ?? 'Video'} Interview`}
+                      aria-label={`${candidate.interviewMode ?? 'Video'} Interview`}
+                    >
+                      {candidate.interviewMode === 'Phone' ? (
+                        <Phone className="h-4 w-4" />
                       ) : (
-                        <Phone className="text-accent h-3.5 w-3.5" />
+                        <VideoCameraIcon className="h-4 w-4" />
                       )}
-                      <span>{candidate.interviewMode ?? 'Video'}</span>
                     </span>
                   </div>
 
