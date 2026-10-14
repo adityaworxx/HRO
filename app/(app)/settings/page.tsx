@@ -116,7 +116,8 @@ export default function SettingsPage() {
     }
   }, []);
 
-  const isHr = role === 'hr';
+  const activeRole: UserRole = mounted ? role : 'manager';
+  const isHr = activeRole === 'hr';
   const currentPersona = isHr ? PRIMARY_HR : (activeUser ?? PRIMARY_MANAGER);
 
   const handleRoleToggle = () => {
@@ -304,7 +305,7 @@ export default function SettingsPage() {
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3.5 border-b border-border/50">
               <div className="flex items-center gap-3 min-w-0">
                 <Avatar className="h-10 w-10 border border-border/80 shadow-2xs shrink-0">
-                  <AvatarFallback className="bg-surface-3 text-text text-[13px] font-bold">
+                  <AvatarFallback className="bg-surface-3 text-text text-[13px] font-bold" suppressHydrationWarning>
                     {currentPersona.avatarInitials}
                   </AvatarFallback>
                 </Avatar>

@@ -35,8 +35,10 @@ export function KanbanColumn({
     <div
       ref={setNodeRef}
       className={cn(
-        'bg-surface-2/30 flex h-full min-h-[560px] w-[275px] shrink-0 flex-col rounded-[10px] border border-border/70 p-2.5 transition-colors duration-[140ms]',
-        isOver ? 'border-accent/80 bg-accent-subtle/20' : 'border-border/70',
+        'bg-surface-2/30 flex h-full min-h-[560px] w-[275px] shrink-0 flex-col rounded-[10px] border p-2.5 transition-colors duration-150',
+        isOver
+          ? 'border-border-strong bg-surface-2/70 ring-1 ring-border-strong'
+          : 'border-border/70',
         className
       )}
     >
@@ -67,7 +69,14 @@ export function KanbanColumn({
         )}
       </div>
 
-      <div className="flex flex-1 flex-col gap-2 overflow-y-auto pr-0.5">{children}</div>
+      <div className="flex flex-1 flex-col gap-2 overflow-y-auto pr-0.5">
+        {children}
+        {isOver && (
+          <div className="h-[95px] w-full rounded-[8px] border-2 border-dashed border-border-strong/60 bg-surface-3/30 transition-all flex items-center justify-center text-[11px] text-text-muted font-medium select-none pointer-events-none">
+            Drop candidate here
+          </div>
+        )}
+      </div>
     </div>
   );
 }

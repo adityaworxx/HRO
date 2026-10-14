@@ -10,6 +10,9 @@ import {
   type DragStartEvent,
   DragOverlay,
   useDraggable,
+  pointerWithin,
+  rectIntersection,
+  type CollisionDetection,
 } from '@dnd-kit/core';
 import { useCandidates, useUpdateCandidateStage } from '../hooks';
 import { useOpenings } from '@/features/openings/hooks';
@@ -39,6 +42,14 @@ const PIPELINE_STAGES: CandidateStage[] = [
   'Joined',
 ];
 
+const collisionDetectionStrategy: CollisionDetection = (args) => {
+  const pointerCollisions = pointerWithin(args);
+  if (pointerCollisions.length > 0) {
+    return pointerCollisions;
+  }
+  return rectIntersection(args);
+};
+
 function DraggableCandidateCard({
   candidate,
   onClick,
@@ -46,25 +57,25 @@ function DraggableCandidateCard({
   candidate: Candidate;
   onClick: () => void;
 }) {
-  const { attributes, listeners, setNodeRef, transform, isDragging } = useDraggable({
+  const { attributes, listeners, setNodeRef, isDragging } = useDraggable({
     id: candidate.id,
     data: { candidate },
   });
 
-  const style = transform
-    ? {
-        transform: `translate3d(${transform.x}px, ${transform.y}px, 0)`,
-        zIndex: 50,
-      }
-    : undefined;
+  if (isDragging) {
+    return (
+      <div
+        ref={setNodeRef}
+        className="h-[105px] w-full rounded-[8px] border border-dashed border-border/80 bg-surface-2/20 select-none pointer-events-none opacity-40"
+      />
+    );
+  }
 
   return (
-    <div ref={setNodeRef} style={style} {...listeners} {...attributes}>
+    <div ref={setNodeRef} {...listeners} {...attributes} className="touch-none select-none">
       <CandidateCard
         candidate={candidate}
         onClick={onClick}
-        isDragging={isDragging}
-        className={isDragging ? 'ring-accent shadow-lg ring-2' : ''}
       />
     </div>
   );
@@ -194,7 +205,12 @@ export function PipelineBoard() {
       </div>
 
       {/* Kanban Board Canvas */}
-      <DndContext sensors={sensors} onDragStart={handleDragStart} onDragEnd={handleDragEnd}>
+      <DndContext
+        sensors={sensors}
+        collisionDetection={collisionDetectionStrategy}
+        onDragStart={handleDragStart}
+        onDragEnd={handleDragEnd}
+      >
         <div className="flex gap-3 overflow-x-auto pt-1 pb-4">
           {PIPELINE_STAGES.map((stage) => {
             const stageCandidates = filteredCandidates.filter((c) => c.stage === stage);
@@ -214,9 +230,9 @@ export function PipelineBoard() {
         </div>
 
         {/* Drag Overlay Preview */}
-        <DragOverlay>
+        <DragOverlay dropAnimation={{ duration: 150, easing: 'cubic-bezier(0.18, 0.67, 0.6, 1.22)' }}>
           {activeCandidate ? (
-            <div className="w-[275px] shadow-lg">
+            <div className="w-[253px] cursor-grabbing select-none pointer-events-none rounded-[8px] overflow-hidden shadow-2xl">
               <CandidateCard candidate={activeCandidate} isDragging />
             </div>
           ) : null}

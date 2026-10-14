@@ -11,6 +11,7 @@ import type { OpeningStatus, CandidateStage } from '@/lib/domain/status-transiti
 import type { UserRole } from '@/lib/navigation';
 import { PRIMARY_MANAGER, PRIMARY_HR, INITIAL_USERS } from '@/fixtures/users';
 import { supabase } from './client';
+import { resetSupabaseDemoData } from '@/lib/demo-data';
 
 let currentActiveUser: User = PRIMARY_MANAGER;
 
@@ -590,7 +591,7 @@ export const supabaseApi: HroApiClient = {
     },
 
     resetDemoData: async () => {
-      console.info('resetDemoData called in Supabase mode');
+      await resetSupabaseDemoData();
     },
   },
 

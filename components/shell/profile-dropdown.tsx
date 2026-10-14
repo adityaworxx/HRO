@@ -46,7 +46,7 @@ export function ProfileDropdown() {
           title={`${displayName} (${displayDepartment})`}
         >
           <Avatar className="border-border/80 hover:border-border-strong h-8 w-8 border shadow-2xs transition-colors">
-            <AvatarFallback className="bg-surface-3 text-text text-[12px] font-bold">
+            <AvatarFallback className="bg-surface-3 text-text text-[12px] font-bold" suppressHydrationWarning>
               {displayInitials}
             </AvatarFallback>
           </Avatar>

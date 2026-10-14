@@ -14,6 +14,8 @@ export function Toaster({ ...props }: ToasterProps) {
       theme={currentTheme}
       position="top-center"
       offset="72px"
+      gap={10}
+      duration={3500}
       className="toaster group"
       toastOptions={{
         classNames: {
