@@ -28,14 +28,14 @@ export function OpeningHeaderRow({ className }: { className?: string }) {
     <div
       className={cn(
         'hidden sm:grid h-[32px] items-center px-5 border-b border-border text-[12px] leading-[16px] text-text-subtle font-normal select-none',
-        'grid-cols-[minmax(0,1fr)_140px_130px_24px] xl:grid-cols-[minmax(240px,2fr)_140px_120px_120px_120px_24px] gap-4',
+        'grid-cols-[minmax(0,1fr)_140px_130px_24px] lg:grid-cols-[minmax(240px,2fr)_140px_120px_120px_120px_24px] gap-4',
         className
       )}
     >
       <div>Opening</div>
       <div>Status</div>
-      <div className="hidden xl:block">Location</div>
-      <div className="hidden xl:block">Budget</div>
+      <div className="hidden lg:block">Location</div>
+      <div className="hidden lg:block">Budget</div>
       <div>Candidates</div>
       <div aria-hidden="true" />
     </div>
@@ -66,7 +66,7 @@ export function OpeningRow({
         'group relative grid min-h-[56px] h-[56px] items-center px-5 border-b border-border last:border-b-0 transition-colors',
         'hover:bg-surface-2 active:bg-surface-3',
         'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-inset',
-        'grid-cols-[minmax(0,1fr)_24px] sm:grid-cols-[minmax(0,1fr)_140px_130px_24px] xl:grid-cols-[minmax(240px,2fr)_140px_120px_120px_120px_24px] gap-4',
+        'grid-cols-[minmax(0,1fr)_24px] sm:grid-cols-[minmax(0,1fr)_140px_130px_24px] lg:grid-cols-[minmax(240px,2fr)_140px_120px_120px_120px_24px] gap-4',
         className
       )}
     >
@@ -77,11 +77,11 @@ export function OpeningRow({
         </span>
 
         <div className="truncate text-[13px] leading-[20px] text-text-muted">
-          {/* Desktop subline (>=1280px): Department only */}
-          <span className="hidden xl:inline truncate">{opening.department}</span>
+          {/* Desktop subline (>=1024px): Department only */}
+          <span className="hidden lg:inline truncate">{opening.department}</span>
 
-          {/* Responsive subline (<1280px and >=640px): Department · Location · Budget */}
-          <span className="hidden sm:inline xl:hidden truncate">
+          {/* Responsive subline (<1024px and >=640px): Department · Location · Budget */}
+          <span className="hidden sm:inline lg:hidden truncate">
             {opening.department} <span className="text-text-subtle">·</span> {opening.location}{' '}
             <span className="text-text-subtle">·</span>{' '}
             <span className="tabular-nums">{budgetText}</span>
@@ -118,13 +118,13 @@ export function OpeningRow({
         )}
       </div>
 
-      {/* 3. Location Cell (Desktop >=1280px only) */}
-      <div className="hidden xl:block min-w-0 truncate text-[13px] leading-[20px] text-text-muted">
+      {/* 3. Location Cell (Desktop >=1024px only) */}
+      <div className="hidden lg:block min-w-0 truncate text-[13px] leading-[20px] text-text-muted">
         {opening.location}
       </div>
 
-      {/* 4. Budget Cell (Desktop >=1280px only) */}
-      <div className="hidden xl:block min-w-0 truncate text-[13px] leading-[20px] text-text-muted tabular-nums">
+      {/* 4. Budget Cell (Desktop >=1024px only) */}
+      <div className="hidden lg:block min-w-0 truncate text-[13px] leading-[20px] text-text-muted tabular-nums">
         {budgetText}
       </div>
 
