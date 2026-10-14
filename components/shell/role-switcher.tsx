@@ -20,7 +20,7 @@ export function RoleSwitcher({ isCollapsed = false }: { isCollapsed?: boolean })
   const isManager = role === 'manager';
 
   return (
-    <Tooltip open={isCollapsed ? undefined : false}>
+    <Tooltip>
       <TooltipTrigger asChild>
         <button
           type="button"
@@ -53,13 +53,15 @@ export function RoleSwitcher({ isCollapsed = false }: { isCollapsed?: boolean })
           </div>
         </button>
       </TooltipTrigger>
-      <TooltipContent
-        side="right"
-        sideOffset={14}
-        className="font-medium text-[12px] z-50 pointer-events-none select-none"
-      >
-        Current Role: {isManager ? 'Manager' : 'HR'} (Click to switch)
-      </TooltipContent>
+      {isCollapsed && (
+        <TooltipContent
+          side="right"
+          sideOffset={14}
+          className="font-medium text-[12px] z-50 pointer-events-none select-none"
+        >
+          Current Role: {isManager ? 'Manager' : 'HR'} (Click to switch)
+        </TooltipContent>
+      )}
     </Tooltip>
   );
 }

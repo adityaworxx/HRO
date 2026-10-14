@@ -7,7 +7,7 @@ import { useUiStore } from '@/lib/store';
 import { NAVIGATION_ITEMS } from '@/lib/navigation';
 import { RoleSwitcher } from './role-switcher';
 import { cn } from '@/lib/utils';
-import { PanelLeftClose, X } from 'lucide-react';
+import { PanelLeftClose, PanelLeftOpen, X } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import {
   TooltipProvider,
@@ -149,6 +149,7 @@ export function Sidebar() {
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, [mobileSidebarOpen, setMobileSidebarOpen]);
 
+
   return (
     <>
       {/* 1. MOBILE OVERLAY DRAWER (lg:hidden) */}
@@ -224,43 +225,37 @@ export function Sidebar() {
         >
           {/* Brand Header: Unified container, zero unmounting */}
           <div className="border-border flex h-14 w-full shrink-0 items-center border-b px-3.5 relative overflow-hidden">
-            <div className="flex items-center gap-2.5 min-w-0">
-              <NavItemTooltip enabled={isCollapsed} title="Expand sidebar (Ctrl+B)">
+            {isCollapsed ? (
+              <NavItemTooltip enabled={true} title="Expand sidebar (Ctrl+B)">
                 <button
                   type="button"
-                  onClick={isCollapsed ? toggleSidebar : undefined}
-                  className={cn(
-                    'flex h-9 w-9 shrink-0 items-center justify-center rounded-[var(--radius-md)] transition-colors',
-                    isCollapsed && 'cursor-pointer hover:bg-surface-2'
-                  )}
+                  onClick={toggleSidebar}
+                  aria-label="Expand sidebar"
+                  className="group relative flex h-9 w-9 shrink-0 items-center justify-center rounded-[var(--radius-md)] cursor-pointer hover:bg-surface-2 transition-colors select-none"
                 >
-                  <Link
-                    href="/"
-                    tabIndex={isCollapsed ? -1 : 0}
-                    onClick={(e) => {
-                      if (isCollapsed) {
-                        e.preventDefault();
-                        toggleSidebar();
-                      }
-                    }}
-                    className="bg-accent text-bg flex h-8 w-8 items-center justify-center rounded-[var(--radius-sm)] font-bold shadow-xs select-none"
-                  >
+                  <div className="bg-accent text-bg flex h-8 w-8 items-center justify-center rounded-[var(--radius-sm)] font-bold shadow-xs transition-opacity duration-150 group-hover:opacity-0">
                     H
-                  </Link>
+                  </div>
+                  <div className="absolute inset-0 flex items-center justify-center opacity-0 transition-opacity duration-150 group-hover:opacity-100 text-accent">
+                    <PanelLeftOpen className="h-4.5 w-4.5" />
+                  </div>
                 </button>
               </NavItemTooltip>
-
-              <span
-                className={cn(
-                  'text-text truncate text-[15px] font-semibold tracking-tight transition-[opacity,transform,max-width] ease-out select-none',
-                  isCollapsed
-                    ? 'opacity-0 -translate-x-2 max-w-0 pointer-events-none duration-150'
-                    : 'opacity-100 translate-x-0 max-w-[100px] duration-200 delay-100'
-                )}
-              >
-                HRO
-              </span>
-            </div>
+            ) : (
+              <div className="flex items-center gap-2.5 min-w-0">
+                <Link
+                  href="/"
+                  className="flex h-9 w-9 shrink-0 items-center justify-center rounded-[var(--radius-md)] hover:bg-surface-2 transition-colors select-none"
+                >
+                  <div className="bg-accent text-bg flex h-8 w-8 items-center justify-center rounded-[var(--radius-sm)] font-bold shadow-xs">
+                    H
+                  </div>
+                </Link>
+                <span className="text-text truncate text-[15px] font-semibold tracking-tight select-none">
+                  HRO
+                </span>
+              </div>
+            )}
 
             {/* Collapse Toggle Button: Absolute right, zero layout interference */}
             <div
@@ -278,6 +273,7 @@ export function Sidebar() {
                 tabIndex={isCollapsed ? -1 : 0}
                 className="text-text-subtle hover:text-text hidden h-7 w-7 cursor-pointer lg:flex shrink-0"
                 title="Collapse sidebar (Ctrl+B)"
+                aria-label="Collapse sidebar"
               >
                 <PanelLeftClose className="h-4 w-4" />
                 <span className="sr-only">Collapse sidebar</span>

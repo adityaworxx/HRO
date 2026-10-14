@@ -8,15 +8,31 @@ import { FullscreenToggle } from './fullscreen-toggle';
 import { NotificationsPopover } from './notifications-popover';
 import { ProfileDropdown } from './profile-dropdown';
 import { Button } from '@/components/ui/button';
-import { Search, Menu } from 'lucide-react';
+import { Search, Menu, PanelLeftClose, PanelLeftOpen } from 'lucide-react';
 import { useUiStore } from '@/lib/store';
 
 export function Topbar() {
-  const { setCommandPaletteOpen, toggleMobileSidebar } = useUiStore();
+  const { setCommandPaletteOpen, toggleMobileSidebar, sidebarCollapsed, toggleSidebar } = useUiStore();
 
   return (
     <header className="border-border bg-surface-1/95 shrink-0 z-20 flex h-14 w-full items-center justify-between border-b px-3 sm:px-6 lg:px-8 backdrop-blur relative">
       <div className="flex items-center gap-2.5">
+        {/* Desktop Sidebar Toggle */}
+        <Button
+          variant="ghost"
+          size="icon"
+          onClick={toggleSidebar}
+          className="text-text-subtle hover:text-text hover:bg-surface-2 h-9 w-9 cursor-pointer hidden lg:flex shrink-0"
+          title={sidebarCollapsed ? 'Expand sidebar (Ctrl+B)' : 'Collapse sidebar (Ctrl+B)'}
+          aria-label={sidebarCollapsed ? 'Expand sidebar' : 'Collapse sidebar'}
+        >
+          {sidebarCollapsed ? (
+            <PanelLeftOpen className="h-4.5 w-4.5 text-accent" />
+          ) : (
+            <PanelLeftClose className="h-4.5 w-4.5" />
+          )}
+        </Button>
+
         {/* Mobile Hamburger Menu Toggle */}
         <Button
           variant="ghost"

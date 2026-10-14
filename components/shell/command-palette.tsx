@@ -19,11 +19,21 @@ export function CommandPalette() {
 
   React.useEffect(() => {
     const down = (e: KeyboardEvent) => {
+      const target = e.target as HTMLElement | null;
+      const isInput =
+        target?.tagName === 'INPUT' ||
+        target?.tagName === 'TEXTAREA' ||
+        target?.isContentEditable;
+
       if ((e.key === 'k' || e.key === 'K') && (e.metaKey || e.ctrlKey)) {
         e.preventDefault();
         setCommandPaletteOpen(!commandPaletteOpen);
       }
-      if ((e.key === 'b' || e.key === 'B') && (e.metaKey || e.ctrlKey)) {
+      if (
+        !isInput &&
+        (e.key === 'b' || e.key === 'B' || e.code === 'KeyB') &&
+        (e.metaKey || e.ctrlKey)
+      ) {
         e.preventDefault();
         toggleSidebar();
       }
