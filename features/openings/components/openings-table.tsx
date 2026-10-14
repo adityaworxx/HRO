@@ -95,16 +95,13 @@ export function OpeningsTable() {
       },
       {
         accessorKey: 'location',
-        header: 'Location & Type',
+        header: 'Location',
         cell: ({ row }) => {
           const opening = row.original;
           return (
-            <div className="space-y-0.5 text-[13px]">
-              <div className="text-text flex items-center gap-1.5">
-                <MapPin className="text-text-muted h-3.5 w-3.5" />
-                <span>{opening.location}</span>
-              </div>
-              <span className="text-text-muted text-[12px]">{opening.employmentType}</span>
+            <div className="text-text flex items-center gap-1.5 text-[13px]">
+              <MapPin className="text-text-muted h-3.5 w-3.5 shrink-0" />
+              <span>{opening.location}</span>
             </div>
           );
         },

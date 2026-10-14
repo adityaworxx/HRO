@@ -49,6 +49,14 @@ async function main() {
 
     await page.waitForTimeout(600);
 
+    // Save table screenshot
+    const tableFilename = `openings-table-${theme}.png`;
+    const tableLocalPath = path.join(outDir, tableFilename);
+    const tableArtPath = path.join(artifactDir, tableFilename);
+    await page.screenshot({ path: tableLocalPath });
+    fs.copyFileSync(tableLocalPath, tableArtPath);
+    console.log(`Saved: ${tableFilename}`);
+
     // Click the select trigger to open the custom dropdown menu
     const selectTrigger = page.locator('button[role="combobox"]').first();
     if (await selectTrigger.isVisible()) {
