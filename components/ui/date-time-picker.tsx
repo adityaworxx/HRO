@@ -17,6 +17,8 @@ import {
   setMinutes,
   parseISO,
   isValid,
+  startOfDay,
+  isBefore,
 } from 'date-fns';
 import { Calendar as CalendarIcon, Clock, ChevronLeft, ChevronRight, ChevronDown } from 'lucide-react';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
@@ -28,6 +30,7 @@ export interface DateTimePickerProps {
   placeholder?: string;
   className?: string;
   disabled?: boolean;
+  minDate?: Date;
 }
 
 const COMMON_TIME_SLOTS = [
@@ -90,14 +93,20 @@ export function DateTimePicker({
   placeholder = 'Select date & time',
   className,
   disabled = false,
+  minDate,
 }: DateTimePickerProps) {
   const [open, setOpen] = React.useState(false);
+
+  const effectiveMinDate = React.useMemo(() => {
+    return minDate ?? startOfDay(new Date());
+  }, [minDate]);
 
   const parsedDate = React.useMemo(() => {
     if (!value) return new Date();
     const d = new Date(value);
-    return isValid(d) ? d : new Date();
-  }, [value]);
+    if (!isValid(d)) return new Date();
+    return isBefore(startOfDay(d), effectiveMinDate) ? new Date() : d;
+  }, [value, effectiveMinDate]);
 
   const [selectedDate, setSelectedDate] = React.useState<Date>(parsedDate);
   const [viewMonth, setViewMonth] = React.useState<Date>(parsedDate);
@@ -107,11 +116,12 @@ export function DateTimePicker({
     if (value) {
       const d = new Date(value);
       if (isValid(d)) {
-        setSelectedDate(d);
-        setViewMonth(d);
+        const adjustedDate = isBefore(startOfDay(d), effectiveMinDate) ? new Date() : d;
+        setSelectedDate(adjustedDate);
+        setViewMonth(adjustedDate);
       }
     }
-  }, [value]);
+  }, [value, effectiveMinDate]);
 
   // Calendar days grid calculation
   const calendarDays = React.useMemo(() => {
@@ -121,6 +131,11 @@ export function DateTimePicker({
     const endDate = endOfWeek(monthEnd);
     return eachDayOfInterval({ start: startDate, end: endDate });
   }, [viewMonth]);
+
+  const isPrevMonthDisabled = React.useMemo(() => {
+    const prevMonthEnd = endOfMonth(subMonths(viewMonth, 1));
+    return isBefore(prevMonthEnd, effectiveMinDate);
+  }, [viewMonth, effectiveMinDate]);
 
   const handleSelectDate = (day: Date) => {
     const updated = new Date(selectedDate);
@@ -148,7 +163,7 @@ export function DateTimePicker({
           type="button"
           disabled={disabled}
           className={cn(
-            'border-border bg-surface-2 hover:bg-surface-3 text-text focus:border-border-strong flex h-9 w-full items-center justify-between rounded-[var(--radius-sm)] border px-3 text-[13px] font-medium outline-none transition-colors disabled:cursor-not-allowed disabled:opacity-50 select-none',
+            'border-border bg-surface-2 hover:bg-surface-3 text-text focus:border-border-strong flex h-9 w-full items-center justify-between rounded-[var(--radius-sm)] border px-3 text-[13px] font-medium outline-none transition-colors disabled:cursor-not-allowed disabled:opacity-50 select-none cursor-pointer',
             className
           )}
         >
@@ -180,8 +195,14 @@ export function DateTimePicker({
               <div className="flex items-center gap-0.5">
                 <button
                   type="button"
+                  disabled={isPrevMonthDisabled}
                   onClick={() => setViewMonth(subMonths(viewMonth, 1))}
-                  className="h-7 w-7 rounded-[6px] hover:bg-surface-2 text-text-muted hover:text-text flex items-center justify-center transition-colors"
+                  className={cn(
+                    'h-7 w-7 rounded-[6px] flex items-center justify-center transition-colors',
+                    isPrevMonthDisabled
+                      ? 'text-text-subtle/25 cursor-not-allowed pointer-events-none'
+                      : 'hover:bg-surface-2 text-text-muted hover:text-text cursor-pointer'
+                  )}
                   aria-label="Previous month"
                 >
                   <ChevronLeft className="h-4 w-4" />
@@ -189,7 +210,7 @@ export function DateTimePicker({
                 <button
                   type="button"
                   onClick={() => setViewMonth(addMonths(viewMonth, 1))}
-                  className="h-7 w-7 rounded-[6px] hover:bg-surface-2 text-text-muted hover:text-text flex items-center justify-center transition-colors"
+                  className="h-7 w-7 rounded-[6px] hover:bg-surface-2 text-text-muted hover:text-text flex items-center justify-center transition-colors cursor-pointer"
                   aria-label="Next month"
                 >
                   <ChevronRight className="h-4 w-4" />
@@ -212,6 +233,18 @@ export function DateTimePicker({
                 const isSelected = isSameDay(day, selectedDate);
                 const isCurrentMonth = isSameMonth(day, viewMonth);
                 const isCurrentDay = isToday(day);
+                const isPast = isBefore(startOfDay(day), effectiveMinDate);
+
+                // Dates before minDate (e.g. today) or outside current month are not shown
+                if (isPast || !isCurrentMonth) {
+                  return (
+                    <div
+                      key={day.toISOString()}
+                      className="h-8 w-8 pointer-events-none"
+                      aria-hidden="true"
+                    />
+                  );
+                }
 
                 return (
                   <button
@@ -219,9 +252,8 @@ export function DateTimePicker({
                     type="button"
                     onClick={() => handleSelectDate(day)}
                     className={cn(
-                      'h-8 w-8 text-[12px] rounded-[6px] font-medium transition-colors flex items-center justify-center tabular-nums select-none',
-                      !isCurrentMonth && 'text-text-subtle/30',
-                      isCurrentMonth && !isSelected && 'text-text hover:bg-surface-2',
+                      'h-8 w-8 text-[12px] rounded-[6px] font-medium transition-colors flex items-center justify-center tabular-nums select-none cursor-pointer',
+                      !isSelected && 'text-text hover:bg-surface-2',
                       isSelected && 'bg-accent text-bg font-semibold shadow-xs',
                       isCurrentDay && !isSelected && 'border border-border-strong font-bold'
                     )}
