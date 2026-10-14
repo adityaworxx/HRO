@@ -224,7 +224,7 @@ export function ShortlistReview() {
               </Button>
 
               <Button
-                variant="destructive"
+                variant="secondary"
                 onClick={() => handleDecision('Rejected')}
                 loading={recordDecision.isPending}
                 className="flex-1 gap-2"

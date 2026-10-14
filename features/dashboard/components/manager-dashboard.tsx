@@ -263,7 +263,7 @@ export function ManagerDashboard() {
                                 </Button>
                                 <Button
                                   className="flex-1 gap-1.5"
-                                  variant="destructive"
+                                  variant="secondary"
                                   onClick={() =>
                                     handleDecision(candidate.id, candidate.name, 'Rejected')
                                   }

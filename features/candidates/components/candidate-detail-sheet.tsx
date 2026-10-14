@@ -265,7 +265,7 @@ export function CandidateDetailSheet({ candidate, open, onOpenChange }: Candidat
                   <span>Shortlist for Interview</span>
                 </Button>
                 <Button
-                  variant="destructive"
+                  variant="secondary"
                   className="flex-1 gap-1.5"
                   onClick={() => handleManagerDecision('Rejected')}
                 >
