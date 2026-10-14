@@ -42,6 +42,30 @@ export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
     ref
   ) => {
     const Comp = asChild ? Slot : 'button';
+
+    const renderedContent = React.useMemo(() => {
+      if (!loading) return children;
+
+      const childArray = React.Children.toArray(children);
+      const firstChild = childArray[0];
+
+      // If the first child is an icon/element (e.g. Lucide icon component or svg), replace it cleanly
+      const hasLeadingIcon =
+        React.isValidElement(firstChild) &&
+        (typeof firstChild.type === 'function' ||
+          (typeof firstChild.type === 'object' && firstChild.type !== null) ||
+          firstChild.type === 'svg');
+
+      const remainingChildren = hasLeadingIcon ? childArray.slice(1) : childArray;
+
+      return (
+        <>
+          <Loader2 className="h-4 w-4 animate-spin shrink-0" />
+          {remainingChildren}
+        </>
+      );
+    }, [loading, children]);
+
     return (
       <Comp
         className={cn(buttonVariants({ variant, size, className }))}
@@ -49,14 +73,7 @@ export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
         disabled={disabled || loading}
         {...props}
       >
-        {loading ? (
-          <>
-            <Loader2 className="h-4 w-4 animate-spin" />
-            <span>{children}</span>
-          </>
-        ) : (
-          children
-        )}
+        {renderedContent}
       </Comp>
     );
   }

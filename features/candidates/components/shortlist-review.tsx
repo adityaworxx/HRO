@@ -26,6 +26,7 @@ export function ShortlistReview() {
 
   const [selectedId, setSelectedId] = React.useState<string | null>(null);
   const [managerComment, setManagerComment] = React.useState<string>('');
+  const [pendingDecision, setPendingDecision] = React.useState<'Shortlisted' | 'Rejected' | null>(null);
 
   // Auto-select first pending candidate
   const activeCandidate = React.useMemo(() => {
@@ -36,6 +37,8 @@ export function ShortlistReview() {
 
   const handleDecision = (decision: 'Shortlisted' | 'Rejected') => {
     if (!activeCandidate) return;
+
+    setPendingDecision(decision);
 
     recordDecision.mutate(
       {
@@ -51,14 +54,14 @@ export function ShortlistReview() {
             toast.error(`${activeCandidate.name} has been marked as rejected.`);
           }
           setManagerComment('');
-          // Select next in list if available
-          const nextIndex = pendingCandidates.findIndex((c) => c.id === activeCandidate.id);
-          const nextCandidate = pendingCandidates[nextIndex + 1] ?? pendingCandidates[0];
-          if (nextCandidate && nextCandidate.id !== activeCandidate.id) {
-            setSelectedId(nextCandidate.id);
-          } else {
-            setSelectedId(null);
-          }
+          // Select next in remaining list
+          const remaining = pendingCandidates.filter((c) => c.id !== activeCandidate.id);
+          setSelectedId(remaining[0]?.id ?? null);
+          setPendingDecision(null);
+        },
+        onError: (err) => {
+          toast.error(err instanceof Error ? err.message : 'Failed to record decision');
+          setPendingDecision(null);
         },
       }
     );
@@ -216,21 +219,29 @@ export function ShortlistReview() {
               <Button
                 variant="primary"
                 onClick={() => handleDecision('Shortlisted')}
-                loading={recordDecision.isPending}
-                className="w-full sm:flex-1 gap-2"
+                loading={pendingDecision === 'Shortlisted'}
+                disabled={recordDecision.isPending}
+                className="w-full sm:flex-1 gap-2 cursor-pointer h-10 text-[13px] font-medium"
               >
-                <CheckCircle2 className="h-4 w-4" />
-                <span>Shortlist for Technical Interview</span>
+                <CheckCircle2 className="h-4 w-4 shrink-0" />
+                <span>
+                  {pendingDecision === 'Shortlisted'
+                    ? 'Shortlisting...'
+                    : 'Shortlist for Technical Interview'}
+                </span>
               </Button>
 
               <Button
                 variant="secondary"
                 onClick={() => handleDecision('Rejected')}
-                loading={recordDecision.isPending}
-                className="w-full sm:flex-1 gap-2"
+                loading={pendingDecision === 'Rejected'}
+                disabled={recordDecision.isPending}
+                className="w-full sm:flex-1 gap-2 cursor-pointer h-10 text-[13px] font-medium"
               >
-                <XCircle className="h-4 w-4" />
-                <span>Reject Candidate</span>
+                <XCircle className="h-4 w-4 shrink-0" />
+                <span>
+                  {pendingDecision === 'Rejected' ? 'Rejecting...' : 'Reject Candidate'}
+                </span>
               </Button>
             </CardFooter>
           </Card>

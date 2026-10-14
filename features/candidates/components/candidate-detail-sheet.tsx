@@ -196,37 +196,37 @@ export function CandidateDetailSheet({ candidate, open, onOpenChange }: Candidat
           </p>
         </div>
 
-        {/* 4. KEY STATS BAR (4-Column dotted divider layout from reference) */}
-        <div className="mx-6 mt-4 py-3 border-y border-dashed border-border/80 grid grid-cols-4 gap-2 text-left select-none">
-          <div>
-            <span className="text-[11px] font-medium text-text-subtle uppercase tracking-wider block">
+        {/* 4. KEY STATS BAR (4-Column dotted divider layout with vertical dividers from reference) */}
+        <div className="mx-6 mt-4 py-3 border-y border-dashed border-border/80 grid grid-cols-4 divide-x divide-border/60 text-left select-none">
+          <div className="pr-2">
+            <span className="text-[10px] sm:text-[11px] font-medium text-text-subtle uppercase tracking-wider block">
               Experience
             </span>
-            <span className="text-[16px] font-bold text-text tabular-nums font-mono mt-0.5 block">
+            <span className="text-[15px] sm:text-[16px] font-bold text-text tabular-nums font-mono mt-0.5 block">
               {candidate.experienceYears}y
             </span>
           </div>
-          <div>
-            <span className="text-[11px] font-medium text-text-subtle uppercase tracking-wider block">
+          <div className="px-2">
+            <span className="text-[10px] sm:text-[11px] font-medium text-text-subtle uppercase tracking-wider block">
               Notice
             </span>
-            <span className="text-[16px] font-bold text-text tabular-nums font-mono mt-0.5 block truncate">
+            <span className="text-[15px] sm:text-[16px] font-bold text-text tabular-nums font-mono mt-0.5 block truncate">
               {candidate.noticePeriod}
             </span>
           </div>
-          <div>
-            <span className="text-[11px] font-medium text-text-subtle uppercase tracking-wider block">
+          <div className="px-2">
+            <span className="text-[10px] sm:text-[11px] font-medium text-text-subtle uppercase tracking-wider block">
               Expected
             </span>
-            <span className="text-[16px] font-bold text-text tabular-nums font-mono mt-0.5 block">
+            <span className="text-[15px] sm:text-[16px] font-bold text-text tabular-nums font-mono mt-0.5 block">
               {formatCtc(candidate.expectedCtc)}
             </span>
           </div>
-          <div>
-            <span className="text-[11px] font-medium text-text-subtle uppercase tracking-wider block">
+          <div className="pl-2">
+            <span className="text-[10px] sm:text-[11px] font-medium text-text-subtle uppercase tracking-wider block">
               Source
             </span>
-            <span className="text-[16px] font-bold text-text truncate mt-0.5 block">
+            <span className="text-[15px] sm:text-[16px] font-bold text-text truncate mt-0.5 block">
               {candidate.source}
             </span>
           </div>
@@ -265,6 +265,25 @@ export function CandidateDetailSheet({ candidate, open, onOpenChange }: Candidat
             <div className="flex items-center gap-1.5 text-[11px] text-blue-500 font-medium pt-0.5 select-none">
               <CheckCircle2 className="h-3.5 w-3.5 fill-blue-500 text-surface-1 shrink-0" />
               <span>Verified Candidate Contact</span>
+            </div>
+          </div>
+
+          <div className="border-t border-dashed border-border/80" />
+
+          {/* Field: Username / Candidate Slug (Matches reference bottom widget) */}
+          <div className="space-y-1.5">
+            <label className="text-[12px] font-semibold text-text flex items-center gap-1 select-none">
+              <span>Candidate Handle</span>
+              <span className="text-accent">*</span>
+            </label>
+            <div className="flex rounded-[8px] border border-border/80 bg-surface-2/60 shadow-2xs overflow-hidden">
+              <div className="px-3 py-2 bg-surface-3/50 border-r border-border/80 text-[12px] font-mono text-text-muted select-none flex items-center">
+                <span>hro.internal/@</span>
+              </div>
+              <div className="flex-1 px-3 py-2 text-[13px] text-text font-mono font-medium flex items-center justify-between">
+                <span>{candidate.name.toLowerCase().replace(/[^a-z0-9]/g, '')}</span>
+                <CheckCircle2 className="h-4 w-4 text-emerald-500 shrink-0" />
+              </div>
             </div>
           </div>
 
