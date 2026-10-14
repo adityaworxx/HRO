@@ -18,8 +18,16 @@ import {
   DialogFooter,
 } from '@/components/ui/dialog';
 import { EmptyState } from '@/components/hro/empty-state';
-import { Calendar, Clock, Phone, CheckCircle2, XCircle, PauseCircle } from 'lucide-react';
+import { Calendar, Clock, Phone, CheckCircle2, XCircle, PauseCircle, Building2 } from 'lucide-react';
 import { VideoCameraIcon } from '@/components/ui/icons';
+import {
+  Select,
+  SelectTrigger,
+  SelectValue,
+  SelectContent,
+  SelectItem,
+} from '@/components/ui/select';
+import { DateTimePicker } from '@/components/ui/date-time-picker';
 import { toast } from 'sonner';
 
 export function InterviewsView() {
@@ -229,25 +237,33 @@ export function InterviewsView() {
           <form onSubmit={handleSaveSchedule} className="space-y-4 py-2 text-[13px]">
             <div className="space-y-1.5">
               <label className="text-text text-[13px] font-medium">Interview Date & Time</label>
-              <Input
-                type="datetime-local"
+              <DateTimePicker
                 value={interviewDate}
-                onChange={(e) => setInterviewDate(e.target.value)}
-                required
+                onChange={(val) => setInterviewDate(val)}
               />
             </div>
 
             <div className="space-y-1.5">
               <label className="text-text text-[13px] font-medium">Interview Format</label>
-              <select
+              <Select
                 value={interviewMode}
-                onChange={(e) => setInterviewMode(e.target.value as 'Video' | 'Phone' | 'Onsite')}
-                className="border-border bg-surface-2 text-text h-9 w-full rounded border px-3 text-[13px]"
+                onValueChange={(val) => setInterviewMode(val as 'Video' | 'Phone' | 'Onsite')}
               >
-                <option value="Video">Google Meet / Video Call</option>
-                <option value="Phone">Phone Discussion</option>
-                <option value="Onsite">In-Person Technical Round</option>
-              </select>
+                <SelectTrigger className="border-border bg-surface-2 hover:bg-surface-3 text-text h-9 w-full rounded-[var(--radius-sm)] border px-3 text-[13px] font-medium">
+                  <SelectValue placeholder="Select interview format" />
+                </SelectTrigger>
+                <SelectContent align="start" className="w-[var(--radix-select-trigger-width)] min-w-[240px]">
+                  <SelectItem value="Video" icon={VideoCameraIcon} className="text-[13px] py-2 min-h-[36px] rounded-[6px]">
+                    Google Meet / Video Call
+                  </SelectItem>
+                  <SelectItem value="Phone" icon={Phone} className="text-[13px] py-2 min-h-[36px] rounded-[6px]">
+                    Phone Discussion
+                  </SelectItem>
+                  <SelectItem value="Onsite" icon={Building2} className="text-[13px] py-2 min-h-[36px] rounded-[6px]">
+                    In-Person Technical Round
+                  </SelectItem>
+                </SelectContent>
+              </Select>
             </div>
 
             <DialogFooter className="pt-2">
