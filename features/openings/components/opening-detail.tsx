@@ -115,16 +115,7 @@ export function OpeningDetail({ id }: OpeningDetailProps) {
           <div className="flex flex-wrap items-center gap-3 pt-1">
             <h1 className="text-text text-2xl font-bold tracking-tight">{opening.title}</h1>
             <StatusBadge status={opening.status} type="opening" />
-            <Badge
-              variant={
-                opening.urgency === 'High'
-                  ? 'danger'
-                  : opening.urgency === 'Normal'
-                    ? 'accent'
-                    : 'default'
-              }
-              className="text-[11px]"
-            >
+            <Badge variant="default" className="text-[11px]">
               {opening.urgency} Urgency
             </Badge>
           </div>

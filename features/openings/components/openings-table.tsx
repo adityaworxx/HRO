@@ -132,16 +132,11 @@ export function OpeningsTable() {
       {
         accessorKey: 'urgency',
         header: 'Urgency',
-        cell: ({ row }) => {
-          const urgency = row.original.urgency;
-          const variant =
-            urgency === 'High' ? 'danger' : urgency === 'Normal' ? 'accent' : 'default';
-          return (
-            <Badge variant={variant} className="text-[11px] font-medium">
-              {urgency}
-            </Badge>
-          );
-        },
+        cell: ({ row }) => (
+          <Badge variant="default" className="text-[11px] font-medium">
+            {row.original.urgency}
+          </Badge>
+        ),
       },
       {
         accessorKey: 'status',

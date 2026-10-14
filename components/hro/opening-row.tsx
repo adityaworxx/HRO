@@ -15,14 +15,6 @@ export interface OpeningRowProps {
   onReactivate?: (id: string, title: string) => void;
 }
 
-const STATUS_DOT_CLASS: Record<StatusColorToken, string> = {
-  info: 'bg-info',
-  warning: 'bg-warning',
-  success: 'bg-success',
-  danger: 'bg-danger',
-  neutral: 'bg-text-subtle',
-};
-
 export function OpeningHeaderRow({ className }: { className?: string }) {
   return (
     <div
@@ -53,7 +45,6 @@ export function OpeningRow({
     label: opening.status,
     token: 'neutral' as StatusColorToken,
   };
-  const dotColor = STATUS_DOT_CLASS[statusConfig.token] ?? 'bg-text-subtle';
 
   const minBudget = opening.budgetRange?.min ?? 0;
   const maxBudget = opening.budgetRange?.max ?? 0;
@@ -87,9 +78,8 @@ export function OpeningRow({
             <span className="tabular-nums">{budgetText}</span>
           </span>
 
-          {/* Mobile subline (<640px): Status dot + Status label · Location */}
+          {/* Mobile subline (<640px): Status label · Location */}
           <span className="inline-flex sm:hidden items-center gap-1.5 truncate">
-            <span className={cn('h-1.5 w-1.5 shrink-0 rounded-full', dotColor)} />
             <span>{statusConfig.label}</span>
             <span className="text-text-subtle">·</span>
             <span>{opening.location}</span>
@@ -99,7 +89,6 @@ export function OpeningRow({
 
       {/* 2. Status Cell (Hidden on mobile <640px where it stacks under title) */}
       <div className="hidden sm:flex items-center gap-2 min-w-0">
-        <span className={cn('h-1.5 w-1.5 shrink-0 rounded-full', dotColor)} />
         <span className="whitespace-nowrap text-[13px] leading-[20px] text-text-muted">
           {statusConfig.label}
         </span>

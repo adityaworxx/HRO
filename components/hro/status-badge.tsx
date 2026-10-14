@@ -6,6 +6,7 @@ import { cn } from '@/lib/utils';
 export interface StatusBadgeProps {
   status: OpeningStatus | CandidateStage | string;
   type?: 'opening' | 'candidate';
+  showDot?: boolean;
   className?: string;
 }
 
@@ -17,7 +18,7 @@ const DOT_COLOR_MAP: Record<string, string> = {
   neutral: 'bg-text-subtle',
 };
 
-export function StatusBadge({ status, type = 'opening', className }: StatusBadgeProps) {
+export function StatusBadge({ status, type = 'opening', showDot = false, className }: StatusBadgeProps) {
   let config: StatusConfig | undefined;
 
   if (type === 'opening') {
@@ -33,11 +34,12 @@ export function StatusBadge({ status, type = 'opening', className }: StatusBadge
   return (
     <span
       className={cn(
-        'inline-flex items-center gap-2 text-[13px] leading-[20px] font-normal text-text-muted select-none',
+        'inline-flex items-center text-[13px] leading-[20px] font-normal text-text-muted select-none',
+        showDot && 'gap-2',
         className
       )}
     >
-      <span className={cn('h-1.5 w-1.5 shrink-0 rounded-full', dotColor)} />
+      {showDot && <span className={cn('h-1.5 w-1.5 shrink-0 rounded-full', dotColor)} />}
       <span className="truncate">{label}</span>
     </span>
   );
