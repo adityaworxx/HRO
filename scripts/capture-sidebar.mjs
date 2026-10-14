@@ -23,10 +23,10 @@ async function main() {
   await page.goto('http://localhost:3000/', { waitUntil: 'networkidle' });
   await page.waitForTimeout(500);
 
-  // 1. Capture Expanded Sidebar
+  // 1. Capture Full Height Expanded Sidebar
   const expandedLocal = path.join(outDir, 'sidebar-expanded-dark.png');
   const expandedArt = path.join(artifactDir, 'sidebar-expanded-dark.png');
-  await page.screenshot({ path: expandedLocal, clip: { x: 0, y: 0, width: 320, height: 700 } });
+  await page.screenshot({ path: expandedLocal, clip: { x: 0, y: 0, width: 280, height: 900 } });
   fs.copyFileSync(expandedLocal, expandedArt);
   console.log('Saved: sidebar-expanded-dark.png');
 
@@ -37,7 +37,7 @@ async function main() {
   // 2. Collapse Sidebar by clicking collapse button
   const collapseBtn = page.locator('button[title*="Collapse sidebar"]');
   await collapseBtn.click();
-  await page.waitForTimeout(400); // Wait for 200ms transition + buffer
+  await page.waitForTimeout(400); // Wait for 280ms transition + buffer
 
   // Measure icon X position after collapse
   const firstIconAfter = await page.locator('nav[aria-label="Main Navigation"] svg').first().boundingBox();
@@ -46,10 +46,10 @@ async function main() {
   const deltaX = Math.abs((firstIconBefore?.x ?? 0) - (firstIconAfter?.x ?? 0));
   console.log(`Icon X movement: ${deltaX.toFixed(2)}px (should be ~0px)`);
 
-  // Capture Collapsed Sidebar
+  // Capture Full Height Collapsed Sidebar
   const collapsedLocal = path.join(outDir, 'sidebar-collapsed-dark.png');
   const collapsedArt = path.join(artifactDir, 'sidebar-collapsed-dark.png');
-  await page.screenshot({ path: collapsedLocal, clip: { x: 0, y: 0, width: 200, height: 700 } });
+  await page.screenshot({ path: collapsedLocal, clip: { x: 0, y: 0, width: 140, height: 900 } });
   fs.copyFileSync(collapsedLocal, collapsedArt);
   console.log('Saved: sidebar-collapsed-dark.png');
 
