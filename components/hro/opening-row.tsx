@@ -2,15 +2,16 @@
 
 import * as React from 'react';
 import Link from 'next/link';
-import { ChevronRight } from 'lucide-react';
+import { ChevronRight, Users } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import { Badge } from '@/components/ui/badge';
 import { OPENING_STATUS_MAP, type StatusColorToken } from './status-map';
 import type { Opening } from '@/types/entities';
 
 export interface OpeningRowProps {
   opening: Opening;
   candidatesCount?: number;
-  stageProgress?: number; // 0 to 4 filled segments
+  stageProgress?: number;
   className?: string;
   onReactivate?: (id: string, title: string) => void;
 }
@@ -19,8 +20,8 @@ export function OpeningHeaderRow({ className }: { className?: string }) {
   return (
     <div
       className={cn(
-        'hidden sm:grid h-[32px] items-center px-5 border-b border-border text-[12px] leading-[16px] text-text-subtle font-normal select-none',
-        'grid-cols-[minmax(0,1fr)_140px_130px_24px] lg:grid-cols-[minmax(240px,2fr)_140px_120px_120px_120px_24px] gap-4',
+        'hidden sm:grid h-[34px] items-center px-5 border-y border-border bg-surface-2/40 text-[11px] font-medium uppercase tracking-wider text-text-subtle select-none',
+        'grid-cols-[minmax(0,1fr)_140px_130px_24px] lg:grid-cols-[minmax(240px,2fr)_140px_130px_120px_130px_24px] gap-4',
         className
       )}
     >
@@ -37,7 +38,6 @@ export function OpeningHeaderRow({ className }: { className?: string }) {
 export function OpeningRow({
   opening,
   candidatesCount = 0,
-  stageProgress = 1,
   className,
   onReactivate,
 }: OpeningRowProps) {
@@ -54,20 +54,20 @@ export function OpeningRow({
     <Link
       href={`/openings/${opening.id}`}
       className={cn(
-        'group relative grid min-h-[56px] h-[56px] items-center px-5 border-b border-border last:border-b-0 transition-colors',
-        'hover:bg-surface-2 active:bg-surface-3',
+        'group relative grid min-h-[58px] h-[58px] items-center px-5 border-b border-border/70 last:border-b-0 transition-colors',
+        'hover:bg-surface-2/60 active:bg-surface-3',
         'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-inset',
-        'grid-cols-[minmax(0,1fr)_24px] sm:grid-cols-[minmax(0,1fr)_140px_130px_24px] lg:grid-cols-[minmax(240px,2fr)_140px_120px_120px_120px_24px] gap-4',
+        'grid-cols-[minmax(0,1fr)_24px] sm:grid-cols-[minmax(0,1fr)_140px_130px_24px] lg:grid-cols-[minmax(240px,2fr)_140px_130px_120px_130px_24px] gap-4',
         className
       )}
     >
       {/* 1. Opening Cell */}
       <div className="min-w-0 flex flex-col justify-center">
-        <span className="truncate text-[14px] leading-[20px] font-medium text-text">
+        <span className="truncate text-[14px] leading-[20px] font-medium text-text group-hover:text-accent transition-colors">
           {opening.title}
         </span>
 
-        <div className="truncate text-[13px] leading-[20px] text-text-muted">
+        <div className="truncate text-[12px] leading-[18px] text-text-muted mt-0.5">
           {/* Desktop subline (>=1024px): Department only */}
           <span className="hidden lg:inline truncate">{opening.department}</span>
 
@@ -75,7 +75,7 @@ export function OpeningRow({
           <span className="hidden sm:inline lg:hidden truncate">
             {opening.department} <span className="text-text-subtle">·</span> {opening.location}{' '}
             <span className="text-text-subtle">·</span>{' '}
-            <span className="tabular-nums">{budgetText}</span>
+            <span className="tabular-nums font-mono">{budgetText}</span>
           </span>
 
           {/* Mobile subline (<640px): Status label · Location */}
@@ -87,23 +87,31 @@ export function OpeningRow({
         </div>
       </div>
 
-      {/* 2. Status Cell (Hidden on mobile <640px where it stacks under title) */}
+      {/* 2. Status Cell (Low box style badge) */}
       <div className="hidden sm:flex items-center gap-2 min-w-0">
-        <span className="whitespace-nowrap text-[13px] leading-[20px] text-text-muted">
-          {statusConfig.label}
-        </span>
-        {opening.status === 'On Hold' && onReactivate && (
-          <button
-            type="button"
-            onClick={(e) => {
-              e.preventDefault();
-              e.stopPropagation();
-              onReactivate(opening.id, opening.title);
-            }}
-            className="opacity-0 group-hover:opacity-100 focus:opacity-100 transition-opacity ml-1 text-[12px] text-accent hover:underline font-medium"
-          >
-            Reactivate
-          </button>
+        {opening.status === 'On Hold' ? (
+          <div className="flex items-center gap-1.5">
+            <Badge variant="warning" className="text-[11px] font-medium py-0.5 px-2">
+              On Hold
+            </Badge>
+            {onReactivate && (
+              <button
+                type="button"
+                onClick={(e) => {
+                  e.preventDefault();
+                  e.stopPropagation();
+                  onReactivate(opening.id, opening.title);
+                }}
+                className="opacity-0 group-hover:opacity-100 focus:opacity-100 transition-opacity text-[11px] text-accent hover:underline font-medium cursor-pointer"
+              >
+                Reactivate
+              </button>
+            )}
+          </div>
+        ) : (
+          <Badge variant="default" className="text-[11px] font-medium py-0.5 px-2">
+            {statusConfig.label}
+          </Badge>
         )}
       </div>
 
@@ -113,34 +121,24 @@ export function OpeningRow({
       </div>
 
       {/* 4. Budget Cell (Desktop >=1024px only) */}
-      <div className="hidden lg:block min-w-0 truncate text-[13px] leading-[20px] text-text-muted tabular-nums">
+      <div className="hidden lg:block min-w-0 truncate text-[13px] leading-[20px] text-text-muted font-mono tabular-nums">
         {budgetText}
       </div>
 
-      {/* 5. Candidates Cell (Hidden on mobile <640px) */}
-      <div className="hidden sm:flex items-center gap-2.5 min-w-0">
-        <span className="whitespace-nowrap text-[13px] leading-[20px] text-text-muted tabular-nums">
-          {candidatesCount} shared
+      {/* 5. Candidates Cell (Clean pill/count) */}
+      <div className="hidden sm:flex items-center gap-1.5 min-w-0">
+        <Users className="h-3.5 w-3.5 text-text-subtle shrink-0 stroke-[1.75]" />
+        <span className="text-[13px] leading-[20px] text-text font-medium tabular-nums">
+          {candidatesCount}
         </span>
-        <div
-          className="flex w-[48px] h-[4px] gap-[2px] shrink-0 items-center"
-          aria-hidden="true"
-        >
-          {[0, 1, 2, 3].map((idx) => (
-            <span
-              key={idx}
-              className={cn(
-                'h-full flex-1 rounded-[1px]',
-                idx < stageProgress ? 'bg-text-muted' : 'bg-surface-3'
-              )}
-            />
-          ))}
-        </div>
+        <span className="text-[12px] leading-[20px] text-text-subtle">
+          {candidatesCount === 1 ? 'candidate' : 'candidates'}
+        </span>
       </div>
 
       {/* 6. Chevron Cell */}
       <div className="flex items-center justify-end">
-        <ChevronRight className="h-4 w-4 text-text-subtle opacity-50 transition-opacity group-hover:opacity-100" />
+        <ChevronRight className="h-4 w-4 text-text-subtle opacity-40 transition-all group-hover:opacity-100 group-hover:translate-x-0.5" />
       </div>
     </Link>
   );

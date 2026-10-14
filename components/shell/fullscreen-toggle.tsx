@@ -5,57 +5,46 @@ import { Maximize, Minimize } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 
+function subscribe(callback: () => void) {
+  document.addEventListener('fullscreenchange', callback);
+  document.addEventListener('webkitfullscreenchange', callback);
+  return () => {
+    document.removeEventListener('fullscreenchange', callback);
+    document.removeEventListener('webkitfullscreenchange', callback);
+  };
+}
+
+function getFullscreenSnapshot(): boolean {
+  const doc = document as Document & {
+    webkitFullscreenElement?: Element;
+    mozFullScreenElement?: Element;
+    msFullscreenElement?: Element;
+  };
+
+  return Boolean(
+    document.fullscreenElement ||
+      doc.webkitFullscreenElement ||
+      doc.mozFullScreenElement ||
+      doc.msFullscreenElement
+  );
+}
+
+function getServerSnapshot(): boolean {
+  return false;
+}
+
 export function FullscreenToggle({ className }: { className?: string }) {
-  const [isFullscreen, setIsFullscreen] = React.useState(false);
-  const [isSupported, setIsSupported] = React.useState(true);
+  const isFullscreen = React.useSyncExternalStore(
+    subscribe,
+    getFullscreenSnapshot,
+    getServerSnapshot
+  );
 
-  React.useEffect(() => {
-    // Check fullscreen support in current browser environment
-    const doc = document as Document & {
-      webkitFullscreenEnabled?: boolean;
-      mozFullScreenEnabled?: boolean;
-      msFullscreenEnabled?: boolean;
-    };
-
-    const supported = Boolean(
-      doc.fullscreenEnabled ||
-        doc.webkitFullscreenEnabled ||
-        doc.mozFullScreenEnabled ||
-        doc.msFullscreenEnabled
-    );
-
-    setIsSupported(supported);
-
-    const updateFullscreenState = () => {
-      const docWithPrefixes = document as Document & {
-        webkitFullscreenElement?: Element;
-        mozFullScreenElement?: Element;
-        msFullscreenElement?: Element;
-      };
-
-      const activeElement =
-        document.fullscreenElement ||
-        docWithPrefixes.webkitFullscreenElement ||
-        docWithPrefixes.mozFullScreenElement ||
-        docWithPrefixes.msFullscreenElement;
-
-      setIsFullscreen(Boolean(activeElement));
-    };
-
-    updateFullscreenState();
-
-    document.addEventListener('fullscreenchange', updateFullscreenState);
-    document.addEventListener('webkitfullscreenchange', updateFullscreenState);
-    document.addEventListener('mozfullscreenchange', updateFullscreenState);
-    document.addEventListener('MSFullscreenChange', updateFullscreenState);
-
-    return () => {
-      document.removeEventListener('fullscreenchange', updateFullscreenState);
-      document.removeEventListener('webkitfullscreenchange', updateFullscreenState);
-      document.removeEventListener('mozfullscreenchange', updateFullscreenState);
-      document.removeEventListener('MSFullscreenChange', updateFullscreenState);
-    };
-  }, []);
+  const mounted = React.useSyncExternalStore(
+    () => () => {},
+    () => true,
+    () => false
+  );
 
   const toggleFullscreen = React.useCallback(async () => {
     try {
@@ -107,8 +96,17 @@ export function FullscreenToggle({ className }: { className?: string }) {
     }
   }, []);
 
-  if (!isSupported) {
-    return null;
+  if (!mounted) {
+    return (
+      <Button
+        variant="ghost"
+        size="icon"
+        className={cn('text-text-subtle relative h-9 w-9', className)}
+        disabled
+      >
+        <Maximize className="h-4 w-4 stroke-[1.75]" />
+      </Button>
+    );
   }
 
   return (
@@ -117,11 +115,11 @@ export function FullscreenToggle({ className }: { className?: string }) {
       size="icon"
       onClick={toggleFullscreen}
       className={cn(
-        'text-text-subtle hover:text-text hover:bg-surface-2 h-9 w-9 cursor-pointer',
+        'text-text-subtle hover:text-text hover:bg-surface-2 h-9 w-9 cursor-pointer transition-colors',
         className
       )}
-      title={isFullscreen ? 'Exit full screen' : 'Full screen'}
-      aria-label={isFullscreen ? 'Exit full screen' : 'Full screen'}
+      title={isFullscreen ? 'Exit full screen (Esc)' : 'Enter full screen'}
+      aria-label={isFullscreen ? 'Exit full screen' : 'Enter full screen'}
     >
       {isFullscreen ? (
         <Minimize className="h-4 w-4 stroke-[1.75]" />
@@ -129,8 +127,9 @@ export function FullscreenToggle({ className }: { className?: string }) {
         <Maximize className="h-4 w-4 stroke-[1.75]" />
       )}
       <span className="sr-only">
-        {isFullscreen ? 'Exit full screen' : 'Full screen'}
+        {isFullscreen ? 'Exit full screen' : 'Enter full screen'}
       </span>
     </Button>
   );
 }
+

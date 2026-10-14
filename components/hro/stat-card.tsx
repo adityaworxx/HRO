@@ -9,6 +9,7 @@ export interface StatCardProps {
   href?: string;
   isWarning?: boolean;
   className?: string;
+  icon?: React.ReactNode;
 }
 
 export function StatCard({
@@ -18,28 +19,41 @@ export function StatCard({
   href,
   isWarning = false,
   className,
+  icon,
 }: StatCardProps) {
   const content = (
     <div
       className={cn(
-        'border-border bg-surface-1 hover:border-border-strong flex flex-col justify-between rounded-[var(--radius-lg)] border px-6 py-5 shadow-none transition-colors',
+        'border-border bg-surface-1 hover:border-border-strong hover:bg-surface-2/30 flex flex-col justify-between rounded-[12px] border p-5 transition-all duration-140',
         href &&
           'focus-visible:ring-accent cursor-pointer focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-none',
         className
       )}
     >
-      <span className="text-text-muted text-[13px] leading-[20px] font-medium select-none">
-        {label}
-      </span>
-      <div className="mt-2 flex items-baseline gap-2">
+      <div className="flex items-center justify-between gap-2">
+        <span className="text-text-muted text-[13px] leading-[18px] font-medium select-none">
+          {label}
+        </span>
+        {icon && (
+          <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-[6px] bg-surface-2 text-text-subtle transition-colors group-hover:text-text">
+            {icon}
+          </div>
+        )}
+      </div>
+
+      <div className="mt-3 flex items-baseline justify-between gap-2">
         <span className="text-text font-mono text-[28px] leading-[32px] font-semibold tracking-tight tabular-nums">
           {value}
         </span>
         {delta && (
           <span
             className={cn(
-              'text-[12px] leading-[16px]',
-              isWarning ? 'text-warning font-medium' : 'text-text-muted font-normal'
+              'text-[12px] font-medium leading-[16px] truncate select-none',
+              isWarning
+                ? 'text-warning'
+                : delta.startsWith('+')
+                  ? 'text-accent'
+                  : 'text-text-subtle'
             )}
           >
             {delta}
