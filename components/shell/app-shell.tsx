@@ -36,7 +36,7 @@ function RouteGuard() {
 
 export function AppShell({ children }: { children: React.ReactNode }) {
   return (
-    <div className="bg-bg text-text flex min-h-screen">
+    <div className="bg-bg text-text fixed inset-0 flex h-full w-full overflow-hidden">
       {/* Dynamic Route Guard wrapped in Suspense boundary */}
       <React.Suspense fallback={null}>
         <RouteGuard />
@@ -50,16 +50,16 @@ export function AppShell({ children }: { children: React.ReactNode }) {
         Skip to main content
       </a>
 
-      {/* Sidebar */}
+      {/* Sidebar (Desktop + Mobile Drawer) */}
       <Sidebar />
 
       {/* Main Content Area */}
-      <div className="flex min-w-0 flex-1 flex-col">
+      <div className="flex min-w-0 flex-1 flex-col h-full overflow-hidden">
         <Topbar />
         <main
           id="main-content"
           tabIndex={-1}
-          className="w-full flex-1 px-4 py-6 focus:outline-none sm:px-6 lg:px-8"
+          className="w-full flex-1 overflow-y-auto px-3 sm:px-6 lg:px-8 py-4 sm:py-6 focus:outline-none min-w-0"
         >
           {children}
         </main>
@@ -69,4 +69,3 @@ export function AppShell({ children }: { children: React.ReactNode }) {
     </div>
   );
 }
-

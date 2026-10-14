@@ -75,7 +75,7 @@ function SidebarNav({
                   : 'text-text-muted hover:bg-surface-2 hover:text-text'
               )}
             >
-              {/* Stationary icon container */}
+              {/* Stationary icon container: Always 36x36px */}
               <div className="flex h-9 w-9 shrink-0 items-center justify-center">
                 <Icon
                   className={cn(
@@ -87,13 +87,13 @@ function SidebarNav({
                 />
               </div>
 
-              {/* Label with smooth fade & slide */}
+              {/* Label with smooth asymmetrical fade & slide */}
               <div
                 className={cn(
-                  'flex-1 min-w-0 pr-3 overflow-hidden transition-[opacity,transform] duration-200 ease-out',
+                  'flex-1 min-w-0 pr-3 overflow-hidden transition-[opacity,transform,max-width] ease-out',
                   collapsed
-                    ? 'opacity-0 -translate-x-2 pointer-events-none'
-                    : 'opacity-100 translate-x-0'
+                    ? 'opacity-0 -translate-x-2 max-w-0 pointer-events-none duration-150'
+                    : 'opacity-100 translate-x-0 max-w-[180px] duration-200 delay-100'
                 )}
               >
                 <span className="truncate block text-[13px]">{item.title}</span>
@@ -151,10 +151,10 @@ export function Sidebar() {
 
   return (
     <>
-      {/* 1. MOBILE OVERLAY DRAWER (lg:hidden) - OVERLAYS WITHOUT SHIFTING BACKGROUND */}
+      {/* 1. MOBILE OVERLAY DRAWER (lg:hidden) */}
       <div
         className={cn(
-          'fixed inset-0 z-50 lg:hidden transition-opacity duration-200',
+          'fixed inset-0 z-[100] lg:hidden transition-opacity duration-200',
           mobileSidebarOpen
             ? 'opacity-100 pointer-events-auto'
             : 'opacity-0 pointer-events-none'
@@ -170,7 +170,7 @@ export function Sidebar() {
         {/* Drawer container (slides from left, fixed over the screen) */}
         <aside
           className={cn(
-            'fixed inset-y-0 left-0 z-50 flex h-full w-72 max-w-[85vw] flex-col border-r border-border bg-surface-1 shadow-2xl transition-transform duration-200 ease-out',
+            'fixed inset-y-0 left-0 z-[101] flex h-full w-72 max-w-[85vw] flex-col border-r border-border bg-surface-1 shadow-2xl transition-transform duration-200 ease-out',
             mobileSidebarOpen ? 'translate-x-0' : '-translate-x-full'
           )}
         >
@@ -213,51 +213,76 @@ export function Sidebar() {
       {/* 2. DESKTOP SIDEBAR (hidden on mobile, visible on lg:) */}
       <TooltipProvider delayDuration={50}>
         <aside
+          style={{
+            transition: 'width 280ms cubic-bezier(0.16, 1, 0.3, 1)',
+            willChange: 'width',
+          }}
           className={cn(
-            'border-border bg-surface-1 relative sticky top-0 z-30 hidden lg:flex h-screen shrink-0 flex-col border-r transition-[width] duration-200 ease-in-out overflow-x-hidden',
+            'border-border bg-surface-1 relative z-30 hidden lg:flex h-full shrink-0 flex-col border-r overflow-x-hidden select-none',
             isCollapsed ? 'w-16' : 'w-60'
           )}
         >
-          {/* Brand Header */}
-          <div className="border-border flex h-14 w-full shrink-0 items-center justify-between border-b px-3.5">
-            {!isCollapsed ? (
-              <>
-                <Link href="/" className="flex items-center gap-2.5 overflow-hidden">
-                  <div className="flex h-9 w-9 shrink-0 items-center justify-center">
-                    <div className="bg-accent text-bg flex h-8 w-8 items-center justify-center rounded-[var(--radius-sm)] font-bold shadow-xs">
-                      H
-                    </div>
-                  </div>
-                  <span className="text-text truncate text-[15px] font-semibold tracking-tight transition-[opacity,transform] duration-200">
-                    HRO
-                  </span>
-                </Link>
-
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  onClick={toggleSidebar}
-                  className="text-text-subtle hover:text-text hidden h-7 w-7 cursor-pointer lg:flex shrink-0"
-                  title="Collapse sidebar (Ctrl+B)"
-                >
-                  <PanelLeftClose className="h-4 w-4" />
-                  <span className="sr-only">Collapse sidebar</span>
-                </Button>
-              </>
-            ) : (
+          {/* Brand Header: Unified container, zero unmounting */}
+          <div className="border-border flex h-14 w-full shrink-0 items-center border-b px-3.5 relative overflow-hidden">
+            <div className="flex items-center gap-2.5 min-w-0">
               <NavItemTooltip enabled={isCollapsed} title="Expand sidebar (Ctrl+B)">
                 <button
                   type="button"
-                  onClick={toggleSidebar}
-                  className="group hover:bg-surface-2 flex h-9 w-9 shrink-0 cursor-pointer items-center justify-center rounded-[var(--radius-md)] transition-colors"
+                  onClick={isCollapsed ? toggleSidebar : undefined}
+                  className={cn(
+                    'flex h-9 w-9 shrink-0 items-center justify-center rounded-[var(--radius-md)] transition-colors',
+                    isCollapsed && 'cursor-pointer hover:bg-surface-2'
+                  )}
                 >
-                  <div className="bg-accent text-bg flex h-8 w-8 items-center justify-center rounded-[var(--radius-sm)] font-bold shadow-xs">
+                  <Link
+                    href="/"
+                    tabIndex={isCollapsed ? -1 : 0}
+                    onClick={(e) => {
+                      if (isCollapsed) {
+                        e.preventDefault();
+                        toggleSidebar();
+                      }
+                    }}
+                    className="bg-accent text-bg flex h-8 w-8 items-center justify-center rounded-[var(--radius-sm)] font-bold shadow-xs select-none"
+                  >
                     H
-                  </div>
-                  <span className="sr-only">Expand sidebar (Ctrl+B)</span>
+                  </Link>
                 </button>
               </NavItemTooltip>
-            )}
+
+              <span
+                className={cn(
+                  'text-text truncate text-[15px] font-semibold tracking-tight transition-[opacity,transform,max-width] ease-out select-none',
+                  isCollapsed
+                    ? 'opacity-0 -translate-x-2 max-w-0 pointer-events-none duration-150'
+                    : 'opacity-100 translate-x-0 max-w-[100px] duration-200 delay-100'
+                )}
+              >
+                HRO
+              </span>
+            </div>
+
+            {/* Collapse Toggle Button: Absolute right, zero layout interference */}
+            <div
+              className={cn(
+                'absolute right-3.5 top-1/2 -translate-y-1/2 transition-[opacity,transform] ease-out',
+                isCollapsed
+                  ? 'opacity-0 scale-90 pointer-events-none duration-150'
+                  : 'opacity-100 scale-100 duration-200 delay-100'
+              )}
+            >
+              <Button
+                variant="ghost"
+                size="icon"
+                onClick={toggleSidebar}
+                tabIndex={isCollapsed ? -1 : 0}
+                className="text-text-subtle hover:text-text hidden h-7 w-7 cursor-pointer lg:flex shrink-0"
+                title="Collapse sidebar (Ctrl+B)"
+              >
+                <PanelLeftClose className="h-4 w-4" />
+                <span className="sr-only">Collapse sidebar</span>
+              </Button>
+            </div>
           </div>
 
           {/* Navigation Items */}

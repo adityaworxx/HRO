@@ -1,38 +1,57 @@
 'use client';
 
 import * as React from 'react';
+import Link from 'next/link';
 import { Breadcrumbs } from './breadcrumbs';
 import { ThemeToggle } from './theme-toggle';
 import { FullscreenToggle } from './fullscreen-toggle';
 import { NotificationsPopover } from './notifications-popover';
 import { ProfileDropdown } from './profile-dropdown';
 import { Button } from '@/components/ui/button';
-import { Search } from 'lucide-react';
+import { Search, Menu } from 'lucide-react';
 import { useUiStore } from '@/lib/store';
 
 export function Topbar() {
-  const { setCommandPaletteOpen } = useUiStore();
+  const { setCommandPaletteOpen, toggleMobileSidebar } = useUiStore();
 
   return (
-    <header className="border-border bg-surface-1/95 sticky top-0 z-20 flex h-14 w-full items-center justify-between border-b px-4 backdrop-blur sm:px-6 lg:px-8 relative">
-      <div className="flex items-center gap-3">
-        {/* Left anchor */}
+    <header className="border-border bg-surface-1/95 shrink-0 z-20 flex h-14 w-full items-center justify-between border-b px-3 sm:px-6 lg:px-8 backdrop-blur relative">
+      <div className="flex items-center gap-2.5">
+        {/* Mobile Hamburger Menu Toggle */}
+        <Button
+          variant="ghost"
+          size="icon"
+          onClick={toggleMobileSidebar}
+          className="text-text-subtle hover:text-text hover:bg-surface-2 h-9 w-9 cursor-pointer lg:hidden shrink-0"
+          title="Open Navigation"
+          aria-label="Open Navigation"
+        >
+          <Menu className="h-5 w-5" />
+        </Button>
+
+        {/* Mobile Logo Brand */}
+        <Link href="/" className="flex items-center gap-2 lg:hidden">
+          <div className="bg-accent text-bg flex h-7 w-7 items-center justify-center rounded-[var(--radius-sm)] font-bold text-xs shadow-xs">
+            H
+          </div>
+          <span className="text-text text-[14px] font-semibold tracking-tight">HRO</span>
+        </Link>
       </div>
 
-      {/* Centered Page Title */}
-      <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 flex items-center justify-center pointer-events-none">
+      {/* Centered Page Title - hidden on mobile to avoid overlapping icons */}
+      <div className="hidden md:flex absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 items-center justify-center pointer-events-none">
         <React.Suspense fallback={null}>
           <Breadcrumbs />
         </React.Suspense>
       </div>
 
-      <div className="flex items-center gap-2">
+      <div className="flex items-center gap-1.5 sm:gap-2">
         {/* Search Icon Trigger */}
         <Button
           variant="ghost"
           size="icon"
           onClick={() => setCommandPaletteOpen(true)}
-          className="text-text-subtle hover:text-text hover:bg-surface-2 h-9 w-9 cursor-pointer"
+          className="text-text-subtle hover:text-text hover:bg-surface-2 h-8.5 w-8.5 sm:h-9 sm:w-9 cursor-pointer"
           title="Search or jump to (Ctrl+K)"
           aria-label="Search (Ctrl+K)"
         >
@@ -40,7 +59,10 @@ export function Topbar() {
           <span className="sr-only">Search</span>
         </Button>
 
-        <FullscreenToggle />
+        {/* Fullscreen Toggle - hidden on extra small mobile screens */}
+        <div className="hidden sm:flex">
+          <FullscreenToggle />
+        </div>
 
         <NotificationsPopover />
         <ThemeToggle />
