@@ -33,7 +33,7 @@ export default function EditOpeningPage() {
   }
 
   return (
-    <div className="mx-auto max-w-[840px]">
+    <div className="w-full">
       <OpeningForm initialData={opening} isEditing />
     </div>
   );

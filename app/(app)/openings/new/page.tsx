@@ -5,7 +5,7 @@ import { OpeningForm } from '@/features/openings';
 
 export default function NewOpeningPage() {
   return (
-    <div className="mx-auto max-w-[840px]">
+    <div className="w-full">
       <OpeningForm />
     </div>
   );

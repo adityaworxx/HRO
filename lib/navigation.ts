@@ -45,8 +45,8 @@ export const ROUTE_RULES: Array<{
   allowedRoles: UserRole[];
 }> = [
   { pattern: /^\/$/, allowedRoles: ['manager', 'hr'] },
-  { pattern: /^\/openings\/new$/, allowedRoles: ['manager'] },
-  { pattern: /^\/openings\/[^/]+\/edit$/, allowedRoles: ['manager'] },
+  { pattern: /^\/openings\/new$/, allowedRoles: ['manager', 'hr'] },
+  { pattern: /^\/openings\/[^/]+\/edit$/, allowedRoles: ['manager', 'hr'] },
   { pattern: /^\/openings(?:\/[^/]+)?$/, allowedRoles: ['manager', 'hr'] },
   { pattern: /^\/shortlist$/, allowedRoles: ['manager'] },
   { pattern: /^\/interviews$/, allowedRoles: ['manager'] },
