@@ -24,6 +24,14 @@ import {
   Check,
   Send,
 } from 'lucide-react';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
+import { DatePicker } from '@/components/ui/date-picker';
 import { cn } from '@/lib/utils';
 import { formatCtcRange } from '@/lib/format';
 
@@ -224,17 +232,18 @@ export function OpeningForm({ initialData, isEditing = false }: OpeningFormProps
               </FormField>
 
               <FormField label="Department" required>
-                <select
-                  value={department}
-                  onChange={(e) => setDepartment(e.target.value)}
-                  className="h-9 w-full rounded-[var(--radius-sm)] border border-border bg-surface-2 px-3 text-[13px] text-text outline-none transition-colors hover:border-border-strong focus:border-accent"
-                >
-                  {DEPARTMENTS.map((dept) => (
-                    <option key={dept} value={dept}>
-                      {dept}
-                    </option>
-                  ))}
-                </select>
+                <Select value={department} onValueChange={setDepartment}>
+                  <SelectTrigger className="h-9 w-full rounded-[var(--radius-sm)] border border-border bg-surface-2 px-3 text-[13px] text-text hover:bg-surface-3 transition-colors">
+                    <SelectValue placeholder="Select department" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {DEPARTMENTS.map((dept) => (
+                      <SelectItem key={dept} value={dept}>
+                        {dept}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
               </FormField>
             </div>
 
@@ -249,21 +258,25 @@ export function OpeningForm({ initialData, isEditing = false }: OpeningFormProps
               </FormField>
 
               <FormField label="Employment Type" required>
-                <select
+                <Select
                   value={employmentType}
-                  onChange={(e) =>
+                  onValueChange={(val) =>
                     setEmploymentType(
-                      e.target.value as 'Full-time' | 'Part-time' | 'Contract' | 'Internship'
+                      val as 'Full-time' | 'Part-time' | 'Contract' | 'Internship'
                     )
                   }
-                  className="h-9 w-full rounded-[var(--radius-sm)] border border-border bg-surface-2 px-3 text-[13px] text-text outline-none transition-colors hover:border-border-strong focus:border-accent"
                 >
-                  {EMPLOYMENT_TYPES.map((type) => (
-                    <option key={type} value={type}>
-                      {type}
-                    </option>
-                  ))}
-                </select>
+                  <SelectTrigger className="h-9 w-full rounded-[var(--radius-sm)] border border-border bg-surface-2 px-3 text-[13px] text-text hover:bg-surface-3 transition-colors">
+                    <SelectValue placeholder="Select employment type" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {EMPLOYMENT_TYPES.map((type) => (
+                      <SelectItem key={type} value={type}>
+                        {type}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
               </FormField>
 
               <FormField label="Target Headcount" required error={errors.headcount}>
@@ -312,11 +325,10 @@ export function OpeningForm({ initialData, isEditing = false }: OpeningFormProps
               </FormField>
 
               <FormField label="Target Start Date">
-                <Input
-                  type="date"
+                <DatePicker
                   value={targetDate}
-                  onChange={(e) => setTargetDate(e.target.value)}
-                  className="h-9 text-[13px]"
+                  onChange={(val) => setTargetDate(val)}
+                  placeholder="Select target start date"
                 />
               </FormField>
             </div>
