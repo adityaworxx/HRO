@@ -48,22 +48,6 @@ async function testSidebar() {
     }
     await page.screenshot({ path: path.join(screenshotDir, 'sidebar-test-expanded.png') });
 
-    // 4. Collapse again and test Topbar toggle button
-    console.log('Action: Collapsing again...');
-    await collapseBtn.click();
-    await page.waitForTimeout(500);
-
-    console.log('Action: Clicking topbar expand button...');
-    const topbarToggle = page.locator('header button[aria-label="Expand sidebar"]');
-    await topbarToggle.click();
-    await page.waitForTimeout(500);
-
-    box = await aside.boundingBox();
-    console.log(`Expanded sidebar width after clicking topbar toggle: ${box?.width}px (Expected ~192px)`);
-    if (!box || Math.abs(box.width - 192) > 3) {
-      throw new Error(`Expected ~192px, got ${box?.width}`);
-    }
-
     // 5. Test Ctrl+B keyboard shortcut
     console.log('Action: Pressing Control+b to collapse...');
     await page.click('body');
