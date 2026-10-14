@@ -12,7 +12,7 @@ export interface ActiveOpeningsCardProps {
   openings: Opening[];
   candidates?: Candidate[];
   title?: string;
-  subtitle?: string;
+  subtitle?: string | null;
   viewAllHref?: string;
   isLoading?: boolean;
   className?: string;
@@ -39,7 +39,7 @@ export function ActiveOpeningsCard({
     return `${activeCount} active ${activeCount === 1 ? 'position' : 'positions'}`;
   }, [openings]);
 
-  const displaySubtitle = subtitle ?? defaultSubtitle;
+  const displaySubtitle = subtitle === null ? null : (subtitle ?? defaultSubtitle);
 
   return (
     <div
@@ -49,14 +49,21 @@ export function ActiveOpeningsCard({
       )}
     >
       {/* 1. Header (padding: 0 20px 16px) */}
-      <div className="flex items-start justify-between gap-4 px-5 pb-4">
+      <div
+        className={cn(
+          'flex justify-between gap-4 px-5 pb-4',
+          displaySubtitle ? 'items-start' : 'items-center'
+        )}
+      >
         <div>
           <h2 className="text-[16px] leading-[24px] font-medium tracking-[-0.01em] text-text">
             {title}
           </h2>
-          <p className="mt-[2px] text-[13px] leading-[20px] text-text-muted">
-            {displaySubtitle}
-          </p>
+          {displaySubtitle && (
+            <p className="mt-[2px] text-[13px] leading-[20px] text-text-muted">
+              {displaySubtitle}
+            </p>
+          )}
         </div>
 
         {viewAllHref && (

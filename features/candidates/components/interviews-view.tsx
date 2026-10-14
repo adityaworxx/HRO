@@ -18,7 +18,8 @@ import {
   DialogFooter,
 } from '@/components/ui/dialog';
 import { EmptyState } from '@/components/hro/empty-state';
-import { Calendar, Clock, Video, Phone, CheckCircle2, XCircle, PauseCircle } from 'lucide-react';
+import { Calendar, Clock, Phone, CheckCircle2, XCircle, PauseCircle } from 'lucide-react';
+import { VideoCameraIcon } from '@/components/ui/icons';
 import { toast } from 'sonner';
 
 export function InterviewsView() {
@@ -172,7 +173,7 @@ export function InterviewsView() {
                     </span>
                     <span className="text-text flex items-center gap-1 font-medium">
                       {candidate.interviewMode === 'Video' ? (
-                        <Video className="text-accent h-3.5 w-3.5" />
+                        <VideoCameraIcon className="text-accent h-3.5 w-3.5" />
                       ) : (
                         <Phone className="text-accent h-3.5 w-3.5" />
                       )}

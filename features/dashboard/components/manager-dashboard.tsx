@@ -25,7 +25,6 @@ import {
   FileText,
   Building2,
   Clock,
-  Video,
   Phone,
   MapPin,
   ChevronRight,
@@ -35,6 +34,7 @@ import {
   PhoneCall,
   CheckCircle2,
 } from 'lucide-react';
+import { VideoCameraIcon } from '@/components/ui/icons';
 import { toast } from 'sonner';
 import { formatCtc, formatInterviewDateTime } from '@/lib/format';
 
@@ -137,16 +137,11 @@ export function ManagerDashboard() {
         {/* ROW 1 LEFT (8 cols): Candidates Awaiting Review */}
         <div className="col-span-12 flex flex-col lg:col-span-8">
           <div className="border border-border bg-surface-1 flex h-full flex-col rounded-[12px] p-5">
-            {/* Header: title + subtitle left, text link right */}
-            <div className="flex items-start justify-between gap-4 pb-4">
-              <div>
-                <h2 className="text-text text-[16px] leading-[24px] font-medium tracking-[-0.01em]">
-                  Candidates Awaiting Your Review
-                </h2>
-                <p className="text-text-muted mt-[2px] text-[13px] leading-[20px]">
-                  {pendingReviewCandidates.length} candidate {pendingReviewCandidates.length === 1 ? 'profile' : 'profiles'} awaiting review
-                </p>
-              </div>
+            {/* Header: title left, text link right */}
+            <div className="flex items-center justify-between gap-4 pb-4">
+              <h2 className="text-text text-[16px] leading-[24px] font-medium tracking-[-0.01em]">
+                Candidates Awaiting Your Review
+              </h2>
               <Link
                 href="/shortlist"
                 className="inline-flex items-center gap-1 text-[13px] leading-[20px] font-medium text-text-muted hover:text-text transition-colors shrink-0"
@@ -355,20 +350,23 @@ export function ManagerDashboard() {
                 <div className="divide-border divide-y">
                   {interviewCandidates.slice(0, 3).map((candidate) => {
                     const mode = candidate.interviewMode ?? 'Video';
-                    const ModeIcon = mode === 'Phone' ? Phone : mode === 'Onsite' ? MapPin : Video;
+                    const ModeIcon = mode === 'Phone' ? Phone : mode === 'Onsite' ? MapPin : VideoCameraIcon;
 
                     return (
                       <div
                         key={candidate.id}
-                        className="hover:bg-surface-2 -mx-2 flex flex-col justify-between gap-1.5 rounded-[8px] px-2 py-3 transition-colors"
+                        className="group hover:bg-surface-2 -mx-2 flex flex-col justify-between gap-1.5 rounded-[8px] px-2 py-3 transition-colors"
                       >
-                        <div className="flex items-center justify-between">
+                        <div className="flex items-center justify-between gap-2">
                           <span className="text-text truncate text-[14px] leading-[20px] font-medium">
                             {candidate.name}
                           </span>
-                          <span className="bg-surface-2 text-text-muted inline-flex h-[20px] items-center gap-1 rounded-[4px] px-1.5 text-[12px] leading-none font-medium select-none">
-                            <ModeIcon className="h-3 w-3" />
-                            <span>{mode}</span>
+                          <span
+                            className="text-text-subtle group-hover:text-text-muted transition-colors shrink-0 flex items-center"
+                            title={`${mode} Interview`}
+                            aria-label={`${mode} Interview`}
+                          >
+                            <ModeIcon className="h-4 w-4" />
                           </span>
                         </div>
 
@@ -396,7 +394,7 @@ export function ManagerDashboard() {
             openings={activeOpenings}
             candidates={candidates}
             title="Active Openings"
-            subtitle={`${activeOpenings.length} active positions in your department`}
+            subtitle={null}
             viewAllHref="/openings"
             isLoading={isInitialLoading}
           />
