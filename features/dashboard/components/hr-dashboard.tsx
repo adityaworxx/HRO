@@ -479,9 +479,9 @@ export function HrDashboard() {
                       </div>
 
                       {/* 3. SLA Status */}
-                      <div className="flex items-center gap-1.5 text-warning">
-                        <Clock className="h-3.5 w-3.5 stroke-[2] shrink-0" />
-                        <span className="text-[12px] font-medium tabular-nums">
+                      <div className="flex items-center gap-1.5 text-text-muted">
+                        <Clock className="h-3.5 w-3.5 stroke-[1.75] text-text-subtle shrink-0" />
+                        <span className="text-[12px] font-normal tabular-nums">
                           Action required
                         </span>
                       </div>
