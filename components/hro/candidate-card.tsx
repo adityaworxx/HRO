@@ -28,8 +28,8 @@ export function CandidateCard({
         }
       }}
       className={cn(
-        'group border border-border/80 bg-surface-1 hover:border-border-strong flex cursor-pointer flex-col gap-2 rounded-[8px] p-3 shadow-2xs transition-colors duration-[140ms] focus-visible:outline-none select-none',
-        isDragging && 'border-accent/80 opacity-50 shadow-md',
+        'group border border-border/80 bg-surface-1 hover:border-border-strong flex cursor-grab active:cursor-grabbing flex-col gap-2 rounded-[8px] p-3 shadow-2xs transition-colors duration-[140ms] focus-visible:outline-none select-none',
+        isDragging && 'border-border-strong shadow-xl ring-1 ring-border-strong bg-surface-1',
         className
       )}
     >

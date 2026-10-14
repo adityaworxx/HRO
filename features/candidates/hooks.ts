@@ -119,7 +119,27 @@ export function useUpdateCandidateStage() {
   return useMutation({
     mutationFn: ({ id, stage }: { id: string; stage: CandidateStage }) =>
       api.candidates.updateStage(id, stage),
-    onSuccess: (_, variables) => {
+    onMutate: async ({ id, stage }) => {
+      // Cancel outgoing refetches so they don't overwrite optimistic data
+      await queryClient.cancelQueries({ queryKey: candidatesKeys.lists() });
+
+      // Snapshot previous candidate lists
+      const previousCandidates = queryClient.getQueryData<Candidate[]>(candidatesKeys.list());
+
+      // Optimistically update all candidate lists in cache
+      queryClient.setQueriesData<Candidate[]>({ queryKey: candidatesKeys.lists() }, (old) => {
+        if (!old) return [];
+        return old.map((c) => (c.id === id ? { ...c, stage } : c));
+      });
+
+      return { previousCandidates };
+    },
+    onError: (_err, _variables, context) => {
+      if (context?.previousCandidates) {
+        queryClient.setQueriesData({ queryKey: candidatesKeys.lists() }, context.previousCandidates);
+      }
+    },
+    onSettled: (_, __, variables) => {
       void queryClient.invalidateQueries({ queryKey: candidatesKeys.lists() });
       void queryClient.invalidateQueries({ queryKey: candidatesKeys.detail(variables.id) });
     },
