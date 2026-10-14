@@ -9,6 +9,13 @@ import { StatusBadge } from '@/components/hro/status-badge';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
+import {
+  Select,
+  SelectTrigger,
+  SelectValue,
+  SelectContent,
+  SelectItem,
+} from '@/components/ui/select';
 import { CandidateDetailSheet } from './candidate-detail-sheet';
 import { formatCtc } from '@/lib/format';
 import { Eye, Building2, Mail } from 'lucide-react';
@@ -195,18 +202,24 @@ export function CandidatesTable() {
 
         {/* Source Filter */}
         {sources.length > 0 && (
-          <select
+          <Select
             value={selectedSource}
-            onChange={(e) => setSelectedSource(e.target.value)}
-            className="border-border bg-surface-2 text-text focus:ring-accent h-8 rounded-[var(--radius-sm)] border px-2.5 text-[12px] font-medium outline-none focus:ring-1"
+            onValueChange={(val) => setSelectedSource(val)}
           >
-            <option value="all">All Sources</option>
-            {sources.map((s) => (
-              <option key={s} value={s}>
-                {s}
-              </option>
-            ))}
-          </select>
+            <SelectTrigger className="h-8 w-auto min-w-[140px] gap-2 border-border bg-surface-2 hover:bg-surface-3 text-text px-2.5 text-[12px] font-medium rounded-[var(--radius-sm)]">
+              <SelectValue placeholder="All Sources" />
+            </SelectTrigger>
+            <SelectContent align="end" className="min-w-[160px]">
+              <SelectItem value="all" className="text-[13px] py-1.5 min-h-[32px] rounded-[6px]">
+                All Sources
+              </SelectItem>
+              {sources.map((s) => (
+                <SelectItem key={s} value={s} className="text-[13px] py-1.5 min-h-[32px] rounded-[6px]">
+                  {s}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
         )}
       </div>
 

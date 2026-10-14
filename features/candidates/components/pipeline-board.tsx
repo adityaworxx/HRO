@@ -20,6 +20,13 @@ import { KanbanColumn } from '@/components/hro/kanban-column';
 import { CandidateCard } from '@/components/hro/candidate-card';
 import { CandidateDetailSheet } from './candidate-detail-sheet';
 import { Input } from '@/components/ui/input';
+import {
+  Select,
+  SelectTrigger,
+  SelectValue,
+  SelectContent,
+  SelectItem,
+} from '@/components/ui/select';
 import { Search, Filter } from 'lucide-react';
 import { toast } from 'sonner';
 
@@ -160,19 +167,25 @@ export function PipelineBoard() {
           </div>
 
           <div className="flex items-center gap-1.5">
-            <Filter className="text-text-muted h-4 w-4" />
-            <select
+            <Filter className="text-text-muted h-4 w-4 shrink-0" />
+            <Select
               value={selectedOpeningId}
-              onChange={(e) => setSelectedOpeningId(e.target.value)}
-              className="border-border bg-surface-2 text-text focus:ring-accent h-9 rounded-[var(--radius-sm)] border px-3 text-[13px] outline-none focus:ring-1"
+              onValueChange={(val) => setSelectedOpeningId(val)}
             >
-              <option value="all">All Requisitions ({openings.length})</option>
-              {openings.map((opening) => (
-                <option key={opening.id} value={opening.id}>
-                  {opening.title} ({opening.department})
-                </option>
-              ))}
-            </select>
+              <SelectTrigger className="h-9 w-auto min-w-[200px] gap-2 border-border bg-surface-2 hover:bg-surface-3 text-text px-3 text-[13px] font-medium rounded-[var(--radius-sm)]">
+                <SelectValue placeholder={`All Requisitions (${openings.length})`} />
+              </SelectTrigger>
+              <SelectContent align="start" className="min-w-[240px]">
+                <SelectItem value="all" className="text-[13px] py-1.5 min-h-[32px] rounded-[6px]">
+                  All Requisitions ({openings.length})
+                </SelectItem>
+                {openings.map((opening) => (
+                  <SelectItem key={opening.id} value={opening.id} className="text-[13px] py-1.5 min-h-[32px] rounded-[6px]">
+                    {opening.title} ({opening.department})
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
           </div>
         </div>
 

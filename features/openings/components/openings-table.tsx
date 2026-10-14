@@ -20,6 +20,13 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
 } from '@/components/ui/dropdown-menu';
+import {
+  Select,
+  SelectTrigger,
+  SelectValue,
+  SelectContent,
+  SelectItem,
+} from '@/components/ui/select';
 import { formatCtcRange } from '@/lib/format';
 import { MoreHorizontal, Eye, Edit, ArrowRightCircle, Building2, MapPin, Plus } from 'lucide-react';
 import { toast } from 'sonner';
@@ -241,18 +248,24 @@ export function OpeningsTable() {
         {/* Department Filter & Action */}
         <div className="flex items-center gap-2">
           {departments.length > 0 && (
-            <select
+            <Select
               value={selectedDepartment}
-              onChange={(e) => setSelectedDepartment(e.target.value)}
-              className="border-border bg-surface-2 text-text focus:ring-accent h-8 rounded-[var(--radius-sm)] border px-2.5 text-[12px] font-medium outline-none focus:ring-1"
+              onValueChange={(val) => setSelectedDepartment(val)}
             >
-              <option value="all">All Departments</option>
-              {departments.map((dep) => (
-                <option key={dep} value={dep}>
-                  {dep}
-                </option>
-              ))}
-            </select>
+              <SelectTrigger className="h-8 w-auto min-w-[150px] gap-2 border-border bg-surface-2 hover:bg-surface-3 text-text px-2.5 text-[12px] font-medium rounded-[var(--radius-sm)]">
+                <SelectValue placeholder="All Departments" />
+              </SelectTrigger>
+              <SelectContent align="end" className="min-w-[180px]">
+                <SelectItem value="all" className="text-[13px] py-1.5 min-h-[32px] rounded-[6px]">
+                  All Departments
+                </SelectItem>
+                {departments.map((dep) => (
+                  <SelectItem key={dep} value={dep} className="text-[13px] py-1.5 min-h-[32px] rounded-[6px]">
+                    {dep}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
           )}
 
           <Button asChild variant="primary" size="sm" className="h-8 gap-1.5 text-[13px]">
