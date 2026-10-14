@@ -36,37 +36,31 @@ async function main() {
   console.log('Saved: onboarding-by-candidate-dark.png');
 
   // 2. Click By Phase tab
-  const phaseTab = page.getByRole('tab', { name: /By Phase/i });
-  if (await phaseTab.isVisible()) {
-    await phaseTab.click();
-    await page.waitForTimeout(400);
-    const phaseShot = path.join(outDir, 'onboarding-by-phase-dark.png');
-    await page.screenshot({ path: phaseShot, fullPage: true });
-    fs.copyFileSync(phaseShot, path.join(artifactDir, 'onboarding-by-phase-dark.png'));
-    console.log('Saved: onboarding-by-phase-dark.png');
-  }
+  const phaseBtn = page.locator('button', { hasText: 'By Phase' }).first();
+  await phaseBtn.click();
+  await page.waitForTimeout(400);
+  const phaseShot = path.join(outDir, 'onboarding-by-phase-dark.png');
+  await page.screenshot({ path: phaseShot, fullPage: true });
+  fs.copyFileSync(phaseShot, path.join(artifactDir, 'onboarding-by-phase-dark.png'));
+  console.log('Saved: onboarding-by-phase-dark.png');
 
   // 3. Click All Tasks tab
-  const allTasksTab = page.getByRole('tab', { name: /All Tasks/i });
-  if (await allTasksTab.isVisible()) {
-    await allTasksTab.click();
-    await page.waitForTimeout(400);
-    const allShot = path.join(outDir, 'onboarding-all-tasks-dark.png');
-    await page.screenshot({ path: allShot, fullPage: true });
-    fs.copyFileSync(allShot, path.join(artifactDir, 'onboarding-all-tasks-dark.png'));
-    console.log('Saved: onboarding-all-tasks-dark.png');
-  }
+  const allTasksBtn = page.locator('button', { hasText: 'All Tasks' }).first();
+  await allTasksBtn.click();
+  await page.waitForTimeout(400);
+  const allShot = path.join(outDir, 'onboarding-all-tasks-dark.png');
+  await page.screenshot({ path: allShot, fullPage: true });
+  fs.copyFileSync(allShot, path.join(artifactDir, 'onboarding-all-tasks-dark.png'));
+  console.log('Saved: onboarding-all-tasks-dark.png');
 
   // 4. Open Add Checklist Item Modal
   const addBtn = page.getByRole('button', { name: /Add Checklist Item/i }).first();
-  if (await addBtn.isVisible()) {
-    await addBtn.click();
-    await page.waitForTimeout(400);
-    const modalShot = path.join(outDir, 'onboarding-modal-dark.png');
-    await page.screenshot({ path: modalShot });
-    fs.copyFileSync(modalShot, path.join(artifactDir, 'onboarding-modal-dark.png'));
-    console.log('Saved: onboarding-modal-dark.png');
-  }
+  await addBtn.click();
+  await page.waitForTimeout(400);
+  const modalShot = path.join(outDir, 'onboarding-modal-dark.png');
+  await page.screenshot({ path: modalShot });
+  fs.copyFileSync(modalShot, path.join(artifactDir, 'onboarding-modal-dark.png'));
+  console.log('Saved: onboarding-modal-dark.png');
 
   await page.close();
   await browser.close();
@@ -77,3 +71,4 @@ main().catch((err) => {
   console.error(err);
   process.exit(1);
 });
+

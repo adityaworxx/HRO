@@ -35,15 +35,15 @@ export function KanbanColumn({
     <div
       ref={setNodeRef}
       className={cn(
-        'bg-surface-1 flex h-full min-h-[500px] w-80 shrink-0 flex-col rounded-[var(--radius-md)] border p-3 transition-colors duration-[150ms]',
-        isOver ? 'border-accent bg-accent-subtle/30' : 'border-border',
+        'bg-surface-2/30 flex h-full min-h-[560px] w-[275px] shrink-0 flex-col rounded-[10px] border border-border/70 p-2.5 transition-colors duration-[140ms]',
+        isOver ? 'border-accent/80 bg-accent-subtle/20' : 'border-border/70',
         className
       )}
     >
-      <div className="border-border mb-3 flex items-center justify-between border-b pb-2.5">
+      <div className="mb-2.5 flex items-center justify-between px-1 pb-2 border-b border-border/60 select-none">
         <div className="flex items-center gap-2">
-          <span className="text-text text-[13px] font-semibold">{title}</span>
-          <span className="bg-surface-2 text-text-muted flex h-5 w-5 items-center justify-center rounded-full font-mono text-[11px] font-medium">
+          <span className="text-text text-[13px] font-semibold tracking-tight">{title}</span>
+          <span className="bg-surface-2 border border-border/60 text-text-subtle flex h-5 min-w-[20px] px-1.5 items-center justify-center rounded-full font-mono text-[11px] font-medium">
             {count}
           </span>
         </div>
@@ -51,8 +51,8 @@ export function KanbanColumn({
         {availableStages.length > 0 && onMoveToStage && (
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <Button variant="ghost" size="icon" className="text-text-subtle h-7 w-7">
-                <MoreHorizontal className="h-4 w-4" />
+              <Button variant="ghost" size="icon" className="text-text-subtle hover:text-text h-6 w-6">
+                <MoreHorizontal className="h-3.5 w-3.5" />
                 <span className="sr-only">Column actions</span>
               </Button>
             </DropdownMenuTrigger>
@@ -67,7 +67,7 @@ export function KanbanColumn({
         )}
       </div>
 
-      <div className="flex flex-1 flex-col gap-2.5 overflow-y-auto pr-1">{children}</div>
+      <div className="flex flex-1 flex-col gap-2 overflow-y-auto pr-0.5">{children}</div>
     </div>
   );
 }

@@ -2,7 +2,7 @@
 
 import * as React from 'react';
 import Link from 'next/link';
-import { ChevronRight, Briefcase } from 'lucide-react';
+import { ChevronRight } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { Skeleton } from '@/components/ui/skeleton';
 import { OpeningRow, OpeningHeaderRow } from './opening-row';
@@ -47,14 +47,9 @@ export function ActiveOpeningsCard({
     >
       {/* 1. Header */}
       <div className="flex items-center justify-between gap-4 px-5 pb-4">
-        <div className="flex items-center gap-2.5">
-          <div className="flex h-7 w-7 items-center justify-center rounded-[6px] bg-surface-2 text-text">
-            <Briefcase className="h-4 w-4 stroke-[1.75]" />
-          </div>
-          <h2 className="text-[15px] leading-[22px] font-semibold tracking-[-0.01em] text-text">
-            {title}
-          </h2>
-        </div>
+        <h2 className="text-[15px] leading-[22px] font-semibold tracking-[-0.01em] text-text">
+          {title}
+        </h2>
 
         {viewAllHref && (
           <Link

@@ -3,7 +3,6 @@
 import * as React from 'react';
 import { useAllOnboarding, useToggleOnboardingTask, useCreateOnboardingTask } from '../hooks';
 import { useCandidates } from '@/features/candidates/hooks';
-import { PageHeader } from '@/components/hro/page-header';
 import { StatCard } from '@/components/hro/stat-card';
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -13,7 +12,7 @@ import { Progress } from '@/components/ui/progress';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
-import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
+import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import {
   Select,
   SelectTrigger,
@@ -45,13 +44,22 @@ import {
   CalendarCheck,
   Layers,
   ListChecks,
-  Check,
-  Info,
   Calendar,
+  Sparkle,
 } from 'lucide-react';
 import { toast } from 'sonner';
 
 const PHASES = ['Before joining', 'Day 1', 'First 30 days'] as const;
+
+const STANDARD_TASKS = [
+  { title: 'Collect documents (PAN, Aadhaar, Degree)', owner: 'HR' as const, phase: 'Before joining' as const, daysOffset: -5 },
+  { title: 'Create email and system accounts', owner: 'HR' as const, phase: 'Before joining' as const, daysOffset: -3 },
+  { title: 'Arrange laptop and desk setup', owner: 'HR' as const, phase: 'Before joining' as const, daysOffset: -2 },
+  { title: 'Prepare first-week plan', owner: 'Manager' as const, phase: 'Before joining' as const, daysOffset: -1 },
+  { title: 'Welcome and orientation', owner: 'HR' as const, phase: 'Day 1' as const, daysOffset: 0 },
+  { title: 'Introduce team and assign a buddy', owner: 'Manager' as const, phase: 'Day 1' as const, daysOffset: 0 },
+  { title: '30-day check-in', owner: 'Manager' as const, phase: 'First 30 days' as const, daysOffset: 30 },
+];
 
 export function OnboardingDashboard() {
   const { data: onboardingItems = [], isLoading: loadingItems } = useAllOnboarding();
@@ -59,18 +67,29 @@ export function OnboardingDashboard() {
   const toggleTask = useToggleOnboardingTask();
   const createTask = useCreateOnboardingTask();
 
-  // Active onboarding candidates (candidates with assigned onboarding tasks or at Joined / Offer Sent stages)
+  // Active candidate IDs who currently have onboarding tasks
   const candidateIdsWithTasks = React.useMemo(
     () => Array.from(new Set(onboardingItems.map((i) => i.candidateId))),
     [onboardingItems]
   );
 
+  // Candidates eligible for onboarding: either have tasks, or are at Joined / Offer Sent stages
   const onboardingCandidates = React.useMemo(() => {
     return candidates.filter(
       (c) =>
         candidateIdsWithTasks.includes(c.id) || c.stage === 'Joined' || c.stage === 'Offer Sent'
     );
   }, [candidates, candidateIdsWithTasks]);
+
+  // Candidates who already have an active checklist
+  const candidatesWithActiveChecklists = React.useMemo(() => {
+    return onboardingCandidates.filter((c) => candidateIdsWithTasks.includes(c.id));
+  }, [onboardingCandidates, candidateIdsWithTasks]);
+
+  // Candidates awaiting checklist setup
+  const candidatesAwaitingChecklists = React.useMemo(() => {
+    return onboardingCandidates.filter((c) => !candidateIdsWithTasks.includes(c.id));
+  }, [onboardingCandidates, candidateIdsWithTasks]);
 
   // View & Filter States
   const [viewMode, setViewMode] = React.useState<'by-candidate' | 'by-phase' | 'all-tasks'>(
@@ -92,14 +111,34 @@ export function OnboardingDashboard() {
   const [newTaskDueDate, setNewTaskDueDate] = React.useState('2026-11-01');
   const [newTaskNotes, setNewTaskNotes] = React.useState('');
 
-  // Pre-fill candidate ID when opening modal if available
+  // Pre-fill candidate ID when opening modal
   const handleOpenCreateModal = (candidateId?: string) => {
     setNewTaskCandidateId(
-      candidateId ?? (onboardingCandidates[0]?.id || candidates[0]?.id || '')
+      candidateId ?? (candidatesWithActiveChecklists[0]?.id || onboardingCandidates[0]?.id || candidates[0]?.id || '')
     );
     setNewTaskTitle('');
     setNewTaskNotes('');
     setCreateModalOpen(true);
+  };
+
+  // Initialize standard 7-task checklist for a new hire with 1 click
+  const handleInitializeStandardChecklist = async (candidateId: string, candidateName: string) => {
+    try {
+      for (const t of STANDARD_TASKS) {
+        await createTask.mutateAsync({
+          candidateId,
+          title: t.title,
+          phase: t.phase,
+          owner: t.owner,
+          dueDate: new Date(Date.now() + t.daysOffset * 86400000).toISOString(),
+          done: false,
+          status: 'Pending',
+        });
+      }
+      toast.success(`Standard onboarding checklist initialized for ${candidateName}!`);
+    } catch {
+      toast.error('Failed to initialize checklist. Please try again.');
+    }
   };
 
   // Filtered Tasks
@@ -212,10 +251,6 @@ export function OnboardingDashboard() {
   if (isLoading) {
     return (
       <div className="space-y-6">
-        <div className="space-y-2">
-          <Skeleton className="h-8 w-64 rounded-md" />
-          <Skeleton className="h-4 w-96 rounded-md" />
-        </div>
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
           <Skeleton className="h-[96px] rounded-[12px]" />
           <Skeleton className="h-[96px] rounded-[12px]" />
@@ -228,25 +263,8 @@ export function OnboardingDashboard() {
   }
 
   return (
-    <div className="space-y-6">
-      {/* 1. Page Header */}
-      <PageHeader
-        title="Onboarding & Readiness"
-        description="Monitor pre-boarding requirements, Day-1 readiness, and 30-day ramps across incoming team members."
-        action={
-          <Button
-            variant="primary"
-            size="sm"
-            onClick={() => handleOpenCreateModal()}
-            className="gap-1.5 shadow-sm"
-          >
-            <Plus className="h-4 w-4" />
-            <span>Add Checklist Item</span>
-          </Button>
-        }
-      />
-
-      {/* 2. Executive Stat Cards Grid */}
+    <div className="space-y-5">
+      {/* 1. Executive Stat Cards Grid (Starts immediately at top - redundant PageHeader removed) */}
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
         <StatCard
           label="Readiness Progress"
@@ -255,13 +273,13 @@ export function OnboardingDashboard() {
           icon={<CheckCircle2 className="h-4 w-4 stroke-[1.75]" />}
         />
         <StatCard
-          label="New Hires in Roster"
-          value={onboardingCandidates.length}
-          delta="Offers accepted & joined"
+          label="Active Checklists"
+          value={candidatesWithActiveChecklists.length}
+          delta={`${candidatesAwaitingChecklists.length} pending checklist setup`}
           icon={<Users className="h-4 w-4 stroke-[1.75]" />}
         />
         <StatCard
-          label="HR Responsibilities"
+          label="HR Requirements"
           value={`${hrCompleted}/${hrTasks.length}`}
           delta={hrPending > 0 ? `${hrPending} tasks pending` : 'All tasks completed'}
           isWarning={hrPending > 0}
@@ -275,9 +293,9 @@ export function OnboardingDashboard() {
         />
       </div>
 
-      {/* 3. Controls & Filter Bar */}
+      {/* 2. Controls & Filter Bar with Action Button */}
       <Card className="border-border bg-surface-1">
-        <div className="flex flex-col gap-3 p-4 sm:flex-row sm:items-center sm:justify-between">
+        <div className="flex flex-col gap-3 p-3 sm:flex-row sm:items-center sm:justify-between">
           {/* Segmented View Mode Switcher */}
           <Tabs
             value={viewMode}
@@ -300,10 +318,10 @@ export function OnboardingDashboard() {
             </TabsList>
           </Tabs>
 
-          {/* Search & Filter Dropdowns */}
-          <div className="flex flex-wrap items-center gap-2.5">
+          {/* Search, Filter Dropdowns & Add Button */}
+          <div className="flex flex-wrap items-center gap-2">
             {/* Search Input */}
-            <div className="relative min-w-[180px] sm:w-[220px]">
+            <div className="relative min-w-[160px] sm:w-[200px]">
               <Search className="text-text-muted absolute left-2.5 top-1/2 h-3.5 w-3.5 -translate-y-1/2" />
               <Input
                 type="text"
@@ -317,12 +335,12 @@ export function OnboardingDashboard() {
             {/* Candidate Filter (shown in by-phase & all-tasks) */}
             {viewMode !== 'by-candidate' && (
               <Select value={selectedCandidateId} onValueChange={setSelectedCandidateId}>
-                <SelectTrigger className="h-8.5 w-auto min-w-[140px] text-[12px] bg-surface-2 border-border">
+                <SelectTrigger className="h-8.5 w-auto min-w-[130px] text-[12px] bg-surface-2 border-border">
                   <SelectValue placeholder="All Hires" />
                 </SelectTrigger>
                 <SelectContent align="end">
-                  <SelectItem value="all">All Hires ({onboardingCandidates.length})</SelectItem>
-                  {onboardingCandidates.map((c) => (
+                  <SelectItem value="all">All Hires ({candidatesWithActiveChecklists.length})</SelectItem>
+                  {candidatesWithActiveChecklists.map((c) => (
                     <SelectItem key={c.id} value={c.id}>
                       {c.name}
                     </SelectItem>
@@ -333,7 +351,7 @@ export function OnboardingDashboard() {
 
             {/* Owner Filter */}
             <Select value={selectedOwner} onValueChange={setSelectedOwner}>
-              <SelectTrigger className="h-8.5 w-auto min-w-[130px] text-[12px] bg-surface-2 border-border">
+              <SelectTrigger className="h-8.5 w-auto min-w-[120px] text-[12px] bg-surface-2 border-border">
                 <SelectValue placeholder="All Owners" />
               </SelectTrigger>
               <SelectContent align="end">
@@ -345,7 +363,7 @@ export function OnboardingDashboard() {
 
             {/* Status Filter */}
             <Select value={selectedStatus} onValueChange={setSelectedStatus}>
-              <SelectTrigger className="h-8.5 w-auto min-w-[120px] text-[12px] bg-surface-2 border-border">
+              <SelectTrigger className="h-8.5 w-auto min-w-[115px] text-[12px] bg-surface-2 border-border">
                 <SelectValue placeholder="All Status" />
               </SelectTrigger>
               <SelectContent align="end">
@@ -354,25 +372,36 @@ export function OnboardingDashboard() {
                 <SelectItem value="done">Completed</SelectItem>
               </SelectContent>
             </Select>
+
+            {/* + Add Checklist Item Action Button */}
+            <Button
+              variant="primary"
+              size="sm"
+              onClick={() => handleOpenCreateModal()}
+              className="h-8.5 gap-1.5 shadow-sm text-[12px]"
+            >
+              <Plus className="h-4 w-4" />
+              <span>Add Checklist Item</span>
+            </Button>
           </div>
         </div>
       </Card>
 
-      {/* 4. Main Views */}
+      {/* 3. Main Views */}
 
       {/* VIEW 1: BY NEW HIRE (Candidate Focus Roster) */}
       {viewMode === 'by-candidate' && (
-        <div className="space-y-4">
-          {onboardingCandidates.length === 0 ? (
+        <div className="space-y-5">
+          {candidatesWithActiveChecklists.length === 0 ? (
             <Card className="border-border p-12 text-center">
               <Users className="text-text-muted mx-auto h-8 w-8 mb-2 opacity-50" />
-              <p className="text-text text-[14px] font-medium">No candidates in onboarding</p>
+              <p className="text-text text-[14px] font-medium">No candidates with active checklists</p>
               <p className="text-text-muted text-[12px] mt-1">
-                Candidates moved to Offer Sent or Joined will appear here automatically.
+                Select an upcoming hire below to initialize their onboarding roadmap.
               </p>
             </Card>
           ) : (
-            onboardingCandidates.map((candidate) => {
+            candidatesWithActiveChecklists.map((candidate) => {
               const candidateTasks = filteredItems.filter((i) => i.candidateId === candidate.id);
               const total = candidateTasks.length;
               const completed = candidateTasks.filter((i) => i.done).length;
@@ -393,7 +422,7 @@ export function OnboardingDashboard() {
                           <span className="text-text text-[14px] font-semibold">
                             {candidate.name}
                           </span>
-                          <Badge variant="accent" className="text-[10px] font-medium px-1.5 py-0.5">
+                          <Badge variant="default" className="text-[11px] font-normal text-text-muted bg-surface-2 px-1.5 py-0.2">
                             {candidate.stage}
                           </Badge>
                         </div>
@@ -435,13 +464,13 @@ export function OnboardingDashboard() {
                   </div>
 
                   {/* Tasks Grouped by Phase for Candidate */}
-                  <CardContent className="p-5">
+                  <CardContent className="p-4 sm:p-5">
                     {candidateTasks.length === 0 ? (
                       <p className="text-text-muted py-4 text-center text-[12px]">
                         No tasks match the active filters for this candidate.
                       </p>
                     ) : (
-                      <div className="grid grid-cols-1 gap-5 lg:grid-cols-3">
+                      <div className="grid grid-cols-1 gap-4 lg:grid-cols-3">
                         {PHASES.map((phase) => {
                           const phaseTasks = candidateTasks.filter((t) => t.phase === phase);
                           const phaseDone = phaseTasks.filter((t) => t.done).length;
@@ -467,7 +496,7 @@ export function OnboardingDashboard() {
                               {/* Task Items */}
                               <div className="space-y-2 flex-1">
                                 {phaseTasks.length === 0 ? (
-                                  <div className="flex h-20 items-center justify-center text-center">
+                                  <div className="flex h-16 items-center justify-center text-center">
                                     <span className="text-text-subtle text-[11px]">
                                       No tasks in this phase
                                     </span>
@@ -501,8 +530,8 @@ export function OnboardingDashboard() {
                                         </p>
                                         <div className="flex flex-wrap items-center gap-1.5 text-[10px]">
                                           <Badge
-                                            variant={task.owner === 'HR' ? 'accent' : 'default'}
-                                            className="px-1.5 py-0 text-[10px]"
+                                            variant="default"
+                                            className="px-1.5 py-0 text-[10px] text-text-muted font-normal bg-surface-2"
                                           >
                                             {task.owner}
                                           </Badge>
@@ -525,6 +554,84 @@ export function OnboardingDashboard() {
                 </Card>
               );
             })
+          )}
+
+          {/* Clean 1-Line Table for Upcoming Hires Ready to Initialize Checklist */}
+          {candidatesAwaitingChecklists.length > 0 && (
+            <Card className="border-border bg-surface-1 overflow-hidden">
+              <div className="border-border bg-surface-2/30 flex items-center justify-between border-b px-5 py-3">
+                <div className="flex items-center gap-2">
+                  <span className="text-text text-[13px] font-semibold">
+                    Upcoming Hires Awaiting Onboarding Roadmap
+                  </span>
+                </div>
+                <span className="text-text-subtle text-[11px] hidden sm:inline">
+                  Initialize standard checklist or add custom tasks
+                </span>
+              </div>
+
+              <div className="overflow-x-auto">
+                <table className="w-full text-left border-collapse">
+                  <thead>
+                    <tr className="border-b border-border text-[11px] font-medium text-text-subtle uppercase tracking-wider bg-surface-2/40">
+                      <th className="py-2.5 px-5 font-medium">Candidate</th>
+                      <th className="py-2.5 px-4 font-medium">Role & Company</th>
+                      <th className="py-2.5 px-4 font-medium">Stage</th>
+                      <th className="py-2.5 px-5 text-right font-medium">Actions</th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-border text-[12px]">
+                    {candidatesAwaitingChecklists.map((candidate) => (
+                      <tr key={candidate.id} className="hover:bg-surface-2/30 transition-colors">
+                        <td className="py-2.5 px-5 whitespace-nowrap">
+                          <div className="flex items-center gap-2">
+                            <Avatar className="h-6 w-6 border border-border">
+                              <AvatarFallback className="text-[9px] bg-surface-3 text-text font-medium">
+                                {candidate.name.slice(0, 2).toUpperCase()}
+                              </AvatarFallback>
+                            </Avatar>
+                            <span className="font-medium text-text">{candidate.name}</span>
+                          </div>
+                        </td>
+                        <td className="py-2.5 px-4 whitespace-nowrap text-text-muted">
+                          {candidate.currentRole} <span className="text-text-subtle">•</span> {candidate.currentCompany}
+                        </td>
+                        <td className="py-2.5 px-4 whitespace-nowrap">
+                          <Badge variant="default" className="text-[11px] font-normal text-text-muted bg-surface-2">
+                            {candidate.stage}
+                          </Badge>
+                        </td>
+                        <td className="py-2.5 px-5 whitespace-nowrap text-right">
+                          <div className="inline-flex items-center gap-2 justify-end">
+                            <Button
+                              variant="outline"
+                              size="sm"
+                              onClick={() =>
+                                handleInitializeStandardChecklist(candidate.id, candidate.name)
+                              }
+                              loading={createTask.isPending}
+                              className="h-7 px-2.5 text-[11px] gap-1 border-border hover:bg-surface-2"
+                            >
+                              <ListChecks className="h-3 w-3" />
+                              <span>Setup Standard Checklist</span>
+                            </Button>
+                            <Button
+                              variant="ghost"
+                              size="sm"
+                              onClick={() => handleOpenCreateModal(candidate.id)}
+                              className="h-7 px-2 text-[11px] gap-1 text-text-muted hover:text-text"
+                            >
+                              <Plus className="h-3 w-3" />
+                              <span>Custom Task</span>
+                            </Button>
+                          </div>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            </Card>
           )}
         </div>
       )}
@@ -630,8 +737,8 @@ export function OnboardingDashboard() {
 
                             <div className="flex shrink-0 flex-col items-end gap-1">
                               <Badge
-                                variant={item.owner === 'HR' ? 'accent' : 'default'}
-                                className="text-[10px] px-1.5 py-0"
+                                variant="default"
+                                className="text-[10px] px-1.5 py-0 text-text-muted font-normal bg-surface-2"
                               >
                                 {item.owner}
                               </Badge>
@@ -722,8 +829,8 @@ export function OnboardingDashboard() {
 
                       {/* Owner */}
                       <Badge
-                        variant={item.owner === 'HR' ? 'accent' : 'default'}
-                        className="text-[11px]"
+                        variant="default"
+                        className="text-[11px] text-text-muted font-normal bg-surface-2"
                       >
                         {item.owner}
                       </Badge>
@@ -742,7 +849,7 @@ export function OnboardingDashboard() {
         </Card>
       )}
 
-      {/* 5. Add Task Dialog */}
+      {/* 4. Add Task Dialog */}
       <Dialog open={createModalOpen} onOpenChange={setCreateModalOpen}>
         <DialogContent className="sm:max-w-[480px]">
           <DialogHeader>

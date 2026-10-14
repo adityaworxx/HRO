@@ -25,8 +25,7 @@ export function StatCard({
     <div
       className={cn(
         'border-border bg-surface-1 hover:border-border-strong hover:bg-surface-2/30 flex flex-col justify-between rounded-[12px] border p-5 transition-all duration-140',
-        href &&
-          'focus-visible:ring-accent cursor-pointer focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-none',
+        href && 'cursor-pointer focus-visible:outline-none focus:outline-none',
         className
       )}
     >

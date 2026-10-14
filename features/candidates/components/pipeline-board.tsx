@@ -27,7 +27,7 @@ import {
   SelectContent,
   SelectItem,
 } from '@/components/ui/select';
-import { Search, Filter } from 'lucide-react';
+import { Search } from 'lucide-react';
 import { toast } from 'sonner';
 
 const PIPELINE_STAGES: CandidateStage[] = [
@@ -157,22 +157,21 @@ export function PipelineBoard() {
       <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <div className="flex flex-1 items-center gap-3">
           <div className="relative w-full max-w-xs">
-            <Search className="text-text-muted absolute top-2.5 left-2.5 h-4 w-4" />
+            <Search className="text-text-subtle absolute top-2.5 left-3 h-4 w-4 pointer-events-none" />
             <Input
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               placeholder="Search candidate or company..."
-              className="pl-8 text-[13px]"
+              className="h-9 pl-9 text-[13px] bg-surface-2/40 border-border/70 hover:border-border focus:bg-surface-1 rounded-[8px] transition-all shadow-2xs"
             />
           </div>
 
-          <div className="flex items-center gap-1.5">
-            <Filter className="text-text-muted h-4 w-4 shrink-0" />
+          <div className="flex items-center gap-2">
             <Select
               value={selectedOpeningId}
               onValueChange={(val) => setSelectedOpeningId(val)}
             >
-              <SelectTrigger className="h-9 w-auto min-w-[200px] gap-2 border-border bg-surface-2 hover:bg-surface-3 text-text px-3 text-[13px] font-medium rounded-[var(--radius-sm)]">
+              <SelectTrigger className="h-9 w-auto min-w-[200px] gap-2 border-border/70 bg-surface-2/40 hover:bg-surface-2 text-text px-3 text-[13px] font-medium rounded-[8px] shadow-2xs">
                 <SelectValue placeholder={`All Requisitions (${openings.length})`} />
               </SelectTrigger>
               <SelectContent align="start" className="min-w-[240px]">
@@ -189,15 +188,14 @@ export function PipelineBoard() {
           </div>
         </div>
 
-        <div className="text-text-muted text-[13px]">
-          Showing <span className="text-text font-semibold">{filteredCandidates.length}</span>{' '}
-          candidates
+        <div className="text-text-muted text-[12px] font-medium">
+          Showing <span className="text-text font-semibold">{filteredCandidates.length}</span> candidates
         </div>
       </div>
 
       {/* Kanban Board Canvas */}
       <DndContext sensors={sensors} onDragStart={handleDragStart} onDragEnd={handleDragEnd}>
-        <div className="flex gap-4 overflow-x-auto pt-1 pb-4">
+        <div className="flex gap-3 overflow-x-auto pt-1 pb-4">
           {PIPELINE_STAGES.map((stage) => {
             const stageCandidates = filteredCandidates.filter((c) => c.stage === stage);
 
@@ -218,7 +216,7 @@ export function PipelineBoard() {
         {/* Drag Overlay Preview */}
         <DragOverlay>
           {activeCandidate ? (
-            <div className="w-72 shadow-2xl">
+            <div className="w-[275px] shadow-lg">
               <CandidateCard candidate={activeCandidate} isDragging />
             </div>
           ) : null}

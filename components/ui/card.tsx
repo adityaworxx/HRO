@@ -67,7 +67,7 @@ export const CardActionArea = React.forwardRef<
     type="button"
     data-active={active ? '' : undefined}
     className={cn(
-      'focus-visible:ring-accent hover:bg-surface-2/60 data-[active]:border-accent data-[active]:bg-accent/5 w-full rounded-[var(--radius-lg)] p-6 text-left transition-colors focus-visible:ring-2 focus-visible:outline-none',
+      'hover:bg-surface-2/60 data-[active]:border-accent data-[active]:bg-accent/5 w-full rounded-[var(--radius-lg)] p-6 text-left transition-colors focus-visible:outline-none focus:outline-none',
       className
     )}
     {...props}

@@ -56,14 +56,14 @@ export function OpeningRow({
       className={cn(
         'group relative grid min-h-[58px] h-[58px] items-center px-5 border-b border-border/70 last:border-b-0 transition-colors',
         'hover:bg-surface-2/60 active:bg-surface-3',
-        'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-inset',
+        'focus-visible:outline-none focus:outline-none',
         'grid-cols-[minmax(0,1fr)_24px] sm:grid-cols-[minmax(0,1fr)_140px_130px_24px] lg:grid-cols-[minmax(240px,2fr)_140px_130px_120px_130px_24px] gap-4',
         className
       )}
     >
       {/* 1. Opening Cell */}
       <div className="min-w-0 flex flex-col justify-center">
-        <span className="truncate text-[14px] leading-[20px] font-medium text-text group-hover:text-accent transition-colors">
+        <span className="inline-block max-w-full truncate text-[14px] leading-[20px] font-medium text-text hover:text-accent transition-colors">
           {opening.title}
         </span>
 

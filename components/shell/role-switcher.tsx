@@ -2,15 +2,18 @@
 
 import * as React from 'react';
 import { useUiStore } from '@/lib/store';
+import { useSwitchRole } from '@/features/auth/hooks';
 import { ArrowLeftRight } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 
 export function RoleSwitcher({ isCollapsed = false }: { isCollapsed?: boolean }) {
   const { role, setRole } = useUiStore();
+  const switchRole = useSwitchRole();
 
   const handleToggle = () => {
     const nextRole = role === 'manager' ? 'hr' : 'manager';
     setRole(nextRole);
+    switchRole.mutate(nextRole);
   };
 
   const isManager = role === 'manager';

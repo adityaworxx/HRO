@@ -338,13 +338,25 @@ export const mockApi: HroApiClient = {
 
   auth: {
     getCurrentUser: async () => {
-      await simulateLatency(100, 200);
+      await simulateLatency(50, 100);
+      if (typeof window !== 'undefined') {
+        const storedRole = localStorage.getItem('hro:demo-role');
+        if (storedRole === 'hr') {
+          return PRIMARY_HR;
+        }
+        if (storedRole === 'manager') {
+          return PRIMARY_MANAGER;
+        }
+      }
       return activeUser;
     },
 
     switchRole: async (role) => {
-      await simulateLatency(100, 200);
+      await simulateLatency(50, 100);
       activeUser = role === 'manager' ? PRIMARY_MANAGER : PRIMARY_HR;
+      if (typeof window !== 'undefined') {
+        localStorage.setItem('hro:demo-role', role);
+      }
       return activeUser;
     },
 

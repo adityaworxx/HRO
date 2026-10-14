@@ -11,13 +11,14 @@ import {
   DropdownMenuLabel,
 } from '@/components/ui/dropdown-menu';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
-import { useCurrentUser } from '@/features/auth/hooks';
+import { useCurrentUser, useSwitchRole } from '@/features/auth/hooks';
 import { useUiStore } from '@/lib/store';
 import { Check, Settings, LogOut, ArrowLeftRight, Shield } from 'lucide-react';
 
 export function ProfileDropdown() {
   const { data: user } = useCurrentUser();
   const { role, setRole } = useUiStore();
+  const switchRole = useSwitchRole();
 
   const displayName = user?.name ?? 'Aditya Chaubey';
   const displayDepartment = user?.department ?? 'Operations';
@@ -31,6 +32,7 @@ export function ProfileDropdown() {
   const toggleRole = () => {
     const nextRole = role === 'manager' ? 'hr' : 'manager';
     setRole(nextRole);
+    switchRole.mutate(nextRole);
   };
 
   return (
@@ -38,7 +40,7 @@ export function ProfileDropdown() {
       <DropdownMenuTrigger asChild>
         <button
           type="button"
-          className="focus-visible:ring-accent relative flex h-9 w-9 cursor-pointer items-center justify-center rounded-full transition-all select-none focus-visible:ring-2 focus-visible:outline-none"
+          className="relative flex h-9 w-9 cursor-pointer items-center justify-center rounded-full transition-all select-none focus-visible:outline-none focus:outline-none"
           aria-label="User profile menu"
           title={`${displayName} (${displayDepartment})`}
         >

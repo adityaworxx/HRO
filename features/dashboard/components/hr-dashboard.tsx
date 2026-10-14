@@ -16,10 +16,7 @@ import {
   Users,
   Clock,
   CheckCircle2,
-  GitPullRequest,
-  UserCheck,
   ChevronRight,
-  AlertTriangle,
 } from 'lucide-react';
 import { toast } from 'sonner';
 
@@ -150,14 +147,9 @@ export function HrDashboard() {
           <div className="border border-border bg-surface-1 flex h-full flex-col rounded-[12px] p-5 shadow-xs">
             {/* Header (No 30 candidates badge) */}
             <div className="flex items-center justify-between gap-4 pb-4 border-b border-border/60">
-              <div className="flex items-center gap-2.5">
-                <div className="flex h-7 w-7 items-center justify-center rounded-[6px] bg-surface-2 text-text">
-                  <GitPullRequest className="h-4 w-4 stroke-[1.75]" />
-                </div>
-                <h2 className="text-[15px] font-semibold tracking-[-0.01em] text-text">
-                  Active Pipeline Throughput
-                </h2>
-              </div>
+              <h2 className="text-[15px] font-semibold tracking-[-0.01em] text-text">
+                Active Pipeline Throughput
+              </h2>
               <Link
                 href="/pipeline"
                 className="inline-flex items-center gap-1 text-[12px] font-medium text-text-muted hover:text-text transition-colors shrink-0"
@@ -346,14 +338,9 @@ export function HrDashboard() {
           <div className="border border-border bg-surface-1 flex h-full flex-col rounded-[12px] p-5 shadow-xs">
             {/* Header */}
             <div className="flex items-center justify-between gap-4 pb-4 border-b border-border/60">
-              <div className="flex items-center gap-2.5">
-                <div className="flex h-7 w-7 items-center justify-center rounded-[6px] bg-surface-2 text-text">
-                  <UserCheck className="h-4 w-4 stroke-[1.75]" />
-                </div>
-                <h2 className="text-[15px] font-semibold tracking-[-0.01em] text-text">
-                  Onboarding Readiness
-                </h2>
-              </div>
+              <h2 className="text-[15px] font-semibold tracking-[-0.01em] text-text">
+                Onboarding Readiness
+              </h2>
               <Link
                 href="/onboarding"
                 className="inline-flex items-center gap-1 text-[12px] font-medium text-text-muted hover:text-text transition-colors shrink-0"
@@ -416,14 +403,9 @@ export function HrDashboard() {
           <div className="border border-border bg-surface-1 flex h-full flex-col rounded-[12px] p-5 shadow-xs overflow-hidden">
             {/* Header (No count badge) */}
             <div className="flex items-center justify-between gap-4 pb-4">
-              <div className="flex items-center gap-2.5">
-                <div className="flex h-7 w-7 items-center justify-center rounded-[6px] bg-surface-2 text-text">
-                  <AlertTriangle className="h-4 w-4 stroke-[1.75]" />
-                </div>
-                <h2 className="text-[15px] font-semibold tracking-[-0.01em] text-text">
-                  SLA Watchlist
-                </h2>
-              </div>
+              <h2 className="text-[15px] font-semibold tracking-[-0.01em] text-text">
+                SLA Watchlist
+              </h2>
               <Link
                 href="/candidates"
                 className="inline-flex items-center gap-1 text-[12px] font-medium text-text-muted hover:text-text transition-colors shrink-0"

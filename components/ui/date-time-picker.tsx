@@ -148,7 +148,7 @@ export function DateTimePicker({
           type="button"
           disabled={disabled}
           className={cn(
-            'border-border bg-surface-2 hover:bg-surface-3 text-text focus:ring-accent flex h-9 w-full items-center justify-between rounded-[var(--radius-sm)] border px-3 text-[13px] font-medium outline-none transition-colors focus:ring-1 disabled:cursor-not-allowed disabled:opacity-50 select-none',
+            'border-border bg-surface-2 hover:bg-surface-3 text-text focus:border-border-strong flex h-9 w-full items-center justify-between rounded-[var(--radius-sm)] border px-3 text-[13px] font-medium outline-none transition-colors disabled:cursor-not-allowed disabled:opacity-50 select-none',
             className
           )}
         >

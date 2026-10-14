@@ -5,8 +5,6 @@ import type { ColumnDef } from '@tanstack/react-table';
 import type { Candidate } from '@/types/entities';
 import { useCandidates } from '../hooks';
 import { DataTable } from '@/components/hro/data-table';
-import { StatusBadge } from '@/components/hro/status-badge';
-import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import {
@@ -18,7 +16,6 @@ import {
 } from '@/components/ui/select';
 import { CandidateDetailSheet } from './candidate-detail-sheet';
 import { formatCtc } from '@/lib/format';
-import { Eye, Building2, Mail } from 'lucide-react';
 
 export function CandidatesTable() {
   const { data: candidates = [], isLoading, isError, refetch } = useCandidates();
@@ -44,107 +41,107 @@ export function CandidatesTable() {
     () => [
       {
         accessorKey: 'name',
-        header: 'Candidate Name',
+        header: 'Candidate',
         cell: ({ row }) => {
           const candidate = row.original;
           return (
-            <div className="flex items-center gap-2.5">
-              <Avatar className="h-8 w-8">
-                <AvatarFallback className="text-[11px] font-semibold">
+            <div className="flex items-center gap-2.5 min-w-[160px] max-w-[210px]">
+              <Avatar className="h-7 w-7 shrink-0 border border-border/80 bg-surface-3 shadow-2xs">
+                <AvatarFallback className="text-[10px] font-semibold text-text bg-surface-3 tracking-wide">
                   {candidate.name.slice(0, 2).toUpperCase()}
                 </AvatarFallback>
               </Avatar>
-              <div>
-                <span className="text-text hover:text-accent text-[13px] font-semibold">
+              <div className="min-w-0">
+                <span className="text-text hover:text-accent text-[13px] font-semibold tracking-tight transition-colors block truncate cursor-pointer">
                   {candidate.name}
                 </span>
-                <div className="text-text-muted flex items-center gap-1 text-[11px]">
-                  <Mail className="h-3 w-3 opacity-60" />
-                  <span>{candidate.email}</span>
-                </div>
+                <span className="text-text-muted text-[11px] block truncate font-normal">
+                  {candidate.email}
+                </span>
               </div>
             </div>
           );
         },
       },
       {
-        id: 'experience',
-        header: 'Role & Experience',
+        id: 'role',
+        header: 'Role & Company',
         cell: ({ row }) => {
           const c = row.original;
           return (
-            <div className="space-y-0.5 text-[13px]">
-              <div className="text-text flex items-center gap-1.5 font-medium">
-                <Building2 className="text-text-muted h-3.5 w-3.5" />
-                <span>{c.currentRole}</span>
-              </div>
-              <p className="text-text-muted text-[11px]">
-                {c.currentCompany} • {c.experienceYears}y exp
-              </p>
+            <div className="space-y-0.5 min-w-[170px] max-w-[220px]">
+              <span className="text-text font-medium text-[13px] block truncate">
+                {c.currentRole}
+              </span>
+              <span className="text-text-muted text-[11px] block truncate">
+                {c.currentCompany}
+              </span>
             </div>
           );
         },
+      },
+      {
+        accessorKey: 'experienceYears',
+        header: 'Experience',
+        cell: ({ row }) => (
+          <span className="text-text font-mono text-[13px] font-medium tabular-nums whitespace-nowrap">
+            {row.original.experienceYears} yrs
+          </span>
+        ),
       },
       {
         accessorKey: 'expectedCtc',
         header: 'Expected CTC',
         cell: ({ row }) => (
-          <span className="text-text font-mono text-[13px] font-medium">
+          <span className="text-text font-mono font-medium text-[13px] tabular-nums whitespace-nowrap">
             {formatCtc(row.original.expectedCtc)}
           </span>
-        ),
-      },
-      {
-        accessorKey: 'noticePeriod',
-        header: 'Notice',
-        cell: ({ row }) => (
-          <span className="text-text-muted text-[12px]">{row.original.noticePeriod}</span>
         ),
       },
       {
         accessorKey: 'source',
         header: 'Source',
         cell: ({ row }) => (
-          <Badge variant="default" className="text-[11px]">
+          <span className="text-text-muted text-[12px] font-normal whitespace-nowrap">
             {row.original.source}
-          </Badge>
+          </span>
         ),
       },
       {
         accessorKey: 'stage',
-        header: 'Current Stage',
-        cell: ({ row }) => <StatusBadge status={row.original.stage} type="candidate" />,
+        header: 'Stage',
+        cell: ({ row }) => (
+          <span className="text-text-muted text-[13px] font-normal whitespace-nowrap">
+            {row.original.stage}
+          </span>
+        ),
       },
       {
         accessorKey: 'managerDecision',
-        header: 'Manager Review',
-        cell: ({ row }) => {
-          const decision = row.original.managerDecision;
-          return (
-            <Badge variant="default" className="text-[11px]">
-              {decision}
-            </Badge>
-          );
-        },
+        header: 'Manager',
+        cell: ({ row }) => (
+          <span className="text-text-muted text-[13px] font-normal whitespace-nowrap">
+            {row.original.managerDecision}
+          </span>
+        ),
       },
       {
         id: 'actions',
-        header: () => <div className="text-right">Actions</div>,
+        header: () => <div className="text-right whitespace-nowrap pr-2">Action</div>,
         cell: ({ row }) => {
           const candidate = row.original;
 
           return (
-            <div className="flex justify-end" onClick={(e) => e.stopPropagation()}>
+            <div className="flex justify-end pr-1" onClick={(e) => e.stopPropagation()}>
               <Button
-                variant="outline"
+                variant="ghost"
                 size="sm"
                 onClick={() => {
                   setActiveCandidate(candidate);
                   setSheetOpen(true);
                 }}
-                className="h-7 gap-1 text-[12px]"
+                className="h-7 px-2.5 text-[12px] font-medium text-accent hover:text-accent hover:bg-accent/10 rounded-[6px] transition-colors whitespace-nowrap"
               >
-                <Eye className="h-3.5 w-3.5" />
                 <span>Review</span>
               </Button>
             </div>
@@ -179,16 +176,16 @@ export function CandidatesTable() {
               <button
                 key={stage}
                 onClick={() => setSelectedStage(stage)}
-                className={`inline-flex items-center gap-1.5 rounded-[var(--radius-sm)] px-2.5 py-1 text-[13px] font-medium transition-colors ${
+                className={`inline-flex items-center gap-1.5 rounded-[var(--radius-sm)] px-2.5 py-1 text-[13px] font-medium transition-all ${
                   isSelected
-                    ? 'bg-accent text-bg shadow-sm'
-                    : 'bg-surface-2 text-text-muted hover:bg-surface-3 hover:text-text'
+                    ? 'bg-surface-1 text-text border border-border-strong shadow-xs font-semibold'
+                    : 'bg-surface-2/70 text-text-muted hover:bg-surface-2 hover:text-text border border-transparent'
                 }`}
               >
                 <span>{stage === 'all' ? 'All Applicants' : stage}</span>
                 <span
                   className={`py-0.2 rounded-full px-1.5 font-mono text-[11px] ${
-                    isSelected ? 'bg-bg/20 text-bg' : 'bg-surface-3 text-text-subtle'
+                    isSelected ? 'bg-surface-3 text-text font-semibold' : 'bg-surface-3/60 text-text-subtle'
                   }`}
                 >
                   {count}
@@ -204,7 +201,7 @@ export function CandidatesTable() {
             value={selectedSource}
             onValueChange={(val) => setSelectedSource(val)}
           >
-            <SelectTrigger className="h-8 w-auto min-w-[140px] gap-2 border-border bg-surface-2 hover:bg-surface-3 text-text px-2.5 text-[12px] font-medium rounded-[var(--radius-sm)]">
+            <SelectTrigger className="h-8.5 w-auto min-w-[130px] gap-2 border-border/70 bg-surface-2/50 hover:bg-surface-2 text-text px-2.5 text-[12px] font-medium rounded-[var(--radius-sm)] shadow-2xs">
               <SelectValue placeholder="All Sources" />
             </SelectTrigger>
             <SelectContent align="end" className="min-w-[160px]">

@@ -105,7 +105,7 @@ export function ShortlistReview() {
                 onClick={() => setSelectedId(candidate.id)}
                 className={`cursor-pointer rounded-[var(--radius-md)] border p-3.5 transition-all ${
                   isSelected
-                    ? 'border-accent bg-accent-subtle/30 ring-accent ring-1'
+                    ? 'border-accent bg-accent-subtle/30'
                     : 'border-border bg-surface-1 hover:border-border-strong hover:bg-surface-2'
                 }`}
               >

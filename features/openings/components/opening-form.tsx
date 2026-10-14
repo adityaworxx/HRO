@@ -163,7 +163,7 @@ export function OpeningForm({ initialData, isEditing = false }: OpeningFormProps
               <select
                 value={department}
                 onChange={(e) => setDepartment(e.target.value)}
-                className="border-border bg-surface-2 text-text focus:ring-accent h-9 w-full rounded-[var(--radius-sm)] border px-3 text-[13px] outline-none focus:ring-1"
+                className="border-border bg-surface-2 text-text focus:border-border-strong h-9 w-full rounded-[var(--radius-sm)] border px-3 text-[13px] outline-none"
               >
                 <option value="Engineering">Engineering</option>
                 <option value="Product">Product</option>
@@ -192,7 +192,7 @@ export function OpeningForm({ initialData, isEditing = false }: OpeningFormProps
                     e.target.value as 'Full-time' | 'Part-time' | 'Contract' | 'Internship'
                   )
                 }
-                className="border-border bg-surface-2 text-text focus:ring-accent h-9 w-full rounded-[var(--radius-sm)] border px-3 text-[13px] outline-none focus:ring-1"
+                className="border-border bg-surface-2 text-text focus:border-border-strong h-9 w-full rounded-[var(--radius-sm)] border px-3 text-[13px] outline-none"
               >
                 <option value="Full-time">Full-time</option>
                 <option value="Part-time">Part-time</option>
@@ -216,7 +216,7 @@ export function OpeningForm({ initialData, isEditing = false }: OpeningFormProps
               <select
                 value={urgency}
                 onChange={(e) => setUrgency(e.target.value as 'Low' | 'Normal' | 'High')}
-                className="border-border bg-surface-2 text-text focus:ring-accent h-9 w-full rounded-[var(--radius-sm)] border px-3 text-[13px] outline-none focus:ring-1"
+                className="border-border bg-surface-2 text-text focus:border-border-strong h-9 w-full rounded-[var(--radius-sm)] border px-3 text-[13px] outline-none"
               >
                 <option value="Normal">Normal</option>
                 <option value="High">High (Immediate)</option>
