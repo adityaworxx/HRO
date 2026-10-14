@@ -33,7 +33,7 @@ export default function EditOpeningPage() {
   }
 
   return (
-    <div className="w-full">
+    <div className="w-full h-full">
       <OpeningForm initialData={opening} isEditing />
     </div>
   );

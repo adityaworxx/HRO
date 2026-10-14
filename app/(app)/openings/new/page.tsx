@@ -5,7 +5,7 @@ import { OpeningForm } from '@/features/openings';
 
 export default function NewOpeningPage() {
   return (
-    <div className="w-full">
+    <div className="w-full h-full">
       <OpeningForm />
     </div>
   );
