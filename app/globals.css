@@ -99,3 +99,42 @@ body {
   scrollbar-width: thin;
   scrollbar-color: var(--border) transparent;
 }
+
+/* Sonner Toast Integration with HRO Design Tokens */
+[data-sonner-toaster] {
+  --normal-bg: var(--surface-1) !important;
+  --normal-border: var(--border) !important;
+  --normal-text: var(--text) !important;
+  --success-bg: var(--surface-1) !important;
+  --success-border: var(--border) !important;
+  --success-text: var(--text) !important;
+  --error-bg: var(--surface-1) !important;
+  --error-border: var(--border) !important;
+  --error-text: var(--text) !important;
+  --warning-bg: var(--surface-1) !important;
+  --warning-border: var(--border) !important;
+  --warning-text: var(--text) !important;
+  --info-bg: var(--surface-1) !important;
+  --info-border: var(--border) !important;
+  --info-text: var(--text) !important;
+  font-family: var(--font-sans) !important;
+}
+
+[data-sonner-toaster] [data-sonner-toast] {
+  background-color: color-mix(in srgb, var(--surface-1) 90%, transparent) !important;
+  border-color: color-mix(in srgb, var(--border) 80%, transparent) !important;
+  color: var(--text) !important;
+  backdrop-filter: blur(12px) !important;
+  -webkit-backdrop-filter: blur(12px) !important;
+}
+
+[data-sonner-toaster] [data-sonner-toast] [data-title] {
+  color: var(--text) !important;
+  font-family: var(--font-sans) !important;
+}
+
+[data-sonner-toaster] [data-sonner-toast] [data-description] {
+  color: var(--text-muted) !important;
+  font-family: var(--font-sans) !important;
+}
+

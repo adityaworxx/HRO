@@ -3,6 +3,7 @@
 import * as React from 'react';
 import { Breadcrumbs } from './breadcrumbs';
 import { ThemeToggle } from './theme-toggle';
+import { FullscreenToggle } from './fullscreen-toggle';
 import { NotificationsPopover } from './notifications-popover';
 import { ProfileDropdown } from './profile-dropdown';
 import { Button } from '@/components/ui/button';
@@ -38,6 +39,8 @@ export function Topbar() {
           <Search className="h-4 w-4" />
           <span className="sr-only">Search</span>
         </Button>
+
+        <FullscreenToggle />
 
         <NotificationsPopover />
         <ThemeToggle />
