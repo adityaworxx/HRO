@@ -235,14 +235,34 @@ export function DateTimePicker({
                 const isCurrentDay = isToday(day);
                 const isPast = isBefore(startOfDay(day), effectiveMinDate);
 
-                // Dates before minDate (e.g. today) or outside current month are not shown
-                if (isPast || !isCurrentMonth) {
+                // Past dates (before today) are rendered blurred, dimmed, and non-interactive
+                if (isPast) {
                   return (
                     <div
                       key={day.toISOString()}
-                      className="h-8 w-8 pointer-events-none"
-                      aria-hidden="true"
-                    />
+                      className={cn(
+                        'h-8 w-8 text-[12px] rounded-[6px] font-medium flex items-center justify-center tabular-nums select-none pointer-events-none cursor-not-allowed',
+                        isCurrentMonth
+                          ? 'opacity-25 blur-[0.6px] text-text-subtle'
+                          : 'opacity-10 blur-[0.8px] text-text-subtle/50'
+                      )}
+                      aria-disabled="true"
+                    >
+                      {format(day, 'd')}
+                    </div>
+                  );
+                }
+
+                // Days outside the current month that are not in the past
+                if (!isCurrentMonth) {
+                  return (
+                    <div
+                      key={day.toISOString()}
+                      className="h-8 w-8 text-[12px] rounded-[6px] font-medium flex items-center justify-center tabular-nums select-none opacity-20 text-text-subtle pointer-events-none"
+                      aria-disabled="true"
+                    >
+                      {format(day, 'd')}
+                    </div>
                   );
                 }
 
