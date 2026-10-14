@@ -29,9 +29,6 @@ import {
   Phone,
   MapPin,
   ChevronRight,
-  ListFilter,
-  GitPullRequest,
-  Users,
   Briefcase,
   DollarSign,
   Mail,
@@ -403,54 +400,6 @@ export function ManagerDashboard() {
             viewAllHref="/openings"
             isLoading={isInitialLoading}
           />
-        </div>
-
-        {/* ROW 3: Quick Actions */}
-        <div className="col-span-12 flex flex-col lg:col-span-4">
-          <div className="border border-border bg-surface-1 flex h-full flex-col rounded-[12px] p-5">
-            <div className="pb-4">
-              <h2 className="text-text text-[16px] leading-[24px] font-medium tracking-[-0.01em]">Quick Actions</h2>
-              <p className="text-text-muted mt-[2px] text-[13px] leading-[20px]">
-                Direct links to high-frequency hiring workflows
-              </p>
-            </div>
-
-            {/* Content Area: 40px row height per Rule 8 */}
-            <div className="flex-1 space-y-1.5">
-              <Link
-                href="/shortlist"
-                className="hover:bg-surface-2 focus-visible:ring-accent text-text flex h-10 items-center justify-between rounded-[var(--radius-md)] px-3 text-[13px] font-medium transition-colors focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-none"
-              >
-                <div className="flex items-center gap-2.5">
-                  <ListFilter className="text-text-muted h-4 w-4 stroke-[1.75]" />
-                  <span>Review shortlist queue</span>
-                </div>
-                <ChevronRight className="text-text-subtle h-4 w-4 stroke-[1.75]" />
-              </Link>
-
-              <Link
-                href="/pipeline"
-                className="hover:bg-surface-2 focus-visible:ring-accent text-text flex h-10 items-center justify-between rounded-[var(--radius-md)] px-3 text-[13px] font-medium transition-colors focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-none"
-              >
-                <div className="flex items-center gap-2.5">
-                  <GitPullRequest className="text-text-muted h-4 w-4 stroke-[1.75]" />
-                  <span>Pipeline Kanban board</span>
-                </div>
-                <ChevronRight className="text-text-subtle h-4 w-4 stroke-[1.75]" />
-              </Link>
-
-              <Link
-                href="/candidates"
-                className="hover:bg-surface-2 focus-visible:ring-accent text-text flex h-10 items-center justify-between rounded-[var(--radius-md)] px-3 text-[13px] font-medium transition-colors focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-none"
-              >
-                <div className="flex items-center gap-2.5">
-                  <Users className="text-text-muted h-4 w-4 stroke-[1.75]" />
-                  <span>Candidate directory</span>
-                </div>
-                <ChevronRight className="text-text-subtle h-4 w-4 stroke-[1.75]" />
-              </Link>
-            </div>
-          </div>
         </div>
       </div>
     </div>

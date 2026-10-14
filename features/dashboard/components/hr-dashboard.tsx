@@ -13,14 +13,11 @@ import { Button } from '@/components/ui/button';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Progress } from '@/components/ui/progress';
 import {
-  GitPullRequest,
-  Users,
   Building2,
   MapPin,
   CheckCircle2,
   ChevronRight,
   ArrowRight,
-  BarChart3,
 } from 'lucide-react';
 import { toast } from 'sonner';
 
@@ -270,8 +267,8 @@ export function HrDashboard() {
           </div>
         </div>
 
-        {/* ROW 3 LEFT (8 cols): SLA Watchlist */}
-        <div className="col-span-12 flex flex-col lg:col-span-8">
+        {/* ROW 3: SLA Watchlist */}
+        <div className="col-span-12 flex flex-col">
           <div className="border border-border bg-surface-1 flex h-full flex-col rounded-[12px] p-5">
             {/* Header: title + subtitle left, text link right */}
             <div className="flex items-start justify-between gap-4 pb-4">
@@ -335,54 +332,6 @@ export function HrDashboard() {
                   ))}
                 </div>
               )}
-            </div>
-          </div>
-        </div>
-
-        {/* ROW 3 RIGHT (4 cols): Quick Actions */}
-        <div className="col-span-12 flex flex-col lg:col-span-4">
-          <div className="border border-border bg-surface-1 flex h-full flex-col rounded-[12px] p-5">
-            <div className="pb-4">
-              <h2 className="text-text text-[16px] leading-[24px] font-medium tracking-[-0.01em]">Quick Actions</h2>
-              <p className="text-text-muted mt-[2px] text-[13px] leading-[20px]">
-                Direct links to high-frequency HR operations
-              </p>
-            </div>
-
-            {/* Content: 40px row height actions */}
-            <div className="flex-1 space-y-1">
-              <Link
-                href="/candidates"
-                className="hover:bg-surface-2 text-text flex h-10 items-center justify-between rounded-[8px] px-3 text-[14px] font-medium transition-colors"
-              >
-                <div className="flex items-center gap-3">
-                  <Users className="text-text-subtle h-4 w-4 stroke-[1.75]" />
-                  <span>Candidate directory</span>
-                </div>
-                <ChevronRight className="text-text-subtle h-4 w-4 stroke-[1.75]" />
-              </Link>
-
-              <Link
-                href="/pipeline"
-                className="hover:bg-surface-2 text-text flex h-10 items-center justify-between rounded-[8px] px-3 text-[14px] font-medium transition-colors"
-              >
-                <div className="flex items-center gap-3">
-                  <GitPullRequest className="text-text-subtle h-4 w-4 stroke-[1.75]" />
-                  <span>Pipeline Kanban board</span>
-                </div>
-                <ChevronRight className="text-text-subtle h-4 w-4 stroke-[1.75]" />
-              </Link>
-
-              <Link
-                href="/reports"
-                className="hover:bg-surface-2 text-text flex h-10 items-center justify-between rounded-[8px] px-3 text-[14px] font-medium transition-colors"
-              >
-                <div className="flex items-center gap-3">
-                  <BarChart3 className="text-text-subtle h-4 w-4 stroke-[1.75]" />
-                  <span>Headcount & reports</span>
-                </div>
-                <ChevronRight className="text-text-subtle h-4 w-4 stroke-[1.75]" />
-              </Link>
             </div>
           </div>
         </div>
