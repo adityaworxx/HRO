@@ -15,25 +15,14 @@ import {
   Card,
   CardHeader,
   CardTitle,
-  CardDescription,
   CardContent,
 } from '@/components/ui/card';
 import { toast } from 'sonner';
 import {
-  Briefcase,
-  Building2,
-  MapPin,
-  Users,
-  IndianRupee,
-  Clock,
-  Sparkles,
-  Calendar,
   ArrowLeft,
   CheckCircle2,
-  Eye,
   Check,
   Send,
-  ShieldCheck,
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { formatCtcRange } from '@/lib/format';
@@ -217,20 +206,10 @@ export function OpeningForm({ initialData, isEditing = false }: OpeningFormProps
       <div className="lg:col-span-8 space-y-6">
         {/* Card 1: Core Role & Position Details */}
         <Card className="border-border bg-surface-1 shadow-sm">
-          <CardHeader className="border-b border-border/80 pb-4">
-            <div className="flex items-center gap-3">
-              <div className="flex h-9 w-9 items-center justify-center rounded-[var(--radius-md)] bg-accent/10 text-accent">
-                <Briefcase className="h-4 w-4" />
-              </div>
-              <div>
-                <CardTitle className="text-[16px] font-semibold text-text">
-                  Core Position Details
-                </CardTitle>
-                <CardDescription className="text-[12px] text-text-muted">
-                  Specify the formal job title, department assignment, and operational requirements.
-                </CardDescription>
-              </div>
-            </div>
+          <CardHeader className="border-b border-border/80 pb-3">
+            <CardTitle className="text-[16px] font-semibold text-text">
+              Core Position Details
+            </CardTitle>
           </CardHeader>
 
           <CardContent className="space-y-5 pt-5">
@@ -346,20 +325,10 @@ export function OpeningForm({ initialData, isEditing = false }: OpeningFormProps
 
         {/* Card 2: Compensation & Experience Range */}
         <Card className="border-border bg-surface-1 shadow-sm">
-          <CardHeader className="border-b border-border/80 pb-4">
-            <div className="flex items-center gap-3">
-              <div className="flex h-9 w-9 items-center justify-center rounded-[var(--radius-md)] bg-success/10 text-success">
-                <IndianRupee className="h-4 w-4" />
-              </div>
-              <div>
-                <CardTitle className="text-[16px] font-semibold text-text">
-                  Experience & Budget Range
-                </CardTitle>
-                <CardDescription className="text-[12px] text-text-muted">
-                  Set clear compensation boundaries and required industry experience.
-                </CardDescription>
-              </div>
-            </div>
+          <CardHeader className="border-b border-border/80 pb-3">
+            <CardTitle className="text-[16px] font-semibold text-text">
+              Experience & Budget Range
+            </CardTitle>
           </CardHeader>
 
           <CardContent className="space-y-5 pt-5">
@@ -367,8 +336,7 @@ export function OpeningForm({ initialData, isEditing = false }: OpeningFormProps
               {/* Experience Block */}
               <div className="rounded-[var(--radius-md)] border border-border bg-surface-2/50 p-4">
                 <div className="mb-3 flex items-center justify-between">
-                  <span className="flex items-center gap-1.5 text-[13px] font-semibold text-text">
-                    <Clock className="h-4 w-4 text-text-muted" />
+                  <span className="text-[13px] font-semibold text-text">
                     Experience Expectation
                   </span>
                   <Badge variant="default" className="text-[11px] font-mono">
@@ -410,8 +378,7 @@ export function OpeningForm({ initialData, isEditing = false }: OpeningFormProps
               {/* Budget Block */}
               <div className="rounded-[var(--radius-md)] border border-border bg-surface-2/50 p-4">
                 <div className="mb-3 flex items-center justify-between">
-                  <span className="flex items-center gap-1.5 text-[13px] font-semibold text-text">
-                    <IndianRupee className="h-4 w-4 text-success" />
+                  <span className="text-[13px] font-semibold text-text">
                     Annual CTC Budget
                   </span>
                   <Badge
@@ -458,20 +425,10 @@ export function OpeningForm({ initialData, isEditing = false }: OpeningFormProps
 
         {/* Card 3: Skills & Job Description */}
         <Card className="border-border bg-surface-1 shadow-sm">
-          <CardHeader className="border-b border-border/80 pb-4">
-            <div className="flex items-center gap-3">
-              <div className="flex h-9 w-9 items-center justify-center rounded-[var(--radius-md)] bg-info/10 text-info">
-                <Sparkles className="h-4 w-4" />
-              </div>
-              <div>
-                <CardTitle className="text-[16px] font-semibold text-text">
-                  Candidate Profile & Screening Criteria
-                </CardTitle>
-                <CardDescription className="text-[12px] text-text-muted">
-                  Define technical competencies and detailed role responsibilities.
-                </CardDescription>
-              </div>
-            </div>
+          <CardHeader className="border-b border-border/80 pb-3">
+            <CardTitle className="text-[16px] font-semibold text-text">
+              Candidate Profile & Screening Criteria
+            </CardTitle>
           </CardHeader>
 
           <CardContent className="space-y-5 pt-5">
@@ -530,8 +487,7 @@ export function OpeningForm({ initialData, isEditing = false }: OpeningFormProps
                 placeholder="Outline key deliverables, team expectations, and core mission..."
                 className="text-[13px] leading-relaxed"
               />
-              <div className="mt-1 flex items-center justify-between text-[11px] text-text-subtle">
-                <span>Provide comprehensive details for recruiter and candidate clarity.</span>
+              <div className="mt-1 flex justify-end text-[11px] text-text-subtle">
                 <span>{description.length} characters</span>
               </div>
             </FormField>
@@ -572,43 +528,13 @@ export function OpeningForm({ initialData, isEditing = false }: OpeningFormProps
       {/* RIGHT COLUMN: 4 Columns (Sticky Sidebar, stays pinned at top while form scrolls) */}
       <div className="lg:col-span-4">
         <div className="sticky top-0 space-y-4">
-          {/* Top Sticky Quick Action Buttons */}
-          <div className="flex items-center gap-2.5">
-          <Button asChild variant="outline" size="sm" className="h-9 flex-1 gap-1.5 text-[13px]">
-            <Link href="/openings">
-              <span>Discard</span>
-            </Link>
-          </Button>
-
-          <Button
-            type="submit"
-            variant="primary"
-            size="sm"
-            loading={createOpening.isPending}
-            className="h-9 flex-1 gap-2 text-[13px] font-medium"
-          >
-            {isEditing ? (
-              <>
-                <CheckCircle2 className="h-4 w-4" />
-                <span>Save Changes</span>
-              </>
-            ) : (
-              <>
-                <Send className="h-3.5 w-3.5" />
-                <span>Publish</span>
-              </>
-            )}
-          </Button>
-        </div>
-
         {/* Live Directory Preview Card */}
         <Card className="border-border bg-surface-1 shadow-sm">
           <CardHeader className="border-b border-border/80 pb-3">
             <div className="flex items-center justify-between">
-              <div className="flex items-center gap-2">
-                <Eye className="h-4 w-4 text-accent" />
-                <span className="text-[13px] font-semibold text-text">Directory Live Preview</span>
-              </div>
+              <CardTitle className="text-[14px] font-semibold text-text">
+                Directory Live Preview
+              </CardTitle>
               <Badge variant="default" className="text-[10px] font-mono uppercase">
                 Live
               </Badge>
@@ -617,8 +543,7 @@ export function OpeningForm({ initialData, isEditing = false }: OpeningFormProps
           <CardContent className="pt-4">
             <div className="rounded-[var(--radius-md)] border border-border bg-surface-2/80 p-4 space-y-3.5">
               <div className="flex items-start justify-between gap-2">
-                <span className="inline-flex items-center gap-1 rounded-[var(--radius-sm)] bg-surface-3 px-2 py-0.5 text-[11px] font-medium text-text-muted">
-                  <Building2 className="h-3 w-3" />
+                <span className="inline-flex items-center rounded-[var(--radius-sm)] bg-surface-3 px-2 py-0.5 text-[11px] font-medium text-text-muted">
                   <span>{department}</span>
                 </span>
                 <Badge
@@ -641,7 +566,6 @@ export function OpeningForm({ initialData, isEditing = false }: OpeningFormProps
                   {title.trim() ? title : 'Job Position Title'}
                 </h3>
                 <p className="mt-1 flex items-center gap-1.5 text-[12px] text-text-muted">
-                  <MapPin className="h-3 w-3 text-text-subtle" />
                   <span>{location || 'Location'}</span>
                   <span>•</span>
                   <span className="font-mono">{headcount} role{parseInt(headcount, 10) > 1 ? 's' : ''}</span>
@@ -680,10 +604,9 @@ export function OpeningForm({ initialData, isEditing = false }: OpeningFormProps
         <Card className="border-border bg-surface-1 shadow-sm">
           <CardHeader className="border-b border-border/80 pb-3">
             <div className="flex items-center justify-between">
-              <div className="flex items-center gap-2">
-                <ShieldCheck className="h-4 w-4 text-accent" />
-                <span className="text-[13px] font-semibold text-text">Readiness Score</span>
-              </div>
+              <CardTitle className="text-[14px] font-semibold text-text">
+                Readiness Score
+              </CardTitle>
               <span className="font-mono text-[12px] font-bold text-accent">
                 {readinessPercent}%
               </span>
