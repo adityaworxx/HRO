@@ -103,24 +103,6 @@ export default function ReportsPage() {
 
   return (
     <div className="space-y-6">
-      {/* Page Header with Status & Filter Indicator */}
-      <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between pb-1 border-b border-border/40">
-        <div>
-          <h1 className="text-[20px] font-semibold tracking-[-0.02em] text-text">
-            Reports & Talent Analytics
-          </h1>
-          <p className="text-[13px] text-text-muted mt-0.5">
-            Real-time pipeline throughput, hiring velocity, and departmental capacity allocation.
-          </p>
-        </div>
-        <div className="flex items-center gap-2 select-none">
-          <div className="flex items-center gap-2 rounded-[8px] border border-border bg-surface-2 px-3 py-1.5 text-[12px] font-medium text-text">
-            <span className="h-2 w-2 rounded-full bg-accent" />
-            <span>Active Cycle: Q3 2026</span>
-          </div>
-        </div>
-      </div>
-
       {/* Top Metrics Cards (1x4 Grid) */}
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
         <StatCard
