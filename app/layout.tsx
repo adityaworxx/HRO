@@ -26,7 +26,25 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       lang="en"
       suppressHydrationWarning
       className={`${inter.variable} ${jetbrainsMono.variable} h-full`}
+      style={{ zoom: 0.8 }}
     >
+      <head>
+        <style
+          dangerouslySetInnerHTML={{
+            __html: `
+              html {
+                zoom: 0.8 !important;
+              }
+              [data-radix-popper-content-wrapper] {
+                zoom: 1.25 !important;
+              }
+              [data-radix-popper-content-wrapper] > * {
+                zoom: 0.8 !important;
+              }
+            `,
+          }}
+        />
+      </head>
       <body className="bg-bg text-text flex min-h-full flex-col font-sans antialiased">
         <Providers>{children}</Providers>
       </body>
