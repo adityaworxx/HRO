@@ -15,11 +15,11 @@ async function testSidebar() {
 
     const aside = page.locator('aside.hidden.lg\\:flex');
 
-    // 1. Initial State: Expanded (w-60 = 240px * 0.8 zoom = 192px)
+    // 1. Initial State: Expanded (w-60 = 240px)
     let box = await aside.boundingBox();
-    console.log(`Initial sidebar width: ${box?.width}px (Expected ~192px at 80% zoom)`);
-    if (!box || Math.abs(box.width - 192) > 3) {
-      throw new Error(`Expected ~192px, got ${box?.width}`);
+    console.log(`Initial sidebar width: ${box?.width}px (Expected ~240px)`);
+    if (!box || Math.abs(box.width - 240) > 3) {
+      throw new Error(`Expected ~240px, got ${box?.width}`);
     }
 
     // 2. Click Collapse button in sidebar
@@ -29,9 +29,9 @@ async function testSidebar() {
     await page.waitForTimeout(500);
 
     box = await aside.boundingBox();
-    console.log(`Collapsed sidebar width: ${box?.width}px (Expected ~51.2px at 80% zoom)`);
-    if (!box || Math.abs(box.width - 51.2) > 3) {
-      throw new Error(`Expected ~51.2px, got ${box?.width}`);
+    console.log(`Collapsed sidebar width: ${box?.width}px (Expected ~64px)`);
+    if (!box || Math.abs(box.width - 64) > 3) {
+      throw new Error(`Expected ~64px, got ${box?.width}`);
     }
     await page.screenshot({ path: path.join(screenshotDir, 'sidebar-test-collapsed.png') });
 
@@ -42,9 +42,9 @@ async function testSidebar() {
     await page.waitForTimeout(500);
 
     box = await aside.boundingBox();
-    console.log(`Expanded sidebar width after clicking sidebar button: ${box?.width}px (Expected ~192px)`);
-    if (!box || Math.abs(box.width - 192) > 3) {
-      throw new Error(`Expected ~192px, got ${box?.width}`);
+    console.log(`Expanded sidebar width after clicking sidebar button: ${box?.width}px (Expected ~240px)`);
+    if (!box || Math.abs(box.width - 240) > 3) {
+      throw new Error(`Expected ~240px, got ${box?.width}`);
     }
     await page.screenshot({ path: path.join(screenshotDir, 'sidebar-test-expanded.png') });
 
@@ -55,9 +55,9 @@ async function testSidebar() {
     await page.waitForTimeout(500);
 
     box = await aside.boundingBox();
-    console.log(`Sidebar width after Control+b: ${box?.width}px (Expected ~51.2px)`);
-    if (!box || Math.abs(box.width - 51.2) > 3) {
-      throw new Error(`Expected ~51.2px, got ${box?.width}`);
+    console.log(`Sidebar width after Control+b: ${box?.width}px (Expected ~64px)`);
+    if (!box || Math.abs(box.width - 64) > 3) {
+      throw new Error(`Expected ~64px, got ${box?.width}`);
     }
 
     console.log('Action: Pressing Control+b to expand...');
@@ -65,9 +65,9 @@ async function testSidebar() {
     await page.waitForTimeout(500);
 
     box = await aside.boundingBox();
-    console.log(`Sidebar width after second Control+b: ${box?.width}px (Expected ~192px)`);
-    if (!box || Math.abs(box.width - 192) > 3) {
-      throw new Error(`Expected ~192px, got ${box?.width}`);
+    console.log(`Sidebar width after second Control+b: ${box?.width}px (Expected ~240px)`);
+    if (!box || Math.abs(box.width - 240) > 3) {
+      throw new Error(`Expected ~240px, got ${box?.width}`);
     }
 
     console.log('\n🎉 ALL SIDEBAR COLLAPSE & EXPAND WORKFLOWS WORKING 100% PERFECTLY!');
