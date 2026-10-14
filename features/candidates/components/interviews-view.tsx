@@ -155,11 +155,7 @@ export function InterviewsView() {
                   </div>
                 </div>
                 <Badge
-                  variant={
-                    candidate.interviewOutcome === 'Selected'
-                      ? 'success'
-                      : 'default'
-                  }
+                  variant="default"
                   className="text-[11px] font-medium"
                 >
                   {candidate.interviewOutcome}

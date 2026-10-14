@@ -208,7 +208,7 @@ export function CandidateDetailSheet({ candidate, open, onOpenChange }: Candidat
                   <p>
                     <strong className="text-text">Outcome:</strong>{' '}
                     <Badge
-                      variant={candidate.interviewOutcome === 'Selected' ? 'success' : 'default'}
+                      variant="default"
                       className="text-[11px] font-medium"
                     >
                       {candidate.interviewOutcome}

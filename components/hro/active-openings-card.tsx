@@ -51,21 +51,9 @@ export function ActiveOpeningsCard({
           <div className="flex h-7 w-7 items-center justify-center rounded-[6px] bg-surface-2 text-text">
             <Briefcase className="h-4 w-4 stroke-[1.75]" />
           </div>
-          <div className="flex items-center gap-2">
-            <h2 className="text-[15px] leading-[22px] font-semibold tracking-[-0.01em] text-text">
-              {title}
-            </h2>
-            <div className="flex items-center gap-1.5">
-              <span className="border border-border bg-surface-2 text-text-muted rounded-[var(--radius-sm)] px-2 py-0.5 text-[11px] font-medium tabular-nums select-none">
-                {activeCount} active
-              </span>
-              {onHoldCount > 0 && (
-                <span className="border border-warning/30 bg-[var(--badge-warning-bg)] text-warning rounded-[var(--radius-sm)] px-2 py-0.5 text-[11px] font-medium tabular-nums select-none">
-                  {onHoldCount} on hold
-                </span>
-              )}
-            </div>
-          </div>
+          <h2 className="text-[15px] leading-[22px] font-semibold tracking-[-0.01em] text-text">
+            {title}
+          </h2>
         </div>
 
         {viewAllHref && (

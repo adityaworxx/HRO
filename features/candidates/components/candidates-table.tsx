@@ -120,10 +120,8 @@ export function CandidatesTable() {
         header: 'Manager Review',
         cell: ({ row }) => {
           const decision = row.original.managerDecision;
-          const variant =
-            decision === 'Shortlisted' ? 'success' : decision === 'Rejected' ? 'danger' : 'default';
           return (
-            <Badge variant={variant} className="text-[11px]">
+            <Badge variant="default" className="text-[11px]">
               {decision}
             </Badge>
           );

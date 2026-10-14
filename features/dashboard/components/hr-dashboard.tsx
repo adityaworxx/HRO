@@ -20,7 +20,6 @@ import {
   UserCheck,
   ChevronRight,
   AlertTriangle,
-  ArrowRight,
 } from 'lucide-react';
 import { toast } from 'sonner';
 
@@ -149,20 +148,15 @@ export function HrDashboard() {
         {/* ROW 2 LEFT (8 cols): Active Pipeline Throughput */}
         <div className="col-span-12 flex flex-col lg:col-span-8">
           <div className="border border-border bg-surface-1 flex h-full flex-col rounded-[12px] p-5 shadow-xs">
-            {/* Header */}
+            {/* Header (No 30 candidates badge) */}
             <div className="flex items-center justify-between gap-4 pb-4 border-b border-border/60">
               <div className="flex items-center gap-2.5">
                 <div className="flex h-7 w-7 items-center justify-center rounded-[6px] bg-surface-2 text-text">
                   <GitPullRequest className="h-4 w-4 stroke-[1.75]" />
                 </div>
-                <div className="flex items-center gap-2">
-                  <h2 className="text-[15px] font-semibold tracking-[-0.01em] text-text">
-                    Active Pipeline Throughput
-                  </h2>
-                  <span className="border border-border bg-surface-2 text-text-muted rounded-[var(--radius-sm)] px-2 py-0.5 text-[11px] font-medium tabular-nums select-none">
-                    {candidates.length} candidates
-                  </span>
-                </div>
+                <h2 className="text-[15px] font-semibold tracking-[-0.01em] text-text">
+                  Active Pipeline Throughput
+                </h2>
               </div>
               <Link
                 href="/pipeline"
@@ -173,86 +167,141 @@ export function HrDashboard() {
               </Link>
             </div>
 
-            {/* Content: 5 Connected Stage Metric Cards */}
+            {/* Content: Unified Connected Progression Track */}
             <div className="flex-1 pt-4 flex flex-col justify-between gap-4">
-              <div className="grid grid-cols-2 gap-2.5 sm:grid-cols-5">
+              <div className="rounded-[10px] border border-border/80 bg-surface-2/30 divide-y sm:divide-y-0 sm:divide-x divide-border/60 grid grid-cols-2 sm:grid-cols-5 overflow-hidden">
                 {/* Stage 1: Sourced */}
-                <div className="border border-border/70 bg-surface-2/40 hover:bg-surface-2/70 flex flex-col rounded-[8px] p-3 transition-colors">
-                  <span className="text-text-subtle text-[11px] font-medium select-none">
-                    1. Sourced
-                  </span>
-                  <div className="mt-2 flex items-baseline justify-between">
-                    <span className="text-text font-mono text-[22px] font-semibold leading-tight tabular-nums">
-                      {stagesCount.sourced}
+                <div className="flex flex-col justify-between p-3.5 hover:bg-surface-2/60 transition-colors">
+                  <div className="flex items-center justify-between">
+                    <span className="text-text-muted text-[12px] font-medium select-none">
+                      1. Sourced
                     </span>
-                    <span className="text-text-subtle text-[11px] font-medium tabular-nums">
+                    <span className="text-text-subtle text-[11px] tabular-nums font-mono font-normal">
                       {Math.round((stagesCount.sourced / totalCandidates) * 100)}%
                     </span>
+                  </div>
+                  <div className="mt-2.5 flex items-baseline gap-1.5">
+                    <span className="text-text font-mono text-[24px] font-semibold tracking-tight tabular-nums">
+                      {stagesCount.sourced}
+                    </span>
+                    <span className="text-text-subtle text-[11px]">candidates</span>
+                  </div>
+                  <div className="mt-2.5 h-1 w-full rounded-full bg-surface-3 overflow-hidden">
+                    <div
+                      className="h-full bg-text-subtle rounded-full"
+                      style={{
+                        width: `${Math.round((stagesCount.sourced / totalCandidates) * 100)}%`,
+                      }}
+                    />
                   </div>
                 </div>
 
                 {/* Stage 2: Manager Review */}
-                <div className="border border-border/70 bg-surface-2/40 hover:bg-surface-2/70 flex flex-col rounded-[8px] p-3 transition-colors">
-                  <span className="text-text-subtle text-[11px] font-medium select-none truncate">
-                    2. Mgr Review
-                  </span>
-                  <div className="mt-2 flex items-baseline justify-between">
-                    <span className="text-text font-mono text-[22px] font-semibold leading-tight tabular-nums">
-                      {stagesCount.shared}
+                <div className="flex flex-col justify-between p-3.5 hover:bg-surface-2/60 transition-colors">
+                  <div className="flex items-center justify-between">
+                    <span className="text-text-muted text-[12px] font-medium select-none truncate">
+                      2. Mgr Review
                     </span>
-                    <span className="text-text-subtle text-[11px] font-medium tabular-nums">
+                    <span className="text-text-subtle text-[11px] tabular-nums font-mono font-normal">
                       {Math.round((stagesCount.shared / totalCandidates) * 100)}%
                     </span>
+                  </div>
+                  <div className="mt-2.5 flex items-baseline gap-1.5">
+                    <span className="text-text font-mono text-[24px] font-semibold tracking-tight tabular-nums">
+                      {stagesCount.shared}
+                    </span>
+                    <span className="text-text-subtle text-[11px]">in review</span>
+                  </div>
+                  <div className="mt-2.5 h-1 w-full rounded-full bg-surface-3 overflow-hidden">
+                    <div
+                      className="h-full bg-text-subtle rounded-full"
+                      style={{
+                        width: `${Math.round((stagesCount.shared / totalCandidates) * 100)}%`,
+                      }}
+                    />
                   </div>
                 </div>
 
                 {/* Stage 3: Interview */}
-                <div className="border border-border/70 bg-surface-2/40 hover:bg-surface-2/70 flex flex-col rounded-[8px] p-3 transition-colors">
-                  <span className="text-text-subtle text-[11px] font-medium select-none">
-                    3. Interview
-                  </span>
-                  <div className="mt-2 flex items-baseline justify-between">
-                    <span className="text-text font-mono text-[22px] font-semibold leading-tight tabular-nums">
-                      {stagesCount.interview}
+                <div className="flex flex-col justify-between p-3.5 hover:bg-surface-2/60 transition-colors">
+                  <div className="flex items-center justify-between">
+                    <span className="text-text-muted text-[12px] font-medium select-none">
+                      3. Interview
                     </span>
-                    <span className="text-text-subtle text-[11px] font-medium tabular-nums">
+                    <span className="text-text-subtle text-[11px] tabular-nums font-mono font-normal">
                       {Math.round((stagesCount.interview / totalCandidates) * 100)}%
                     </span>
+                  </div>
+                  <div className="mt-2.5 flex items-baseline gap-1.5">
+                    <span className="text-text font-mono text-[24px] font-semibold tracking-tight tabular-nums">
+                      {stagesCount.interview}
+                    </span>
+                    <span className="text-text-subtle text-[11px]">rounds</span>
+                  </div>
+                  <div className="mt-2.5 h-1 w-full rounded-full bg-surface-3 overflow-hidden">
+                    <div
+                      className="h-full bg-text-muted rounded-full"
+                      style={{
+                        width: `${Math.round((stagesCount.interview / totalCandidates) * 100)}%`,
+                      }}
+                    />
                   </div>
                 </div>
 
                 {/* Stage 4: Offer */}
-                <div className="border border-border/70 bg-surface-2/40 hover:bg-surface-2/70 flex flex-col rounded-[8px] p-3 transition-colors">
-                  <span className="text-text-subtle text-[11px] font-medium select-none">
-                    4. Offer
-                  </span>
-                  <div className="mt-2 flex items-baseline justify-between">
-                    <span className="text-text font-mono text-[22px] font-semibold leading-tight tabular-nums">
-                      {stagesCount.offer}
+                <div className="flex flex-col justify-between p-3.5 hover:bg-surface-2/60 transition-colors">
+                  <div className="flex items-center justify-between">
+                    <span className="text-text-muted text-[12px] font-medium select-none">
+                      4. Offer
                     </span>
-                    <span className="text-text-subtle text-[11px] font-medium tabular-nums">
+                    <span className="text-text-subtle text-[11px] tabular-nums font-mono font-normal">
                       {Math.round((stagesCount.offer / totalCandidates) * 100)}%
                     </span>
+                  </div>
+                  <div className="mt-2.5 flex items-baseline gap-1.5">
+                    <span className="text-text font-mono text-[24px] font-semibold tracking-tight tabular-nums">
+                      {stagesCount.offer}
+                    </span>
+                    <span className="text-text-subtle text-[11px]">extended</span>
+                  </div>
+                  <div className="mt-2.5 h-1 w-full rounded-full bg-surface-3 overflow-hidden">
+                    <div
+                      className="h-full bg-text-muted rounded-full"
+                      style={{
+                        width: `${Math.round((stagesCount.offer / totalCandidates) * 100)}%`,
+                      }}
+                    />
                   </div>
                 </div>
 
                 {/* Stage 5: Joined */}
-                <div className="border border-border/70 bg-surface-2/40 hover:bg-surface-2/70 flex flex-col rounded-[8px] p-3 transition-colors">
-                  <span className="text-text-subtle text-[11px] font-medium select-none">
-                    5. Joined
-                  </span>
-                  <div className="mt-2 flex items-baseline justify-between">
-                    <span className="text-accent font-mono text-[22px] font-semibold leading-tight tabular-nums">
-                      {stagesCount.hired}
+                <div className="flex flex-col justify-between p-3.5 hover:bg-surface-2/60 transition-colors bg-accent-subtle/20">
+                  <div className="flex items-center justify-between">
+                    <span className="text-accent text-[12px] font-medium select-none">
+                      5. Joined
                     </span>
-                    <span className="text-text-subtle text-[11px] font-medium tabular-nums">
+                    <span className="text-accent text-[11px] tabular-nums font-mono font-normal">
                       {Math.round((stagesCount.hired / totalCandidates) * 100)}%
                     </span>
+                  </div>
+                  <div className="mt-2.5 flex items-baseline gap-1.5">
+                    <span className="text-accent font-mono text-[24px] font-semibold tracking-tight tabular-nums">
+                      {stagesCount.hired}
+                    </span>
+                    <span className="text-accent/80 text-[11px]">hired</span>
+                  </div>
+                  <div className="mt-2.5 h-1 w-full rounded-full bg-accent/20 overflow-hidden">
+                    <div
+                      className="h-full bg-accent rounded-full"
+                      style={{
+                        width: `${Math.round((stagesCount.hired / totalCandidates) * 100)}%`,
+                      }}
+                    />
                   </div>
                 </div>
               </div>
 
-              {/* Proportional Pipeline Segment Bar */}
+              {/* Proportional Segment Bar */}
               <div className="space-y-1.5 pt-1">
                 <div className="h-2 w-full flex rounded-full overflow-hidden bg-surface-2 gap-0.5">
                   <div
@@ -281,9 +330,11 @@ export function HrDashboard() {
                     title={`Joined: ${stagesCount.hired}`}
                   />
                 </div>
-                <div className="flex items-center justify-between text-[11px] text-text-subtle">
-                  <span>Talent acquisition funnel</span>
-                  <span>{stagesCount.hired} hires finalized</span>
+                <div className="flex items-center justify-between text-[11px] text-text-subtle select-none">
+                  <span>Talent acquisition progression</span>
+                  <span className="font-medium text-text-muted">
+                    {stagesCount.hired} hires finalized ({Math.round((stagesCount.hired / totalCandidates) * 100)}% conversion)
+                  </span>
                 </div>
               </div>
             </div>
@@ -299,14 +350,9 @@ export function HrDashboard() {
                 <div className="flex h-7 w-7 items-center justify-center rounded-[6px] bg-surface-2 text-text">
                   <UserCheck className="h-4 w-4 stroke-[1.75]" />
                 </div>
-                <div className="flex items-center gap-2">
-                  <h2 className="text-[15px] font-semibold tracking-[-0.01em] text-text">
-                    Onboarding Readiness
-                  </h2>
-                  <span className="border border-border bg-surface-2 text-text-muted rounded-[var(--radius-sm)] px-2 py-0.5 text-[11px] font-medium tabular-nums select-none">
-                    {onboardingPercent}%
-                  </span>
-                </div>
+                <h2 className="text-[15px] font-semibold tracking-[-0.01em] text-text">
+                  Onboarding Readiness
+                </h2>
               </div>
               <Link
                 href="/onboarding"
@@ -323,7 +369,7 @@ export function HrDashboard() {
                 <div className="flex justify-between text-[12px]">
                   <span className="text-text-muted font-medium">Task Completion</span>
                   <span className="text-text font-mono font-medium tabular-nums">
-                    {completedTasks} / {totalTasks} tasks
+                    {completedTasks} / {totalTasks} tasks ({onboardingPercent}%)
                   </span>
                 </div>
                 <Progress value={onboardingPercent} className="h-1.5" />
@@ -365,23 +411,18 @@ export function HrDashboard() {
           </div>
         </div>
 
-        {/* ROW 3: SLA Watchlist */}
+        {/* ROW 3: SLA Watchlist (Redesigned Table Format) */}
         <div className="col-span-12 flex flex-col">
-          <div className="border border-border bg-surface-1 flex h-full flex-col rounded-[12px] p-5 shadow-xs">
-            {/* Header */}
-            <div className="flex items-center justify-between gap-4 pb-4 border-b border-border/60">
+          <div className="border border-border bg-surface-1 flex h-full flex-col rounded-[12px] p-5 shadow-xs overflow-hidden">
+            {/* Header (No count badge) */}
+            <div className="flex items-center justify-between gap-4 pb-4">
               <div className="flex items-center gap-2.5">
                 <div className="flex h-7 w-7 items-center justify-center rounded-[6px] bg-surface-2 text-text">
                   <AlertTriangle className="h-4 w-4 stroke-[1.75]" />
                 </div>
-                <div className="flex items-center gap-2">
-                  <h2 className="text-[15px] font-semibold tracking-[-0.01em] text-text">
-                    SLA Watchlist
-                  </h2>
-                  <span className="border border-border bg-surface-2 text-text-muted rounded-[var(--radius-sm)] px-2 py-0.5 text-[11px] font-medium tabular-nums select-none">
-                    {slaAlertCandidates.length} candidates
-                  </span>
-                </div>
+                <h2 className="text-[15px] font-semibold tracking-[-0.01em] text-text">
+                  SLA Watchlist
+                </h2>
               </div>
               <Link
                 href="/candidates"
@@ -392,54 +433,78 @@ export function HrDashboard() {
               </Link>
             </div>
 
-            {/* Content */}
-            <div className="flex-1 pt-2">
+            {/* Structured Table Column Header */}
+            <div className="hidden sm:grid grid-cols-[minmax(220px,2fr)_150px_140px_110px_100px] gap-4 items-center px-4 py-2 text-[11px] font-medium uppercase tracking-wider text-text-subtle border-y border-border bg-surface-2/40 select-none">
+              <div>Candidate</div>
+              <div>Current Stage</div>
+              <div>SLA Status</div>
+              <div>Notice Period</div>
+              <div className="text-right">Action</div>
+            </div>
+
+            {/* Table Content Rows */}
+            <div className="divide-y divide-border/60">
               {slaAlertCandidates.length === 0 ? (
                 <div className="text-text-muted flex flex-col items-center justify-center py-8 text-center text-[13px]">
                   <p className="font-medium">All candidate SLAs are currently on track</p>
                 </div>
               ) : (
-                <div className="divide-border/60 divide-y">
-                  {slaAlertCandidates.map((candidate) => (
+                slaAlertCandidates.map((candidate) => {
+                  const opening = openings.find((o) => o.id === candidate.openingId);
+                  return (
                     <div
                       key={candidate.id}
-                      className="group hover:bg-surface-2/40 -mx-2 flex flex-col justify-between gap-3 rounded-[8px] px-3 py-3 transition-colors sm:flex-row sm:items-center"
+                      className="grid grid-cols-1 sm:grid-cols-[minmax(220px,2fr)_150px_140px_110px_100px] gap-3 sm:gap-4 items-center px-4 py-3 hover:bg-surface-2/50 transition-colors"
                     >
-                      <div className="flex items-center gap-3">
-                        <div className="bg-surface-2 text-text flex h-8 w-8 shrink-0 items-center justify-center rounded-full text-[12px] font-semibold">
+                      {/* 1. Candidate Info */}
+                      <div className="flex items-center gap-3 min-w-0">
+                        <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-surface-2 border border-border text-[11px] font-semibold text-text">
                           {candidate.name.slice(0, 2).toUpperCase()}
                         </div>
-                        <div>
-                          <div className="flex items-center gap-2">
-                            <span className="text-text text-[13px] font-medium">
-                              {candidate.name}
-                            </span>
-                            <Badge
-                              variant="default"
-                              className="text-[11px] font-normal py-0 px-1.5"
-                            >
-                              {candidate.stage}
-                            </Badge>
-                          </div>
-                          <span className="text-text-subtle text-[11px]">
-                            Notice: {candidate.noticePeriod}
-                          </span>
+                        <div className="min-w-0">
+                          <p className="truncate text-[13px] font-medium text-text leading-tight">
+                            {candidate.name}
+                          </p>
+                          <p className="truncate text-[11px] text-text-muted leading-tight mt-0.5">
+                            {opening?.title || candidate.currentRole}
+                          </p>
                         </div>
                       </div>
 
-                      <div className="self-end sm:self-center">
+                      {/* 2. Stage Badge */}
+                      <div className="flex items-center">
+                        <Badge variant="default" className="text-[11px] font-medium py-0.5 px-2">
+                          {candidate.stage}
+                        </Badge>
+                      </div>
+
+                      {/* 3. SLA Status */}
+                      <div className="flex items-center gap-1.5 text-warning">
+                        <Clock className="h-3.5 w-3.5 stroke-[2] shrink-0" />
+                        <span className="text-[12px] font-medium tabular-nums">
+                          Action required
+                        </span>
+                      </div>
+
+                      {/* 4. Notice Period */}
+                      <div className="text-[12px] text-text-muted tabular-nums font-mono">
+                        {candidate.noticePeriod}
+                      </div>
+
+                      {/* 5. Action */}
+                      <div className="flex justify-start sm:justify-end">
                         <Button
-                          variant="ghost"
+                          variant="outline"
                           size="sm"
-                          className="text-text-muted hover:text-text hover:bg-surface-2 h-7 px-2.5 text-[12px] font-medium cursor-pointer"
+                          className="h-7 px-2.5 text-[11px] font-medium border-border hover:bg-surface-2 hover:text-text cursor-pointer"
                           onClick={() => toast.success(`Nudge reminder sent for ${candidate.name}`)}
                         >
                           Nudge Team
                         </Button>
                       </div>
                     </div>
-                  ))}
-                </div>
+                  );
+                })
               )}
             </div>
           </div>
