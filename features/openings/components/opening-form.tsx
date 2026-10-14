@@ -60,6 +60,11 @@ export function OpeningForm({ initialData, isEditing = false }: OpeningFormProps
   const router = useRouter();
   const { data: user } = useCurrentUser();
   const createOpening = useCreateOpening();
+  const [mounted, setMounted] = React.useState(false);
+
+  React.useEffect(() => {
+    setMounted(true);
+  }, []);
 
   const [title, setTitle] = React.useState(initialData?.title ?? '');
   const [department, setDepartment] = React.useState(initialData?.department ?? 'Engineering');
@@ -206,10 +211,10 @@ export function OpeningForm({ initialData, isEditing = false }: OpeningFormProps
   return (
     <form
       onSubmit={handleSubmit}
-      className="w-full flex flex-col lg:flex-row gap-6 lg:h-[calc(100vh-theme(spacing.14)-3rem)] lg:overflow-hidden min-h-0"
+      className="w-full grid grid-cols-1 lg:grid-cols-12 gap-6 pb-6"
     >
-      {/* LEFT COLUMN: The scrollable form area */}
-      <div className="flex-1 lg:overflow-y-auto lg:pr-3 space-y-6 pb-12">
+      {/* LEFT COLUMN: Form cards with natural document flow */}
+      <div className="lg:col-span-8 space-y-6">
         {/* Card 1: Core Role & Position Details */}
         <Card className="border-border bg-surface-1 shadow-sm">
           <CardHeader className="border-b border-border/80 pb-4">
@@ -564,10 +569,11 @@ export function OpeningForm({ initialData, isEditing = false }: OpeningFormProps
         </div>
       </div>
 
-      {/* RIGHT COLUMN: 100% Stable Stationary Sidebar */}
-      <div className="w-full lg:w-[380px] xl:w-[420px] shrink-0 space-y-4 lg:overflow-y-auto">
-        {/* Top Sticky Quick Action Buttons */}
-        <div className="flex items-center gap-2.5">
+      {/* RIGHT COLUMN: 4 Columns (Sticky Sidebar, stays pinned at top while form scrolls) */}
+      <div className="lg:col-span-4">
+        <div className="sticky top-0 space-y-4">
+          {/* Top Sticky Quick Action Buttons */}
+          <div className="flex items-center gap-2.5">
           <Button asChild variant="outline" size="sm" className="h-9 flex-1 gap-1.5 text-[13px]">
             <Link href="/openings">
               <span>Discard</span>
@@ -723,12 +729,15 @@ export function OpeningForm({ initialData, isEditing = false }: OpeningFormProps
         <Card className="border-border bg-surface-1 shadow-sm">
           <CardContent className="p-4 space-y-3">
             <div className="flex items-center gap-3">
-              <div className="flex h-8 w-8 items-center justify-center rounded-full bg-accent/20 font-bold text-[12px] text-accent">
-                {user?.name ? user.name.charAt(0).toUpperCase() : 'M'}
+              <div
+                suppressHydrationWarning
+                className="flex h-8 w-8 items-center justify-center rounded-full bg-accent/20 font-bold text-[12px] text-accent"
+              >
+                {mounted && user?.name ? user.name.charAt(0).toUpperCase() : 'M'}
               </div>
               <div className="min-w-0 flex-1">
-                <p className="truncate text-[13px] font-semibold text-text">
-                  {user?.name || 'Manager'}
+                <p suppressHydrationWarning className="truncate text-[13px] font-semibold text-text">
+                  {mounted && user?.name ? user.name : 'Manager'}
                 </p>
                 <p className="text-[11px] text-text-muted">Requisition Owner</p>
               </div>
@@ -750,6 +759,7 @@ export function OpeningForm({ initialData, isEditing = false }: OpeningFormProps
             </div>
           </CardContent>
         </Card>
+        </div>
       </div>
     </form>
   );
