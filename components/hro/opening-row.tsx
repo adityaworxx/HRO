@@ -20,8 +20,8 @@ export function OpeningHeaderRow({ className }: { className?: string }) {
   return (
     <div
       className={cn(
-        'hidden sm:grid h-[34px] items-center px-5 border-y border-border bg-surface-2/40 text-[11px] font-medium uppercase tracking-wider text-text-subtle select-none',
-        'grid-cols-[minmax(0,1fr)_140px_130px_24px] lg:grid-cols-[minmax(240px,2fr)_140px_130px_120px_130px_24px] gap-4',
+        'hidden sm:grid h-[34px] items-center px-4 sm:px-5 border-y border-border bg-surface-2/40 text-[11px] font-medium uppercase tracking-wider text-text-subtle select-none',
+        'grid-cols-[minmax(0,1fr)_140px_130px_24px] lg:grid-cols-[minmax(240px,2fr)_140px_130px_120px_130px_24px] gap-3 sm:gap-4',
         className
       )}
     >
@@ -54,10 +54,10 @@ export function OpeningRow({
     <Link
       href={`/openings/${opening.id}`}
       className={cn(
-        'group relative grid min-h-[58px] h-[58px] items-center px-5 border-b border-border/70 last:border-b-0 transition-colors',
+        'group relative grid min-h-[58px] h-[58px] items-center px-4 sm:px-5 border-b border-border/70 last:border-b-0 transition-colors',
         'hover:bg-surface-2/60 active:bg-surface-3',
         'focus-visible:outline-none focus:outline-none',
-        'grid-cols-[minmax(0,1fr)_24px] sm:grid-cols-[minmax(0,1fr)_140px_130px_24px] lg:grid-cols-[minmax(240px,2fr)_140px_130px_120px_130px_24px] gap-4',
+        'grid-cols-[minmax(0,1fr)_24px] sm:grid-cols-[minmax(0,1fr)_140px_130px_24px] lg:grid-cols-[minmax(240px,2fr)_140px_130px_120px_130px_24px] gap-3 sm:gap-4',
         className
       )}
     >

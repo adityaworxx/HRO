@@ -24,13 +24,13 @@ export function StatCard({
   const content = (
     <div
       className={cn(
-        'border-border bg-surface-1 hover:border-border-strong hover:bg-surface-2/30 flex flex-col justify-between rounded-[12px] border p-5 transition-all duration-140',
+        'border-border bg-surface-1 hover:border-border-strong hover:bg-surface-2/30 flex min-h-[96px] h-full flex-col justify-between rounded-[12px] border p-4 sm:p-5 transition-all duration-140 overflow-hidden',
         href && 'cursor-pointer focus-visible:outline-none focus:outline-none',
         className
       )}
     >
-      <div className="flex items-center justify-between gap-2">
-        <span className="text-text-muted text-[13px] leading-[18px] font-medium select-none">
+      <div className="flex items-center justify-between gap-2 min-w-0">
+        <span className="text-text-muted text-[13px] leading-[18px] font-medium select-none truncate">
           {label}
         </span>
         {icon && (
@@ -40,20 +40,21 @@ export function StatCard({
         )}
       </div>
 
-      <div className="mt-3 flex items-baseline justify-between gap-2">
-        <span className="text-text font-mono text-[28px] leading-[32px] font-semibold tracking-tight tabular-nums">
+      <div className="mt-3 flex items-baseline justify-between gap-1.5 min-w-0">
+        <span className="text-text font-mono text-[24px] sm:text-[28px] leading-[30px] sm:leading-[32px] font-semibold tracking-tight tabular-nums shrink-0">
           {value}
         </span>
         {delta && (
           <span
             className={cn(
-              'text-[12px] font-medium leading-[16px] truncate select-none',
+              'text-[11px] sm:text-[12px] font-medium leading-[16px] truncate max-w-full select-none text-right',
               isWarning
                 ? 'text-warning'
                 : delta.startsWith('+')
                   ? 'text-accent'
                   : 'text-text-subtle'
             )}
+            title={delta}
           >
             {delta}
           </span>
@@ -64,7 +65,7 @@ export function StatCard({
 
   if (href) {
     return (
-      <Link href={href} className="group block focus:outline-none">
+      <Link href={href} className="group block h-full focus:outline-none">
         {content}
       </Link>
     );

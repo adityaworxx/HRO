@@ -277,7 +277,7 @@ export function CandidateDetailSheet({ candidate, open, onOpenChange }: Candidat
             <h4 className="text-text text-[13px] font-semibold">Advance Candidate Pipeline</h4>
 
             {candidate.stage === 'Shared with Manager' && (
-              <div className="flex gap-2">
+              <div className="flex flex-col sm:flex-row gap-2">
                 <Button
                   variant="primary"
                   className="flex-1 gap-1.5"

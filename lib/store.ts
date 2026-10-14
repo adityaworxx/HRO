@@ -5,6 +5,9 @@ interface UiState {
   sidebarCollapsed: boolean;
   toggleSidebar: () => void;
   setSidebarCollapsed: (collapsed: boolean) => void;
+  mobileSidebarOpen: boolean;
+  setMobileSidebarOpen: (open: boolean) => void;
+  toggleMobileSidebar: () => void;
   role: UserRole;
   setRole: (role: UserRole) => void;
   commandPaletteOpen: boolean;
@@ -28,6 +31,9 @@ export const useUiStore = create<UiState>((set) => ({
     }
     set({ sidebarCollapsed: collapsed });
   },
+  mobileSidebarOpen: false,
+  setMobileSidebarOpen: (open) => set({ mobileSidebarOpen: open }),
+  toggleMobileSidebar: () => set((state) => ({ mobileSidebarOpen: !state.mobileSidebarOpen })),
   role: 'manager',
   setRole: (role) => {
     if (typeof window !== 'undefined') {

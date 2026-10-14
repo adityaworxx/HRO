@@ -140,23 +140,23 @@ export function InterviewsView() {
         <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
           {interviewCandidates.map((candidate) => (
             <Card key={candidate.id} className="border-border">
-              <CardHeader className="flex flex-row items-center justify-between pb-3">
-                <div className="flex items-center gap-3">
-                  <Avatar className="h-10 w-10">
+              <CardHeader className="flex flex-row items-center justify-between gap-3 pb-3">
+                <div className="flex items-center gap-3 min-w-0 flex-1">
+                  <Avatar className="h-10 w-10 shrink-0">
                     <AvatarFallback className="text-[12px] font-bold">
                       {candidate.name.slice(0, 2).toUpperCase()}
                     </AvatarFallback>
                   </Avatar>
-                  <div>
-                    <CardTitle className="text-[15px]">{candidate.name}</CardTitle>
-                    <p className="text-text-muted text-[12px]">
+                  <div className="min-w-0 flex-1">
+                    <CardTitle className="text-[15px] truncate">{candidate.name}</CardTitle>
+                    <p className="text-text-muted text-[12px] truncate">
                       {candidate.currentRole} at {candidate.currentCompany}
                     </p>
                   </div>
                 </div>
                 <Badge
                   variant="default"
-                  className="text-[11px] font-medium"
+                  className="text-[11px] font-medium shrink-0"
                 >
                   {candidate.interviewOutcome}
                 </Badge>
@@ -295,7 +295,7 @@ export function InterviewsView() {
               />
             </div>
 
-            <div className="grid grid-cols-3 gap-2 pt-2">
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-2 pt-2">
               <Button
                 variant="primary"
                 onClick={() => handleSaveOutcome('Selected')}

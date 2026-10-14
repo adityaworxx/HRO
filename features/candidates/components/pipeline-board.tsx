@@ -155,14 +155,14 @@ export function PipelineBoard() {
     <div className="space-y-4">
       {/* Filter and Search Bar */}
       <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-        <div className="flex flex-1 items-center gap-3">
-          <div className="relative w-full max-w-xs">
+        <div className="flex flex-col sm:flex-row flex-1 items-stretch sm:items-center gap-2.5 sm:gap-3">
+          <div className="relative w-full sm:max-w-xs">
             <Search className="text-text-subtle absolute top-2.5 left-3 h-4 w-4 pointer-events-none" />
             <Input
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               placeholder="Search candidate or company..."
-              className="h-9 pl-9 text-[13px] bg-surface-2/40 border-border/70 hover:border-border focus:bg-surface-1 rounded-[8px] transition-all shadow-2xs"
+              className="h-9 pl-9 text-[13px] bg-surface-2/40 border-border/70 hover:border-border focus:bg-surface-1 rounded-[8px] transition-all shadow-2xs w-full"
             />
           </div>
 
@@ -171,7 +171,7 @@ export function PipelineBoard() {
               value={selectedOpeningId}
               onValueChange={(val) => setSelectedOpeningId(val)}
             >
-              <SelectTrigger className="h-9 w-auto min-w-[200px] gap-2 border-border/70 bg-surface-2/40 hover:bg-surface-2 text-text px-3 text-[13px] font-medium rounded-[8px] shadow-2xs">
+              <SelectTrigger className="h-9 w-full sm:w-auto min-w-0 sm:min-w-[200px] gap-2 border-border/70 bg-surface-2/40 hover:bg-surface-2 text-text px-3 text-[13px] font-medium rounded-[8px] shadow-2xs">
                 <SelectValue placeholder={`All Requisitions (${openings.length})`} />
               </SelectTrigger>
               <SelectContent align="start" className="min-w-[240px]">

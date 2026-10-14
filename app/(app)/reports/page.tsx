@@ -166,7 +166,7 @@ export default function ReportsPage() {
           </div>
 
           {/* Footer Summary Strip */}
-          <div className="border-t border-border/50 px-6 py-3 bg-surface-2/30 flex items-center justify-between text-[11px] select-none rounded-b-[12px]">
+          <div className="border-t border-border/50 px-4 sm:px-6 py-2.5 sm:py-3 bg-surface-2/30 flex flex-wrap items-center justify-between gap-2 text-[11px] select-none rounded-b-[12px]">
             <span className="text-text-subtle">
               Net Yield: <strong className="text-accent font-mono font-semibold">27%</strong>
             </span>
@@ -183,7 +183,7 @@ export default function ReportsPage() {
         <Card className="flex flex-col justify-between h-full">
           <div>
             <CardHeader className="pb-4 border-b border-border/40">
-              <div className="flex items-start justify-between gap-2">
+              <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-2">
                 <div>
                   <CardTitle className="text-[16px] font-semibold text-text tracking-[-0.01em]">
                     Hiring Velocity & Trends
@@ -270,7 +270,7 @@ export default function ReportsPage() {
           </div>
 
           {/* Footer Summary Strip */}
-          <div className="border-t border-border/50 px-6 py-3 bg-surface-2/30 flex items-center justify-between text-[11px] select-none rounded-b-[12px]">
+          <div className="border-t border-border/50 px-4 sm:px-6 py-2.5 sm:py-3 bg-surface-2/30 flex flex-wrap items-center justify-between gap-2 text-[11px] select-none rounded-b-[12px]">
             <span className="text-text-subtle">
               Total Hires: <strong className="text-text font-mono font-semibold">31</strong>
             </span>
@@ -339,7 +339,7 @@ export default function ReportsPage() {
           </div>
 
           {/* Footer Summary Strip */}
-          <div className="border-t border-border/50 px-6 py-3 bg-surface-2/30 flex items-center justify-between text-[11px] select-none rounded-b-[12px]">
+          <div className="border-t border-border/50 px-4 sm:px-6 py-2.5 sm:py-3 bg-surface-2/30 flex flex-wrap items-center justify-between gap-2 text-[11px] select-none rounded-b-[12px]">
             <span className="text-text-subtle">
               Total Quota: <strong className="text-text font-mono font-semibold">{totalHeadcount}</strong>
             </span>
@@ -411,7 +411,7 @@ export default function ReportsPage() {
           </div>
 
           {/* Footer Summary Strip */}
-          <div className="border-t border-border/50 px-6 py-3 bg-surface-2/30 flex items-center justify-between text-[11px] select-none rounded-b-[12px]">
+          <div className="border-t border-border/50 px-4 sm:px-6 py-2.5 sm:py-3 bg-surface-2/30 flex flex-wrap items-center justify-between gap-2 text-[11px] select-none rounded-b-[12px]">
             <span className="text-text-subtle">
               Primary Source: <strong className="text-text font-mono font-semibold">LinkedIn (33%)</strong>
             </span>

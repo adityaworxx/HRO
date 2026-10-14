@@ -45,7 +45,6 @@ import {
   Layers,
   ListChecks,
   Calendar,
-  Sparkle,
 } from 'lucide-react';
 import { toast } from 'sonner';
 
@@ -250,8 +249,8 @@ export function OnboardingDashboard() {
 
   if (isLoading) {
     return (
-      <div className="space-y-6">
-        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
+      <div className="space-y-4 sm:space-y-6">
+        <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-4 sm:gap-4">
           <Skeleton className="h-[96px] rounded-[12px]" />
           <Skeleton className="h-[96px] rounded-[12px]" />
           <Skeleton className="h-[96px] rounded-[12px]" />
@@ -263,9 +262,9 @@ export function OnboardingDashboard() {
   }
 
   return (
-    <div className="space-y-5">
-      {/* 1. Executive Stat Cards Grid (Starts immediately at top - redundant PageHeader removed) */}
-      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
+    <div className="space-y-4 sm:space-y-5">
+      {/* 1. Executive Stat Cards Grid */}
+      <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-4 sm:gap-4">
         <StatCard
           label="Readiness Progress"
           value={`${overallProgress.percentage}%`}
@@ -294,24 +293,24 @@ export function OnboardingDashboard() {
       </div>
 
       {/* 2. Controls & Filter Bar with Action Button */}
-      <Card className="border-border bg-surface-1">
-        <div className="flex flex-col gap-3 p-3 sm:flex-row sm:items-center sm:justify-between">
+      <Card className="border-border bg-surface-1 overflow-hidden">
+        <div className="flex flex-col gap-3 p-3 sm:p-3.5 lg:flex-row lg:items-center lg:justify-between">
           {/* Segmented View Mode Switcher */}
           <Tabs
             value={viewMode}
             onValueChange={(val) => setViewMode(val as typeof viewMode)}
-            className="w-auto"
+            className="w-full lg:w-auto"
           >
-            <TabsList className="h-9">
-              <TabsTrigger value="by-candidate" className="gap-1.5 text-[12px]">
+            <TabsList className="h-9 w-full lg:w-auto grid grid-cols-3 lg:flex">
+              <TabsTrigger value="by-candidate" className="gap-1.5 text-[12px] px-2 sm:px-3">
                 <Users className="h-3.5 w-3.5" />
                 <span>By New Hire</span>
               </TabsTrigger>
-              <TabsTrigger value="by-phase" className="gap-1.5 text-[12px]">
+              <TabsTrigger value="by-phase" className="gap-1.5 text-[12px] px-2 sm:px-3">
                 <Layers className="h-3.5 w-3.5" />
                 <span>By Phase</span>
               </TabsTrigger>
-              <TabsTrigger value="all-tasks" className="gap-1.5 text-[12px]">
+              <TabsTrigger value="all-tasks" className="gap-1.5 text-[12px] px-2 sm:px-3">
                 <ListChecks className="h-3.5 w-3.5" />
                 <span>All Tasks ({filteredItems.length})</span>
               </TabsTrigger>
@@ -319,66 +318,69 @@ export function OnboardingDashboard() {
           </Tabs>
 
           {/* Search, Filter Dropdowns & Add Button */}
-          <div className="flex flex-wrap items-center gap-2">
+          <div className="flex flex-col sm:flex-row flex-wrap items-stretch sm:items-center gap-2 w-full lg:w-auto">
             {/* Search Input */}
-            <div className="relative min-w-[160px] sm:w-[200px]">
+            <div className="relative w-full sm:w-[180px] lg:w-[200px]">
               <Search className="text-text-muted absolute left-2.5 top-1/2 h-3.5 w-3.5 -translate-y-1/2" />
               <Input
                 type="text"
                 placeholder="Search tasks or hires..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="h-8.5 pl-8 text-[12px] bg-surface-2 border-border"
+                className="h-8.5 pl-8 text-[12px] bg-surface-2 border-border w-full"
               />
             </div>
 
-            {/* Candidate Filter (shown in by-phase & all-tasks) */}
-            {viewMode !== 'by-candidate' && (
-              <Select value={selectedCandidateId} onValueChange={setSelectedCandidateId}>
-                <SelectTrigger className="h-8.5 w-auto min-w-[130px] text-[12px] bg-surface-2 border-border">
-                  <SelectValue placeholder="All Hires" />
+            {/* Filter Dropdowns Row */}
+            <div className="grid grid-cols-2 sm:flex items-center gap-2 w-full sm:w-auto">
+              {/* Candidate Filter (shown in by-phase & all-tasks) */}
+              {viewMode !== 'by-candidate' && (
+                <Select value={selectedCandidateId} onValueChange={setSelectedCandidateId}>
+                  <SelectTrigger className="h-8.5 w-full sm:w-auto min-w-[120px] text-[12px] bg-surface-2 border-border">
+                    <SelectValue placeholder="All Hires" />
+                  </SelectTrigger>
+                  <SelectContent align="end">
+                    <SelectItem value="all">All Hires ({candidatesWithActiveChecklists.length})</SelectItem>
+                    {candidatesWithActiveChecklists.map((c) => (
+                      <SelectItem key={c.id} value={c.id}>
+                        {c.name}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              )}
+
+              {/* Owner Filter */}
+              <Select value={selectedOwner} onValueChange={setSelectedOwner}>
+                <SelectTrigger className="h-8.5 w-full sm:w-auto min-w-[115px] text-[12px] bg-surface-2 border-border">
+                  <SelectValue placeholder="All Owners" />
                 </SelectTrigger>
                 <SelectContent align="end">
-                  <SelectItem value="all">All Hires ({candidatesWithActiveChecklists.length})</SelectItem>
-                  {candidatesWithActiveChecklists.map((c) => (
-                    <SelectItem key={c.id} value={c.id}>
-                      {c.name}
-                    </SelectItem>
-                  ))}
+                  <SelectItem value="all">All Owners</SelectItem>
+                  <SelectItem value="HR">HR Responsible</SelectItem>
+                  <SelectItem value="Manager">Manager Responsible</SelectItem>
                 </SelectContent>
               </Select>
-            )}
 
-            {/* Owner Filter */}
-            <Select value={selectedOwner} onValueChange={setSelectedOwner}>
-              <SelectTrigger className="h-8.5 w-auto min-w-[120px] text-[12px] bg-surface-2 border-border">
-                <SelectValue placeholder="All Owners" />
-              </SelectTrigger>
-              <SelectContent align="end">
-                <SelectItem value="all">All Owners</SelectItem>
-                <SelectItem value="HR">HR Responsible</SelectItem>
-                <SelectItem value="Manager">Manager Responsible</SelectItem>
-              </SelectContent>
-            </Select>
-
-            {/* Status Filter */}
-            <Select value={selectedStatus} onValueChange={setSelectedStatus}>
-              <SelectTrigger className="h-8.5 w-auto min-w-[115px] text-[12px] bg-surface-2 border-border">
-                <SelectValue placeholder="All Status" />
-              </SelectTrigger>
-              <SelectContent align="end">
-                <SelectItem value="all">All Status</SelectItem>
-                <SelectItem value="pending">Pending</SelectItem>
-                <SelectItem value="done">Completed</SelectItem>
-              </SelectContent>
-            </Select>
+              {/* Status Filter */}
+              <Select value={selectedStatus} onValueChange={setSelectedStatus}>
+                <SelectTrigger className="h-8.5 w-full sm:w-auto min-w-[110px] text-[12px] bg-surface-2 border-border">
+                  <SelectValue placeholder="All Status" />
+                </SelectTrigger>
+                <SelectContent align="end">
+                  <SelectItem value="all">All Status</SelectItem>
+                  <SelectItem value="pending">Pending</SelectItem>
+                  <SelectItem value="done">Completed</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
 
             {/* + Add Checklist Item Action Button */}
             <Button
               variant="primary"
               size="sm"
               onClick={() => handleOpenCreateModal()}
-              className="h-8.5 gap-1.5 shadow-sm text-[12px]"
+              className="h-8.5 gap-1.5 shadow-sm text-[12px] w-full sm:w-auto justify-center"
             >
               <Plus className="h-4 w-4" />
               <span>Add Checklist Item</span>
@@ -391,9 +393,9 @@ export function OnboardingDashboard() {
 
       {/* VIEW 1: BY NEW HIRE (Candidate Focus Roster) */}
       {viewMode === 'by-candidate' && (
-        <div className="space-y-5">
+        <div className="space-y-4 sm:space-y-5">
           {candidatesWithActiveChecklists.length === 0 ? (
-            <Card className="border-border p-12 text-center">
+            <Card className="border-border p-8 sm:p-12 text-center">
               <Users className="text-text-muted mx-auto h-8 w-8 mb-2 opacity-50" />
               <p className="text-text text-[14px] font-medium">No candidates with active checklists</p>
               <p className="text-text-muted text-[12px] mt-1">
@@ -410,41 +412,41 @@ export function OnboardingDashboard() {
               return (
                 <Card key={candidate.id} className="border-border bg-surface-1 overflow-hidden shadow-xs">
                   {/* Candidate Header Summary */}
-                  <div className="border-border bg-surface-2/40 flex flex-col gap-3 border-b px-5 py-3.5 sm:flex-row sm:items-center sm:justify-between">
-                    <div className="flex items-center gap-3">
-                      <Avatar className="h-9 w-9 border border-border">
+                  <div className="border-border bg-surface-2/40 flex flex-col gap-3 border-b px-4 py-3 sm:px-5 sm:py-3.5 sm:flex-row sm:items-center sm:justify-between">
+                    <div className="flex items-center gap-3 min-w-0">
+                      <Avatar className="h-9 w-9 border border-border shrink-0">
                         <AvatarFallback className="bg-surface-3 text-text font-semibold text-[12px]">
                           {candidate.name.slice(0, 2).toUpperCase()}
                         </AvatarFallback>
                       </Avatar>
-                      <div>
-                        <div className="flex items-center gap-2">
-                          <span className="text-text text-[14px] font-semibold">
+                      <div className="min-w-0">
+                        <div className="flex items-center gap-2 flex-wrap">
+                          <span className="text-text text-[14px] font-semibold truncate">
                             {candidate.name}
                           </span>
-                          <Badge variant="default" className="text-[11px] font-normal text-text-muted bg-surface-2 px-1.5 py-0.2">
+                          <Badge variant="default" className="text-[11px] font-normal text-text-muted bg-surface-2 px-1.5 py-0.2 shrink-0">
                             {candidate.stage}
                           </Badge>
                         </div>
-                        <p className="text-text-muted text-[12px]">
+                        <p className="text-text-muted text-[12px] truncate">
                           {candidate.currentRole} • {candidate.currentCompany}
                         </p>
                       </div>
                     </div>
 
-                    <div className="flex items-center gap-4">
+                    <div className="flex flex-wrap sm:flex-nowrap items-center justify-between sm:justify-end gap-3 w-full sm:w-auto pt-2 sm:pt-0 border-t sm:border-t-0 border-border/50">
                       {/* Progress Indicator */}
-                      <div className="flex items-center gap-2.5">
-                        <div className="text-right">
+                      <div className="flex items-center gap-2">
+                        <div className="text-right shrink-0">
                           <span className="text-text font-mono text-[12px] font-semibold">
                             {completed}/{total}
                           </span>
                           <span className="text-text-muted text-[11px] ml-1">tasks</span>
                         </div>
-                        <Progress value={percent} className="h-2 w-24 sm:w-28" />
+                        <Progress value={percent} className="h-2 w-20 sm:w-28" />
                         <Badge
                           variant={percent === 100 ? 'success' : 'default'}
-                          className="font-mono text-[11px]"
+                          className="font-mono text-[11px] shrink-0"
                         >
                           {percent}%
                         </Badge>
@@ -455,7 +457,7 @@ export function OnboardingDashboard() {
                         variant="outline"
                         size="sm"
                         onClick={() => handleOpenCreateModal(candidate.id)}
-                        className="h-8 gap-1 text-[12px] border-border hover:bg-surface-2"
+                        className="h-8 gap-1 text-[12px] border-border hover:bg-surface-2 shrink-0"
                       >
                         <Plus className="h-3.5 w-3.5" />
                         <span>Add Task</span>
@@ -464,13 +466,13 @@ export function OnboardingDashboard() {
                   </div>
 
                   {/* Tasks Grouped by Phase for Candidate */}
-                  <CardContent className="p-4 sm:p-5">
+                  <CardContent className="p-3 sm:p-5">
                     {candidateTasks.length === 0 ? (
                       <p className="text-text-muted py-4 text-center text-[12px]">
                         No tasks match the active filters for this candidate.
                       </p>
                     ) : (
-                      <div className="grid grid-cols-1 gap-4 lg:grid-cols-3">
+                      <div className="grid grid-cols-1 gap-3 sm:gap-4 lg:grid-cols-3">
                         {PHASES.map((phase) => {
                           const phaseTasks = candidateTasks.filter((t) => t.phase === phase);
                           const phaseDone = phaseTasks.filter((t) => t.done).length;
@@ -478,7 +480,7 @@ export function OnboardingDashboard() {
                           return (
                             <div
                               key={phase}
-                              className="border-border bg-surface-2/20 flex flex-col rounded-[var(--radius-md)] border p-3.5"
+                              className="border-border bg-surface-2/20 flex flex-col rounded-[var(--radius-md)] border p-3 sm:p-3.5 overflow-hidden"
                             >
                               {/* Phase Mini-Header */}
                               <div className="mb-2.5 flex items-center justify-between">
@@ -505,7 +507,7 @@ export function OnboardingDashboard() {
                                   phaseTasks.map((task) => (
                                     <div
                                       key={task.id}
-                                      className={`group flex items-start gap-2.5 rounded-[var(--radius-sm)] border p-2.5 transition-all ${
+                                      className={`group flex items-start gap-2.5 rounded-[var(--radius-sm)] border p-2.5 transition-all min-w-0 ${
                                         task.done
                                           ? 'border-border/60 bg-surface-1/40'
                                           : 'border-border bg-surface-1 hover:border-border-strong hover:bg-surface-2/40'
@@ -518,9 +520,9 @@ export function OnboardingDashboard() {
                                         }
                                         className="mt-0.5 shrink-0"
                                       />
-                                      <div className="min-w-0 flex-1 space-y-1">
+                                      <div className="min-w-0 flex-1 space-y-1 overflow-hidden">
                                         <p
-                                          className={`text-[12px] leading-snug font-medium transition-colors ${
+                                          className={`text-[12px] leading-snug font-medium transition-colors break-words ${
                                             task.done
                                               ? 'text-text-muted line-through decoration-text-subtle/40'
                                               : 'text-text'
@@ -559,7 +561,7 @@ export function OnboardingDashboard() {
           {/* Clean 1-Line Table for Upcoming Hires Ready to Initialize Checklist */}
           {candidatesAwaitingChecklists.length > 0 && (
             <Card className="border-border bg-surface-1 overflow-hidden">
-              <div className="border-border bg-surface-2/30 flex items-center justify-between border-b px-5 py-3">
+              <div className="border-border bg-surface-2/30 flex items-center justify-between border-b px-4 py-3 sm:px-5">
                 <div className="flex items-center gap-2">
                   <span className="text-text text-[13px] font-semibold">
                     Upcoming Hires Awaiting Onboarding Roadmap
@@ -570,22 +572,22 @@ export function OnboardingDashboard() {
                 </span>
               </div>
 
-              <div className="overflow-x-auto">
-                <table className="w-full text-left border-collapse">
+              <div className="overflow-x-auto -mx-px">
+                <table className="w-full text-left border-collapse min-w-[560px]">
                   <thead>
                     <tr className="border-b border-border text-[11px] font-medium text-text-subtle uppercase tracking-wider bg-surface-2/40">
-                      <th className="py-2.5 px-5 font-medium">Candidate</th>
-                      <th className="py-2.5 px-4 font-medium">Role & Company</th>
-                      <th className="py-2.5 px-4 font-medium">Stage</th>
-                      <th className="py-2.5 px-5 text-right font-medium">Actions</th>
+                      <th className="py-2.5 px-4 sm:px-5 font-medium">Candidate</th>
+                      <th className="py-2.5 px-3 sm:px-4 font-medium">Role & Company</th>
+                      <th className="py-2.5 px-3 sm:px-4 font-medium">Stage</th>
+                      <th className="py-2.5 px-4 sm:px-5 text-right font-medium">Actions</th>
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-border text-[12px]">
                     {candidatesAwaitingChecklists.map((candidate) => (
                       <tr key={candidate.id} className="hover:bg-surface-2/30 transition-colors">
-                        <td className="py-2.5 px-5 whitespace-nowrap">
+                        <td className="py-2.5 px-4 sm:px-5 whitespace-nowrap">
                           <div className="flex items-center gap-2">
-                            <Avatar className="h-6 w-6 border border-border">
+                            <Avatar className="h-6 w-6 border border-border shrink-0">
                               <AvatarFallback className="text-[9px] bg-surface-3 text-text font-medium">
                                 {candidate.name.slice(0, 2).toUpperCase()}
                               </AvatarFallback>
@@ -593,16 +595,16 @@ export function OnboardingDashboard() {
                             <span className="font-medium text-text">{candidate.name}</span>
                           </div>
                         </td>
-                        <td className="py-2.5 px-4 whitespace-nowrap text-text-muted">
+                        <td className="py-2.5 px-3 sm:px-4 whitespace-nowrap text-text-muted">
                           {candidate.currentRole} <span className="text-text-subtle">•</span> {candidate.currentCompany}
                         </td>
-                        <td className="py-2.5 px-4 whitespace-nowrap">
+                        <td className="py-2.5 px-3 sm:px-4 whitespace-nowrap">
                           <Badge variant="default" className="text-[11px] font-normal text-text-muted bg-surface-2">
                             {candidate.stage}
                           </Badge>
                         </td>
-                        <td className="py-2.5 px-5 whitespace-nowrap text-right">
-                          <div className="inline-flex items-center gap-2 justify-end">
+                        <td className="py-2.5 px-4 sm:px-5 whitespace-nowrap text-right">
+                          <div className="inline-flex items-center gap-1.5 sm:gap-2 justify-end">
                             <Button
                               variant="outline"
                               size="sm"
@@ -610,7 +612,7 @@ export function OnboardingDashboard() {
                                 handleInitializeStandardChecklist(candidate.id, candidate.name)
                               }
                               loading={createTask.isPending}
-                              className="h-7 px-2.5 text-[11px] gap-1 border-border hover:bg-surface-2"
+                              className="h-7 px-2 sm:px-2.5 text-[11px] gap-1 border-border hover:bg-surface-2"
                             >
                               <ListChecks className="h-3 w-3" />
                               <span>Setup Standard Checklist</span>
@@ -656,10 +658,10 @@ export function OnboardingDashboard() {
 
             return (
               <Card key={phase} className="border-border bg-surface-1 overflow-hidden">
-                <CardHeader className="border-border bg-surface-2/30 border-b px-5 py-3">
+                <CardHeader className="border-border bg-surface-2/30 border-b px-4 py-3 sm:px-5">
                   <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
                     <div className="flex items-center gap-2.5">
-                      <div className="bg-surface-3 flex h-7 w-7 items-center justify-center rounded-[6px]">
+                      <div className="bg-surface-3 flex h-7 w-7 items-center justify-center rounded-[6px] shrink-0">
                         {phaseIcon}
                       </div>
                       <div>
@@ -676,13 +678,13 @@ export function OnboardingDashboard() {
                     </div>
 
                     <div className="flex items-center gap-2.5">
-                      <Progress value={phasePct} className="h-2 w-28" />
+                      <Progress value={phasePct} className="h-2 w-24 sm:w-28" />
                       <span className="text-text-muted font-mono text-[12px]">{phasePct}%</span>
                     </div>
                   </div>
                 </CardHeader>
 
-                <CardContent className="p-4">
+                <CardContent className="p-3 sm:p-4">
                   {phaseItems.length === 0 ? (
                     <p className="text-text-muted py-6 text-center text-[12px]">
                       No checklist tasks in this phase match your filters.
@@ -695,19 +697,19 @@ export function OnboardingDashboard() {
                         return (
                           <div
                             key={item.id}
-                            className={`flex items-start justify-between gap-3 rounded-[var(--radius-md)] border p-3 transition-colors ${
+                            className={`flex items-start justify-between gap-2.5 sm:gap-3 rounded-[var(--radius-md)] border p-2.5 sm:p-3 transition-colors min-w-0 ${
                               item.done
                                 ? 'border-border/60 bg-surface-2/30'
                                 : 'border-border bg-surface-1 hover:border-border-strong hover:bg-surface-2/50'
                             }`}
                           >
-                            <div className="flex items-start gap-2.5 min-w-0">
+                            <div className="flex items-start gap-2.5 min-w-0 flex-1 overflow-hidden">
                               <Checkbox
                                 checked={item.done}
                                 onCheckedChange={() => handleToggle(item.id, item.done, item.title)}
                                 className="mt-0.5 shrink-0"
                               />
-                              <div className="min-w-0 space-y-1">
+                              <div className="min-w-0 space-y-1 flex-1 overflow-hidden">
                                 <span
                                   className={`text-[13px] leading-snug font-medium block truncate ${
                                     item.done
@@ -719,15 +721,15 @@ export function OnboardingDashboard() {
                                   {item.title}
                                 </span>
                                 {candidate && (
-                                  <div className="flex items-center gap-1.5 text-text-muted text-[11px]">
-                                    <Avatar className="h-4 w-4">
+                                  <div className="flex items-center gap-1.5 text-text-muted text-[11px] truncate">
+                                    <Avatar className="h-4 w-4 shrink-0">
                                       <AvatarFallback className="text-[8px] bg-surface-3">
                                         {candidate.name.slice(0, 2).toUpperCase()}
                                       </AvatarFallback>
                                     </Avatar>
-                                    <span className="text-text font-medium">{candidate.name}</span>
+                                    <span className="text-text font-medium truncate">{candidate.name}</span>
                                     <span>•</span>
-                                    <span className="text-text-subtle truncate max-w-[140px]">
+                                    <span className="text-text-subtle truncate">
                                       {candidate.currentRole}
                                     </span>
                                   </div>
@@ -762,7 +764,7 @@ export function OnboardingDashboard() {
       {/* VIEW 3: ALL TASKS (Unified Table/Checklist View) */}
       {viewMode === 'all-tasks' && (
         <Card className="border-border bg-surface-1 overflow-hidden">
-          <div className="border-border bg-surface-2/30 flex items-center justify-between border-b px-5 py-3">
+          <div className="border-border bg-surface-2/30 flex items-center justify-between border-b px-4 py-3 sm:px-5">
             <span className="text-text text-[14px] font-semibold">
               Unified Checklist ({filteredItems.length} items)
             </span>
@@ -771,87 +773,89 @@ export function OnboardingDashboard() {
             </span>
           </div>
 
-          <div className="divide-border divide-y">
-            {filteredItems.length === 0 ? (
-              <div className="p-8 text-center text-text-muted text-[13px]">
-                No tasks match your search or filter criteria.
-              </div>
-            ) : (
-              filteredItems.map((item) => {
-                const candidate = candidates.find((c) => c.id === item.candidateId);
+          <div className="overflow-x-auto -mx-px">
+            <div className="divide-border divide-y min-w-[520px]">
+              {filteredItems.length === 0 ? (
+                <div className="p-8 text-center text-text-muted text-[13px]">
+                  No tasks match your search or filter criteria.
+                </div>
+              ) : (
+                filteredItems.map((item) => {
+                  const candidate = candidates.find((c) => c.id === item.candidateId);
 
-                return (
-                  <div
-                    key={item.id}
-                    className={`flex items-center justify-between gap-4 px-5 py-3 transition-colors ${
-                      item.done ? 'bg-surface-2/20' : 'hover:bg-surface-2/40'
-                    }`}
-                  >
-                    <div className="flex items-center gap-3 min-w-0">
-                      <Checkbox
-                        checked={item.done}
-                        onCheckedChange={() => handleToggle(item.id, item.done, item.title)}
-                        className="shrink-0"
-                      />
-                      <div className="min-w-0">
-                        <span
-                          className={`text-[13px] font-medium block truncate ${
-                            item.done
-                              ? 'text-text-muted line-through decoration-text-subtle/40'
-                              : 'text-text'
-                          }`}
-                        >
-                          {item.title}
-                        </span>
-                        {item.notes && (
-                          <p className="text-text-subtle text-[11px] truncate">{item.notes}</p>
+                  return (
+                    <div
+                      key={item.id}
+                      className={`flex items-center justify-between gap-4 px-4 py-3 sm:px-5 transition-colors ${
+                        item.done ? 'bg-surface-2/20' : 'hover:bg-surface-2/40'
+                      }`}
+                    >
+                      <div className="flex items-center gap-3 min-w-0 flex-1 overflow-hidden">
+                        <Checkbox
+                          checked={item.done}
+                          onCheckedChange={() => handleToggle(item.id, item.done, item.title)}
+                          className="shrink-0"
+                        />
+                        <div className="min-w-0 flex-1 overflow-hidden">
+                          <span
+                            className={`text-[13px] font-medium block truncate ${
+                              item.done
+                                ? 'text-text-muted line-through decoration-text-subtle/40'
+                                : 'text-text'
+                            }`}
+                          >
+                            {item.title}
+                          </span>
+                          {item.notes && (
+                            <p className="text-text-subtle text-[11px] truncate">{item.notes}</p>
+                          )}
+                        </div>
+                      </div>
+
+                      <div className="flex shrink-0 items-center gap-2 sm:gap-3">
+                        {/* Candidate badge */}
+                        {candidate && (
+                          <div className="hidden sm:flex items-center gap-1.5 text-[12px]">
+                            <Avatar className="h-5 w-5 shrink-0">
+                              <AvatarFallback className="text-[9px] bg-surface-3">
+                                {candidate.name.slice(0, 2).toUpperCase()}
+                              </AvatarFallback>
+                            </Avatar>
+                            <span className="text-text font-medium">{candidate.name}</span>
+                          </div>
                         )}
+
+                        {/* Phase */}
+                        <Badge variant="default" className="text-[11px] hidden md:inline-flex">
+                          {item.phase}
+                        </Badge>
+
+                        {/* Owner */}
+                        <Badge
+                          variant="default"
+                          className="text-[11px] text-text-muted font-normal bg-surface-2"
+                        >
+                          {item.owner}
+                        </Badge>
+
+                        {/* Due Date */}
+                        <span className="text-text-subtle flex items-center gap-1 font-mono text-[12px] min-w-[70px] justify-end">
+                          <Calendar className="h-3 w-3" />
+                          {formatDate(item.dueDate, 'dd MMM')}
+                        </span>
                       </div>
                     </div>
-
-                    <div className="flex shrink-0 items-center gap-3">
-                      {/* Candidate badge */}
-                      {candidate && (
-                        <div className="hidden sm:flex items-center gap-1.5 text-[12px]">
-                          <Avatar className="h-5 w-5">
-                            <AvatarFallback className="text-[9px] bg-surface-3">
-                              {candidate.name.slice(0, 2).toUpperCase()}
-                            </AvatarFallback>
-                          </Avatar>
-                          <span className="text-text font-medium">{candidate.name}</span>
-                        </div>
-                      )}
-
-                      {/* Phase */}
-                      <Badge variant="default" className="text-[11px] hidden md:inline-flex">
-                        {item.phase}
-                      </Badge>
-
-                      {/* Owner */}
-                      <Badge
-                        variant="default"
-                        className="text-[11px] text-text-muted font-normal bg-surface-2"
-                      >
-                        {item.owner}
-                      </Badge>
-
-                      {/* Due Date */}
-                      <span className="text-text-subtle flex items-center gap-1 font-mono text-[12px] min-w-[75px] justify-end">
-                        <Calendar className="h-3 w-3" />
-                        {formatDate(item.dueDate, 'dd MMM')}
-                      </span>
-                    </div>
-                  </div>
-                );
-              })
-            )}
+                  );
+                })
+              )}
+            </div>
           </div>
         </Card>
       )}
 
       {/* 4. Add Task Dialog */}
       <Dialog open={createModalOpen} onOpenChange={setCreateModalOpen}>
-        <DialogContent className="sm:max-w-[480px]">
+        <DialogContent className="w-[95vw] sm:max-w-[480px] max-h-[90vh] overflow-y-auto">
           <DialogHeader>
             <DialogTitle className="text-[17px] font-semibold">
               Add Onboarding Checklist Item

@@ -15,19 +15,20 @@ import { useCurrentUser, useSwitchRole } from '@/features/auth/hooks';
 import { useUiStore } from '@/lib/store';
 import { Check, Settings, LogOut, ArrowLeftRight, Shield } from 'lucide-react';
 
+import { PRIMARY_MANAGER, PRIMARY_HR } from '@/fixtures/users';
+
 export function ProfileDropdown() {
   const { data: user } = useCurrentUser();
   const { role, setRole } = useUiStore();
   const switchRole = useSwitchRole();
 
-  const displayName = user?.name ?? 'Aditya Chaubey';
-  const displayDepartment = user?.department ?? 'Operations';
-  const displayInitials = user?.avatarInitials ?? 'AC';
-  const displayEmail = user
-    ? `${user.name.toLowerCase().replace(/\s+/g, '.')}@company.com`
-    : 'aditya@company.com';
-
   const isManager = role === 'manager';
+  const defaultPersona = isManager ? PRIMARY_MANAGER : PRIMARY_HR;
+  const activeUser = user ?? defaultPersona;
+  const displayName = activeUser.name;
+  const displayDepartment = activeUser.department;
+  const displayInitials = activeUser.avatarInitials;
+  const displayEmail = `${activeUser.name.toLowerCase().replace(/\s+/g, '.')}@company.com`;
 
   const toggleRole = () => {
     const nextRole = role === 'manager' ? 'hr' : 'manager';

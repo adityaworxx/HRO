@@ -267,7 +267,7 @@ export function HrDashboard() {
                 </div>
 
                 {/* Stage 5: Joined */}
-                <div className="flex flex-col justify-between p-3.5 hover:bg-surface-2/60 transition-colors bg-accent-subtle/20">
+                <div className="col-span-2 sm:col-span-1 flex flex-col justify-between p-3.5 hover:bg-surface-2/60 transition-colors bg-accent-subtle/20">
                   <div className="flex items-center justify-between">
                     <span className="text-accent text-[12px] font-medium select-none">
                       5. Joined
@@ -415,79 +415,84 @@ export function HrDashboard() {
               </Link>
             </div>
 
-            {/* Structured Table Column Header */}
-            <div className="hidden sm:grid grid-cols-[minmax(220px,2fr)_150px_140px_110px_100px] gap-4 items-center px-4 py-2 text-[11px] font-medium uppercase tracking-wider text-text-subtle border-y border-border bg-surface-2/40 select-none">
-              <div>Candidate</div>
-              <div>Current Stage</div>
-              <div>SLA Status</div>
-              <div>Notice Period</div>
-              <div className="text-right">Action</div>
-            </div>
-
-            {/* Table Content Rows */}
-            <div className="divide-y divide-border/60">
-              {slaAlertCandidates.length === 0 ? (
-                <div className="text-text-muted flex flex-col items-center justify-center py-8 text-center text-[13px]">
-                  <p className="font-medium">All candidate SLAs are currently on track</p>
+            {/* Structured Table Container */}
+            <div className="overflow-x-auto -mx-5 px-5">
+              <div className="min-w-[580px]">
+                {/* Table Column Header */}
+                <div className="grid grid-cols-[minmax(200px,2fr)_140px_130px_110px_100px] gap-3 sm:gap-4 items-center px-4 py-2 text-[11px] font-medium uppercase tracking-wider text-text-subtle border-y border-border bg-surface-2/40 select-none">
+                  <div>Candidate</div>
+                  <div>Current Stage</div>
+                  <div>SLA Status</div>
+                  <div>Notice Period</div>
+                  <div className="text-right">Action</div>
                 </div>
-              ) : (
-                slaAlertCandidates.map((candidate) => {
-                  const opening = openings.find((o) => o.id === candidate.openingId);
-                  return (
-                    <div
-                      key={candidate.id}
-                      className="grid grid-cols-1 sm:grid-cols-[minmax(220px,2fr)_150px_140px_110px_100px] gap-3 sm:gap-4 items-center px-4 py-3 hover:bg-surface-2/50 transition-colors"
-                    >
-                      {/* 1. Candidate Info */}
-                      <div className="flex items-center gap-3 min-w-0">
-                        <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-surface-2 border border-border text-[11px] font-semibold text-text">
-                          {candidate.name.slice(0, 2).toUpperCase()}
-                        </div>
-                        <div className="min-w-0">
-                          <p className="truncate text-[13px] font-medium text-text leading-tight">
-                            {candidate.name}
-                          </p>
-                          <p className="truncate text-[11px] text-text-muted leading-tight mt-0.5">
-                            {opening?.title || candidate.currentRole}
-                          </p>
-                        </div>
-                      </div>
 
-                      {/* 2. Stage Badge */}
-                      <div className="flex items-center">
-                        <Badge variant="default" className="text-[11px] font-medium py-0.5 px-2">
-                          {candidate.stage}
-                        </Badge>
-                      </div>
-
-                      {/* 3. SLA Status */}
-                      <div className="flex items-center gap-1.5 text-text-muted">
-                        <Clock className="h-3.5 w-3.5 stroke-[1.75] text-text-subtle shrink-0" />
-                        <span className="text-[12px] font-normal tabular-nums">
-                          Action required
-                        </span>
-                      </div>
-
-                      {/* 4. Notice Period */}
-                      <div className="text-[12px] text-text-muted tabular-nums font-mono">
-                        {candidate.noticePeriod}
-                      </div>
-
-                      {/* 5. Action */}
-                      <div className="flex justify-start sm:justify-end">
-                        <Button
-                          variant="outline"
-                          size="sm"
-                          className="h-7 px-2.5 text-[11px] font-medium border-border hover:bg-surface-2 hover:text-text cursor-pointer"
-                          onClick={() => toast.success(`Nudge reminder sent for ${candidate.name}`)}
-                        >
-                          Nudge Team
-                        </Button>
-                      </div>
+                {/* Table Content Rows */}
+                <div className="divide-y divide-border/60">
+                  {slaAlertCandidates.length === 0 ? (
+                    <div className="text-text-muted flex flex-col items-center justify-center py-8 text-center text-[13px]">
+                      <p className="font-medium">All candidate SLAs are currently on track</p>
                     </div>
-                  );
-                })
-              )}
+                  ) : (
+                    slaAlertCandidates.map((candidate) => {
+                      const opening = openings.find((o) => o.id === candidate.openingId);
+                      return (
+                        <div
+                          key={candidate.id}
+                          className="grid grid-cols-[minmax(200px,2fr)_140px_130px_110px_100px] gap-3 sm:gap-4 items-center px-4 py-3 hover:bg-surface-2/50 transition-colors"
+                        >
+                          {/* 1. Candidate Info */}
+                          <div className="flex items-center gap-3 min-w-0">
+                            <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-surface-2 border border-border text-[11px] font-semibold text-text">
+                              {candidate.name.slice(0, 2).toUpperCase()}
+                            </div>
+                            <div className="min-w-0">
+                              <p className="truncate text-[13px] font-medium text-text leading-tight">
+                                {candidate.name}
+                              </p>
+                              <p className="truncate text-[11px] text-text-muted leading-tight mt-0.5">
+                                {opening?.title || candidate.currentRole}
+                              </p>
+                            </div>
+                          </div>
+
+                          {/* 2. Stage Badge */}
+                          <div className="flex items-center">
+                            <Badge variant="default" className="text-[11px] font-medium py-0.5 px-2">
+                              {candidate.stage}
+                            </Badge>
+                          </div>
+
+                          {/* 3. SLA Status */}
+                          <div className="flex items-center gap-1.5 text-text-muted">
+                            <Clock className="h-3.5 w-3.5 stroke-[1.75] text-text-subtle shrink-0" />
+                            <span className="text-[12px] font-normal tabular-nums">
+                              Action required
+                            </span>
+                          </div>
+
+                          {/* 4. Notice Period */}
+                          <div className="text-[12px] text-text-muted tabular-nums font-mono">
+                            {candidate.noticePeriod}
+                          </div>
+
+                          {/* 5. Action */}
+                          <div className="flex justify-end">
+                            <Button
+                              variant="outline"
+                              size="sm"
+                              className="h-7 px-2.5 text-[11px] font-medium border-border hover:bg-surface-2 hover:text-text cursor-pointer"
+                              onClick={() => toast.success(`Nudge reminder sent for ${candidate.name}`)}
+                            >
+                              Nudge Team
+                            </Button>
+                          </div>
+                        </div>
+                      );
+                    })
+                  )}
+                </div>
+              </div>
             </div>
           </div>
         </div>

@@ -212,12 +212,12 @@ export function ShortlistReview() {
               </div>
             </CardContent>
 
-            <CardFooter className="border-border flex gap-3 border-t pt-4">
+            <CardFooter className="border-border flex flex-col sm:flex-row gap-2.5 sm:gap-3 border-t pt-4">
               <Button
                 variant="primary"
                 onClick={() => handleDecision('Shortlisted')}
                 loading={recordDecision.isPending}
-                className="flex-1 gap-2"
+                className="w-full sm:flex-1 gap-2"
               >
                 <CheckCircle2 className="h-4 w-4" />
                 <span>Shortlist for Technical Interview</span>
@@ -227,7 +227,7 @@ export function ShortlistReview() {
                 variant="secondary"
                 onClick={() => handleDecision('Rejected')}
                 loading={recordDecision.isPending}
-                className="flex-1 gap-2"
+                className="w-full sm:flex-1 gap-2"
               >
                 <XCircle className="h-4 w-4" />
                 <span>Reject Candidate</span>

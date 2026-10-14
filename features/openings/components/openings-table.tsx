@@ -243,13 +243,13 @@ export function OpeningsTable() {
         </div>
 
         {/* Department Filter & Action */}
-        <div className="flex items-center gap-2">
+        <div className="flex flex-wrap items-center gap-2 w-full sm:w-auto">
           {departments.length > 0 && (
             <Select
               value={selectedDepartment}
               onValueChange={(val) => setSelectedDepartment(val)}
             >
-              <SelectTrigger className="h-8 w-auto min-w-[150px] gap-2 border-border bg-surface-2 hover:bg-surface-3 text-text px-2.5 text-[12px] font-medium rounded-[var(--radius-sm)]">
+              <SelectTrigger className="h-8 flex-1 sm:flex-initial w-auto min-w-[140px] gap-2 border-border bg-surface-2 hover:bg-surface-3 text-text px-2.5 text-[12px] font-medium rounded-[var(--radius-sm)]">
                 <SelectValue placeholder="All Departments" />
               </SelectTrigger>
               <SelectContent align="end" className="min-w-[180px]">
@@ -265,7 +265,7 @@ export function OpeningsTable() {
             </Select>
           )}
 
-          <Button asChild variant="primary" size="sm" className="h-8 gap-1.5 text-[13px]">
+          <Button asChild variant="primary" size="sm" className="h-8 gap-1.5 text-[13px] shrink-0">
             <Link href="/openings/new">
               <Plus className="h-3.5 w-3.5" />
               <span>New Opening</span>

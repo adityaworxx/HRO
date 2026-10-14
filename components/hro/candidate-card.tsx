@@ -34,7 +34,7 @@ export function CandidateCard({
       )}
     >
       <div className="flex items-start justify-between gap-2">
-        <h4 className="text-text text-[13px] font-semibold tracking-tight transition-colors inline-block max-w-[170px] truncate">
+        <h4 className="text-text hover:text-accent text-[13px] font-semibold tracking-tight transition-colors min-w-0 flex-1 truncate cursor-pointer">
           {candidate.name}
         </h4>
         <span className="shrink-0 text-[10px] font-medium text-text-subtle bg-surface-2 border border-border/70 rounded-[4px] px-1.5 py-0.5">

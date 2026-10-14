@@ -6,6 +6,8 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { Toaster } from '@/components/ui/sonner';
 import { useUiStore } from '@/lib/store';
 
+import { TooltipProvider } from '@/components/ui/tooltip';
+
 export function Providers({ children }: { children: React.ReactNode }) {
   const [queryClient] = React.useState(
     () =>
@@ -31,8 +33,10 @@ export function Providers({ children }: { children: React.ReactNode }) {
       disableTransitionOnChange
     >
       <QueryClientProvider client={queryClient}>
-        {children}
-        <Toaster />
+        <TooltipProvider delayDuration={100}>
+          {children}
+          <Toaster />
+        </TooltipProvider>
       </QueryClientProvider>
     </NextThemesProvider>
   );
