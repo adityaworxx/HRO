@@ -109,6 +109,7 @@ export function OnboardingDashboard() {
   const [newTaskOwner, setNewTaskOwner] = React.useState<'HR' | 'Manager'>('HR');
   const [newTaskDueDate, setNewTaskDueDate] = React.useState('2026-11-01');
   const [newTaskNotes, setNewTaskNotes] = React.useState('');
+  const [initializingCandidateId, setInitializingCandidateId] = React.useState<string | null>(null);
 
   // Pre-fill candidate ID when opening modal
   const handleOpenCreateModal = (candidateId?: string) => {
@@ -122,6 +123,7 @@ export function OnboardingDashboard() {
 
   // Initialize standard 7-task checklist for a new hire with 1 click
   const handleInitializeStandardChecklist = async (candidateId: string, candidateName: string) => {
+    setInitializingCandidateId(candidateId);
     try {
       for (const t of STANDARD_TASKS) {
         await createTask.mutateAsync({
@@ -137,6 +139,8 @@ export function OnboardingDashboard() {
       toast.success(`Standard onboarding checklist initialized for ${candidateName}!`);
     } catch {
       toast.error('Failed to initialize checklist. Please try again.');
+    } finally {
+      setInitializingCandidateId(null);
     }
   };
 
@@ -611,7 +615,8 @@ export function OnboardingDashboard() {
                               onClick={() =>
                                 handleInitializeStandardChecklist(candidate.id, candidate.name)
                               }
-                              loading={createTask.isPending}
+                              loading={initializingCandidateId === candidate.id}
+                              disabled={initializingCandidateId !== null}
                               className="h-7 px-2 sm:px-2.5 text-[11px] gap-1 border-border hover:bg-surface-2"
                             >
                               <ListChecks className="h-3 w-3" />
@@ -621,6 +626,7 @@ export function OnboardingDashboard() {
                               variant="ghost"
                               size="sm"
                               onClick={() => handleOpenCreateModal(candidate.id)}
+                              disabled={initializingCandidateId !== null}
                               className="h-7 px-2 text-[11px] gap-1 text-text-muted hover:text-text"
                             >
                               <Plus className="h-3 w-3" />
