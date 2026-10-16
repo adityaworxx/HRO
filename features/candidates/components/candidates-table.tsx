@@ -176,16 +176,16 @@ export function CandidatesTable() {
               <button
                 key={stage}
                 onClick={() => setSelectedStage(stage)}
-                className={`inline-flex items-center gap-1.5 rounded-[var(--radius-sm)] px-2.5 py-1 text-[13px] font-medium transition-all ${
+                className={`inline-flex items-center gap-1.5 rounded-[var(--radius-sm)] px-2.5 py-1 text-[13px] font-medium transition-colors ${
                   isSelected
-                    ? 'bg-surface-1 text-text border border-border-strong shadow-xs font-semibold'
-                    : 'bg-surface-2/70 text-text-muted hover:bg-surface-2 hover:text-text border border-transparent'
+                    ? 'bg-accent text-white shadow-sm'
+                    : 'bg-surface-2 text-text-muted hover:bg-surface-3 hover:text-text'
                 }`}
               >
                 <span>{stage === 'all' ? 'All Applicants' : stage}</span>
                 <span
                   className={`py-0.2 rounded-full px-1.5 font-mono text-[11px] ${
-                    isSelected ? 'bg-surface-3 text-text font-semibold' : 'bg-surface-3/60 text-text-subtle'
+                    isSelected ? 'bg-white/20 text-white' : 'bg-surface-3 text-text-subtle'
                   }`}
                 >
                   {count}

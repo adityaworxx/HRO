@@ -1,6 +1,7 @@
 'use client';
 
 import * as React from 'react';
+import { cn } from '@/lib/utils';
 import { useAllOnboarding, useToggleOnboardingTask, useCreateOnboardingTask } from '../hooks';
 import { useCandidates } from '@/features/candidates/hooks';
 import { StatCard } from '@/components/hro/stat-card';
@@ -769,92 +770,154 @@ export function OnboardingDashboard() {
 
       {/* VIEW 3: ALL TASKS (Unified Table/Checklist View) */}
       {viewMode === 'all-tasks' && (
-        <Card className="border-border bg-surface-1 overflow-hidden">
-          <div className="border-border bg-surface-2/30 flex items-center justify-between border-b px-4 py-3 sm:px-5">
-            <span className="text-text text-[14px] font-semibold">
-              Unified Checklist ({filteredItems.length} items)
-            </span>
-            <span className="text-text-muted text-[12px]">
-              {filteredItems.filter((i) => i.done).length} completed
-            </span>
+        <Card className="border-border bg-surface-1 overflow-hidden shadow-2xs">
+          <div className="border-b border-border/80 bg-surface-2/30 flex items-center justify-between px-4 py-3 sm:px-5">
+            <div className="flex items-center gap-2.5">
+              <span className="text-text text-[14px] font-semibold tracking-tight">
+                Unified Checklist
+              </span>
+              <span className="text-text-subtle text-[11px] font-medium bg-surface-2 border border-border/70 rounded-[4px] px-1.5 py-0.5">
+                {filteredItems.length} items
+              </span>
+            </div>
+            <div className="flex items-center gap-2">
+              <span className="text-text-muted text-[12px]">
+                <span className="font-semibold text-text">{filteredItems.filter((i) => i.done).length}</span> of {filteredItems.length} completed
+              </span>
+              <span className="text-text-subtle text-[11px] font-mono">
+                ({filteredItems.length > 0 ? Math.round((filteredItems.filter((i) => i.done).length / filteredItems.length) * 100) : 0}%)
+              </span>
+            </div>
           </div>
 
           <div className="overflow-x-auto -mx-px">
-            <div className="divide-border divide-y min-w-[520px]">
-              {filteredItems.length === 0 ? (
-                <div className="p-8 text-center text-text-muted text-[13px]">
-                  No tasks match your search or filter criteria.
-                </div>
-              ) : (
-                filteredItems.map((item) => {
-                  const candidate = candidates.find((c) => c.id === item.candidateId);
+            <table className="w-full text-left border-collapse min-w-[760px]">
+              <thead>
+                <tr className="border-b border-border/80 bg-surface-2/50 text-[11px] font-medium text-text-subtle uppercase tracking-wider select-none">
+                  <th className="py-2.5 px-3.5 sm:px-4 w-12 text-center">
+                    <span className="sr-only">Status Toggle</span>
+                  </th>
+                  <th className="py-2.5 px-3 font-medium min-w-[260px]">Task</th>
+                  <th className="py-2.5 px-3 font-medium w-[170px]">New Hire</th>
+                  <th className="py-2.5 px-3 font-medium w-[130px]">Phase</th>
+                  <th className="py-2.5 px-3 font-medium w-[100px]">Owner</th>
+                  <th className="py-2.5 px-3 font-medium w-[110px]">Due Date</th>
+                  <th className="py-2.5 pr-4 sm:pr-5 font-medium text-right w-[100px]">Status</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-border/60 text-[13px]">
+                {filteredItems.length === 0 ? (
+                  <tr>
+                    <td colSpan={7} className="p-8 text-center text-text-muted text-[13px]">
+                      No tasks match your search or filter criteria.
+                    </td>
+                  </tr>
+                ) : (
+                  filteredItems.map((item) => {
+                    const candidate = candidates.find((c) => c.id === item.candidateId);
 
-                  return (
-                    <div
-                      key={item.id}
-                      className={`flex items-center justify-between gap-4 px-4 py-3 sm:px-5 transition-colors ${
-                        item.done ? 'bg-surface-2/20' : 'hover:bg-surface-2/40'
-                      }`}
-                    >
-                      <div className="flex items-center gap-3 min-w-0 flex-1 overflow-hidden">
-                        <Checkbox
-                          checked={item.done}
-                          onCheckedChange={() => handleToggle(item.id, item.done, item.title)}
-                          className="shrink-0"
-                        />
-                        <div className="min-w-0 flex-1 overflow-hidden">
-                          <span
-                            className={`text-[13px] font-medium block truncate ${
-                              item.done
-                                ? 'text-text-muted line-through decoration-text-subtle/40'
-                                : 'text-text'
-                            }`}
-                          >
-                            {item.title}
-                          </span>
-                          {item.notes && (
-                            <p className="text-text-subtle text-[11px] truncate">{item.notes}</p>
-                          )}
-                        </div>
-                      </div>
-
-                      <div className="flex shrink-0 items-center gap-2 sm:gap-3">
-                        {/* Candidate badge */}
-                        {candidate && (
-                          <div className="hidden sm:flex items-center gap-1.5 text-[12px]">
-                            <Avatar className="h-5 w-5 shrink-0">
-                              <AvatarFallback className="text-[9px] bg-surface-3">
-                                {candidate.name.slice(0, 2).toUpperCase()}
-                              </AvatarFallback>
-                            </Avatar>
-                            <span className="text-text font-medium">{candidate.name}</span>
-                          </div>
+                    return (
+                      <tr
+                        key={item.id}
+                        className={cn(
+                          'group hover:bg-surface-2/40 transition-colors',
+                          item.done && 'bg-surface-2/15'
                         )}
+                      >
+                        {/* Checkbox */}
+                        <td className="py-3 px-3.5 sm:px-4 text-center align-middle">
+                          <Checkbox
+                            checked={item.done}
+                            onCheckedChange={() => handleToggle(item.id, item.done, item.title)}
+                            className="mx-auto"
+                          />
+                        </td>
+
+                        {/* Task Title & Notes */}
+                        <td className="py-3 px-3 align-middle">
+                          <div className="flex flex-col gap-0.5 pr-2">
+                            <span
+                              className={cn(
+                                'text-[13px] font-medium leading-snug break-words',
+                                item.done
+                                  ? 'text-text-muted line-through decoration-text-subtle/40'
+                                  : 'text-text'
+                              )}
+                            >
+                              {item.title}
+                            </span>
+                            {item.notes && (
+                              <p className="text-text-subtle text-[11px] line-clamp-1">{item.notes}</p>
+                            )}
+                          </div>
+                        </td>
+
+                        {/* New Hire */}
+                        <td className="py-3 px-3 align-middle whitespace-nowrap">
+                          {candidate ? (
+                            <div className="flex items-center gap-2">
+                              <Avatar className="h-5 w-5 border border-border/80 shrink-0">
+                                <AvatarFallback className="text-[9px] bg-surface-3 text-text font-semibold">
+                                  {candidate.name.slice(0, 2).toUpperCase()}
+                                </AvatarFallback>
+                              </Avatar>
+                              <span className="text-[12px] font-medium text-text truncate max-w-[130px]" title={candidate.name}>
+                                {candidate.name}
+                              </span>
+                            </div>
+                          ) : (
+                            <span className="text-text-subtle text-[12px]">—</span>
+                          )}
+                        </td>
 
                         {/* Phase */}
-                        <Badge variant="default" className="text-[11px] hidden md:inline-flex">
-                          {item.phase}
-                        </Badge>
+                        <td className="py-3 px-3 align-middle whitespace-nowrap">
+                          <Badge
+                            variant="default"
+                            className="text-[11px] font-normal text-text bg-surface-2 border border-border/70 px-2 py-0.5 rounded-[4px]"
+                          >
+                            {item.phase}
+                          </Badge>
+                        </td>
 
                         {/* Owner */}
-                        <Badge
-                          variant="default"
-                          className="text-[11px] text-text-muted font-normal bg-surface-2"
-                        >
-                          {item.owner}
-                        </Badge>
+                        <td className="py-3 px-3 align-middle whitespace-nowrap">
+                          <Badge
+                            variant="default"
+                            className="text-[11px] text-text-muted font-normal bg-surface-2 border border-border/60 px-2 py-0.5 rounded-[4px]"
+                          >
+                            {item.owner}
+                          </Badge>
+                        </td>
 
                         {/* Due Date */}
-                        <span className="text-text-subtle flex items-center gap-1 font-mono text-[12px] min-w-[70px] justify-end">
-                          <Calendar className="h-3 w-3" />
-                          {formatDate(item.dueDate, 'dd MMM')}
-                        </span>
-                      </div>
-                    </div>
-                  );
-                })
-              )}
-            </div>
+                        <td className="py-3 px-3 align-middle whitespace-nowrap">
+                          <span className="text-text-subtle flex items-center gap-1.5 font-mono text-[12px]">
+                            <Calendar className="h-3.5 w-3.5 text-text-subtle/70 shrink-0" />
+                            <span>{formatDate(item.dueDate, 'dd MMM')}</span>
+                          </span>
+                        </td>
+
+                        {/* Status */}
+                        <td className="py-3 pr-4 sm:pr-5 align-middle text-right whitespace-nowrap">
+                          {item.done ? (
+                            <span className="inline-flex items-center gap-1 text-[11px] font-medium text-emerald-600 dark:text-emerald-400 bg-emerald-500/10 border border-emerald-500/20 px-2 py-0.5 rounded-[4px]">
+                              <CheckCircle2 className="h-3 w-3" />
+                              <span>Done</span>
+                            </span>
+                          ) : (
+                            <span className="inline-flex items-center gap-1 text-[11px] font-medium text-text-subtle bg-surface-2 border border-border/70 px-2 py-0.5 rounded-[4px]">
+                              <Clock className="h-3 w-3 text-text-subtle/70" />
+                              <span>Pending</span>
+                            </span>
+                          )}
+                        </td>
+                      </tr>
+                    );
+                  })
+                )}
+              </tbody>
+            </table>
           </div>
         </Card>
       )}
