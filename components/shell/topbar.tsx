@@ -15,8 +15,9 @@ export function Topbar() {
   const { setCommandPaletteOpen, toggleMobileSidebar } = useUiStore();
 
   return (
-    <header className="border-border bg-surface-1/95 shrink-0 z-20 flex h-14 w-full items-center justify-between border-b px-3 sm:px-6 lg:px-8 backdrop-blur relative">
-      <div className="flex items-center gap-2.5">
+    <header className="border-border bg-surface-1/95 shrink-0 z-20 flex h-14 w-full items-center justify-between border-b px-3 sm:px-6 lg:px-8 backdrop-blur">
+      {/* Left container: balanced width matching right actions */}
+      <div className="flex items-center gap-2.5 min-w-[70px] sm:min-w-[140px] lg:min-w-[220px] justify-start shrink-0">
         {/* Mobile Hamburger Menu Toggle */}
         <Button
           variant="ghost"
@@ -38,14 +39,15 @@ export function Topbar() {
         </Link>
       </div>
 
-      {/* Centered Page Title - hidden on mobile to avoid overlapping icons */}
-      <div className="hidden md:flex absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 items-center justify-center pointer-events-none">
+      {/* Centered Page Title - true optical and geometric middle */}
+      <div className="flex-1 flex items-center justify-center min-w-0 px-2 pointer-events-none">
         <React.Suspense fallback={null}>
           <Breadcrumbs />
         </React.Suspense>
       </div>
 
-      <div className="flex items-center gap-1.5 sm:gap-2">
+      {/* Right container: actions & utilities */}
+      <div className="flex items-center gap-1.5 sm:gap-2 min-w-[70px] sm:min-w-[140px] lg:min-w-[220px] justify-end shrink-0">
         {/* Search Icon Trigger */}
         <Button
           variant="ghost"
