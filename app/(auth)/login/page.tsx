@@ -23,7 +23,7 @@ export default function LoginPage() {
     <div className="bg-bg flex min-h-screen items-center justify-center p-4">
       <div className="border-border bg-surface-1 w-full max-w-md space-y-6 rounded-[var(--radius-lg)] border p-8 text-center shadow-lg">
         <div className="flex justify-center">
-          <div className="bg-accent text-bg flex h-12 w-12 items-center justify-center rounded-full text-[20px] font-bold">
+          <div className="bg-accent flex h-12 w-12 items-center justify-center rounded-full text-[20px] font-bold text-white">
             H
           </div>
         </div>

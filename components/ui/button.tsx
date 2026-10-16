@@ -9,11 +9,11 @@ export const buttonVariants = cva(
   {
     variants: {
       variant: {
-        primary: 'bg-accent text-bg hover:opacity-90 active:scale-[0.98]',
+        primary: 'bg-accent text-white hover:opacity-90 active:scale-[0.98]',
         secondary:
           'bg-surface-2 text-text border border-border hover:bg-surface-3 active:scale-[0.98]',
         ghost: 'text-text hover:bg-surface-3 active:scale-[0.98]',
-        destructive: 'bg-danger text-bg hover:opacity-90 active:scale-[0.98]',
+        destructive: 'bg-danger text-white hover:opacity-90 active:scale-[0.98]',
         outline: 'border border-border text-text hover:bg-surface-2 active:scale-[0.98]',
       },
       size: {
@@ -60,7 +60,7 @@ export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
 
       return (
         <>
-          <Loader2 className="h-4 w-4 animate-spin shrink-0" />
+          <Loader2 className="h-4 w-4 shrink-0 animate-spin" />
           {remainingChildren}
         </>
       );

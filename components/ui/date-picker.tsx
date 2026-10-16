@@ -95,7 +95,7 @@ export function DatePicker({
           type="button"
           disabled={disabled}
           className={cn(
-            'border-border bg-surface-2 hover:bg-surface-3 text-text focus:border-border-strong flex h-9 w-full items-center justify-between rounded-[var(--radius-sm)] border px-3 text-[13px] font-medium outline-none transition-colors disabled:cursor-not-allowed disabled:opacity-50 select-none',
+            'border-border bg-surface-2 hover:bg-surface-3 text-text focus:border-border-strong flex h-9 w-full items-center justify-between rounded-[var(--radius-sm)] border px-3 text-[13px] font-medium transition-colors outline-none select-none disabled:cursor-not-allowed disabled:opacity-50',
             className
           )}
         >
@@ -112,18 +112,18 @@ export function DatePicker({
       <PopoverContent
         align="start"
         sideOffset={6}
-        className="w-[280px] p-3 border-border bg-surface-1 shadow-xl"
+        className="border-border bg-surface-1 w-[280px] p-3 shadow-xl"
       >
         {/* Header: Month name & navigation arrows */}
-        <div className="flex items-center justify-between mb-2.5 px-1">
-          <span className="text-[13px] font-semibold text-text select-none">
+        <div className="mb-2.5 flex items-center justify-between px-1">
+          <span className="text-text text-[13px] font-semibold select-none">
             {format(viewMonth, 'MMMM yyyy')}
           </span>
           <div className="flex items-center gap-0.5">
             <button
               type="button"
               onClick={() => setViewMonth(subMonths(viewMonth, 1))}
-              className="h-7 w-7 rounded-[6px] hover:bg-surface-2 text-text-muted hover:text-text flex items-center justify-center transition-colors"
+              className="hover:bg-surface-2 text-text-muted hover:text-text flex h-7 w-7 items-center justify-center rounded-[6px] transition-colors"
               aria-label="Previous month"
             >
               <ChevronLeft className="h-4 w-4" />
@@ -131,7 +131,7 @@ export function DatePicker({
             <button
               type="button"
               onClick={() => setViewMonth(addMonths(viewMonth, 1))}
-              className="h-7 w-7 rounded-[6px] hover:bg-surface-2 text-text-muted hover:text-text flex items-center justify-center transition-colors"
+              className="hover:bg-surface-2 text-text-muted hover:text-text flex h-7 w-7 items-center justify-center rounded-[6px] transition-colors"
               aria-label="Next month"
             >
               <ChevronRight className="h-4 w-4" />
@@ -140,9 +140,9 @@ export function DatePicker({
         </div>
 
         {/* Weekdays */}
-        <div className="grid grid-cols-7 gap-1 mb-1 text-center">
+        <div className="mb-1 grid grid-cols-7 gap-1 text-center">
           {['Su', 'Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa'].map((d) => (
-            <div key={d} className="text-[11px] font-medium text-text-subtle py-0.5 select-none">
+            <div key={d} className="text-text-subtle py-0.5 text-[11px] font-medium select-none">
               {d}
             </div>
           ))}
@@ -161,11 +161,11 @@ export function DatePicker({
                 type="button"
                 onClick={() => handleSelectDate(day)}
                 className={cn(
-                  'h-8 w-8 text-[12px] rounded-[6px] font-medium transition-colors flex items-center justify-center tabular-nums select-none',
+                  'flex h-8 w-8 items-center justify-center rounded-[6px] text-[12px] font-medium tabular-nums transition-colors select-none',
                   !isCurrentMonth && 'text-text-subtle/30',
                   isCurrentMonth && !isSelected && 'text-text hover:bg-surface-2',
-                  isSelected && 'bg-accent text-bg font-semibold shadow-xs',
-                  isCurrentDay && !isSelected && 'border border-border-strong font-bold'
+                  isSelected && 'bg-accent font-semibold text-white shadow-xs',
+                  isCurrentDay && !isSelected && 'border-border-strong border font-bold'
                 )}
               >
                 {format(day, 'd')}
@@ -175,14 +175,14 @@ export function DatePicker({
         </div>
 
         {/* Quick shortcuts */}
-        <div className="mt-2.5 pt-2 border-t border-border flex items-center justify-between text-[11px]">
+        <div className="border-border mt-2.5 flex items-center justify-between border-t pt-2 text-[11px]">
           <button
             type="button"
             onClick={() => {
               onChange?.('');
               setOpen(false);
             }}
-            className="text-text-muted hover:text-text font-medium px-2 py-0.5 rounded hover:bg-surface-2 transition-colors select-none"
+            className="text-text-muted hover:text-text hover:bg-surface-2 rounded px-2 py-0.5 font-medium transition-colors select-none"
           >
             Clear
           </button>
@@ -193,7 +193,7 @@ export function DatePicker({
               setViewMonth(today);
               handleSelectDate(today);
             }}
-            className="text-accent hover:text-accent-hover font-semibold px-2 py-0.5 rounded hover:bg-surface-2 transition-colors select-none"
+            className="text-accent hover:text-accent-hover hover:bg-surface-2 rounded px-2 py-0.5 font-semibold transition-colors select-none"
           >
             Today
           </button>

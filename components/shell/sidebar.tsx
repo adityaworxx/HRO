@@ -9,12 +9,7 @@ import { RoleSwitcher } from './role-switcher';
 import { cn } from '@/lib/utils';
 import { PanelLeftClose, PanelLeftOpen, X } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import {
-  TooltipProvider,
-  Tooltip,
-  TooltipTrigger,
-  TooltipContent,
-} from '@/components/ui/tooltip';
+import { TooltipProvider, Tooltip, TooltipTrigger, TooltipContent } from '@/components/ui/tooltip';
 
 function NavItemTooltip({
   enabled,
@@ -35,7 +30,7 @@ function NavItemTooltip({
       <TooltipContent
         side="right"
         sideOffset={14}
-        className="font-medium text-[12px] z-50 pointer-events-none select-none"
+        className="pointer-events-none z-50 text-[12px] font-medium select-none"
       >
         {title}
       </TooltipContent>
@@ -43,13 +38,7 @@ function NavItemTooltip({
   );
 }
 
-function SidebarNav({
-  collapsed,
-  onItemClick,
-}: {
-  collapsed: boolean;
-  onItemClick?: () => void;
-}) {
+function SidebarNav({ collapsed, onItemClick }: { collapsed: boolean; onItemClick?: () => void }) {
   const pathname = usePathname();
   const { role } = useUiStore();
   const navItems = NAVIGATION_ITEMS[role];
@@ -69,7 +58,7 @@ function SidebarNav({
               href={item.href}
               onClick={onItemClick}
               className={cn(
-                'group relative flex h-9 w-full items-center rounded-[8px] text-[14px] leading-[20px] font-medium transition-colors cursor-pointer',
+                'group relative flex h-9 w-full cursor-pointer items-center rounded-[8px] text-[14px] leading-[20px] font-medium transition-colors',
                 isActive
                   ? 'bg-accent-subtle text-accent font-semibold'
                   : 'text-text-muted hover:bg-surface-2 hover:text-text'
@@ -90,13 +79,13 @@ function SidebarNav({
               {/* Label with smooth asymmetrical fade & slide */}
               <div
                 className={cn(
-                  'flex-1 min-w-0 pr-3 overflow-hidden transition-[opacity,transform,max-width] ease-out',
+                  'min-w-0 flex-1 overflow-hidden pr-3 transition-[opacity,transform,max-width] ease-out',
                   collapsed
-                    ? 'opacity-0 -translate-x-2 max-w-0 pointer-events-none duration-150'
-                    : 'opacity-100 translate-x-0 max-w-[180px] duration-200 delay-100'
+                    ? 'pointer-events-none max-w-0 -translate-x-2 opacity-0 duration-150'
+                    : 'max-w-[180px] translate-x-0 opacity-100 delay-100 duration-200'
                 )}
               >
-                <span className="truncate block text-[13px]">{item.title}</span>
+                <span className="block truncate text-[13px]">{item.title}</span>
               </div>
             </Link>
           </NavItemTooltip>
@@ -108,12 +97,7 @@ function SidebarNav({
 
 export function Sidebar() {
   const pathname = usePathname();
-  const {
-    sidebarCollapsed,
-    toggleSidebar,
-    mobileSidebarOpen,
-    setMobileSidebarOpen,
-  } = useUiStore();
+  const { sidebarCollapsed, toggleSidebar, mobileSidebarOpen, setMobileSidebarOpen } = useUiStore();
 
   const mounted = React.useSyncExternalStore(
     () => () => {},
@@ -149,16 +133,13 @@ export function Sidebar() {
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, [mobileSidebarOpen, setMobileSidebarOpen]);
 
-
   return (
     <>
       {/* 1. MOBILE OVERLAY DRAWER (lg:hidden) */}
       <div
         className={cn(
-          'fixed inset-0 z-[100] lg:hidden transition-opacity duration-200',
-          mobileSidebarOpen
-            ? 'opacity-100 pointer-events-auto'
-            : 'opacity-0 pointer-events-none'
+          'fixed inset-0 z-[100] transition-opacity duration-200 lg:hidden',
+          mobileSidebarOpen ? 'pointer-events-auto opacity-100' : 'pointer-events-none opacity-0'
         )}
         aria-hidden={!mobileSidebarOpen}
       >
@@ -171,7 +152,7 @@ export function Sidebar() {
         {/* Drawer container (slides from left, fixed over the screen) */}
         <aside
           className={cn(
-            'fixed inset-y-0 left-0 z-[101] flex h-full w-72 max-w-[85vw] flex-col border-r border-border bg-surface-1 shadow-2xl transition-transform duration-200 ease-out',
+            'border-border bg-surface-1 fixed inset-y-0 left-0 z-[101] flex h-full w-72 max-w-[85vw] flex-col border-r shadow-2xl transition-transform duration-200 ease-out',
             mobileSidebarOpen ? 'translate-x-0' : '-translate-x-full'
           )}
         >
@@ -182,7 +163,7 @@ export function Sidebar() {
               onClick={() => setMobileSidebarOpen(false)}
               className="flex items-center gap-2.5 overflow-hidden"
             >
-              <div className="bg-accent text-bg flex h-8 w-8 items-center justify-center rounded-[var(--radius-sm)] font-bold shadow-xs">
+              <div className="bg-accent flex h-8 w-8 items-center justify-center rounded-[var(--radius-sm)] font-bold text-white shadow-xs">
                 H
               </div>
               <span className="text-text text-[15px] font-semibold tracking-tight">HRO</span>
@@ -205,7 +186,7 @@ export function Sidebar() {
           </React.Suspense>
 
           {/* Role Switcher */}
-          <div className="border-border border-t px-3.5 py-3 shrink-0">
+          <div className="border-border shrink-0 border-t px-3.5 py-3">
             <RoleSwitcher isCollapsed={false} />
           </div>
         </aside>
@@ -219,35 +200,35 @@ export function Sidebar() {
             willChange: 'width',
           }}
           className={cn(
-            'border-border bg-surface-1 relative z-30 hidden lg:flex h-full shrink-0 flex-col border-r overflow-x-hidden select-none',
+            'border-border bg-surface-1 relative z-30 hidden h-full shrink-0 flex-col overflow-x-hidden border-r select-none lg:flex',
             isCollapsed ? 'w-16' : 'w-60'
           )}
         >
           {/* Brand Header: Unified container, zero unmounting */}
-          <div className="border-border flex h-14 w-full shrink-0 items-center border-b px-3.5 relative overflow-hidden">
+          <div className="border-border relative flex h-14 w-full shrink-0 items-center overflow-hidden border-b px-3.5">
             {isCollapsed ? (
               <NavItemTooltip enabled={true} title="Expand sidebar (Ctrl+B)">
                 <button
                   type="button"
                   onClick={toggleSidebar}
                   aria-label="Expand sidebar"
-                  className="group relative flex h-9 w-9 shrink-0 items-center justify-center rounded-[var(--radius-md)] cursor-pointer hover:bg-surface-2 transition-colors select-none"
+                  className="group hover:bg-surface-2 relative flex h-9 w-9 shrink-0 cursor-pointer items-center justify-center rounded-[var(--radius-md)] transition-colors select-none"
                 >
-                  <div className="bg-accent text-bg flex h-8 w-8 items-center justify-center rounded-[var(--radius-sm)] font-bold shadow-xs transition-opacity duration-150 group-hover:opacity-0">
+                  <div className="bg-accent flex h-8 w-8 items-center justify-center rounded-[var(--radius-sm)] font-bold text-white shadow-xs transition-opacity duration-150 group-hover:opacity-0">
                     H
                   </div>
-                  <div className="absolute inset-0 flex items-center justify-center opacity-0 transition-opacity duration-150 group-hover:opacity-100 text-accent">
+                  <div className="text-accent absolute inset-0 flex items-center justify-center opacity-0 transition-opacity duration-150 group-hover:opacity-100">
                     <PanelLeftOpen className="h-4.5 w-4.5" />
                   </div>
                 </button>
               </NavItemTooltip>
             ) : (
-              <div className="flex items-center gap-2.5 min-w-0">
+              <div className="flex min-w-0 items-center gap-2.5">
                 <Link
                   href="/"
-                  className="flex h-9 w-9 shrink-0 items-center justify-center rounded-[var(--radius-md)] hover:bg-surface-2 transition-colors select-none"
+                  className="hover:bg-surface-2 flex h-9 w-9 shrink-0 items-center justify-center rounded-[var(--radius-md)] transition-colors select-none"
                 >
-                  <div className="bg-accent text-bg flex h-8 w-8 items-center justify-center rounded-[var(--radius-sm)] font-bold shadow-xs">
+                  <div className="bg-accent flex h-8 w-8 items-center justify-center rounded-[var(--radius-sm)] font-bold text-white shadow-xs">
                     H
                   </div>
                 </Link>
@@ -260,10 +241,10 @@ export function Sidebar() {
             {/* Collapse Toggle Button: Absolute right, zero layout interference */}
             <div
               className={cn(
-                'absolute right-3.5 top-1/2 -translate-y-1/2 transition-[opacity,transform] ease-out',
+                'absolute top-1/2 right-3.5 -translate-y-1/2 transition-[opacity,transform] ease-out',
                 isCollapsed
-                  ? 'opacity-0 scale-90 pointer-events-none duration-150'
-                  : 'opacity-100 scale-100 duration-200 delay-100'
+                  ? 'pointer-events-none scale-90 opacity-0 duration-150'
+                  : 'scale-100 opacity-100 delay-100 duration-200'
               )}
             >
               <Button
@@ -271,7 +252,7 @@ export function Sidebar() {
                 size="icon"
                 onClick={toggleSidebar}
                 tabIndex={isCollapsed ? -1 : 0}
-                className="text-text-subtle hover:text-text hidden h-7 w-7 cursor-pointer lg:flex shrink-0"
+                className="text-text-subtle hover:text-text hidden h-7 w-7 shrink-0 cursor-pointer lg:flex"
                 title="Collapse sidebar (Ctrl+B)"
                 aria-label="Collapse sidebar"
               >
@@ -287,7 +268,7 @@ export function Sidebar() {
           </React.Suspense>
 
           {/* Sidebar Footer with Role Switcher */}
-          <div className="border-border border-t px-3.5 py-2.5 shrink-0">
+          <div className="border-border shrink-0 border-t px-3.5 py-2.5">
             <RoleSwitcher isCollapsed={isCollapsed} />
           </div>
         </aside>

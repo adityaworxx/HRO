@@ -224,14 +224,14 @@ export function OpeningsTable() {
                   onClick={() => setSelectedStatus(status)}
                   className={`inline-flex items-center gap-1.5 rounded-[var(--radius-sm)] px-2.5 py-1 text-[13px] font-medium transition-colors ${
                     isSelected
-                      ? 'bg-accent text-bg shadow-sm'
+                      ? 'bg-accent text-white shadow-sm'
                       : 'bg-surface-2 text-text-muted hover:bg-surface-3 hover:text-text'
                   }`}
                 >
                   <span>{status === 'all' ? 'All Openings' : status}</span>
                   <span
                     className={`py-0.2 rounded-full px-1.5 font-mono text-[11px] ${
-                      isSelected ? 'bg-bg/20 text-bg' : 'bg-surface-3 text-text-subtle'
+                      isSelected ? 'bg-white/20 text-white' : 'bg-surface-3 text-text-subtle'
                     }`}
                   >
                     {count}
@@ -243,21 +243,22 @@ export function OpeningsTable() {
         </div>
 
         {/* Department Filter & Action */}
-        <div className="flex flex-wrap items-center gap-2 w-full sm:w-auto">
+        <div className="flex w-full flex-wrap items-center gap-2 sm:w-auto">
           {departments.length > 0 && (
-            <Select
-              value={selectedDepartment}
-              onValueChange={(val) => setSelectedDepartment(val)}
-            >
-              <SelectTrigger className="h-8 flex-1 sm:flex-initial w-auto min-w-[140px] gap-2 border-border bg-surface-2 hover:bg-surface-3 text-text px-2.5 text-[12px] font-medium rounded-[var(--radius-sm)]">
+            <Select value={selectedDepartment} onValueChange={(val) => setSelectedDepartment(val)}>
+              <SelectTrigger className="border-border bg-surface-2 hover:bg-surface-3 text-text h-8 w-auto min-w-[140px] flex-1 gap-2 rounded-[var(--radius-sm)] px-2.5 text-[12px] font-medium sm:flex-initial">
                 <SelectValue placeholder="All Departments" />
               </SelectTrigger>
               <SelectContent align="end" className="min-w-[180px]">
-                <SelectItem value="all" className="text-[13px] py-1.5 min-h-[32px] rounded-[6px]">
+                <SelectItem value="all" className="min-h-[32px] rounded-[6px] py-1.5 text-[13px]">
                   All Departments
                 </SelectItem>
                 {departments.map((dep) => (
-                  <SelectItem key={dep} value={dep} className="text-[13px] py-1.5 min-h-[32px] rounded-[6px]">
+                  <SelectItem
+                    key={dep}
+                    value={dep}
+                    className="min-h-[32px] rounded-[6px] py-1.5 text-[13px]"
+                  >
                     {dep}
                   </SelectItem>
                 ))}
@@ -265,7 +266,7 @@ export function OpeningsTable() {
             </Select>
           )}
 
-          <Button asChild variant="primary" size="sm" className="h-8 gap-1.5 text-[13px] shrink-0">
+          <Button asChild variant="primary" size="sm" className="h-8 shrink-0 gap-1.5 text-[13px]">
             <Link href="/openings/new">
               <Plus className="h-3.5 w-3.5" />
               <span>New Opening</span>

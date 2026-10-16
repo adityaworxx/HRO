@@ -11,19 +11,9 @@ import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import {
-  Card,
-  CardHeader,
-  CardTitle,
-  CardContent,
-} from '@/components/ui/card';
+import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
 import { toast } from 'sonner';
-import {
-  ArrowLeft,
-  CheckCircle2,
-  Check,
-  Send,
-} from 'lucide-react';
+import { ArrowLeft, CheckCircle2, Check, Send } from 'lucide-react';
 import {
   Select,
   SelectContent,
@@ -206,16 +196,13 @@ export function OpeningForm({ initialData, isEditing = false }: OpeningFormProps
   };
 
   return (
-    <form
-      onSubmit={handleSubmit}
-      className="w-full grid grid-cols-1 lg:grid-cols-12 gap-6 pb-6"
-    >
+    <form onSubmit={handleSubmit} className="grid w-full grid-cols-1 gap-6 pb-6 lg:grid-cols-12">
       {/* LEFT COLUMN: Form cards with natural document flow */}
-      <div className="lg:col-span-8 space-y-6">
+      <div className="space-y-6 lg:col-span-8">
         {/* Card 1: Core Role & Position Details */}
         <Card className="border-border bg-surface-1 shadow-sm">
-          <CardHeader className="border-b border-border/80 pb-3">
-            <CardTitle className="text-[16px] font-semibold text-text">
+          <CardHeader className="border-border/80 border-b pb-3">
+            <CardTitle className="text-text text-[16px] font-semibold">
               Core Position Details
             </CardTitle>
           </CardHeader>
@@ -233,7 +220,7 @@ export function OpeningForm({ initialData, isEditing = false }: OpeningFormProps
 
               <FormField label="Department" required>
                 <Select value={department} onValueChange={setDepartment}>
-                  <SelectTrigger className="h-9 w-full rounded-[var(--radius-sm)] border border-border bg-surface-2 px-3 text-[13px] text-text hover:bg-surface-3 transition-colors">
+                  <SelectTrigger className="border-border bg-surface-2 text-text hover:bg-surface-3 h-9 w-full rounded-[var(--radius-sm)] border px-3 text-[13px] transition-colors">
                     <SelectValue placeholder="Select department" />
                   </SelectTrigger>
                   <SelectContent>
@@ -261,12 +248,10 @@ export function OpeningForm({ initialData, isEditing = false }: OpeningFormProps
                 <Select
                   value={employmentType}
                   onValueChange={(val) =>
-                    setEmploymentType(
-                      val as 'Full-time' | 'Part-time' | 'Contract' | 'Internship'
-                    )
+                    setEmploymentType(val as 'Full-time' | 'Part-time' | 'Contract' | 'Internship')
                   }
                 >
-                  <SelectTrigger className="h-9 w-full rounded-[var(--radius-sm)] border border-border bg-surface-2 px-3 text-[13px] text-text hover:bg-surface-3 transition-colors">
+                  <SelectTrigger className="border-border bg-surface-2 text-text hover:bg-surface-3 h-9 w-full rounded-[var(--radius-sm)] border px-3 text-[13px] transition-colors">
                     <SelectValue placeholder="Select employment type" />
                   </SelectTrigger>
                   <SelectContent>
@@ -337,8 +322,8 @@ export function OpeningForm({ initialData, isEditing = false }: OpeningFormProps
 
         {/* Card 2: Compensation & Experience Range */}
         <Card className="border-border bg-surface-1 shadow-sm">
-          <CardHeader className="border-b border-border/80 pb-3">
-            <CardTitle className="text-[16px] font-semibold text-text">
+          <CardHeader className="border-border/80 border-b pb-3">
+            <CardTitle className="text-text text-[16px] font-semibold">
               Experience & Budget Range
             </CardTitle>
           </CardHeader>
@@ -346,12 +331,12 @@ export function OpeningForm({ initialData, isEditing = false }: OpeningFormProps
           <CardContent className="space-y-5 pt-5">
             <div className="grid grid-cols-1 gap-5 md:grid-cols-2">
               {/* Experience Block */}
-              <div className="rounded-[var(--radius-md)] border border-border bg-surface-2/50 p-4">
+              <div className="border-border bg-surface-2/50 rounded-[var(--radius-md)] border p-4">
                 <div className="mb-3 flex items-center justify-between">
-                  <span className="text-[13px] font-semibold text-text">
+                  <span className="text-text text-[13px] font-semibold">
                     Experience Expectation
                   </span>
-                  <Badge variant="default" className="text-[11px] font-mono">
+                  <Badge variant="default" className="font-mono text-[11px]">
                     {expMin}-{expMax} yrs
                   </Badge>
                 </div>
@@ -388,14 +373,12 @@ export function OpeningForm({ initialData, isEditing = false }: OpeningFormProps
               </div>
 
               {/* Budget Block */}
-              <div className="rounded-[var(--radius-md)] border border-border bg-surface-2/50 p-4">
+              <div className="border-border bg-surface-2/50 rounded-[var(--radius-md)] border p-4">
                 <div className="mb-3 flex items-center justify-between">
-                  <span className="text-[13px] font-semibold text-text">
-                    Annual CTC Budget
-                  </span>
+                  <span className="text-text text-[13px] font-semibold">Annual CTC Budget</span>
                   <Badge
                     variant="default"
-                    className="border-success/30 bg-success/15 font-mono text-[11px] font-semibold text-success"
+                    className="border-success/30 bg-success/15 text-success font-mono text-[11px] font-semibold"
                   >
                     {formatCtcRange(parseFloat(budgetMin) || 0, parseFloat(budgetMax) || 0)}
                   </Badge>
@@ -437,8 +420,8 @@ export function OpeningForm({ initialData, isEditing = false }: OpeningFormProps
 
         {/* Card 3: Skills & Job Description */}
         <Card className="border-border bg-surface-1 shadow-sm">
-          <CardHeader className="border-b border-border/80 pb-3">
-            <CardTitle className="text-[16px] font-semibold text-text">
+          <CardHeader className="border-border/80 border-b pb-3">
+            <CardTitle className="text-text text-[16px] font-semibold">
               Candidate Profile & Screening Criteria
             </CardTitle>
           </CardHeader>
@@ -456,7 +439,7 @@ export function OpeningForm({ initialData, isEditing = false }: OpeningFormProps
                   {mustSkillsList.map((skill) => (
                     <span
                       key={skill}
-                      className="inline-flex items-center gap-1 rounded-full border border-accent/20 bg-accent/10 px-2.5 py-0.5 text-[11px] font-medium text-accent"
+                      className="border-accent/20 bg-accent/10 text-accent inline-flex items-center gap-1 rounded-full border px-2.5 py-0.5 text-[11px] font-medium"
                     >
                       <Check className="h-3 w-3" />
                       <span>{skill}</span>
@@ -478,7 +461,7 @@ export function OpeningForm({ initialData, isEditing = false }: OpeningFormProps
                   {niceSkillsList.map((skill) => (
                     <span
                       key={skill}
-                      className="inline-flex items-center rounded-full border border-border bg-surface-2 px-2.5 py-0.5 text-[11px] font-medium text-text-muted"
+                      className="border-border bg-surface-2 text-text-muted inline-flex items-center rounded-full border px-2.5 py-0.5 text-[11px] font-medium"
                     >
                       {skill}
                     </span>
@@ -499,7 +482,7 @@ export function OpeningForm({ initialData, isEditing = false }: OpeningFormProps
                 placeholder="Outline key deliverables, team expectations, and core mission..."
                 className="text-[13px] leading-relaxed"
               />
-              <div className="mt-1 flex justify-end text-[11px] text-text-subtle">
+              <div className="text-text-subtle mt-1 flex justify-end text-[11px]">
                 <span>{description.length} characters</span>
               </div>
             </FormField>
@@ -507,7 +490,7 @@ export function OpeningForm({ initialData, isEditing = false }: OpeningFormProps
         </Card>
 
         {/* Bottom Action Footer (For convenience after scrolling to bottom) */}
-        <div className="flex items-center justify-between rounded-[var(--radius-md)] border border-border bg-surface-1 p-4 shadow-sm">
+        <div className="border-border bg-surface-1 flex items-center justify-between rounded-[var(--radius-md)] border p-4 shadow-sm">
           <Button asChild variant="outline" size="sm" className="gap-2">
             <Link href="/openings">
               <ArrowLeft className="h-4 w-4" />
@@ -540,160 +523,158 @@ export function OpeningForm({ initialData, isEditing = false }: OpeningFormProps
       {/* RIGHT COLUMN: 4 Columns (Sticky Sidebar, stays pinned at top while form scrolls) */}
       <div className="lg:col-span-4">
         <div className="sticky top-0 space-y-4">
-        {/* Live Directory Preview Card */}
-        <Card className="border-border bg-surface-1 shadow-sm">
-          <CardHeader className="border-b border-border/80 pb-3">
-            <div className="flex items-center justify-between">
-              <CardTitle className="text-[14px] font-semibold text-text">
-                Directory Live Preview
-              </CardTitle>
-              <Badge variant="default" className="text-[10px] font-mono uppercase">
-                Live
-              </Badge>
-            </div>
-          </CardHeader>
-          <CardContent className="pt-4">
-            <div className="rounded-[var(--radius-md)] border border-border bg-surface-2/80 p-4 space-y-3.5">
-              <div className="flex items-start justify-between gap-2">
-                <span className="inline-flex items-center rounded-[var(--radius-sm)] bg-surface-3 px-2 py-0.5 text-[11px] font-medium text-text-muted">
-                  <span>{department}</span>
-                </span>
-                <Badge
-                  variant="default"
-                  className={cn(
-                    'text-[10px] font-medium',
-                    urgency === 'High'
-                      ? 'border-danger/20 bg-danger/10 text-danger'
-                      : urgency === 'Normal'
-                        ? 'border-warning/20 bg-warning/10 text-warning'
-                        : 'border-border bg-surface-3 text-text-muted'
-                  )}
-                >
-                  {urgency} Urgency
+          {/* Live Directory Preview Card */}
+          <Card className="border-border bg-surface-1 shadow-sm">
+            <CardHeader className="border-border/80 border-b pb-3">
+              <div className="flex items-center justify-between">
+                <CardTitle className="text-text text-[14px] font-semibold">
+                  Directory Live Preview
+                </CardTitle>
+                <Badge variant="default" className="font-mono text-[10px] uppercase">
+                  Live
                 </Badge>
               </div>
-
-              <div>
-                <h3 className="text-[15px] font-bold text-text line-clamp-1">
-                  {title.trim() ? title : 'Job Position Title'}
-                </h3>
-                <p className="mt-1 flex items-center gap-1.5 text-[12px] text-text-muted">
-                  <span>{location || 'Location'}</span>
-                  <span>•</span>
-                  <span className="font-mono">{headcount} role{parseInt(headcount, 10) > 1 ? 's' : ''}</span>
-                </p>
-              </div>
-
-              <div className="rounded-[var(--radius-sm)] border border-border bg-surface-3/80 p-2.5 flex items-center justify-between">
-                <span className="text-[11px] text-text-muted">Budget Band</span>
-                <span className="font-mono text-[12px] font-bold text-success">
-                  {formatCtcRange(parseFloat(budgetMin) || 0, parseFloat(budgetMax) || 0)}
-                </span>
-              </div>
-
-              {mustSkillsList.length > 0 && (
-                <div className="flex flex-wrap gap-1 pt-1">
-                  {mustSkillsList.slice(0, 4).map((s) => (
-                    <span
-                      key={s}
-                      className="rounded-[4px] border border-border bg-surface-1 px-1.5 py-0.5 text-[10px] text-text-muted"
-                    >
-                      {s}
-                    </span>
-                  ))}
-                  {mustSkillsList.length > 4 && (
-                    <span className="text-[10px] text-text-subtle self-center">
-                      +{mustSkillsList.length - 4} more
-                    </span>
-                  )}
+            </CardHeader>
+            <CardContent className="pt-4">
+              <div className="border-border bg-surface-2/80 space-y-3.5 rounded-[var(--radius-md)] border p-4">
+                <div className="flex items-start justify-between gap-2">
+                  <span className="bg-surface-3 text-text-muted inline-flex items-center rounded-[var(--radius-sm)] px-2 py-0.5 text-[11px] font-medium">
+                    <span>{department}</span>
+                  </span>
+                  <Badge
+                    variant="default"
+                    className={cn(
+                      'text-[10px] font-medium',
+                      urgency === 'High'
+                        ? 'border-danger/20 bg-danger/10 text-danger'
+                        : urgency === 'Normal'
+                          ? 'border-warning/20 bg-warning/10 text-warning'
+                          : 'border-border bg-surface-3 text-text-muted'
+                    )}
+                  >
+                    {urgency} Urgency
+                  </Badge>
                 </div>
-              )}
-            </div>
-          </CardContent>
-        </Card>
 
-        {/* Requisition Readiness Checklist */}
-        <Card className="border-border bg-surface-1 shadow-sm">
-          <CardHeader className="border-b border-border/80 pb-3">
-            <div className="flex items-center justify-between">
-              <CardTitle className="text-[14px] font-semibold text-text">
-                Readiness Score
-              </CardTitle>
-              <span className="font-mono text-[12px] font-bold text-accent">
-                {readinessPercent}%
-              </span>
-            </div>
-            {/* Progress bar */}
-            <div className="mt-2 h-1.5 w-full overflow-hidden rounded-full bg-surface-3">
-              <div
-                className="h-full bg-accent transition-all duration-300"
-                style={{ width: `${readinessPercent}%` }}
-              />
-            </div>
-          </CardHeader>
+                <div>
+                  <h3 className="text-text line-clamp-1 text-[15px] font-bold">
+                    {title.trim() ? title : 'Job Position Title'}
+                  </h3>
+                  <p className="text-text-muted mt-1 flex items-center gap-1.5 text-[12px]">
+                    <span>{location || 'Location'}</span>
+                    <span>•</span>
+                    <span className="font-mono">
+                      {headcount} role{parseInt(headcount, 10) > 1 ? 's' : ''}
+                    </span>
+                  </p>
+                </div>
 
-          <CardContent className="pt-3.5 space-y-2">
-            {checklist.map((item) => (
-              <div
-                key={item.id}
-                className="flex items-center gap-2 text-[12px]"
-              >
-                <span
-                  className={cn(
-                    'flex h-4 w-4 shrink-0 items-center justify-center rounded-full transition-colors',
-                    item.done
-                      ? 'bg-success text-bg font-bold'
-                      : 'border border-border bg-surface-2 text-text-subtle'
-                  )}
-                >
-                  {item.done ? <Check className="h-2.5 w-2.5 stroke-[3]" /> : null}
+                <div className="border-border bg-surface-3/80 flex items-center justify-between rounded-[var(--radius-sm)] border p-2.5">
+                  <span className="text-text-muted text-[11px]">Budget Band</span>
+                  <span className="text-success font-mono text-[12px] font-bold">
+                    {formatCtcRange(parseFloat(budgetMin) || 0, parseFloat(budgetMax) || 0)}
+                  </span>
+                </div>
+
+                {mustSkillsList.length > 0 && (
+                  <div className="flex flex-wrap gap-1 pt-1">
+                    {mustSkillsList.slice(0, 4).map((s) => (
+                      <span
+                        key={s}
+                        className="border-border bg-surface-1 text-text-muted rounded-[4px] border px-1.5 py-0.5 text-[10px]"
+                      >
+                        {s}
+                      </span>
+                    ))}
+                    {mustSkillsList.length > 4 && (
+                      <span className="text-text-subtle self-center text-[10px]">
+                        +{mustSkillsList.length - 4} more
+                      </span>
+                    )}
+                  </div>
+                )}
+              </div>
+            </CardContent>
+          </Card>
+
+          {/* Requisition Readiness Checklist */}
+          <Card className="border-border bg-surface-1 shadow-sm">
+            <CardHeader className="border-border/80 border-b pb-3">
+              <div className="flex items-center justify-between">
+                <CardTitle className="text-text text-[14px] font-semibold">
+                  Readiness Score
+                </CardTitle>
+                <span className="text-accent font-mono text-[12px] font-bold">
+                  {readinessPercent}%
                 </span>
-                <span
-                  className={cn(
-                    item.done ? 'text-text font-medium' : 'text-text-muted'
-                  )}
+              </div>
+              {/* Progress bar */}
+              <div className="bg-surface-3 mt-2 h-1.5 w-full overflow-hidden rounded-full">
+                <div
+                  className="bg-accent h-full transition-all duration-300"
+                  style={{ width: `${readinessPercent}%` }}
+                />
+              </div>
+            </CardHeader>
+
+            <CardContent className="space-y-2 pt-3.5">
+              {checklist.map((item) => (
+                <div key={item.id} className="flex items-center gap-2 text-[12px]">
+                  <span
+                    className={cn(
+                      'flex h-4 w-4 shrink-0 items-center justify-center rounded-full transition-colors',
+                      item.done
+                        ? 'bg-success font-bold text-white'
+                        : 'border-border bg-surface-2 text-text-subtle border'
+                    )}
+                  >
+                    {item.done ? <Check className="h-2.5 w-2.5 stroke-[3]" /> : null}
+                  </span>
+                  <span className={cn(item.done ? 'text-text font-medium' : 'text-text-muted')}>
+                    {item.label}
+                  </span>
+                </div>
+              ))}
+            </CardContent>
+          </Card>
+
+          {/* Publishing Metadata Card */}
+          <Card className="border-border bg-surface-1 shadow-sm">
+            <CardContent className="space-y-3 p-4">
+              <div className="flex items-center gap-3">
+                <div
+                  suppressHydrationWarning
+                  className="bg-accent/20 text-accent flex h-8 w-8 items-center justify-center rounded-full text-[12px] font-bold"
                 >
-                  {item.label}
-                </span>
+                  {mounted && user?.name ? user.name.charAt(0).toUpperCase() : 'M'}
+                </div>
+                <div className="min-w-0 flex-1">
+                  <p
+                    suppressHydrationWarning
+                    className="text-text truncate text-[13px] font-semibold"
+                  >
+                    {mounted && user?.name ? user.name : 'Manager'}
+                  </p>
+                  <p className="text-text-muted text-[11px]">Requisition Owner</p>
+                </div>
               </div>
-            ))}
-          </CardContent>
-        </Card>
 
-        {/* Publishing Metadata Card */}
-        <Card className="border-border bg-surface-1 shadow-sm">
-          <CardContent className="p-4 space-y-3">
-            <div className="flex items-center gap-3">
-              <div
-                suppressHydrationWarning
-                className="flex h-8 w-8 items-center justify-center rounded-full bg-accent/20 font-bold text-[12px] text-accent"
-              >
-                {mounted && user?.name ? user.name.charAt(0).toUpperCase() : 'M'}
+              <div className="border-border text-text-muted space-y-1.5 border-t pt-3 text-[11px]">
+                <div className="flex justify-between">
+                  <span>Target Start:</span>
+                  <span className="text-text font-medium">{targetDate}</span>
+                </div>
+                <div className="flex justify-between">
+                  <span>Default Pipeline:</span>
+                  <span className="text-text font-medium">Standard 4-Stage</span>
+                </div>
+                <div className="flex justify-between">
+                  <span>Auto-Routing:</span>
+                  <span className="text-success font-medium">Active</span>
+                </div>
               </div>
-              <div className="min-w-0 flex-1">
-                <p suppressHydrationWarning className="truncate text-[13px] font-semibold text-text">
-                  {mounted && user?.name ? user.name : 'Manager'}
-                </p>
-                <p className="text-[11px] text-text-muted">Requisition Owner</p>
-              </div>
-            </div>
-
-            <div className="space-y-1.5 border-t border-border pt-3 text-[11px] text-text-muted">
-              <div className="flex justify-between">
-                <span>Target Start:</span>
-                <span className="font-medium text-text">{targetDate}</span>
-              </div>
-              <div className="flex justify-between">
-                <span>Default Pipeline:</span>
-                <span className="font-medium text-text">Standard 4-Stage</span>
-              </div>
-              <div className="flex justify-between">
-                <span>Auto-Routing:</span>
-                <span className="font-medium text-success">Active</span>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
+            </CardContent>
+          </Card>
         </div>
       </div>
     </form>

@@ -24,34 +24,34 @@ export function Toaster({ ...props }: ToasterProps) {
           title: 'group-[.toast]:text-text text-[13px] font-medium leading-snug',
           description: 'group-[.toast]:text-text-muted text-[12px] leading-snug',
           actionButton:
-            'group-[.toast]:bg-accent group-[.toast]:text-bg font-medium rounded-[var(--radius-sm)] text-[12px] px-2.5 py-1',
+            'group-[.toast]:bg-accent group-[.toast]:text-white font-medium rounded-[var(--radius-sm)] text-[12px] px-2.5 py-1',
           cancelButton:
             'group-[.toast]:bg-surface-2 group-[.toast]:text-text font-medium rounded-[var(--radius-sm)] text-[12px] px-2.5 py-1',
         },
       }}
       icons={{
         success: (
-          <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-accent-subtle text-accent">
+          <span className="bg-accent-subtle text-accent flex h-5 w-5 shrink-0 items-center justify-center rounded-full">
             <Check className="h-3 w-3 stroke-[2.5]" />
           </span>
         ),
         error: (
-          <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-[var(--badge-danger-bg)] text-danger">
+          <span className="text-danger flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-[var(--badge-danger-bg)]">
             <AlertCircle className="h-3 w-3 stroke-[2.5]" />
           </span>
         ),
         warning: (
-          <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-[var(--badge-warning-bg)] text-warning">
+          <span className="text-warning flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-[var(--badge-warning-bg)]">
             <AlertTriangle className="h-3 w-3 stroke-[2.5]" />
           </span>
         ),
         info: (
-          <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-accent-subtle text-accent">
+          <span className="bg-accent-subtle text-accent flex h-5 w-5 shrink-0 items-center justify-center rounded-full">
             <Info className="h-3 w-3 stroke-[2.5]" />
           </span>
         ),
         loading: (
-          <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-surface-2 text-text-subtle">
+          <span className="bg-surface-2 text-text-subtle flex h-5 w-5 shrink-0 items-center justify-center rounded-full">
             <Loader2 className="h-3 w-3 animate-spin stroke-[2]" />
           </span>
         ),
@@ -60,4 +60,3 @@ export function Toaster({ ...props }: ToasterProps) {
     />
   );
 }
-

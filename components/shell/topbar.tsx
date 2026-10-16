@@ -15,15 +15,15 @@ export function Topbar() {
   const { setCommandPaletteOpen, toggleMobileSidebar } = useUiStore();
 
   return (
-    <header className="border-border bg-surface-1/95 shrink-0 z-20 flex h-14 w-full items-center justify-between border-b px-3 sm:px-6 lg:px-8 backdrop-blur">
+    <header className="border-border bg-surface-1/95 z-20 flex h-14 w-full shrink-0 items-center justify-between border-b px-3 backdrop-blur sm:px-6 lg:px-8">
       {/* Left container: balanced width matching right actions */}
-      <div className="flex items-center gap-2.5 min-w-[70px] sm:min-w-[140px] lg:min-w-[220px] justify-start shrink-0">
+      <div className="flex min-w-[70px] shrink-0 items-center justify-start gap-2.5 sm:min-w-[140px] lg:min-w-[220px]">
         {/* Mobile Hamburger Menu Toggle */}
         <Button
           variant="ghost"
           size="icon"
           onClick={toggleMobileSidebar}
-          className="text-text-subtle hover:text-text hover:bg-surface-2 h-9 w-9 cursor-pointer lg:hidden shrink-0"
+          className="text-text-subtle hover:text-text hover:bg-surface-2 h-9 w-9 shrink-0 cursor-pointer lg:hidden"
           title="Open Navigation"
           aria-label="Open Navigation"
         >
@@ -32,7 +32,7 @@ export function Topbar() {
 
         {/* Mobile Logo Brand */}
         <Link href="/" className="flex items-center gap-2 lg:hidden">
-          <div className="bg-accent text-bg flex h-7 w-7 items-center justify-center rounded-[var(--radius-sm)] font-bold text-xs shadow-xs">
+          <div className="bg-accent flex h-7 w-7 items-center justify-center rounded-[var(--radius-sm)] text-xs font-bold text-white shadow-xs">
             H
           </div>
           <span className="text-text text-[14px] font-semibold tracking-tight">HRO</span>
@@ -40,20 +40,20 @@ export function Topbar() {
       </div>
 
       {/* Centered Page Title - true optical and geometric middle */}
-      <div className="flex-1 flex items-center justify-center min-w-0 px-2 pointer-events-none">
+      <div className="pointer-events-none flex min-w-0 flex-1 items-center justify-center px-2">
         <React.Suspense fallback={null}>
           <Breadcrumbs />
         </React.Suspense>
       </div>
 
       {/* Right container: actions & utilities */}
-      <div className="flex items-center gap-1.5 sm:gap-2 min-w-[70px] sm:min-w-[140px] lg:min-w-[220px] justify-end shrink-0">
+      <div className="flex min-w-[70px] shrink-0 items-center justify-end gap-1.5 sm:min-w-[140px] sm:gap-2 lg:min-w-[220px]">
         {/* Search Icon Trigger */}
         <Button
           variant="ghost"
           size="icon"
           onClick={() => setCommandPaletteOpen(true)}
-          className="text-text-subtle hover:text-text hover:bg-surface-2 h-8.5 w-8.5 sm:h-9 sm:w-9 cursor-pointer"
+          className="text-text-subtle hover:text-text hover:bg-surface-2 h-8.5 w-8.5 cursor-pointer sm:h-9 sm:w-9"
           title="Search or jump to (Ctrl+K)"
           aria-label="Search (Ctrl+K)"
         >

@@ -45,7 +45,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
       {/* Skip to Content Link */}
       <a
         href="#main-content"
-        className="bg-accent text-bg sr-only px-3 py-1.5 font-medium focus:not-sr-only focus:fixed focus:top-4 focus:left-4 focus:z-50 focus:rounded"
+        className="bg-accent sr-only px-3 py-1.5 font-medium text-white focus:not-sr-only focus:fixed focus:top-4 focus:left-4 focus:z-50 focus:rounded"
       >
         Skip to main content
       </a>
@@ -54,12 +54,12 @@ export function AppShell({ children }: { children: React.ReactNode }) {
       <Sidebar />
 
       {/* Main Content Area */}
-      <div className="flex min-w-0 flex-1 flex-col h-full overflow-hidden">
+      <div className="flex h-full min-w-0 flex-1 flex-col overflow-hidden">
         <Topbar />
         <main
           id="main-content"
           tabIndex={-1}
-          className="w-full flex-1 overflow-y-auto px-3 sm:px-6 lg:px-8 py-4 sm:py-6 focus:outline-none min-w-0"
+          className="w-full min-w-0 flex-1 overflow-y-auto px-3 py-4 focus:outline-none sm:px-6 sm:py-6 lg:px-8"
         >
           {children}
         </main>

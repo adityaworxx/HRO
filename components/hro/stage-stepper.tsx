@@ -42,7 +42,7 @@ export function StageStepper({ currentStatus, className }: StageStepperProps) {
                     isCompleted
                       ? 'border-success text-success bg-[var(--badge-success-bg)]'
                       : isCurrent
-                        ? 'border-accent bg-accent text-bg shadow-sm'
+                        ? 'border-accent bg-accent text-white shadow-sm'
                         : 'border-border bg-surface-2 text-text-subtle'
                   )}
                 >

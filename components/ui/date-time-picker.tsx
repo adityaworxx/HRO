@@ -20,7 +20,13 @@ import {
   startOfDay,
   isBefore,
 } from 'date-fns';
-import { Calendar as CalendarIcon, Clock, ChevronLeft, ChevronRight, ChevronDown } from 'lucide-react';
+import {
+  Calendar as CalendarIcon,
+  Clock,
+  ChevronLeft,
+  ChevronRight,
+  ChevronDown,
+} from 'lucide-react';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { cn } from '@/lib/utils';
 
@@ -163,7 +169,7 @@ export function DateTimePicker({
           type="button"
           disabled={disabled}
           className={cn(
-            'border-border bg-surface-2 hover:bg-surface-3 text-text focus:border-border-strong flex h-9 w-full items-center justify-between rounded-[var(--radius-sm)] border px-3 text-[13px] font-medium outline-none transition-colors disabled:cursor-not-allowed disabled:opacity-50 select-none cursor-pointer',
+            'border-border bg-surface-2 hover:bg-surface-3 text-text focus:border-border-strong flex h-9 w-full cursor-pointer items-center justify-between rounded-[var(--radius-sm)] border px-3 text-[13px] font-medium transition-colors outline-none select-none disabled:cursor-not-allowed disabled:opacity-50',
             className
           )}
         >
@@ -182,14 +188,14 @@ export function DateTimePicker({
       <PopoverContent
         align="start"
         sideOffset={6}
-        className="w-auto p-0 border-border bg-surface-1 shadow-xl"
+        className="border-border bg-surface-1 w-auto p-0 shadow-xl"
       >
-        <div className="flex flex-col sm:flex-row divide-y sm:divide-y-0 sm:divide-x divide-border">
+        <div className="divide-border flex flex-col divide-y sm:flex-row sm:divide-x sm:divide-y-0">
           {/* Calendar Left Column */}
-          <div className="p-3 w-[270px]">
+          <div className="w-[270px] p-3">
             {/* Header: Month name & navigation arrows */}
-            <div className="flex items-center justify-between mb-2 px-1">
-              <span className="text-[13px] font-semibold text-text select-none">
+            <div className="mb-2 flex items-center justify-between px-1">
+              <span className="text-text text-[13px] font-semibold select-none">
                 {format(viewMonth, 'MMMM yyyy')}
               </span>
               <div className="flex items-center gap-0.5">
@@ -198,9 +204,9 @@ export function DateTimePicker({
                   disabled={isPrevMonthDisabled}
                   onClick={() => setViewMonth(subMonths(viewMonth, 1))}
                   className={cn(
-                    'h-7 w-7 rounded-[6px] flex items-center justify-center transition-colors',
+                    'flex h-7 w-7 items-center justify-center rounded-[6px] transition-colors',
                     isPrevMonthDisabled
-                      ? 'text-text-subtle/25 cursor-not-allowed pointer-events-none'
+                      ? 'text-text-subtle/25 pointer-events-none cursor-not-allowed'
                       : 'hover:bg-surface-2 text-text-muted hover:text-text cursor-pointer'
                   )}
                   aria-label="Previous month"
@@ -210,7 +216,7 @@ export function DateTimePicker({
                 <button
                   type="button"
                   onClick={() => setViewMonth(addMonths(viewMonth, 1))}
-                  className="h-7 w-7 rounded-[6px] hover:bg-surface-2 text-text-muted hover:text-text flex items-center justify-center transition-colors cursor-pointer"
+                  className="hover:bg-surface-2 text-text-muted hover:text-text flex h-7 w-7 cursor-pointer items-center justify-center rounded-[6px] transition-colors"
                   aria-label="Next month"
                 >
                   <ChevronRight className="h-4 w-4" />
@@ -219,9 +225,12 @@ export function DateTimePicker({
             </div>
 
             {/* Weekdays */}
-            <div className="grid grid-cols-7 gap-1 mb-1 text-center">
+            <div className="mb-1 grid grid-cols-7 gap-1 text-center">
               {['Su', 'Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa'].map((d) => (
-                <div key={d} className="text-[11px] font-medium text-text-subtle py-0.5 select-none">
+                <div
+                  key={d}
+                  className="text-text-subtle py-0.5 text-[11px] font-medium select-none"
+                >
                   {d}
                 </div>
               ))}
@@ -241,10 +250,10 @@ export function DateTimePicker({
                     <div
                       key={day.toISOString()}
                       className={cn(
-                        'h-8 w-8 text-[12px] rounded-[6px] font-medium flex items-center justify-center tabular-nums select-none pointer-events-none cursor-not-allowed',
+                        'pointer-events-none flex h-8 w-8 cursor-not-allowed items-center justify-center rounded-[6px] text-[12px] font-medium tabular-nums select-none',
                         isCurrentMonth
-                          ? 'opacity-25 blur-[0.6px] text-text-subtle'
-                          : 'opacity-10 blur-[0.8px] text-text-subtle/50'
+                          ? 'text-text-subtle opacity-25 blur-[0.6px]'
+                          : 'text-text-subtle/50 opacity-10 blur-[0.8px]'
                       )}
                       aria-disabled="true"
                     >
@@ -258,7 +267,7 @@ export function DateTimePicker({
                   return (
                     <div
                       key={day.toISOString()}
-                      className="h-8 w-8 text-[12px] rounded-[6px] font-medium flex items-center justify-center tabular-nums select-none opacity-20 text-text-subtle pointer-events-none"
+                      className="text-text-subtle pointer-events-none flex h-8 w-8 items-center justify-center rounded-[6px] text-[12px] font-medium tabular-nums opacity-20 select-none"
                       aria-disabled="true"
                     >
                       {format(day, 'd')}
@@ -272,10 +281,10 @@ export function DateTimePicker({
                     type="button"
                     onClick={() => handleSelectDate(day)}
                     className={cn(
-                      'h-8 w-8 text-[12px] rounded-[6px] font-medium transition-colors flex items-center justify-center tabular-nums select-none cursor-pointer',
+                      'flex h-8 w-8 cursor-pointer items-center justify-center rounded-[6px] text-[12px] font-medium tabular-nums transition-colors select-none',
                       !isSelected && 'text-text hover:bg-surface-2',
-                      isSelected && 'bg-accent text-bg font-semibold shadow-xs',
-                      isCurrentDay && !isSelected && 'border border-border-strong font-bold'
+                      isSelected && 'bg-accent font-semibold text-white shadow-xs',
+                      isCurrentDay && !isSelected && 'border-border-strong border font-bold'
                     )}
                   >
                     {format(day, 'd')}
@@ -285,7 +294,7 @@ export function DateTimePicker({
             </div>
 
             {/* Quick shortcuts */}
-            <div className="mt-2.5 pt-2 border-t border-border flex items-center justify-between text-[11px]">
+            <div className="border-border mt-2.5 flex items-center justify-between border-t pt-2 text-[11px]">
               <button
                 type="button"
                 onClick={() => {
@@ -293,7 +302,7 @@ export function DateTimePicker({
                   setViewMonth(today);
                   handleSelectDate(today);
                 }}
-                className="text-text-muted hover:text-text font-medium px-2 py-0.5 rounded hover:bg-surface-2 transition-colors select-none"
+                className="text-text-muted hover:text-text hover:bg-surface-2 rounded px-2 py-0.5 font-medium transition-colors select-none"
               >
                 Today
               </button>
@@ -305,7 +314,7 @@ export function DateTimePicker({
                   setViewMonth(tomorrow);
                   handleSelectDate(tomorrow);
                 }}
-                className="text-text-muted hover:text-text font-medium px-2 py-0.5 rounded hover:bg-surface-2 transition-colors select-none"
+                className="text-text-muted hover:text-text hover:bg-surface-2 rounded px-2 py-0.5 font-medium transition-colors select-none"
               >
                 Tomorrow
               </button>
@@ -313,14 +322,14 @@ export function DateTimePicker({
           </div>
 
           {/* Time Right Column */}
-          <div className="p-3 w-[155px] flex flex-col">
-            <div className="flex items-center gap-1.5 px-1 mb-2 text-text-subtle select-none">
+          <div className="flex w-[155px] flex-col p-3">
+            <div className="text-text-subtle mb-2 flex items-center gap-1.5 px-1 select-none">
               <Clock className="h-3.5 w-3.5" />
               <span className="text-[12px] font-medium">Time Slot</span>
             </div>
 
             {/* Scrollable Slots */}
-            <div className="max-h-[230px] overflow-y-auto space-y-0.5 pr-1">
+            <div className="max-h-[230px] space-y-0.5 overflow-y-auto pr-1">
               {COMMON_TIME_SLOTS.map((slot) => {
                 const isSelected = currentFormattedTime === slot;
                 return (
@@ -329,9 +338,9 @@ export function DateTimePicker({
                     type="button"
                     onClick={() => handleSelectSlot(slot)}
                     className={cn(
-                      'w-full text-left px-2.5 py-1.5 rounded-[6px] text-[12px] font-medium tabular-nums transition-colors select-none',
+                      'w-full rounded-[6px] px-2.5 py-1.5 text-left text-[12px] font-medium tabular-nums transition-colors select-none',
                       isSelected
-                        ? 'bg-accent text-bg font-semibold'
+                        ? 'bg-accent font-semibold text-white'
                         : 'text-text hover:bg-surface-2'
                     )}
                   >
