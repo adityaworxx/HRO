@@ -75,8 +75,8 @@ function SegmentedControl<T extends string | number>({
             className={cn(
               'rounded-[var(--radius-xs)] px-2.5 py-1 text-[12px] font-medium transition-all select-none cursor-pointer',
               isSelected
-                ? 'bg-surface-1 text-text border border-border/80 shadow-2xs'
-                : 'text-text-muted hover:text-text border border-transparent'
+                ? 'bg-accent text-white shadow-xs font-semibold border border-accent'
+                : 'text-text-muted hover:text-text hover:bg-surface-3 active:bg-accent/15 border border-transparent'
             )}
           >
             {opt.label}
@@ -327,7 +327,7 @@ export default function SettingsPage() {
                 variant="secondary"
                 size="sm"
                 onClick={handleRoleToggle}
-                className="h-7 text-[11px] bg-surface-2 hover:bg-surface-3 border border-border px-2.5 shrink-0 w-full sm:w-auto"
+                className="h-7 text-[11px] bg-surface-2 hover:bg-surface-3 hover:text-accent hover:border-accent/40 active:bg-accent active:text-white border border-border px-2.5 shrink-0 w-full sm:w-auto transition-colors"
               >
                 <span>Switch to {isHr ? 'Manager' : 'HR'}</span>
               </Button>
