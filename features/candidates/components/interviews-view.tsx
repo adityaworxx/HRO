@@ -149,8 +149,9 @@ export function InterviewsView() {
                   </Avatar>
                   <div className="min-w-0 flex-1">
                     <CardTitle className="text-[15px] truncate">{candidate.name}</CardTitle>
-                    <p className="text-text-muted text-[12px] truncate">
-                      {candidate.currentRole} at {candidate.currentCompany}
+                    <p className="text-text text-[12.5px] font-medium truncate">
+                      {candidate.currentRole} <span className="text-text-muted font-normal">at</span>{' '}
+                      <span className="text-text font-semibold">{candidate.currentCompany}</span>
                     </p>
                   </div>
                 </div>

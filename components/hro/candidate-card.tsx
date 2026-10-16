@@ -39,28 +39,28 @@ export function CandidateCard({
           {candidate.name}
         </h4>
         <div className="flex items-center gap-1.5 shrink-0">
-          <span className="text-[10px] font-medium text-text-subtle bg-surface-2 border border-border/70 rounded-[4px] px-1.5 py-0.5">
+          <span className="text-[10.5px] font-medium text-text-muted bg-surface-2 border border-border rounded-[4px] px-1.5 py-0.5">
             {candidate.source}
           </span>
           <ReorderIcon isActive={isDragging} />
         </div>
       </div>
 
-      <div className="space-y-1 text-[12px]">
-        <div className="text-text-muted flex items-center gap-1.5 truncate font-normal">
-          <Briefcase className="text-text-subtle/70 h-3 w-3 shrink-0" />
+      <div className="space-y-1.5 text-[12px]">
+        <div className="text-text flex items-center gap-1.5 truncate text-[12.5px] font-semibold">
+          <Briefcase className="text-text-muted h-3.5 w-3.5 shrink-0 stroke-[2]" />
           <span className="truncate">{candidate.currentRole}</span>
         </div>
-        <div className="text-text-subtle flex items-center gap-1.5 truncate text-[11px] font-normal">
-          <Building2 className="text-text-subtle/70 h-3 w-3 shrink-0" />
+        <div className="text-text flex items-center gap-1.5 truncate text-[12px] font-medium">
+          <Building2 className="text-text-muted h-3.5 w-3.5 shrink-0 stroke-[2]" />
           <span className="truncate">{candidate.currentCompany}</span>
         </div>
       </div>
 
-      <div className="border-border/60 text-text-subtle mt-1 flex items-center justify-between border-t pt-2 text-[11px] font-normal">
+      <div className="border-border/80 text-text-muted mt-1 flex items-center justify-between border-t pt-2 text-[11.5px] font-medium">
         <span>{candidate.experienceYears}y exp</span>
         <span className="flex items-center gap-1">
-          <Clock className="h-3 w-3 text-text-subtle/70" />
+          <Clock className="h-3 w-3 text-text-muted stroke-[2]" />
           <span>{candidate.noticePeriod}</span>
         </span>
       </div>

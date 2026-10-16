@@ -73,7 +73,7 @@ export function CandidatesTable() {
               <span className="text-text font-medium text-[13px] block truncate">
                 {c.currentRole}
               </span>
-              <span className="text-text-muted text-[11px] block truncate">
+              <span className="text-text-muted text-[12px] font-medium block truncate">
                 {c.currentCompany}
               </span>
             </div>

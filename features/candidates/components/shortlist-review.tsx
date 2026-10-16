@@ -121,16 +121,16 @@ export function ShortlistReview() {
                     </Avatar>
                     <div>
                       <h4 className="text-text text-[13px] font-semibold">{candidate.name}</h4>
-                      <p className="text-text-muted text-[11px]">{candidate.currentRole}</p>
+                      <p className="text-text text-[12px] font-medium">{candidate.currentRole}</p>
                     </div>
                   </div>
                   <Badge variant="default" className="text-[10px]">
                     {candidate.experienceYears}y exp
                   </Badge>
                 </div>
-                <div className="text-text-subtle border-border/60 mt-2.5 flex items-center justify-between border-t pt-2 text-[11px]">
+                <div className="text-text-muted border-border/60 mt-2.5 flex items-center justify-between border-t pt-2 text-[12px] font-medium">
                   <span>{candidate.currentCompany}</span>
-                  <span className="text-text font-mono">{formatCtc(candidate.expectedCtc)}</span>
+                  <span className="text-text font-mono font-semibold">{formatCtc(candidate.expectedCtc)}</span>
                 </div>
               </div>
             );
