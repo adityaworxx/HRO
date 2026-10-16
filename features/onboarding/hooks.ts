@@ -28,7 +28,25 @@ export function useToggleOnboardingTask() {
   return useMutation({
     mutationFn: ({ id, done }: { id: string; done: boolean }) =>
       api.onboarding.toggleTask(id, done),
-    onSuccess: () => {
+    onMutate: async ({ id, done }) => {
+      await queryClient.cancelQueries({ queryKey: onboardingKeys.all });
+      const previousLists = queryClient.getQueryData<OnboardingItem[]>(onboardingKeys.lists());
+
+      queryClient.setQueriesData<OnboardingItem[]>({ queryKey: onboardingKeys.all }, (old) => {
+        if (!Array.isArray(old)) return old;
+        return old.map((item) =>
+          item.id === id ? { ...item, done, status: done ? 'Done' : 'Pending' } : item
+        );
+      });
+
+      return { previousLists };
+    },
+    onError: (_err, _vars, context) => {
+      if (context?.previousLists) {
+        queryClient.setQueryData(onboardingKeys.lists(), context.previousLists);
+      }
+    },
+    onSettled: () => {
       void queryClient.invalidateQueries({ queryKey: onboardingKeys.all });
     },
   });

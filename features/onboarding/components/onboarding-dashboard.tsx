@@ -33,6 +33,7 @@ import { Skeleton } from '@/components/ui/skeleton';
 import { deriveOnboardingProgress } from '@/lib/domain/derive';
 import { formatDate } from '@/lib/format';
 import {
+  Check,
   CheckCircle2,
   Clock,
   Plus,
@@ -772,21 +773,11 @@ export function OnboardingDashboard() {
       {viewMode === 'all-tasks' && (
         <Card className="border-border bg-surface-1 overflow-hidden shadow-2xs">
           <div className="border-b border-border/80 bg-surface-2/30 flex items-center justify-between px-4 py-3 sm:px-5">
-            <div className="flex items-center gap-2.5">
-              <span className="text-text text-[14px] font-semibold tracking-tight">
-                Unified Checklist
-              </span>
-              <span className="text-text-subtle text-[11px] font-medium bg-surface-2 border border-border/70 rounded-[4px] px-1.5 py-0.5">
-                {filteredItems.length} items
-              </span>
-            </div>
-            <div className="flex items-center gap-2">
-              <span className="text-text-muted text-[12px]">
-                <span className="font-semibold text-text">{filteredItems.filter((i) => i.done).length}</span> of {filteredItems.length} completed
-              </span>
-              <span className="text-text-subtle text-[11px] font-mono">
-                ({filteredItems.length > 0 ? Math.round((filteredItems.filter((i) => i.done).length / filteredItems.length) * 100) : 0}%)
-              </span>
+            <span className="text-text text-[14px] font-semibold tracking-tight">
+              Unified Checklist
+            </span>
+            <div className="text-text-muted text-[12px]">
+              <span className="font-semibold text-text">{filteredItems.filter((i) => i.done).length}</span> of {filteredItems.length} completed
             </div>
           </div>
 
@@ -825,10 +816,14 @@ export function OnboardingDashboard() {
                         )}
                       >
                         {/* Checkbox */}
-                        <td className="py-3 px-3.5 sm:px-4 text-center align-middle">
+                        <td
+                          className="py-3 px-3.5 sm:px-4 text-center align-middle cursor-pointer"
+                          onClick={() => handleToggle(item.id, item.done, item.title)}
+                        >
                           <Checkbox
                             checked={item.done}
                             onCheckedChange={() => handleToggle(item.id, item.done, item.title)}
+                            onClick={(e) => e.stopPropagation()}
                             className="mx-auto"
                           />
                         </td>
@@ -901,12 +896,12 @@ export function OnboardingDashboard() {
                         {/* Status */}
                         <td className="py-3 pr-4 sm:pr-5 align-middle text-right whitespace-nowrap">
                           {item.done ? (
-                            <span className="inline-flex items-center gap-1 text-[11px] font-medium text-emerald-600 dark:text-emerald-400 bg-emerald-500/10 border border-emerald-500/20 px-2 py-0.5 rounded-[4px]">
-                              <CheckCircle2 className="h-3 w-3" />
+                            <span className="inline-flex items-center gap-1 text-[11px] font-medium text-text bg-surface-2 border border-border/80 px-2 py-0.5 rounded-[4px]">
+                              <Check className="h-3 w-3 text-text" />
                               <span>Done</span>
                             </span>
                           ) : (
-                            <span className="inline-flex items-center gap-1 text-[11px] font-medium text-text-subtle bg-surface-2 border border-border/70 px-2 py-0.5 rounded-[4px]">
+                            <span className="inline-flex items-center gap-1 text-[11px] font-normal text-text-subtle bg-surface-2/60 border border-border/60 px-2 py-0.5 rounded-[4px]">
                               <Clock className="h-3 w-3 text-text-subtle/70" />
                               <span>Pending</span>
                             </span>
