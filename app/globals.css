@@ -50,10 +50,6 @@
 
 
 
-html {
-  zoom: 0.8;
-}
-
 html,
 body {
   height: 100%;
@@ -66,24 +62,6 @@ body {
   font-family: var(--font-sans);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-}
-
-/*
- * Neutralize Radix Popper coordinate drift when html has zoom: 0.8.
- * Radix Popper computes coordinates in the layout viewport and sets translate(Xpx, Ypx)
- * on [data-radix-popper-content-wrapper]. Under CSS zoom: 0.8, the browser scales these
- * absolute pixel translations a second time (0.8x), displacing the poppers.
- * Setting zoom: 1.25 on the wrapper (1 / 0.8 = 1.25) cancels the displacement,
- * snapping all Radix menus, selects, tooltips, and popovers right next to their triggers.
- * Setting zoom: 0.8 on the wrapper's direct child restores the crisp 80% visual scale
- * matching the rest of the application.
- */
-[data-radix-popper-content-wrapper] {
-  zoom: 1.25 !important;
-}
-
-[data-radix-popper-content-wrapper] > * {
-  zoom: 0.8 !important;
 }
 
 @media (prefers-reduced-motion: reduce) {
