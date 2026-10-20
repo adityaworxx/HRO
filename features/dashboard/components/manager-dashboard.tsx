@@ -7,7 +7,6 @@ import { useCandidates, useRecordManagerDecision } from '@/features/candidates/h
 import { StatCard } from '@/components/hro/stat-card';
 import { StatusBadge } from '@/components/hro/status-badge';
 import { MetaSeparator } from '@/components/hro/meta-separator';
-import { ActiveOpeningsCard } from '@/components/hro/active-openings-card';
 import { Button } from '@/components/ui/button';
 import { Skeleton } from '@/components/ui/skeleton';
 import {
@@ -386,18 +385,6 @@ export function ManagerDashboard() {
               )}
             </div>
           </div>
-        </div>
-
-        {/* ROW 2: Active Openings (12 cols full-width table card) */}
-        <div className="col-span-12 flex flex-col">
-          <ActiveOpeningsCard
-            openings={activeOpenings}
-            candidates={candidates}
-            title="Active Openings"
-            subtitle={null}
-            viewAllHref="/openings"
-            isLoading={isInitialLoading}
-          />
         </div>
       </div>
     </div>

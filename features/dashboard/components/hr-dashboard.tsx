@@ -2,11 +2,10 @@
 
 import * as React from 'react';
 import Link from 'next/link';
-import { useOpenings, useUpdateOpeningStatus } from '@/features/openings/hooks';
+import { useOpenings } from '@/features/openings/hooks';
 import { useCandidates } from '@/features/candidates/hooks';
 import { useAllOnboarding } from '@/features/onboarding/hooks';
 import { StatCard } from '@/components/hro/stat-card';
-import { ActiveOpeningsCard } from '@/components/hro/active-openings-card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Skeleton } from '@/components/ui/skeleton';
@@ -24,7 +23,6 @@ export function HrDashboard() {
   const { data: openings = [], isLoading: loadingOpenings } = useOpenings();
   const { data: candidates = [], isLoading: loadingCandidates } = useCandidates();
   const { data: onboardingItems = [], isLoading: loadingOnboarding } = useAllOnboarding();
-  const updateOpeningStatus = useUpdateOpeningStatus();
 
   // Openings metrics
   const openRequisitions = React.useMemo(
@@ -70,17 +68,6 @@ export function HrDashboard() {
   const completedTasks = onboardingItems.filter((item) => item.done).length;
   const totalTasks = onboardingItems.length || 1;
   const onboardingPercent = Math.round((completedTasks / totalTasks) * 100);
-
-  const handleReactivate = (id: string, title: string) => {
-    updateOpeningStatus.mutate(
-      { id, status: 'Open' },
-      {
-        onSuccess: () => {
-          toast.success(`Opening "${title}" has been reactivated to Open!`);
-        },
-      }
-    );
-  };
 
   const isInitialLoading = loadingOpenings || loadingCandidates || loadingOnboarding;
 
@@ -129,16 +116,6 @@ export function HrDashboard() {
           </>
         )}
       </div>
-
-      {/* 2. Active Openings Card */}
-      <ActiveOpeningsCard
-        openings={openings}
-        candidates={candidates}
-        title="Active Openings"
-        viewAllHref="/openings"
-        isLoading={isInitialLoading}
-        onReactivate={handleReactivate}
-      />
 
       {/* 3. Bottom Grid: Pipeline Throughput (8 cols) & Onboarding Readiness (4 cols) */}
       <div className="grid grid-cols-12 gap-6 items-stretch">
