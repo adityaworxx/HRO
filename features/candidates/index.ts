@@ -1,5 +1,6 @@
 export * from './components/pipeline-board';
 export * from './components/candidates-table';
+export * from './components/candidate-columns-view';
 export * from './components/candidate-detail-sheet';
 export * from './components/shortlist-review';
 export * from './components/interviews-view';

@@ -207,24 +207,24 @@ export function OpeningColumnsView({
           return (
             <div
               key={column.id}
-              className="w-[300px] sm:w-[320px] shrink-0 flex flex-col rounded-[12px] bg-surface-2/30 border border-border/70 p-3 space-y-2.5"
+              className="w-[300px] sm:w-[320px] shrink-0 flex flex-col rounded-[12px] bg-surface-2/30 border border-border/70 border-t-2 border-t-accent p-3 space-y-2.5"
             >
               {/* Column Header */}
               <div className="flex items-center justify-between pb-2 border-b border-border/60">
                 <div className="flex items-center gap-2 min-w-0">
                   {ColIcon ? (
-                    <div className="flex h-5 w-5 items-center justify-center rounded-[4px] bg-surface-3 text-text shrink-0">
+                    <div className="flex h-5 w-5 items-center justify-center rounded-[4px] bg-accent/15 text-accent shrink-0">
                       <ColIcon className="h-3.5 w-3.5" />
                     </div>
                   ) : (
-                    <span className={cn('h-2 w-2 rounded-full shrink-0', column.dotColor)} />
+                    <span className="h-2 w-2 rounded-full bg-accent shrink-0" />
                   )}
                   <h3 className="text-[13.5px] font-semibold text-text truncate">
                     {column.title}
                   </h3>
                 </div>
 
-                <span className="font-mono text-[11px] text-text-subtle shrink-0">
+                <span className="font-mono text-[11px] font-semibold text-accent bg-accent/10 px-2 py-0.5 rounded-full shrink-0">
                   {column.openings.length}
                 </span>
               </div>

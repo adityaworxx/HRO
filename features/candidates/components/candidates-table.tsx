@@ -4,8 +4,11 @@ import * as React from 'react';
 import type { ColumnDef } from '@tanstack/react-table';
 import type { Candidate } from '@/types/entities';
 import { useCandidates } from '../hooks';
+import { useOpenings } from '@/features/openings/hooks';
 import { DataTable } from '@/components/hro/data-table';
 import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Skeleton } from '@/components/ui/skeleton';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import {
   Select,
@@ -15,27 +18,58 @@ import {
   SelectItem,
 } from '@/components/ui/select';
 import { CandidateDetailSheet } from './candidate-detail-sheet';
+import { CandidateColumnsView } from './candidate-columns-view';
 import { formatCtc } from '@/lib/format';
+import { cn } from '@/lib/utils';
+import { Columns3, List, Search } from 'lucide-react';
 
 export function CandidatesTable() {
   const { data: candidates = [], isLoading, isError, refetch } = useCandidates();
+  const { data: openings = [] } = useOpenings();
 
   const [selectedStage, setSelectedStage] = React.useState<string>('all');
   const [selectedSource, setSelectedSource] = React.useState<string>('all');
+  const [selectedDepartment, setSelectedDepartment] = React.useState<string>('all');
+  const [searchQuery, setSearchQuery] = React.useState<string>('');
+  const [viewMode, setViewMode] = React.useState<'columns' | 'table'>('columns');
   const [activeCandidate, setActiveCandidate] = React.useState<Candidate | null>(null);
   const [sheetOpen, setSheetOpen] = React.useState(false);
 
   const filteredCandidates = React.useMemo(() => {
+    const query = searchQuery.trim().toLowerCase();
+
     return candidates.filter((c) => {
+      const opening = openings.find((o) => o.id === c.openingId);
+      const dept = opening?.department || 'General';
+
       const matchesStage = selectedStage === 'all' || c.stage === selectedStage;
       const matchesSource = selectedSource === 'all' || c.source === selectedSource;
-      return matchesStage && matchesSource;
+      const matchesDept = selectedDepartment === 'all' || dept === selectedDepartment;
+
+      const matchesSearch =
+        query === '' ||
+        c.name.toLowerCase().includes(query) ||
+        c.email.toLowerCase().includes(query) ||
+        c.currentRole.toLowerCase().includes(query) ||
+        c.currentCompany.toLowerCase().includes(query) ||
+        (Boolean(opening) && opening!.title.toLowerCase().includes(query));
+
+      return matchesStage && matchesSource && matchesDept && matchesSearch;
     });
-  }, [candidates, selectedStage, selectedSource]);
+  }, [candidates, openings, selectedStage, selectedSource, selectedDepartment, searchQuery]);
 
   const sources = React.useMemo(() => {
     return Array.from(new Set(candidates.map((c) => c.source)));
   }, [candidates]);
+
+  const departments = React.useMemo(() => {
+    const deptSet = new Set<string>();
+    for (const c of candidates) {
+      const opening = openings.find((o) => o.id === c.openingId);
+      if (opening?.department) deptSet.add(opening.department);
+    }
+    return Array.from(deptSet);
+  }, [candidates, openings]);
 
   const columns = React.useMemo<ColumnDef<Candidate>[]>(
     () => [
@@ -154,7 +188,7 @@ export function CandidatesTable() {
 
   return (
     <div className="space-y-4">
-      {/* Quick Stage Tabs & Filters */}
+      {/* 1. Quick Stage Tabs */}
       <div className="flex flex-wrap items-center justify-between gap-3">
         <div className="flex flex-wrap items-center gap-1.5">
           {[
@@ -178,7 +212,7 @@ export function CandidatesTable() {
                 onClick={() => setSelectedStage(stage)}
                 className={`inline-flex items-center gap-1.5 rounded-[var(--radius-sm)] px-2.5 py-1 text-[13px] font-medium transition-colors ${
                   isSelected
-                    ? 'bg-accent text-white shadow-sm'
+                    ? 'bg-accent text-white shadow-xs'
                     : 'bg-surface-2 text-text-muted hover:bg-surface-3 hover:text-text'
                 }`}
               >
@@ -194,44 +228,146 @@ export function CandidatesTable() {
             );
           })}
         </div>
-
-        {/* Source Filter */}
-        {sources.length > 0 && (
-          <Select
-            value={selectedSource}
-            onValueChange={(val) => setSelectedSource(val)}
-          >
-            <SelectTrigger className="h-8.5 w-auto min-w-[130px] gap-2 border-border/70 bg-surface-2/50 hover:bg-surface-2 text-text px-2.5 text-[12px] font-medium rounded-[var(--radius-sm)] shadow-2xs">
-              <SelectValue placeholder="All Sources" />
-            </SelectTrigger>
-            <SelectContent align="end" className="min-w-[160px]">
-              <SelectItem value="all" className="text-[13px] py-1.5 min-h-[32px] rounded-[6px]">
-                All Sources
-              </SelectItem>
-              {sources.map((s) => (
-                <SelectItem key={s} value={s} className="text-[13px] py-1.5 min-h-[32px] rounded-[6px]">
-                  {s}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-        )}
       </div>
 
-      {/* TanStack Candidates Table */}
-      <DataTable
-        columns={columns}
-        data={filteredCandidates}
-        searchPlaceholder="Filter candidate by name, role, email..."
-        loading={isLoading}
-        error={isError ? 'Failed to fetch candidate directory' : null}
-        onRetry={() => void refetch()}
-        onRowClick={(row) => {
-          setActiveCandidate(row);
-          setSheetOpen(true);
-        }}
-      />
+      {/* 2. Secondary Filter Bar: Live Search, Department Filter, Source Filter & View Switcher */}
+      <div className="flex flex-col items-stretch gap-2.5 sm:flex-row sm:items-center">
+        <div className="relative flex-1">
+          <Search className="text-text-subtle pointer-events-none absolute top-1/2 left-3 h-3.5 w-3.5 -translate-y-1/2" />
+          <Input
+            type="text"
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            placeholder="Search candidate, role, company..."
+            aria-label="Search candidates"
+            className="bg-surface-1 border-border/80 focus:border-border-strong h-8 w-full pl-8 text-[12.5px]"
+          />
+        </div>
 
+        <div className="flex items-center gap-2 flex-wrap sm:flex-nowrap">
+          {/* Department Filter */}
+          {departments.length > 0 && (
+            <Select
+              value={selectedDepartment}
+              onValueChange={(val) => setSelectedDepartment(val)}
+            >
+              <SelectTrigger className="border-border/80 bg-surface-1 hover:bg-surface-2 text-text h-8 w-auto min-w-[140px] gap-2 rounded-[var(--radius-sm)] px-2.5 text-[12px] font-medium">
+                <SelectValue placeholder="All Departments" />
+              </SelectTrigger>
+              <SelectContent align="end" className="min-w-[170px]">
+                <SelectItem value="all" className="min-h-[32px] rounded-[6px] py-1.5 text-[13px]">
+                  All Departments
+                </SelectItem>
+                {departments.map((dep) => (
+                  <SelectItem
+                    key={dep}
+                    value={dep}
+                    className="min-h-[32px] rounded-[6px] py-1.5 text-[13px]"
+                  >
+                    {dep}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          )}
+
+          {/* Source Filter */}
+          {sources.length > 0 && (
+            <Select value={selectedSource} onValueChange={(val) => setSelectedSource(val)}>
+              <SelectTrigger className="border-border/80 bg-surface-1 hover:bg-surface-2 text-text h-8 w-auto min-w-[130px] gap-2 rounded-[var(--radius-sm)] px-2.5 text-[12px] font-medium">
+                <SelectValue placeholder="All Sources" />
+              </SelectTrigger>
+              <SelectContent align="end" className="min-w-[160px]">
+                <SelectItem value="all" className="min-h-[32px] rounded-[6px] py-1.5 text-[13px]">
+                  All Sources
+                </SelectItem>
+                {sources.map((s) => (
+                  <SelectItem
+                    key={s}
+                    value={s}
+                    className="min-h-[32px] rounded-[6px] py-1.5 text-[13px]"
+                  >
+                    {s}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          )}
+
+          {/* View Mode Toggle: Cards vs Table */}
+          <div className="flex items-center rounded-[var(--radius-sm)] border border-border/80 bg-surface-1 p-0.5 shrink-0">
+            <button
+              type="button"
+              onClick={() => setViewMode('columns')}
+              className={cn(
+                'flex items-center gap-1.5 px-2.5 py-1 text-[12px] font-medium rounded-[4px] transition-colors cursor-pointer',
+                viewMode === 'columns'
+                  ? 'bg-surface-3 text-text shadow-2xs'
+                  : 'text-text-muted hover:text-text'
+              )}
+              title="Department Cards View"
+            >
+              <Columns3 className="h-3.5 w-3.5" />
+              <span className="hidden sm:inline">Cards</span>
+            </button>
+            <button
+              type="button"
+              onClick={() => setViewMode('table')}
+              className={cn(
+                'flex items-center gap-1.5 px-2.5 py-1 text-[12px] font-medium rounded-[4px] transition-colors cursor-pointer',
+                viewMode === 'table'
+                  ? 'bg-surface-3 text-text shadow-2xs'
+                  : 'text-text-muted hover:text-text'
+              )}
+              title="Table View"
+            >
+              <List className="h-3.5 w-3.5" />
+              <span className="hidden sm:inline">Table</span>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      {/* 3. Content Body: Loading skeleton, Department Cards View, or Table View */}
+      {isLoading ? (
+        <div className="space-y-6">
+          {[1, 2].map((group) => (
+            <div key={group} className="space-y-3">
+              <Skeleton className="h-7 w-48 rounded-[6px]" />
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
+                <Skeleton className="h-32 w-full rounded-[10px]" />
+                <Skeleton className="h-32 w-full rounded-[10px]" />
+                <Skeleton className="h-32 w-full rounded-[10px]" />
+                <Skeleton className="h-32 w-full rounded-[10px]" />
+              </div>
+            </div>
+          ))}
+        </div>
+      ) : viewMode === 'columns' ? (
+        <CandidateColumnsView
+          candidates={filteredCandidates}
+          openings={openings}
+          onSelectCandidate={(candidate) => {
+            setActiveCandidate(candidate);
+            setSheetOpen(true);
+          }}
+        />
+      ) : (
+        <DataTable
+          columns={columns}
+          data={filteredCandidates}
+          searchPlaceholder="Filter candidate by name, role, email..."
+          loading={isLoading}
+          error={isError ? 'Failed to fetch candidate directory' : null}
+          onRetry={() => void refetch()}
+          onRowClick={(row) => {
+            setActiveCandidate(row);
+            setSheetOpen(true);
+          }}
+        />
+      )}
+
+      {/* Candidate Detail Sheet Drawer */}
       <CandidateDetailSheet
         candidate={activeCandidate}
         open={sheetOpen}

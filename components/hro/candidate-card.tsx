@@ -9,6 +9,7 @@ export interface CandidateCardProps {
   onClick?: () => void;
   className?: string;
   isDragging?: boolean;
+  showReorderIcon?: boolean;
 }
 
 export function CandidateCard({
@@ -16,6 +17,7 @@ export function CandidateCard({
   onClick,
   className,
   isDragging = false,
+  showReorderIcon = true,
 }: CandidateCardProps) {
   return (
     <div
@@ -42,7 +44,7 @@ export function CandidateCard({
           <span className="text-[10.5px] font-medium text-text-muted bg-surface-2 border border-border rounded-[4px] px-1.5 py-0.5">
             {candidate.source}
           </span>
-          <ReorderIcon isActive={isDragging} />
+          {showReorderIcon && <ReorderIcon isActive={isDragging} />}
         </div>
       </div>
 
