@@ -333,14 +333,15 @@ export function OpeningsTable() {
         </div>
 
         {/* Secondary Bar: Live Search & Department Filter */}
-        <div className="flex flex-col items-stretch gap-2.5 sm:flex-row sm:items-center">
-          <div className="relative flex-1">
+        <div className="flex flex-wrap items-center gap-2.5">
+          <div className="relative w-full sm:w-[260px]">
             <Search className="text-text-subtle pointer-events-none absolute top-1/2 left-3 h-3.5 w-3.5 -translate-y-1/2" />
             <Input
               type="text"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              aria-label="Search"
+              placeholder="Search openings..."
+              aria-label="Search openings"
               className="bg-surface-1 border-border/80 focus:border-border-strong h-8 w-full pl-8 text-[12.5px]"
             />
           </div>
@@ -350,7 +351,7 @@ export function OpeningsTable() {
               <SelectTrigger className="border-border/80 bg-surface-1 hover:bg-surface-2 text-text h-8 w-auto min-w-[150px] gap-2 rounded-[var(--radius-sm)] px-2.5 text-[12px] font-medium">
                 <SelectValue placeholder="All Departments" />
               </SelectTrigger>
-              <SelectContent align="end" className="min-w-[180px]">
+              <SelectContent align="start" className="min-w-[180px]">
                 <SelectItem value="all" className="min-h-[32px] rounded-[6px] py-1.5 text-[13px]">
                   All Departments
                 </SelectItem>

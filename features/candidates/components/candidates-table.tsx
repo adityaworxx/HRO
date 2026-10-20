@@ -231,20 +231,19 @@ export function CandidatesTable() {
       </div>
 
       {/* 2. Secondary Filter Bar: Live Search, Department Filter, Source Filter & View Switcher */}
-      <div className="flex flex-col items-stretch gap-2.5 sm:flex-row sm:items-center">
-        <div className="relative flex-1">
-          <Search className="text-text-subtle pointer-events-none absolute top-1/2 left-3 h-3.5 w-3.5 -translate-y-1/2" />
-          <Input
-            type="text"
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            placeholder="Search candidate, role, company..."
-            aria-label="Search candidates"
-            className="bg-surface-1 border-border/80 focus:border-border-strong h-8 w-full pl-8 text-[12.5px]"
-          />
-        </div>
-
-        <div className="flex items-center gap-2 flex-wrap sm:flex-nowrap">
+      <div className="flex flex-col items-stretch justify-between gap-2.5 sm:flex-row sm:items-center">
+        <div className="flex flex-wrap items-center gap-2.5">
+          <div className="relative w-full sm:w-[260px]">
+            <Search className="text-text-subtle pointer-events-none absolute top-1/2 left-3 h-3.5 w-3.5 -translate-y-1/2" />
+            <Input
+              type="text"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              placeholder="Search candidate, role, company..."
+              aria-label="Search candidates"
+              className="bg-surface-1 border-border/80 focus:border-border-strong h-8 w-full pl-8 text-[12.5px]"
+            />
+          </div>
           {/* Department Filter */}
           {departments.length > 0 && (
             <Select
