@@ -187,9 +187,10 @@ export function CandidatesTable() {
   );
 
   return (
-    <div className="space-y-4">
-      {/* 1. Quick Stage Tabs */}
-      <div className="flex flex-wrap items-center justify-between gap-3">
+    <div className="space-y-3.5 -mt-1">
+      {/* 1. Header Toolbar: Stage Filter Tabs, Search, Department, Source, and View Mode */}
+      <div className="flex flex-wrap items-center justify-between gap-2.5">
+        {/* Quick Stage Tabs */}
         <div className="flex flex-wrap items-center gap-1.5">
           {[
             'all',
@@ -228,32 +229,31 @@ export function CandidatesTable() {
             );
           })}
         </div>
-      </div>
 
-      {/* 2. Secondary Filter Bar: Live Search, Department Filter, Source Filter & View Switcher */}
-      <div className="flex flex-col items-stretch justify-between gap-2.5 sm:flex-row sm:items-center">
-        <div className="flex flex-wrap items-center gap-2.5">
-          <div className="relative w-full sm:w-[260px]">
-            <Search className="text-text-subtle pointer-events-none absolute top-1/2 left-3 h-3.5 w-3.5 -translate-y-1/2" />
+        {/* Right Controls: Search + Department + Source + View Mode Toggle */}
+        <div className="flex flex-wrap items-center gap-2">
+          <div className="relative w-full sm:w-[190px] lg:w-[210px]">
+            <Search className="text-text-subtle pointer-events-none absolute top-1/2 left-2.5 h-3.5 w-3.5 -translate-y-1/2" />
             <Input
               type="text"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              placeholder="Search candidate, role, company..."
+              placeholder="Search candidates..."
               aria-label="Search candidates"
-              className="bg-surface-1 border-border/80 focus:border-border-strong h-8 w-full pl-8 text-[12.5px]"
+              className="bg-surface-1 border-border/80 focus:border-border-strong h-8 w-full pl-8 pr-2.5 text-[12.5px]"
             />
           </div>
+
           {/* Department Filter */}
           {departments.length > 0 && (
             <Select
               value={selectedDepartment}
               onValueChange={(val) => setSelectedDepartment(val)}
             >
-              <SelectTrigger className="border-border/80 bg-surface-1 hover:bg-surface-2 text-text h-8 w-auto min-w-[140px] gap-2 rounded-[var(--radius-sm)] px-2.5 text-[12px] font-medium">
+              <SelectTrigger className="border-border/80 bg-surface-1 hover:bg-surface-2 text-text h-8 w-auto min-w-[130px] gap-1.5 rounded-[var(--radius-sm)] px-2.5 text-[12px] font-medium">
                 <SelectValue placeholder="All Departments" />
               </SelectTrigger>
-              <SelectContent align="end" className="min-w-[170px]">
+              <SelectContent align="end" className="min-w-[160px]">
                 <SelectItem value="all" className="min-h-[32px] rounded-[6px] py-1.5 text-[13px]">
                   All Departments
                 </SelectItem>
@@ -273,10 +273,10 @@ export function CandidatesTable() {
           {/* Source Filter */}
           {sources.length > 0 && (
             <Select value={selectedSource} onValueChange={(val) => setSelectedSource(val)}>
-              <SelectTrigger className="border-border/80 bg-surface-1 hover:bg-surface-2 text-text h-8 w-auto min-w-[130px] gap-2 rounded-[var(--radius-sm)] px-2.5 text-[12px] font-medium">
+              <SelectTrigger className="border-border/80 bg-surface-1 hover:bg-surface-2 text-text h-8 w-auto min-w-[115px] gap-1.5 rounded-[var(--radius-sm)] px-2.5 text-[12px] font-medium">
                 <SelectValue placeholder="All Sources" />
               </SelectTrigger>
-              <SelectContent align="end" className="min-w-[160px]">
+              <SelectContent align="end" className="min-w-[150px]">
                 <SelectItem value="all" className="min-h-[32px] rounded-[6px] py-1.5 text-[13px]">
                   All Sources
                 </SelectItem>
