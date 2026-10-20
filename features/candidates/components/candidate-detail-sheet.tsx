@@ -42,6 +42,16 @@ interface CandidateDetailSheetProps {
   onOpenChange: (open: boolean) => void;
 }
 
+function getCurrentLocalDateTime(): string {
+  const now = new Date();
+  const year = now.getFullYear();
+  const month = String(now.getMonth() + 1).padStart(2, '0');
+  const day = String(now.getDate()).padStart(2, '0');
+  const hours = String(now.getHours()).padStart(2, '0');
+  const minutes = String(now.getMinutes()).padStart(2, '0');
+  return `${year}-${month}-${day}T${hours}:${minutes}`;
+}
+
 export function CandidateDetailSheet({ candidate, open, onOpenChange }: CandidateDetailSheetProps) {
   const updateStage = useUpdateCandidateStage();
   const recordDecision = useRecordManagerDecision();
@@ -346,7 +356,12 @@ export function CandidateDetailSheet({ candidate, open, onOpenChange }: Candidat
                   <Button
                     variant="outline"
                     size="sm"
-                    onClick={() => setShowScheduleForm(!showScheduleForm)}
+                    onClick={() => {
+                    if (!showScheduleForm && !interviewDate) {
+                      setInterviewDate(candidate.interviewDate ? candidate.interviewDate.slice(0, 16) : getCurrentLocalDateTime());
+                    }
+                    setShowScheduleForm(!showScheduleForm);
+                  }}
                     className="h-7 text-[12px] cursor-pointer"
                   >
                     {candidate.interviewDate ? 'Reschedule' : 'Set Slot'}

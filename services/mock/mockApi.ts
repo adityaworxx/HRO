@@ -1,5 +1,5 @@
 import type { HroApiClient } from '@/services/api';
-import type { Opening, Candidate, OnboardingItem, User } from '@/types/entities';
+import type { Opening, Candidate, OnboardingItem, User, Notification } from '@/types/entities';
 import { getStore, saveStore, resetStore } from './store';
 import { simulateLatency, getForceFailure } from './latency';
 import { PRIMARY_MANAGER, PRIMARY_HR } from '@/fixtures/users';
@@ -86,6 +86,16 @@ export const mockApi: HroApiClient = {
         createdAt: new Date().toISOString(),
       };
       store.openings.unshift(newOpening);
+      const hrNotification: Notification = {
+        id: crypto.randomUUID(),
+        recipientRole: 'hr',
+        title: 'New Opening Created',
+        message: `Hiring Manager created new opening "${newOpening.title}" in ${newOpening.department}.`,
+        timestamp: new Date().toISOString(),
+        read: false,
+        link: '/openings',
+      };
+      store.notifications = [hrNotification, ...(store.notifications || [])];
       saveStore(store);
       return newOpening;
     },
@@ -173,6 +183,19 @@ export const mockApi: HroApiClient = {
 
       const updated = { ...store.candidates[idx]!, stage };
       store.candidates[idx] = updated;
+      if (stage === 'Shared with Manager') {
+        const candidateName = updated.name || 'Candidate';
+        const mgrNotification: Notification = {
+          id: crypto.randomUUID(),
+          recipientRole: 'manager',
+          title: 'Candidate Shared for Review',
+          message: `HR shared candidate ${candidateName} for technical evaluation.`,
+          timestamp: new Date().toISOString(),
+          read: false,
+          link: '/shortlist',
+        };
+        store.notifications = [mgrNotification, ...(store.notifications || [])];
+      }
       saveStore(store);
       return updated;
     },
@@ -196,6 +219,19 @@ export const mockApi: HroApiClient = {
         return c;
       });
 
+      if (updatedList.length > 0) {
+        const names = updatedList.map((c) => c.name).join(', ');
+        const mgrNotification: Notification = {
+          id: crypto.randomUUID(),
+          recipientRole: 'manager',
+          title: updatedList.length === 1 ? 'Candidate Shared for Review' : `${updatedList.length} Candidates Shared for Review`,
+          message: `HR shared ${names} for technical review.`,
+          timestamp: new Date().toISOString(),
+          read: false,
+          link: '/shortlist',
+        };
+        store.notifications = [mgrNotification, ...(store.notifications || [])];
+      }
       saveStore(store);
       return updatedList;
     },
@@ -309,15 +345,20 @@ export const mockApi: HroApiClient = {
     list: async (role) => {
       await simulateLatency();
       checkFailure();
-      return mockNotifications.map((n) => ({ ...n, recipientRole: role }));
+      const store = getStore();
+      return (store.notifications || []).filter(
+        (n) => n.recipientRole === role || !n.recipientRole
+      );
     },
 
     markAsRead: async (id) => {
       await simulateLatency();
-      mockNotifications = mockNotifications.map((n) =>
+      const store = getStore();
+      store.notifications = (store.notifications || []).map((n) =>
         n.id === id ? { ...n, read: true } : n
       );
-      const found = mockNotifications.find((n) => n.id === id);
+      saveStore(store);
+      const found = store.notifications.find((n) => n.id === id);
       return (
         found ?? {
           id,
@@ -330,9 +371,13 @@ export const mockApi: HroApiClient = {
       );
     },
 
-    markAllAsRead: async () => {
+    markAllAsRead: async (role) => {
       await simulateLatency();
-      mockNotifications = mockNotifications.map((n) => ({ ...n, read: true }));
+      const store = getStore();
+      store.notifications = (store.notifications || []).map((n) =>
+        n.recipientRole === role ? { ...n, read: true } : n
+      );
+      saveStore(store);
     },
   },
 

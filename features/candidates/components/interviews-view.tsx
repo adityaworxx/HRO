@@ -30,6 +30,16 @@ import {
 import { DateTimePicker } from '@/components/ui/date-time-picker';
 import { toast } from 'sonner';
 
+function getCurrentLocalDateTime(): string {
+  const now = new Date();
+  const year = now.getFullYear();
+  const month = String(now.getMonth() + 1).padStart(2, '0');
+  const day = String(now.getDate()).padStart(2, '0');
+  const hours = String(now.getHours()).padStart(2, '0');
+  const minutes = String(now.getMinutes()).padStart(2, '0');
+  return `${year}-${month}-${day}T${hours}:${minutes}`;
+}
+
 export function InterviewsView() {
   const { data: candidates = [], isLoading } = useCandidates();
   const scheduleInterview = useScheduleInterview();
@@ -44,13 +54,13 @@ export function InterviewsView() {
   const [selectedCandidate, setSelectedCandidate] = React.useState<Candidate | null>(null);
   const [scheduleModalOpen, setScheduleModalOpen] = React.useState(false);
   const [outcomeModalOpen, setOutcomeModalOpen] = React.useState(false);
-  const [interviewDate, setInterviewDate] = React.useState('2026-10-15T15:00');
+  const [interviewDate, setInterviewDate] = React.useState(getCurrentLocalDateTime());
   const [interviewMode, setInterviewMode] = React.useState<'Video' | 'Phone' | 'Onsite'>('Video');
   const [outcomeNote, setOutcomeNote] = React.useState('');
 
   const handleOpenSchedule = (candidate: Candidate) => {
     setSelectedCandidate(candidate);
-    setInterviewDate(candidate.interviewDate?.slice(0, 16) ?? '2026-10-15T15:00');
+    setInterviewDate(candidate.interviewDate ? candidate.interviewDate.slice(0, 16) : getCurrentLocalDateTime());
     setInterviewMode(candidate.interviewMode ?? 'Video');
     setScheduleModalOpen(true);
   };

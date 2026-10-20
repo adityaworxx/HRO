@@ -1,6 +1,7 @@
 'use client';
 
 import * as React from 'react';
+import { cn } from '@/lib/utils';
 import { useOpenings } from '@/features/openings/hooks';
 import { useCandidates } from '@/features/candidates/hooks';
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '@/components/ui/card';
@@ -8,12 +9,29 @@ import { StatCard } from '@/components/hro/stat-card';
 import { Progress } from '@/components/ui/progress';
 
 const monthlyVelocityData = [
-  { month: 'May', offers: 6, joined: 4 },
-  { month: 'Jun', offers: 8, joined: 6 },
-  { month: 'Jul', offers: 5, joined: 3 },
-  { month: 'Aug', offers: 9, joined: 7 },
-  { month: 'Sep', offers: 11, joined: 8 },
-  { month: 'Oct', offers: 7, joined: 5 },
+  { label: 'May', barA: 6, barB: 4, tipA: 'offers', tipB: 'joined' },
+  { label: 'Jun', barA: 8, barB: 6, tipA: 'offers', tipB: 'joined' },
+  { label: 'Jul', barA: 5, barB: 3, tipA: 'offers', tipB: 'joined' },
+  { label: 'Aug', barA: 9, barB: 7, tipA: 'offers', tipB: 'joined' },
+  { label: 'Sep', barA: 11, barB: 8, tipA: 'offers', tipB: 'joined' },
+  { label: 'Oct', barA: 7, barB: 5, tipA: 'offers', tipB: 'joined' },
+];
+
+const sourcesSharedData = [
+  { label: 'LinkedIn', barA: 10, barB: 8, tipA: 'sourced', tipB: 'shared with mgr' },
+  { label: 'Referrals', barA: 7, barB: 6, tipA: 'sourced', tipB: 'shared with mgr' },
+  { label: 'Naukri', barA: 6, barB: 5, tipA: 'sourced', tipB: 'shared with mgr' },
+  { label: 'Indeed', barA: 4, barB: 3, tipA: 'sourced', tipB: 'shared with mgr' },
+  { label: 'Other', barA: 3, barB: 2, tipA: 'sourced', tipB: 'shared with mgr' },
+];
+
+const monthlyPipelineData = [
+  { label: 'May', barA: 20, barB: 16, tipA: 'sourced', tipB: 'shared with mgr' },
+  { label: 'Jun', barA: 24, barB: 20, tipA: 'sourced', tipB: 'shared with mgr' },
+  { label: 'Jul', barA: 18, barB: 15, tipA: 'sourced', tipB: 'shared with mgr' },
+  { label: 'Aug', barA: 26, barB: 21, tipA: 'sourced', tipB: 'shared with mgr' },
+  { label: 'Sep', barA: 32, barB: 27, tipA: 'sourced', tipB: 'shared with mgr' },
+  { label: 'Oct', barA: 22, barB: 18, tipA: 'sourced', tipB: 'shared with mgr' },
 ];
 
 const channelBreakdownData = [
@@ -27,6 +45,7 @@ const channelBreakdownData = [
 export default function ReportsPage() {
   const { data: openings = [] } = useOpenings();
   const { data: candidates = [] } = useCandidates();
+  const [graphMode, setGraphMode] = React.useState<'velocity' | 'sources' | 'monthly'>('velocity');
 
   // Requisitions stats
   const activeOpenings = openings.filter((o) => o.status !== 'Closed').length;
@@ -179,107 +198,219 @@ export default function ReportsPage() {
           </div>
         </Card>
 
-        {/* Card 2: Hiring Velocity & Trends Graph */}
+        {/* Card 2: Hiring Velocity & Trends Graph (with Toggle for Sources / Shared with Manager) */}
         <Card className="flex flex-col justify-between h-full">
           <div>
             <CardHeader className="pb-4 border-b border-border/40">
-              <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-2">
+              <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-3">
                 <div>
-                  <CardTitle className="text-[16px] font-semibold text-text tracking-[-0.01em]">
-                    Hiring Velocity & Trends
-                  </CardTitle>
+                  <div className="flex items-center gap-2 flex-wrap">
+                    <CardTitle className="text-[16px] font-semibold text-text tracking-[-0.01em]">
+                      {graphMode === 'velocity'
+                        ? 'Hiring Velocity & Trends'
+                        : graphMode === 'sources'
+                          ? 'Sources & Shared with Manager'
+                          : 'Monthly Sourced vs. Shared with Manager'}
+                    </CardTitle>
+                  </div>
                   <CardDescription className="text-[12px] text-text-muted mt-0.5">
-                    Monthly offers extended vs. confirmed candidate joins.
+                    {graphMode === 'velocity'
+                      ? 'Monthly offers extended vs. confirmed candidate joins.'
+                      : graphMode === 'sources'
+                        ? 'Candidates sourced by channel vs. profiles shared for manager review.'
+                        : 'Monthly talent acquisition intake vs. profiles shared for manager evaluation.'}
                   </CardDescription>
                 </div>
 
-                {/* Clean Typography Legend */}
-                <div className="flex items-center gap-3 text-[11px] font-medium text-text-muted select-none pt-0.5">
-                  <div className="flex items-center gap-1.5">
-                    <span className="h-2 w-2 rounded-full bg-surface-3 border border-border" />
-                    <span>Offers</span>
-                  </div>
-                  <div className="flex items-center gap-1.5">
-                    <span className="h-2 w-2 rounded-full bg-accent" />
-                    <span className="text-text">Joined</span>
-                  </div>
+                {/* Graph Mode Segmented Toggle Buttons */}
+                <div className="flex items-center gap-1 bg-surface-2 p-0.5 rounded-[6px] border border-border shrink-0 self-start">
+                  <button
+                    type="button"
+                    onClick={() => setGraphMode('velocity')}
+                    className={cn(
+                      'px-2 py-1 text-[11px] font-medium rounded-[4px] transition-colors cursor-pointer select-none',
+                      graphMode === 'velocity'
+                        ? 'bg-surface-1 text-text shadow-xs border border-border/80 font-semibold'
+                        : 'text-text-muted hover:text-text'
+                    )}
+                  >
+                    Velocity
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setGraphMode('sources')}
+                    className={cn(
+                      'px-2 py-1 text-[11px] font-medium rounded-[4px] transition-colors cursor-pointer select-none',
+                      graphMode === 'sources'
+                        ? 'bg-surface-1 text-text shadow-xs border border-border/80 font-semibold'
+                        : 'text-text-muted hover:text-text'
+                    )}
+                  >
+                    Sources vs Shared
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setGraphMode('monthly')}
+                    className={cn(
+                      'px-2 py-1 text-[11px] font-medium rounded-[4px] transition-colors cursor-pointer select-none',
+                      graphMode === 'monthly'
+                        ? 'bg-surface-1 text-text shadow-xs border border-border/80 font-semibold'
+                        : 'text-text-muted hover:text-text'
+                    )}
+                  >
+                    Monthly Shared
+                  </button>
+                </div>
+              </div>
+
+              {/* Clean Typography Legend */}
+              <div className="flex items-center gap-4 text-[11px] font-medium text-text-muted select-none pt-3">
+                <div className="flex items-center gap-1.5">
+                  <span className="h-2 w-2 rounded-full bg-surface-3 border border-border" />
+                  <span>{graphMode === 'velocity' ? 'Offers' : 'Total Sourced'}</span>
+                </div>
+                <div className="flex items-center gap-1.5">
+                  <span className="h-2 w-2 rounded-full bg-accent" />
+                  <span className="text-text">
+                    {graphMode === 'velocity' ? 'Joined' : 'Shared with Manager'}
+                  </span>
                 </div>
               </div>
             </CardHeader>
 
             <CardContent className="pt-4 space-y-4">
               {/* Dual-bar SVG / CSS Chart Area */}
-              <div className="h-[210px] w-full flex items-end justify-between gap-3 sm:gap-4 pt-6 pb-2 px-2 relative">
-                {/* Horizontal Background Grid Reference Lines */}
-                <div className="absolute inset-x-0 top-6 border-b border-border/40 flex items-center justify-end pr-1 text-[10px] text-text-subtle font-mono select-none">
-                  12
-                </div>
-                <div className="absolute inset-x-0 top-[50%] border-b border-border/40 flex items-center justify-end pr-1 text-[10px] text-text-subtle font-mono select-none">
-                  6
-                </div>
-                <div className="absolute inset-x-0 bottom-6 border-b border-border flex items-center justify-end pr-1 text-[10px] text-text-subtle font-mono select-none">
-                  0
-                </div>
+              {(() => {
+                const activeData =
+                  graphMode === 'velocity'
+                    ? monthlyVelocityData
+                    : graphMode === 'sources'
+                      ? sourcesSharedData
+                      : monthlyPipelineData;
+                const maxVal = graphMode === 'monthly' ? 36 : 12;
+                const midVal = maxVal / 2;
 
-                {monthlyVelocityData.map((d) => {
-                  const maxVal = 12;
-                  const offerHeight = Math.round((d.offers / maxVal) * 140);
-                  const joinHeight = Math.round((d.joined / maxVal) * 140);
-
-                  return (
-                    <div
-                      key={d.month}
-                      className="group relative flex-1 flex flex-col items-center justify-end h-full z-10"
-                    >
-                      {/* Tooltip on hover */}
-                      <div className="absolute -top-7 opacity-0 group-hover:opacity-100 transition-opacity bg-surface-3 border border-border text-text rounded-[var(--radius-sm)] px-2 py-0.5 text-[10px] font-mono tabular-nums shadow-sm whitespace-nowrap pointer-events-none z-20">
-                        {d.offers} offers · {d.joined} joined
-                      </div>
-
-                      {/* Dual Bars */}
-                      <div className="flex items-end gap-1.5 pb-6">
-                        {/* Offers Bar */}
-                        <div
-                          style={{ height: `${offerHeight}px` }}
-                          className="w-3.5 sm:w-5 rounded-t-[3px] bg-surface-3 border border-border group-hover:bg-border-strong transition-colors cursor-pointer"
-                          title={`${d.month}: ${d.offers} Offers`}
-                        />
-                        {/* Joined Bar */}
-                        <div
-                          style={{ height: `${joinHeight}px` }}
-                          className="w-3.5 sm:w-5 rounded-t-[3px] bg-accent group-hover:opacity-90 transition-opacity cursor-pointer"
-                          title={`${d.month}: ${d.joined} Joined`}
-                        />
-                      </div>
-
-                      {/* Month Label */}
-                      <span className="absolute bottom-0 text-[11px] font-medium text-text-subtle group-hover:text-text transition-colors select-none font-mono">
-                        {d.month}
-                      </span>
+                return (
+                  <div className="h-[210px] w-full flex items-end justify-between gap-3 sm:gap-4 pt-6 pb-2 px-2 relative">
+                    {/* Horizontal Background Grid Reference Lines */}
+                    <div className="absolute inset-x-0 top-6 border-b border-border/40 flex items-center justify-end pr-1 text-[10px] text-text-subtle font-mono select-none">
+                      {maxVal}
                     </div>
-                  );
-                })}
-              </div>
+                    <div className="absolute inset-x-0 top-[50%] border-b border-border/40 flex items-center justify-end pr-1 text-[10px] text-text-subtle font-mono select-none">
+                      {midVal}
+                    </div>
+                    <div className="absolute inset-x-0 bottom-6 border-b border-border flex items-center justify-end pr-1 text-[10px] text-text-subtle font-mono select-none">
+                      0
+                    </div>
+
+                    {activeData.map((d) => {
+                      const barAHeight = Math.round((d.barA / maxVal) * 140);
+                      const barBHeight = Math.round((d.barB / maxVal) * 140);
+
+                      return (
+                        <div
+                          key={d.label}
+                          className="group relative flex-1 flex flex-col items-center justify-end h-full z-10"
+                        >
+                          {/* Tooltip on hover */}
+                          <div className="absolute -top-7 opacity-0 group-hover:opacity-100 transition-opacity bg-surface-3 border border-border text-text rounded-[var(--radius-sm)] px-2 py-0.5 text-[10px] font-mono tabular-nums shadow-sm whitespace-nowrap pointer-events-none z-20">
+                            {d.barA} {d.tipA} · {d.barB} {d.tipB}
+                          </div>
+
+                          {/* Dual Bars */}
+                          <div className="flex items-end gap-1.5 pb-6">
+                            {/* Bar A */}
+                            <div
+                              style={{ height: `${barAHeight}px` }}
+                              className="w-3.5 sm:w-5 rounded-t-[3px] bg-surface-3 border border-border group-hover:bg-border-strong transition-colors cursor-pointer"
+                              title={`${d.label}: ${d.barA} ${d.tipA}`}
+                            />
+                            {/* Bar B */}
+                            <div
+                              style={{ height: `${barBHeight}px` }}
+                              className="w-3.5 sm:w-5 rounded-t-[3px] bg-accent group-hover:opacity-90 transition-opacity cursor-pointer"
+                              title={`${d.label}: ${d.barB} ${d.tipB}`}
+                            />
+                          </div>
+
+                          {/* Category Label */}
+                          <span className="absolute bottom-0 text-[11px] font-medium text-text-subtle group-hover:text-text transition-colors select-none font-mono truncate max-w-full text-center">
+                            {d.label}
+                          </span>
+                        </div>
+                      );
+                    })}
+                  </div>
+                );
+              })()}
 
               {/* In-card Context Details */}
               <div className="rounded-[8px] border border-border/60 bg-surface-2/40 p-2.5 flex items-center justify-between text-[11px] text-text-muted">
-                <span>Peak Month: <strong className="text-text font-medium">September</strong> (11 offers, 8 hires)</span>
-                <span className="text-accent font-medium">Trending +14% QoQ</span>
+                {graphMode === 'velocity' ? (
+                  <>
+                    <span>
+                      Peak Month: <strong className="text-text font-medium">September</strong> (11 offers, 8 hires)
+                    </span>
+                    <span className="text-accent font-medium">Trending +14% QoQ</span>
+                  </>
+                ) : graphMode === 'sources' ? (
+                  <>
+                    <span>
+                      Top Channel: <strong className="text-text font-medium">LinkedIn Talent</strong> (10 sourced, 8 shared with mgr)
+                    </span>
+                    <span className="text-accent font-medium">80% pass-through</span>
+                  </>
+                ) : (
+                  <>
+                    <span>
+                      Peak Intake: <strong className="text-text font-medium">September</strong> (32 sourced, 27 shared with mgr)
+                    </span>
+                    <span className="text-accent font-medium">84% review clearance</span>
+                  </>
+                )}
               </div>
             </CardContent>
           </div>
 
           {/* Footer Summary Strip */}
           <div className="border-t border-border/50 px-4 sm:px-6 py-2.5 sm:py-3 bg-surface-2/30 flex flex-wrap items-center justify-between gap-2 text-[11px] select-none rounded-b-[12px]">
-            <span className="text-text-subtle">
-              Total Hires: <strong className="text-text font-mono font-semibold">31</strong>
-            </span>
-            <span className="text-text-subtle">
-              Avg Velocity: <strong className="text-text font-mono font-semibold">5.2/mo</strong>
-            </span>
-            <span className="text-text-subtle">
-              Offer Conversion: <strong className="text-accent font-mono font-semibold">82%</strong>
-            </span>
+            {graphMode === 'velocity' ? (
+              <>
+                <span className="text-text-subtle">
+                  Total Hires: <strong className="text-text font-mono font-semibold">31</strong>
+                </span>
+                <span className="text-text-subtle">
+                  Avg Velocity: <strong className="text-text font-mono font-semibold">5.2/mo</strong>
+                </span>
+                <span className="text-text-subtle">
+                  Offer Conversion: <strong className="text-accent font-mono font-semibold">82%</strong>
+                </span>
+              </>
+            ) : graphMode === 'sources' ? (
+              <>
+                <span className="text-text-subtle">
+                  Total Sourced: <strong className="text-text font-mono font-semibold">30</strong>
+                </span>
+                <span className="text-text-subtle">
+                  Shared with Mgr: <strong className="text-accent font-mono font-semibold">24 (80%)</strong>
+                </span>
+                <span className="text-text-subtle">
+                  Top Yield: <strong className="text-text font-mono font-semibold">Referrals (86%)</strong>
+                </span>
+              </>
+            ) : (
+              <>
+                <span className="text-text-subtle">
+                  Net Sourced: <strong className="text-text font-mono font-semibold">142</strong>
+                </span>
+                <span className="text-text-subtle">
+                  Shared with Mgr: <strong className="text-accent font-mono font-semibold">117 (82%)</strong>
+                </span>
+                <span className="text-text-subtle">
+                  Review SLA: <strong className="text-text font-mono font-semibold">2.1 Days</strong>
+                </span>
+              </>
+            )}
           </div>
         </Card>
       </div>

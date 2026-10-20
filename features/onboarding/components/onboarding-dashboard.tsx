@@ -4,6 +4,7 @@ import * as React from 'react';
 import { cn } from '@/lib/utils';
 import { useAllOnboarding, useToggleOnboardingTask, useCreateOnboardingTask } from '../hooks';
 import { useCandidates } from '@/features/candidates/hooks';
+import { useOpenings } from '@/features/openings/hooks';
 import { StatCard } from '@/components/hro/stat-card';
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -65,6 +66,15 @@ const STANDARD_TASKS = [
 export function OnboardingDashboard() {
   const { data: onboardingItems = [], isLoading: loadingItems } = useAllOnboarding();
   const { data: candidates = [], isLoading: loadingCandidates } = useCandidates();
+  const { data: openings = [] } = useOpenings();
+
+  const getCandidateJoiningDate = React.useCallback(
+    (candidate: { openingId?: string }) => {
+      const opening = openings.find((o) => o.id === candidate.openingId);
+      return opening?.targetStartDate ? formatDate(opening.targetStartDate) : '01 Nov 2026';
+    },
+    [openings]
+  );
   const toggleTask = useToggleOnboardingTask();
   const createTask = useCreateOnboardingTask();
 
@@ -400,12 +410,111 @@ export function OnboardingDashboard() {
       {/* VIEW 1: BY NEW HIRE (Candidate Focus Roster) */}
       {viewMode === 'by-candidate' && (
         <div className="space-y-4 sm:space-y-5">
+          {/* 1. TOP: Clean Table for Upcoming Hires Ready to Initialize Checklist */}
+          {candidatesAwaitingChecklists.length > 0 && (
+            <Card className="border-border bg-surface-1 overflow-hidden">
+              <div className="border-border bg-surface-2/30 flex items-center justify-between border-b px-4 py-3 sm:px-5">
+                <div className="flex items-center gap-2">
+                  <span className="text-text text-[13px] font-semibold">
+                    Upcoming Hires Awaiting Onboarding Roadmap
+                  </span>
+                </div>
+                <span className="text-text-subtle text-[11px] hidden sm:inline">
+                  Initialize standard checklist or add custom tasks
+                </span>
+              </div>
+
+              <div className="overflow-x-auto -mx-px">
+                <table className="w-full text-left border-collapse table-fixed min-w-[720px]">
+                  <colgroup>
+                    <col className="w-[20%]" />
+                    <col className="w-[28%]" />
+                    <col className="w-[14%]" />
+                    <col className="w-[16%]" />
+                    <col className="w-[22%]" />
+                  </colgroup>
+                  <thead>
+                    <tr className="border-b border-border text-[11px] font-medium text-text-subtle uppercase tracking-wider bg-surface-2/40">
+                      <th className="py-2.5 px-4 sm:px-5 font-medium">Candidate</th>
+                      <th className="py-2.5 px-3 sm:px-4 font-medium">Role & Company</th>
+                      <th className="py-2.5 px-3 sm:px-4 font-medium">Stage</th>
+                      <th className="py-2.5 px-3 sm:px-4 font-medium">Joining Date</th>
+                      <th className="py-2.5 px-4 sm:px-5 text-right font-medium">Actions</th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-border text-[12px]">
+                    {candidatesAwaitingChecklists.map((candidate) => {
+                      const joiningDate = getCandidateJoiningDate(candidate);
+
+                      return (
+                        <tr key={candidate.id} className="hover:bg-surface-2/30 transition-colors">
+                          <td className="py-2.5 px-4 sm:px-5 whitespace-nowrap">
+                            <div className="flex items-center gap-2">
+                              <Avatar className="h-6 w-6 border border-border shrink-0">
+                                <AvatarFallback className="text-[9px] bg-surface-3 text-text font-medium">
+                                  {candidate.name.slice(0, 2).toUpperCase()}
+                                </AvatarFallback>
+                              </Avatar>
+                              <span className="font-medium text-text">{candidate.name}</span>
+                            </div>
+                          </td>
+                          <td className="py-2.5 px-3 sm:px-4 whitespace-nowrap truncate text-text-muted">
+                            {candidate.currentRole} <span className="text-text-subtle">•</span> {candidate.currentCompany}
+                          </td>
+                          <td className="py-2.5 px-3 sm:px-4 whitespace-nowrap">
+                            <Badge variant="default" className="text-[11px] font-normal text-text-muted bg-surface-2">
+                              {candidate.stage}
+                            </Badge>
+                          </td>
+                          <td className="py-2.5 px-3 sm:px-4 whitespace-nowrap">
+                            <span className="flex items-center gap-1.5 text-[12px] font-medium text-text tabular-nums">
+                              <Calendar className="h-3.5 w-3.5 text-accent stroke-[1.75]" />
+                              {joiningDate}
+                            </span>
+                          </td>
+                          <td className="py-2.5 px-4 sm:px-5 whitespace-nowrap text-right">
+                            <div className="inline-flex items-center gap-1.5 sm:gap-2 justify-end">
+                              <Button
+                                variant="outline"
+                                size="sm"
+                                onClick={() =>
+                                  handleInitializeStandardChecklist(candidate.id, candidate.name)
+                                }
+                                loading={initializingCandidateId === candidate.id}
+                                disabled={initializingCandidateId !== null}
+                                className="h-7 px-2 sm:px-2.5 text-[11px] gap-1 border-border hover:bg-surface-2 cursor-pointer"
+                              >
+                                <ListChecks className="h-3 w-3" />
+                                <span>Setup Standard Checklist</span>
+                              </Button>
+                              <Button
+                                variant="ghost"
+                                size="sm"
+                                onClick={() => handleOpenCreateModal(candidate.id)}
+                                disabled={initializingCandidateId !== null}
+                                className="h-7 px-2 text-[11px] gap-1 text-text-muted hover:text-text cursor-pointer"
+                              >
+                                <Plus className="h-3 w-3" />
+                                <span>Custom Task</span>
+                              </Button>
+                            </div>
+                          </td>
+                        </tr>
+                      );
+                    })}
+                  </tbody>
+                </table>
+              </div>
+            </Card>
+          )}
+
+          {/* 2. BOTTOM: Candidate Checklist Tasks Section */}
           {candidatesWithActiveChecklists.length === 0 ? (
             <Card className="border-border p-8 sm:p-12 text-center">
               <Users className="text-text-muted mx-auto h-8 w-8 mb-2 opacity-50" />
               <p className="text-text text-[14px] font-medium">No candidates with active checklists</p>
               <p className="text-text-muted text-[12px] mt-1">
-                Select an upcoming hire below to initialize their onboarding roadmap.
+                Select an upcoming hire above to initialize their onboarding roadmap.
               </p>
             </Card>
           ) : (
@@ -414,6 +523,7 @@ export function OnboardingDashboard() {
               const total = candidateTasks.length;
               const completed = candidateTasks.filter((i) => i.done).length;
               const percent = total > 0 ? Math.round((completed / total) * 100) : 0;
+              const joiningDate = getCandidateJoiningDate(candidate);
 
               return (
                 <Card key={candidate.id} className="border-border bg-surface-1 overflow-hidden shadow-xs">
@@ -433,6 +543,10 @@ export function OnboardingDashboard() {
                           <Badge variant="default" className="text-[11px] font-normal text-text-muted bg-surface-2 px-1.5 py-0.2 shrink-0">
                             {candidate.stage}
                           </Badge>
+                          <span className="flex items-center gap-1 text-[11px] text-text-muted bg-surface-2/60 border border-border px-2 py-0.5 rounded-[4px] tabular-nums font-mono">
+                            <Calendar className="h-3 w-3 text-accent shrink-0" />
+                            <span>Joining: {joiningDate}</span>
+                          </span>
                         </div>
                         <p className="text-text-muted text-[12px] truncate">
                           {candidate.currentRole} • {candidate.currentCompany}
@@ -463,7 +577,7 @@ export function OnboardingDashboard() {
                         variant="outline"
                         size="sm"
                         onClick={() => handleOpenCreateModal(candidate.id)}
-                        className="h-8 gap-1 text-[12px] border-border hover:bg-surface-2 shrink-0"
+                        className="h-8 gap-1 text-[12px] border-border hover:bg-surface-2 shrink-0 cursor-pointer"
                       >
                         <Plus className="h-3.5 w-3.5" />
                         <span>Add Task</span>
@@ -471,177 +585,109 @@ export function OnboardingDashboard() {
                     </div>
                   </div>
 
-                  {/* Tasks Grouped by Phase for Candidate */}
-                  <CardContent className="p-3 sm:p-5">
-                    {candidateTasks.length === 0 ? (
-                      <p className="text-text-muted py-4 text-center text-[12px]">
-                        No tasks match the active filters for this candidate.
-                      </p>
-                    ) : (
-                      <div className="grid grid-cols-1 gap-3 sm:gap-4 lg:grid-cols-3">
-                        {PHASES.map((phase) => {
-                          const phaseTasks = candidateTasks.filter((t) => t.phase === phase);
-                          const phaseDone = phaseTasks.filter((t) => t.done).length;
+                  {/* Tasks List by Phase Accordion/Groupings */}
+                  <CardContent className="p-0 divide-y divide-border/60">
+                    {PHASES.map((phase) => {
+                      const phaseTasks = candidateTasks.filter((t) => t.phase === phase);
+                      if (phaseTasks.length === 0) return null;
 
-                          return (
-                            <div
-                              key={phase}
-                              className="border-border bg-surface-2/20 flex flex-col rounded-[var(--radius-md)] border p-3 sm:p-3.5 overflow-hidden"
-                            >
-                              {/* Phase Mini-Header */}
-                              <div className="mb-2.5 flex items-center justify-between">
-                                <span className="text-text text-[13px] font-semibold">
-                                  {phase}
-                                </span>
-                                <Badge
-                                  variant={phaseDone === phaseTasks.length && phaseTasks.length > 0 ? 'success' : 'default'}
-                                  className="font-mono text-[10px]"
-                                >
-                                  {phaseDone}/{phaseTasks.length}
-                                </Badge>
-                              </div>
+                      const phaseCompleted = phaseTasks.filter((t) => t.done).length;
 
-                              {/* Task Items */}
-                              <div className="space-y-2 flex-1">
-                                {phaseTasks.length === 0 ? (
-                                  <div className="flex h-16 items-center justify-center text-center">
-                                    <span className="text-text-subtle text-[11px]">
-                                      No tasks in this phase
-                                    </span>
-                                  </div>
-                                ) : (
-                                  phaseTasks.map((task) => (
-                                    <div
-                                      key={task.id}
-                                      className={`group flex items-start gap-2.5 rounded-[var(--radius-sm)] border p-2.5 transition-all min-w-0 ${
-                                        task.done
-                                          ? 'border-border/60 bg-surface-1/40'
-                                          : 'border-border bg-surface-1 hover:border-border-strong hover:bg-surface-2/40'
-                                      }`}
-                                    >
-                                      <Checkbox
-                                        checked={task.done}
-                                        onCheckedChange={() =>
-                                          handleToggle(task.id, task.done, task.title)
-                                        }
-                                        className="mt-0.5 shrink-0"
-                                      />
-                                      <div className="min-w-0 flex-1 space-y-1 overflow-hidden">
-                                        <p
-                                          className={`text-[12px] leading-snug font-medium transition-colors break-words ${
-                                            task.done
-                                              ? 'text-text-muted line-through decoration-text-subtle/40'
-                                              : 'text-text'
-                                          }`}
-                                        >
-                                          {task.title}
-                                        </p>
-                                        <div className="flex flex-wrap items-center gap-1.5 text-[10px]">
-                                          <Badge
-                                            variant="default"
-                                            className="px-1.5 py-0 text-[10px] text-text-muted font-normal bg-surface-2"
-                                          >
-                                            {task.owner}
-                                          </Badge>
-                                          <span className="text-text-subtle flex items-center gap-1">
-                                            <Clock className="h-3 w-3" />
-                                            {formatDate(task.dueDate, 'dd MMM')}
-                                          </span>
-                                        </div>
-                                      </div>
-                                    </div>
-                                  ))
-                                )}
-                              </div>
+                      return (
+                        <div key={phase} className="p-4 sm:p-5">
+                          {/* Phase Title & Completion */}
+                          <div className="flex items-center justify-between pb-3">
+                            <div className="flex items-center gap-2">
+                              <span className="text-text text-[13px] font-semibold tracking-tight">
+                                {phase}
+                              </span>
+                              <span className="text-text-subtle font-mono text-[11px]">
+                                ({phaseCompleted}/{phaseTasks.length})
+                              </span>
                             </div>
-                          );
-                        })}
+                            <span className="text-text-subtle text-[11px] font-medium hidden sm:inline">
+                              {phase === 'Before joining'
+                                ? 'Pre-boarding compliance & equipment setup'
+                                : phase === 'Day 1'
+                                  ? 'First-day welcome & team introduction'
+                                  : '30-day performance & cultural check-in'}
+                            </span>
+                          </div>
+
+                          {/* Phase Checklist Tasks Grid */}
+                          <div className="space-y-2">
+                            {phaseTasks.map((task) => (
+                              <div
+                                key={task.id}
+                                className={cn(
+                                  'group border border-border/80 flex items-start justify-between gap-3 rounded-[8px] p-3 transition-colors',
+                                  task.done
+                                    ? 'bg-surface-2/40 opacity-75'
+                                    : 'bg-surface-1 hover:bg-surface-2/30 hover:border-border-strong'
+                                )}
+                              >
+                                <div className="flex items-start gap-3 min-w-0">
+                                  <Checkbox
+                                    id={task.id}
+                                    checked={task.done}
+                                    onCheckedChange={(checked) =>
+                                      handleToggle(task.id, task.done, task.title)
+                                    }
+                                    className="mt-0.5 cursor-pointer"
+                                  />
+                                  <div className="space-y-0.5 min-w-0">
+                                    <label
+                                      htmlFor={task.id}
+                                      className={cn(
+                                        'block text-[13px] font-medium cursor-pointer leading-snug',
+                                        task.done
+                                          ? 'line-through text-text-muted font-normal'
+                                          : 'text-text'
+                                      )}
+                                    >
+                                      {task.title}
+                                    </label>
+                                    {task.notes && (
+                                      <p className="text-text-subtle text-[12px] truncate">
+                                        {task.notes}
+                                      </p>
+                                    )}
+                                  </div>
+                                </div>
+
+                                <div className="flex items-center gap-2 shrink-0 pt-0.5">
+                                  <Badge
+                                    variant="default"
+                                    className={cn(
+                                      'text-[10px] font-medium py-0 px-1.5',
+                                      task.owner === 'HR'
+                                        ? 'border-accent/30 text-accent bg-accent/10'
+                                        : 'border-border text-text-muted bg-surface-3'
+                                    )}
+                                  >
+                                    {task.owner}
+                                  </Badge>
+
+                                  <span className="text-text-subtle text-[11px] font-mono tabular-nums hidden sm:inline">
+                                    {formatDate(task.dueDate, 'dd MMM')}
+                                  </span>
+                                </div>
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+                      );
+                    })}
+
+                    {candidateTasks.length === 0 && (
+                      <div className="p-6 text-center text-text-muted text-[12px]">
+                        No tasks match your active filter.
                       </div>
                     )}
                   </CardContent>
                 </Card>
               );
             })
-          )}
-
-          {/* Clean 1-Line Table for Upcoming Hires Ready to Initialize Checklist */}
-          {candidatesAwaitingChecklists.length > 0 && (
-            <Card className="border-border bg-surface-1 overflow-hidden">
-              <div className="border-border bg-surface-2/30 flex items-center justify-between border-b px-4 py-3 sm:px-5">
-                <div className="flex items-center gap-2">
-                  <span className="text-text text-[13px] font-semibold">
-                    Upcoming Hires Awaiting Onboarding Roadmap
-                  </span>
-                </div>
-                <span className="text-text-subtle text-[11px] hidden sm:inline">
-                  Initialize standard checklist or add custom tasks
-                </span>
-              </div>
-
-              <div className="overflow-x-auto -mx-px">
-                <table className="w-full text-left border-collapse min-w-[560px]">
-                  <thead>
-                    <tr className="border-b border-border text-[11px] font-medium text-text-subtle uppercase tracking-wider bg-surface-2/40">
-                      <th className="py-2.5 px-4 sm:px-5 font-medium">Candidate</th>
-                      <th className="py-2.5 px-3 sm:px-4 font-medium">Role & Company</th>
-                      <th className="py-2.5 px-3 sm:px-4 font-medium">Stage</th>
-                      <th className="py-2.5 px-4 sm:px-5 text-right font-medium">Actions</th>
-                    </tr>
-                  </thead>
-                  <tbody className="divide-y divide-border text-[12px]">
-                    {candidatesAwaitingChecklists.map((candidate) => (
-                      <tr key={candidate.id} className="hover:bg-surface-2/30 transition-colors">
-                        <td className="py-2.5 px-4 sm:px-5 whitespace-nowrap">
-                          <div className="flex items-center gap-2">
-                            <Avatar className="h-6 w-6 border border-border shrink-0">
-                              <AvatarFallback className="text-[9px] bg-surface-3 text-text font-medium">
-                                {candidate.name.slice(0, 2).toUpperCase()}
-                              </AvatarFallback>
-                            </Avatar>
-                            <span className="font-medium text-text">{candidate.name}</span>
-                          </div>
-                        </td>
-                        <td className="py-2.5 px-3 sm:px-4 whitespace-nowrap text-text-muted">
-                          {candidate.currentRole} <span className="text-text-subtle">•</span> {candidate.currentCompany}
-                        </td>
-                        <td className="py-2.5 px-3 sm:px-4 whitespace-nowrap">
-                          <Badge variant="default" className="text-[11px] font-normal text-text-muted bg-surface-2">
-                            {candidate.stage}
-                          </Badge>
-                        </td>
-                        <td className="py-2.5 px-4 sm:px-5 whitespace-nowrap text-right">
-                          <div className="inline-flex items-center gap-1.5 sm:gap-2 justify-end">
-                            <Button
-                              variant="outline"
-                              size="sm"
-                              onClick={() =>
-                                handleInitializeStandardChecklist(candidate.id, candidate.name)
-                              }
-                              loading={initializingCandidateId === candidate.id}
-                              disabled={initializingCandidateId !== null}
-                              className="h-7 px-2 sm:px-2.5 text-[11px] gap-1 border-border hover:bg-surface-2"
-                            >
-                              <ListChecks className="h-3 w-3" />
-                              <span>Setup Standard Checklist</span>
-                            </Button>
-                            <Button
-                              variant="ghost"
-                              size="sm"
-                              onClick={() => handleOpenCreateModal(candidate.id)}
-                              disabled={initializingCandidateId !== null}
-                              className="h-7 px-2 text-[11px] gap-1 text-text-muted hover:text-text"
-                            >
-                              <Plus className="h-3 w-3" />
-                              <span>Custom Task</span>
-                            </Button>
-                          </div>
-                        </td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
-            </Card>
           )}
         </div>
       )}

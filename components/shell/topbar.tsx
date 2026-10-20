@@ -16,8 +16,8 @@ export function Topbar() {
 
   return (
     <header className="border-border bg-surface-1/95 z-20 flex h-14 w-full shrink-0 items-center justify-between border-b px-3 backdrop-blur sm:px-6 lg:px-8">
-      {/* Left container: balanced width matching right actions */}
-      <div className="flex min-w-[70px] shrink-0 items-center justify-start gap-2.5 sm:min-w-[140px] lg:min-w-[220px]">
+      {/* Left container: left corner title & mobile navigation */}
+      <div className="flex min-w-0 flex-1 items-center justify-start gap-2.5 sm:gap-3">
         {/* Mobile Hamburger Menu Toggle */}
         <Button
           variant="ghost"
@@ -31,23 +31,23 @@ export function Topbar() {
         </Button>
 
         {/* Mobile Logo Brand */}
-        <Link href="/" className="flex items-center gap-2 lg:hidden">
+        <Link href="/" className="flex items-center gap-2 lg:hidden shrink-0">
           <div className="bg-accent flex h-7 w-7 items-center justify-center rounded-[var(--radius-sm)] text-xs font-bold text-white shadow-xs">
             H
           </div>
           <span className="text-text text-[14px] font-semibold tracking-tight">HRO</span>
         </Link>
-      </div>
 
-      {/* Centered Page Title - true optical and geometric middle */}
-      <div className="pointer-events-none flex min-w-0 flex-1 items-center justify-center px-2">
-        <React.Suspense fallback={null}>
-          <Breadcrumbs />
-        </React.Suspense>
+        {/* Left-Aligned Page Title across dashboards & pages */}
+        <div className="flex min-w-0 items-center">
+          <React.Suspense fallback={null}>
+            <Breadcrumbs />
+          </React.Suspense>
+        </div>
       </div>
 
       {/* Right container: actions & utilities */}
-      <div className="flex min-w-[70px] shrink-0 items-center justify-end gap-1.5 sm:min-w-[140px] sm:gap-2 lg:min-w-[220px]">
+      <div className="flex shrink-0 items-center justify-end gap-1.5 sm:gap-2">
         {/* Search Icon Trigger */}
         <Button
           variant="ghost"

@@ -1,3 +1,4 @@
+import { notificationsKeys } from '@/features/notifications/hooks';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { api } from '@/services';
 import type { Opening } from '@/types/entities';
@@ -37,6 +38,7 @@ export function useCreateOpening() {
     mutationFn: (data: Omit<Opening, 'id' | 'createdAt'>) => api.openings.create(data),
     onSuccess: () => {
       void queryClient.invalidateQueries({ queryKey: openingsKeys.lists() });
+      void queryClient.invalidateQueries({ queryKey: notificationsKeys.all });
     },
   });
 }

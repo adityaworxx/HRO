@@ -1,3 +1,4 @@
+import { notificationsKeys } from '@/features/notifications/hooks';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { api } from '@/services';
 import type { Candidate } from '@/types/entities';
@@ -53,6 +54,7 @@ export function useShareWithManager() {
       api.candidates.shareWithManager(candidateIds, note),
     onSuccess: () => {
       void queryClient.invalidateQueries({ queryKey: candidatesKeys.lists() });
+      void queryClient.invalidateQueries({ queryKey: notificationsKeys.all });
     },
   });
 }
@@ -72,6 +74,7 @@ export function useRecordManagerDecision() {
     onSuccess: (_, variables) => {
       void queryClient.invalidateQueries({ queryKey: candidatesKeys.lists() });
       void queryClient.invalidateQueries({ queryKey: candidatesKeys.detail(variables.id) });
+      void queryClient.invalidateQueries({ queryKey: notificationsKeys.all });
     },
   });
 }
@@ -142,6 +145,7 @@ export function useUpdateCandidateStage() {
     onSettled: (_, __, variables) => {
       void queryClient.invalidateQueries({ queryKey: candidatesKeys.lists() });
       void queryClient.invalidateQueries({ queryKey: candidatesKeys.detail(variables.id) });
+      void queryClient.invalidateQueries({ queryKey: notificationsKeys.all });
     },
   });
 }

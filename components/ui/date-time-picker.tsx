@@ -323,9 +323,24 @@ export function DateTimePicker({
 
           {/* Time Right Column */}
           <div className="flex w-[155px] flex-col p-3">
-            <div className="text-text-subtle mb-2 flex items-center gap-1.5 px-1 select-none">
-              <Clock className="h-3.5 w-3.5" />
-              <span className="text-[12px] font-medium">Time Slot</span>
+            <div className="text-text-subtle mb-2 flex items-center justify-between px-1 select-none">
+              <div className="flex items-center gap-1.5">
+                <Clock className="h-3.5 w-3.5" />
+                <span className="text-[12px] font-medium">Time Slot</span>
+              </div>
+              <button
+                type="button"
+                onClick={() => {
+                  const now = new Date();
+                  const updated = new Date(selectedDate);
+                  updated.setHours(now.getHours(), now.getMinutes());
+                  setSelectedDate(updated);
+                  onChange?.(formatToInputValue(updated));
+                }}
+                className="text-[10px] text-accent font-medium hover:underline cursor-pointer"
+              >
+                Now
+              </button>
             </div>
 
             {/* Scrollable Slots */}
