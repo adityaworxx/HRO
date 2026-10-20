@@ -188,9 +188,9 @@ export function CandidatesTable() {
 
   return (
     <div className="space-y-3.5 -mt-1">
-      {/* 1. Header Toolbar: Stage Filter Tabs, Search, Department, Source, and View Mode */}
-      <div className="flex flex-wrap items-center justify-between gap-2.5">
-        {/* Quick Stage Tabs */}
+      {/* 1. Header Toolbar */}
+      <div className="flex flex-col gap-2.5">
+        {/* Row 1: Quick Stage Tabs */}
         <div className="flex flex-wrap items-center gap-1.5">
           {[
             'all',
@@ -230,9 +230,10 @@ export function CandidatesTable() {
           })}
         </div>
 
-        {/* Right Controls: Search + Department + Source + View Mode Toggle */}
-        <div className="flex flex-wrap items-center gap-2">
-          <div className="relative w-full sm:w-[190px] lg:w-[210px]">
+        {/* Row 2: Search on Left, Filters & View Mode on the RIGHT Corner */}
+        <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-2.5">
+          {/* Left: Search input */}
+          <div className="relative w-full sm:w-[240px]">
             <Search className="text-text-subtle pointer-events-none absolute top-1/2 left-2.5 h-3.5 w-3.5 -translate-y-1/2" />
             <Input
               type="text"
@@ -244,85 +245,88 @@ export function CandidatesTable() {
             />
           </div>
 
-          {/* Department Filter */}
-          {departments.length > 0 && (
-            <Select
-              value={selectedDepartment}
-              onValueChange={(val) => setSelectedDepartment(val)}
-            >
-              <SelectTrigger className="border-border/80 bg-surface-1 hover:bg-surface-2 text-text h-8 w-auto min-w-[130px] gap-1.5 rounded-[var(--radius-sm)] px-2.5 text-[12px] font-medium">
-                <SelectValue placeholder="All Departments" />
-              </SelectTrigger>
-              <SelectContent align="end" className="min-w-[160px]">
-                <SelectItem value="all" className="min-h-[32px] rounded-[6px] py-1.5 text-[13px]">
-                  All Departments
-                </SelectItem>
-                {departments.map((dep) => (
-                  <SelectItem
-                    key={dep}
-                    value={dep}
-                    className="min-h-[32px] rounded-[6px] py-1.5 text-[13px]"
-                  >
-                    {dep}
+          {/* Right Corner: Departments + Sources + Cards/Table */}
+          <div className="flex flex-wrap items-center gap-2">
+            {/* Department Filter */}
+            {departments.length > 0 && (
+              <Select
+                value={selectedDepartment}
+                onValueChange={(val) => setSelectedDepartment(val)}
+              >
+                <SelectTrigger className="border-border/80 bg-surface-1 hover:bg-surface-2 text-text h-8 w-auto min-w-[130px] gap-1.5 rounded-[var(--radius-sm)] px-2.5 text-[12px] font-medium">
+                  <SelectValue placeholder="All Departments" />
+                </SelectTrigger>
+                <SelectContent align="end" className="min-w-[160px]">
+                  <SelectItem value="all" className="min-h-[32px] rounded-[6px] py-1.5 text-[13px]">
+                    All Departments
                   </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-          )}
+                  {departments.map((dep) => (
+                    <SelectItem
+                      key={dep}
+                      value={dep}
+                      className="min-h-[32px] rounded-[6px] py-1.5 text-[13px]"
+                    >
+                      {dep}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            )}
 
-          {/* Source Filter */}
-          {sources.length > 0 && (
-            <Select value={selectedSource} onValueChange={(val) => setSelectedSource(val)}>
-              <SelectTrigger className="border-border/80 bg-surface-1 hover:bg-surface-2 text-text h-8 w-auto min-w-[115px] gap-1.5 rounded-[var(--radius-sm)] px-2.5 text-[12px] font-medium">
-                <SelectValue placeholder="All Sources" />
-              </SelectTrigger>
-              <SelectContent align="end" className="min-w-[150px]">
-                <SelectItem value="all" className="min-h-[32px] rounded-[6px] py-1.5 text-[13px]">
-                  All Sources
-                </SelectItem>
-                {sources.map((s) => (
-                  <SelectItem
-                    key={s}
-                    value={s}
-                    className="min-h-[32px] rounded-[6px] py-1.5 text-[13px]"
-                  >
-                    {s}
+            {/* Source Filter */}
+            {sources.length > 0 && (
+              <Select value={selectedSource} onValueChange={(val) => setSelectedSource(val)}>
+                <SelectTrigger className="border-border/80 bg-surface-1 hover:bg-surface-2 text-text h-8 w-auto min-w-[115px] gap-1.5 rounded-[var(--radius-sm)] px-2.5 text-[12px] font-medium">
+                  <SelectValue placeholder="All Sources" />
+                </SelectTrigger>
+                <SelectContent align="end" className="min-w-[150px]">
+                  <SelectItem value="all" className="min-h-[32px] rounded-[6px] py-1.5 text-[13px]">
+                    All Sources
                   </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-          )}
+                  {sources.map((s) => (
+                    <SelectItem
+                      key={s}
+                      value={s}
+                      className="min-h-[32px] rounded-[6px] py-1.5 text-[13px]"
+                    >
+                      {s}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            )}
 
-          {/* View Mode Toggle: Cards vs Table */}
-          <div className="flex items-center rounded-[var(--radius-sm)] border border-border/80 bg-surface-1 p-0.5 shrink-0">
-            <button
-              type="button"
-              onClick={() => setViewMode('columns')}
-              className={cn(
-                'flex items-center gap-1.5 px-2.5 py-1 text-[12px] font-medium rounded-[4px] transition-colors cursor-pointer',
-                viewMode === 'columns'
-                  ? 'bg-surface-3 text-text shadow-2xs'
-                  : 'text-text-muted hover:text-text'
-              )}
-              title="Department Cards View"
-            >
-              <Columns3 className="h-3.5 w-3.5" />
-              <span className="hidden sm:inline">Cards</span>
-            </button>
-            <button
-              type="button"
-              onClick={() => setViewMode('table')}
-              className={cn(
-                'flex items-center gap-1.5 px-2.5 py-1 text-[12px] font-medium rounded-[4px] transition-colors cursor-pointer',
-                viewMode === 'table'
-                  ? 'bg-surface-3 text-text shadow-2xs'
-                  : 'text-text-muted hover:text-text'
-              )}
-              title="Table View"
-            >
-              <List className="h-3.5 w-3.5" />
-              <span className="hidden sm:inline">Table</span>
-            </button>
+            {/* View Mode Toggle: Cards vs Table */}
+            <div className="flex items-center rounded-[var(--radius-sm)] border border-border/80 bg-surface-1 p-0.5 shrink-0">
+              <button
+                type="button"
+                onClick={() => setViewMode('columns')}
+                className={cn(
+                  'flex items-center gap-1.5 px-2.5 py-1 text-[12px] font-medium rounded-[4px] transition-colors cursor-pointer',
+                  viewMode === 'columns'
+                    ? 'bg-surface-3 text-text shadow-2xs'
+                    : 'text-text-muted hover:text-text'
+                )}
+                title="Department Cards View"
+              >
+                <Columns3 className="h-3.5 w-3.5" />
+                <span className="hidden sm:inline">Cards</span>
+              </button>
+              <button
+                type="button"
+                onClick={() => setViewMode('table')}
+                className={cn(
+                  'flex items-center gap-1.5 px-2.5 py-1 text-[12px] font-medium rounded-[4px] transition-colors cursor-pointer',
+                  viewMode === 'table'
+                    ? 'bg-surface-3 text-text shadow-2xs'
+                    : 'text-text-muted hover:text-text'
+                )}
+                title="Table View"
+              >
+                <List className="h-3.5 w-3.5" />
+                <span className="hidden sm:inline">Table</span>
+              </button>
+            </div>
           </div>
         </div>
       </div>
