@@ -21,6 +21,7 @@
 
   --font-sans: var(--font-inter), -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
   --font-mono: var(--font-mono), monospace;
+  --font-serif: "Newsreader", "Charter", "Bitstream Charter", "Iowan Old Style", "Apple Garamond", "Baskerville", "Times New Roman", "Georgia", serif;
 
   --radius-sm: var(--radius-sm);
   --radius-md: var(--radius-md);
@@ -47,6 +48,25 @@
 *:focus-visible {
   outline: none !important;
   outline-offset: 0 !important;
+}
+
+html {
+  zoom: 0.9;
+}
+
+/*
+ * Neutralize Radix Popper coordinate drift when html has zoom: 0.9.
+ * Setting zoom: 1.11111111 on the wrapper (1 / 0.9) cancels the displacement,
+ * snapping all Radix menus, selects, tooltips, and popovers right next to their triggers.
+ * Setting zoom: 0.9 on the wrapper's direct child restores the crisp 90% visual scale
+ * matching the rest of the application.
+ */
+[data-radix-popper-content-wrapper] {
+  zoom: 1.11111111 !important;
+}
+
+[data-radix-popper-content-wrapper] > * {
+  zoom: 0.9 !important;
 }
 
 html,

@@ -8,10 +8,15 @@ import type { Opening } from '@/types/entities';
 import type { OpeningStatus } from '@/lib/domain/status-transitions';
 import { getNextAllowedOpeningStatuses } from '@/lib/domain/status-transitions';
 import { useOpenings, useUpdateOpeningStatus } from '../hooks';
+import { useCandidates } from '@/features/candidates/hooks';
 import { DataTable } from '@/components/hro/data-table';
 import { StatusBadge } from '@/components/hro/status-badge';
+import { DepartmentClusterView } from './department-cluster-view';
+import { OpeningColumnsView } from './opening-columns-view';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Skeleton } from '@/components/ui/skeleton';
 import {
   DropdownMenu,
   DropdownMenuTrigger,
@@ -28,26 +33,64 @@ import {
   SelectItem,
 } from '@/components/ui/select';
 import { formatCtcRange } from '@/lib/format';
-import { MoreHorizontal, Eye, Edit, ArrowRightCircle, Building2, MapPin, Plus } from 'lucide-react';
+import {
+  MoreHorizontal,
+  Eye,
+  Edit,
+  ArrowRightCircle,
+  Building2,
+  MapPin,
+  Plus,
+  Search,
+  LayoutGrid,
+  Columns3,
+  List,
+  SlidersHorizontal,
+} from 'lucide-react';
 import { toast } from 'sonner';
 
 export function OpeningsTable() {
   const router = useRouter();
   const { data: openings = [], isLoading, isError, refetch } = useOpenings();
+  const { data: candidates = [] } = useCandidates();
   const updateStatus = useUpdateOpeningStatus();
 
+  const [searchQuery, setSearchQuery] = React.useState<string>('');
   const [selectedStatus, setSelectedStatus] = React.useState<string>('all');
   const [selectedDepartment, setSelectedDepartment] = React.useState<string>('all');
 
-  // Filter openings
+  // Filter openings by search, status, and department
   const filteredOpenings = React.useMemo(() => {
+    const query = searchQuery.trim().toLowerCase();
+
     return openings.filter((opening) => {
-      const matchesStatus = selectedStatus === 'all' || opening.status === selectedStatus;
+      // Status match
+      const matchesStatus =
+        selectedStatus === 'all'
+          ? true
+          : selectedStatus === 'active'
+            ? opening.status === 'Open' ||
+              opening.status === 'Sourcing' ||
+              opening.status === 'Interviewing' ||
+              opening.status === 'Offer Stage'
+            : opening.status === selectedStatus;
+
+      // Department match
       const matchesDepartment =
         selectedDepartment === 'all' || opening.department === selectedDepartment;
-      return matchesStatus && matchesDepartment;
+
+      // Search query match (title, location, department, must-have skills)
+      const matchesSearch =
+        query === '' ||
+        opening.title.toLowerCase().includes(query) ||
+        opening.department.toLowerCase().includes(query) ||
+        opening.location.toLowerCase().includes(query) ||
+        (opening.mustHaveSkills &&
+          opening.mustHaveSkills.some((skill) => skill.toLowerCase().includes(query)));
+
+      return matchesStatus && matchesDepartment && matchesSearch;
     });
-  }, [openings, selectedStatus, selectedDepartment]);
+  }, [openings, selectedStatus, selectedDepartment, searchQuery]);
 
   // Unique departments for filter dropdown
   const departments = React.useMemo(() => {
@@ -206,47 +249,105 @@ export function OpeningsTable() {
   );
 
   return (
-    <div className="space-y-4">
-      {/* Quick Status Filter Tabs */}
-      <div className="flex flex-wrap items-center justify-between gap-3">
-        <div className="flex flex-wrap items-center gap-1.5">
-          {['all', 'Open', 'Sourcing', 'Interviewing', 'Offer Stage', 'On Hold', 'Closed'].map(
-            (status) => {
-              const isSelected = selectedStatus === status;
-              const count =
-                status === 'all'
-                  ? openings.length
-                  : openings.filter((o) => o.status === status).length;
+    <div className="space-y-6">
+      {/* 1. Header Toolbar: Status Pills, Search, View Mode Switcher, and Create Button */}
+      <div className="flex flex-col gap-4">
+        {/* Top Controls Row */}
+        <div className="flex flex-col justify-between gap-3 md:flex-row md:items-center">
+          {/* Status Filter Tabs */}
+          <div className="flex flex-wrap items-center gap-1.5">
+            {[
+              { id: 'all', label: 'All Openings', count: openings.length },
+              {
+                id: 'active',
+                label: 'Active',
+                count: openings.filter(
+                  (o) =>
+                    o.status === 'Open' ||
+                    o.status === 'Sourcing' ||
+                    o.status === 'Interviewing' ||
+                    o.status === 'Offer Stage'
+                ).length,
+              },
+              {
+                id: 'Interviewing',
+                label: 'Interviewing',
+                count: openings.filter((o) => o.status === 'Interviewing').length,
+              },
+              {
+                id: 'Offer Stage',
+                label: 'Offer Stage',
+                count: openings.filter((o) => o.status === 'Offer Stage').length,
+              },
+              {
+                id: 'On Hold',
+                label: 'On Hold',
+                count: openings.filter((o) => o.status === 'On Hold').length,
+              },
+              {
+                id: 'Closed',
+                label: 'Closed',
+                count: openings.filter((o) => o.status === 'Closed' || o.status === 'Filled')
+                  .length,
+              },
+            ].map((tab) => {
+              const isSelected = selectedStatus === tab.id;
 
               return (
                 <button
-                  key={status}
-                  onClick={() => setSelectedStatus(status)}
+                  key={tab.id}
+                  onClick={() => setSelectedStatus(tab.id)}
                   className={`inline-flex items-center gap-1.5 rounded-[var(--radius-sm)] px-2.5 py-1 text-[13px] font-medium transition-colors ${
                     isSelected
-                      ? 'bg-accent text-white shadow-sm'
+                      ? 'bg-accent text-white shadow-xs'
                       : 'bg-surface-2 text-text-muted hover:bg-surface-3 hover:text-text'
                   }`}
                 >
-                  <span>{status === 'all' ? 'All Openings' : status}</span>
+                  <span>{tab.label}</span>
                   <span
-                    className={`py-0.2 rounded-full px-1.5 font-mono text-[11px] ${
+                    className={`rounded-full px-1.5 font-mono text-[11px] ${
                       isSelected ? 'bg-white/20 text-white' : 'bg-surface-3 text-text-subtle'
                     }`}
                   >
-                    {count}
+                    {tab.count}
                   </span>
                 </button>
               );
-            }
-          )}
+            })}
+          </div>
+
+          {/* Action Row: New Opening CTA */}
+          <div className="flex items-center gap-2 self-start md:self-auto">
+            <Button
+              asChild
+              variant="primary"
+              size="sm"
+              className="h-8 shrink-0 gap-1.5 text-[13px]"
+            >
+              <Link href="/openings/new">
+                <Plus className="h-3.5 w-3.5" />
+                <span>New Opening</span>
+              </Link>
+            </Button>
+          </div>
         </div>
 
-        {/* Department Filter & Action */}
-        <div className="flex w-full flex-wrap items-center gap-2 sm:w-auto">
+        {/* Secondary Bar: Live Search & Department Filter */}
+        <div className="flex flex-col items-stretch gap-2.5 sm:flex-row sm:items-center">
+          <div className="relative flex-1">
+            <Search className="text-text-subtle pointer-events-none absolute top-1/2 left-3 h-3.5 w-3.5 -translate-y-1/2" />
+            <Input
+              type="text"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              aria-label="Search"
+              className="bg-surface-1 border-border/80 focus:border-border-strong h-8 w-full pl-8 text-[12.5px]"
+            />
+          </div>
+
           {departments.length > 0 && (
             <Select value={selectedDepartment} onValueChange={(val) => setSelectedDepartment(val)}>
-              <SelectTrigger className="border-border bg-surface-2 hover:bg-surface-3 text-text h-8 w-auto min-w-[140px] flex-1 gap-2 rounded-[var(--radius-sm)] px-2.5 text-[12px] font-medium sm:flex-initial">
+              <SelectTrigger className="border-border/80 bg-surface-1 hover:bg-surface-2 text-text h-8 w-auto min-w-[150px] gap-2 rounded-[var(--radius-sm)] px-2.5 text-[12px] font-medium">
                 <SelectValue placeholder="All Departments" />
               </SelectTrigger>
               <SelectContent align="end" className="min-w-[180px]">
@@ -265,26 +366,29 @@ export function OpeningsTable() {
               </SelectContent>
             </Select>
           )}
-
-          <Button asChild variant="primary" size="sm" className="h-8 shrink-0 gap-1.5 text-[13px]">
-            <Link href="/openings/new">
-              <Plus className="h-3.5 w-3.5" />
-              <span>New Opening</span>
-            </Link>
-          </Button>
         </div>
       </div>
 
-      {/* TanStack Data Table */}
-      <DataTable
-        columns={columns}
-        data={filteredOpenings}
-        searchPlaceholder="Filter requisitions by title, location, skill..."
-        loading={isLoading}
-        error={isError ? 'Failed to fetch job requisitions' : null}
-        onRetry={() => void refetch()}
-        onRowClick={(row) => router.push(`/openings/${row.id}`)}
-      />
+      {/* 2. Content Body: Loading or Department Columns */}
+      {isLoading ? (
+        <div className="space-y-6">
+          {[1, 2].map((group) => (
+            <div key={group} className="space-y-3">
+              <Skeleton className="h-7 w-48 rounded-[6px]" />
+              <div className="space-y-2">
+                <Skeleton className="h-24 w-full rounded-[10px]" />
+                <Skeleton className="h-24 w-full rounded-[10px]" />
+              </div>
+            </div>
+          ))}
+        </div>
+      ) : (
+        <OpeningColumnsView
+          openings={filteredOpenings}
+          candidates={candidates}
+          onStatusChange={handleStatusChange}
+        />
+      )}
     </div>
   );
 }
