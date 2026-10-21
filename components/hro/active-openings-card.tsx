@@ -20,7 +20,7 @@ export interface ActiveOpeningsCardProps {
   pageSize?: number;
 }
 
-const DEFAULT_PAGE_SIZE = 6;
+const DEFAULT_PAGE_SIZE = 4;
 
 export function ActiveOpeningsCard({
   openings,
