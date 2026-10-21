@@ -30,6 +30,7 @@ import {
   DialogDescription,
   DialogFooter,
 } from '@/components/ui/dialog';
+import { DatePicker } from '@/components/ui/date-picker';
 import { Skeleton } from '@/components/ui/skeleton';
 import { deriveOnboardingProgress } from '@/lib/domain/derive';
 import { formatDate } from '@/lib/format';
@@ -1055,11 +1056,11 @@ export function OnboardingDashboard() {
 
             <div className="space-y-1.5">
               <label className="text-text text-[13px] font-medium">Due Date</label>
-              <Input
-                type="date"
+              <DatePicker
                 value={newTaskDueDate}
-                onChange={(e) => setNewTaskDueDate(e.target.value)}
-                className="bg-surface-2 border-border text-[13px]"
+                onChange={(val) => setNewTaskDueDate(val || '2026-11-01')}
+                placeholder="Select due date"
+                className="bg-surface-2 border-border text-[13px] h-9"
               />
             </div>
 
