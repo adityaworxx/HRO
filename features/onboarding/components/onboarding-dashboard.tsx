@@ -708,9 +708,9 @@ export function OnboardingDashboard() {
                                         <label
                                           htmlFor={task.id}
                                           className={cn(
-                                            'text-[12.5px] leading-[17px] font-medium cursor-pointer block min-w-0 select-none transition-all duration-200',
+                                            'text-[12.5px] leading-[17px] font-medium cursor-pointer block min-w-0 select-none transition-colors duration-150',
                                             task.done
-                                              ? 'text-text-muted font-normal blur-[0.8px] opacity-75'
+                                              ? 'text-text-muted font-normal'
                                               : 'text-text'
                                           )}
                                         >
@@ -844,9 +844,9 @@ export function OnboardingDashboard() {
                               />
                               <div className="min-w-0 flex-1 space-y-1 overflow-hidden">
                                 <span
-                                  className={`block truncate text-[13px] leading-snug font-medium transition-all duration-200 ${
+                                  className={`block truncate text-[13px] leading-snug font-medium transition-colors duration-150 ${
                                     item.done
-                                      ? 'text-text-muted blur-[0.8px] opacity-75'
+                                      ? 'text-text-muted font-normal'
                                       : 'text-text'
                                   }`}
                                   title={item.title}
@@ -963,9 +963,9 @@ export function OnboardingDashboard() {
                           <div className="flex flex-col gap-0.5 pr-2">
                             <span
                               className={cn(
-                                'text-[13px] leading-snug font-medium break-words transition-all duration-200',
+                                'text-[13px] leading-snug font-medium break-words transition-colors duration-150',
                                 item.done
-                                  ? 'text-text-muted blur-[0.8px] opacity-75'
+                                  ? 'text-text-muted font-normal'
                                   : 'text-text'
                               )}
                             >
