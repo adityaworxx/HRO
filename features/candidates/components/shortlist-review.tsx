@@ -26,7 +26,9 @@ export function ShortlistReview() {
 
   const [selectedId, setSelectedId] = React.useState<string | null>(null);
   const [managerComment, setManagerComment] = React.useState<string>('');
-  const [pendingDecision, setPendingDecision] = React.useState<'Shortlisted' | 'Rejected' | null>(null);
+  const [pendingDecision, setPendingDecision] = React.useState<'Shortlisted' | 'Rejected' | null>(
+    null
+  );
 
   // Auto-select first pending candidate
   const activeCandidate = React.useMemo(() => {
@@ -93,7 +95,6 @@ export function ShortlistReview() {
           <span className="text-text text-[13px] font-semibold">
             Pending Queue ({pendingCandidates.length})
           </span>
-          <span className="text-text-subtle text-[12px]">Select to review</span>
         </div>
 
         <div className="space-y-2.5">
@@ -130,7 +131,9 @@ export function ShortlistReview() {
                 </div>
                 <div className="text-text-muted border-border/60 mt-2.5 flex items-center justify-between border-t pt-2 text-[12px] font-medium">
                   <span>{candidate.currentCompany}</span>
-                  <span className="text-text font-mono font-semibold">{formatCtc(candidate.expectedCtc)}</span>
+                  <span className="text-text font-mono font-semibold">
+                    {formatCtc(candidate.expectedCtc)}
+                  </span>
                 </div>
               </div>
             );
@@ -215,13 +218,13 @@ export function ShortlistReview() {
               </div>
             </CardContent>
 
-            <CardFooter className="border-border flex flex-col sm:flex-row gap-2.5 sm:gap-3 border-t pt-4">
+            <CardFooter className="border-border flex flex-col gap-2.5 border-t pt-4 sm:flex-row sm:gap-3">
               <Button
                 variant="primary"
                 onClick={() => handleDecision('Shortlisted')}
                 loading={pendingDecision === 'Shortlisted'}
                 disabled={recordDecision.isPending}
-                className="w-full sm:flex-1 gap-2 cursor-pointer h-10 text-[13px] font-medium"
+                className="h-10 w-full cursor-pointer gap-2 text-[13px] font-medium sm:flex-1"
               >
                 <CheckCircle2 className="h-4 w-4 shrink-0" />
                 <span>
@@ -236,12 +239,10 @@ export function ShortlistReview() {
                 onClick={() => handleDecision('Rejected')}
                 loading={pendingDecision === 'Rejected'}
                 disabled={recordDecision.isPending}
-                className="w-full sm:flex-1 gap-2 cursor-pointer h-10 text-[13px] font-medium"
+                className="h-10 w-full cursor-pointer gap-2 text-[13px] font-medium sm:flex-1"
               >
                 <XCircle className="h-4 w-4 shrink-0" />
-                <span>
-                  {pendingDecision === 'Rejected' ? 'Rejecting...' : 'Reject Candidate'}
-                </span>
+                <span>{pendingDecision === 'Rejected' ? 'Rejecting...' : 'Reject Candidate'}</span>
               </Button>
             </CardFooter>
           </Card>
