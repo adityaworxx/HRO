@@ -15,6 +15,8 @@ import {
   BarChart3,
   Layers,
   Users,
+  ChevronLeft,
+  ChevronRight,
 } from 'lucide-react';
 import type { Opening, Candidate } from '@/types/entities';
 import type { OpeningStatus } from '@/lib/domain/status-transitions';
@@ -163,17 +165,45 @@ function MinimalOpeningCard({
   );
 }
 
+const OPENINGS_PER_PAGE = 4;
+
 export function OpeningColumnsView({
   openings,
   candidates,
   onStatusChange,
 }: OpeningColumnsViewProps) {
+  // Per-column pagination state: { [departmentId]: pageNumber }
+  const [pageByDept, setPageByDept] = React.useState<Record<string, number>>({});
+
+  // Reset pagination when the openings list or external filter changes
+  React.useEffect(() => {
+    setPageByDept({});
+  }, [openings]);
+
   // Build department columns
   const columns = React.useMemo<ColumnDef[]>(() => {
-    const depts = Array.from(new Set(openings.map((o) => o.department || 'General')));
+    const deptSet = new Set(openings.map((o) => o.department || 'General'));
+    const preferredOrder = [
+      'Engineering',
+      'Product',
+      'Design',
+      'Data & Analytics',
+      'Operations',
+      'Human Resources',
+    ];
+
+    const sortedDepts = Array.from(deptSet).sort((a, b) => {
+      const indexA = preferredOrder.indexOf(a);
+      const indexB = preferredOrder.indexOf(b);
+      if (indexA !== -1 && indexB !== -1) return indexA - indexB;
+      if (indexA !== -1) return -1;
+      if (indexB !== -1) return 1;
+      return a.localeCompare(b);
+    });
+
     const deptColors = ['bg-indigo-500', 'bg-accent', 'bg-emerald-500', 'bg-cyan-500', 'bg-amber-500'];
 
-    return depts.map((dept, index) => {
+    return sortedDepts.map((dept, index) => {
       const Icon = DEPARTMENT_ICONS[dept] || Building2;
       return {
         id: dept,
@@ -204,48 +234,102 @@ export function OpeningColumnsView({
         {columns.map((column) => {
           const ColIcon = column.icon;
 
+          // Per-column pagination calculations
+          const totalOpenings = column.openings.length;
+          const totalPages = Math.ceil(totalOpenings / OPENINGS_PER_PAGE);
+          const currentPage = pageByDept[column.id] || 1;
+          const validPage = Math.min(Math.max(1, currentPage), Math.max(1, totalPages));
+          const startIndex = (validPage - 1) * OPENINGS_PER_PAGE;
+          const visibleOpenings = column.openings.slice(
+            startIndex,
+            startIndex + OPENINGS_PER_PAGE
+          );
+
           return (
             <div
               key={column.id}
-              className="w-[300px] sm:w-[320px] shrink-0 flex flex-col rounded-[12px] bg-surface-2/30 border border-border/70 border-t-2 border-t-accent p-3 space-y-2.5"
+              className="w-[300px] sm:w-[320px] shrink-0 flex flex-col justify-between rounded-[12px] bg-surface-2/30 border border-border/70 border-t-2 border-t-accent p-3 space-y-2.5"
             >
-              {/* Column Header */}
-              <div className="flex items-center justify-between pb-2 border-b border-border/60">
-                <div className="flex items-center gap-2 min-w-0">
-                  {ColIcon ? (
-                    <div className="flex h-5 w-5 items-center justify-center rounded-[4px] bg-accent/15 text-accent shrink-0">
-                      <ColIcon className="h-3.5 w-3.5" />
-                    </div>
-                  ) : (
-                    <span className="h-2 w-2 rounded-full bg-accent shrink-0" />
-                  )}
-                  <h3 className="text-[13.5px] font-semibold text-text truncate">
-                    {column.title}
-                  </h3>
+              <div className="space-y-2.5">
+                {/* Column Header */}
+                <div className="flex items-center justify-between pb-2 border-b border-border/60">
+                  <div className="flex items-center gap-2 min-w-0">
+                    {ColIcon ? (
+                      <div className="flex h-5 w-5 items-center justify-center rounded-[4px] bg-accent/15 text-accent shrink-0">
+                        <ColIcon className="h-3.5 w-3.5" />
+                      </div>
+                    ) : (
+                      <span className="h-2 w-2 rounded-full bg-accent shrink-0" />
+                    )}
+                    <h3 className="text-[13.5px] font-semibold text-text truncate">
+                      {column.title}
+                    </h3>
+                  </div>
+
+                  <span className="font-mono text-[11px] font-semibold text-accent bg-accent/10 px-2 py-0.5 rounded-full shrink-0">
+                    {totalOpenings}
+                  </span>
                 </div>
 
-                <span className="font-mono text-[11px] font-semibold text-accent bg-accent/10 px-2 py-0.5 rounded-full shrink-0">
-                  {column.openings.length}
-                </span>
+                {/* Minimal Column Cards Container */}
+                <div className="space-y-2 min-h-[100px]">
+                  {column.openings.length === 0 ? (
+                    <div className="rounded-[8px] border border-dashed border-border/60 p-5 text-center select-none">
+                      <p className="text-[11.5px] text-text-subtle">No roles</p>
+                    </div>
+                  ) : (
+                    visibleOpenings.map((opening) => (
+                      <MinimalOpeningCard
+                        key={opening.id}
+                        opening={opening}
+                        candidates={candidates}
+                        onStatusChange={onStatusChange}
+                      />
+                    ))
+                  )}
+                </div>
               </div>
 
-              {/* Minimal Column Cards Container */}
-              <div className="space-y-2 min-h-[100px]">
-                {column.openings.length === 0 ? (
-                  <div className="rounded-[8px] border border-dashed border-border/60 p-5 text-center select-none">
-                    <p className="text-[11.5px] text-text-subtle">No roles</p>
-                  </div>
-                ) : (
-                  column.openings.map((opening) => (
-                    <MinimalOpeningCard
-                      key={opening.id}
-                      opening={opening}
-                      candidates={candidates}
-                      onStatusChange={onStatusChange}
-                    />
-                  ))
-                )}
-              </div>
+              {/* Per-Column Pagination Footer when more than 4 openings */}
+              {totalPages > 1 && (
+                <div className="flex items-center justify-between pt-2 border-t border-border/60 text-[11.5px] select-none">
+                  <button
+                    type="button"
+                    disabled={validPage <= 1}
+                    onClick={() =>
+                      setPageByDept((prev) => ({
+                        ...prev,
+                        [column.id]: Math.max(1, validPage - 1),
+                      }))
+                    }
+                    className="h-6 w-6 inline-flex items-center justify-center rounded-[5px] border border-border/70 bg-surface-1 text-text-muted hover:text-text hover:bg-surface-2 disabled:opacity-25 disabled:cursor-not-allowed transition-colors cursor-pointer"
+                    title="Previous page"
+                    aria-label="Previous page"
+                  >
+                    <ChevronLeft className="h-3.5 w-3.5" />
+                  </button>
+
+                  <span className="font-mono text-text-subtle text-[11px]">
+                    {startIndex + 1}–{Math.min(startIndex + OPENINGS_PER_PAGE, totalOpenings)} of {totalOpenings}
+                  </span>
+
+                  <button
+                    type="button"
+                    disabled={validPage >= totalPages}
+                    onClick={() =>
+                      setPageByDept((prev) => ({
+                        ...prev,
+                        [column.id]: Math.min(totalPages, validPage + 1),
+                      }))
+                    }
+                    className="h-6 w-6 inline-flex items-center justify-center rounded-[5px] border border-border/70 bg-surface-1 text-text-muted hover:text-text hover:bg-surface-2 disabled:opacity-25 disabled:cursor-not-allowed transition-colors cursor-pointer"
+                    title="Next page"
+                    aria-label="Next page"
+                  >
+                    <ChevronRight className="h-3.5 w-3.5" />
+                  </button>
+                </div>
+              )}
             </div>
           );
         })}
