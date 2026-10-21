@@ -594,12 +594,6 @@ export function OnboardingDashboard() {
                           <span className="text-text truncate text-[14px] font-semibold">
                             {candidate.name}
                           </span>
-                          <Badge
-                            variant="default"
-                            className="text-text-muted bg-surface-2 py-0.2 shrink-0 px-1.5 text-[11px] font-normal"
-                          >
-                            {candidate.stage}
-                          </Badge>
                           <span className="text-text-muted bg-surface-2/60 border-border flex items-center gap-1 rounded-[4px] border px-2 py-0.5 font-mono text-[11px] tabular-nums">
                             <Calendar className="text-accent h-3 w-3 shrink-0" />
                             <span>Joining: {joiningDate}</span>
@@ -642,99 +636,125 @@ export function OnboardingDashboard() {
                     </div>
                   </div>
 
-                  {/* Tasks List by Phase Accordion/Groupings */}
-                  <CardContent className="divide-border/60 divide-y p-0">
-                    {PHASES.map((phase) => {
-                      const phaseTasks = candidateTasks.filter((t) => t.phase === phase);
-                      if (phaseTasks.length === 0) return null;
+                  {/* 3-Phase Columns Board */}
+                  <CardContent className="p-3.5 sm:p-4">
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-3.5 items-start">
+                      {PHASES.map((phase) => {
+                        const phaseTasks = candidateTasks.filter((t) => t.phase === phase);
+                        const phaseCompleted = phaseTasks.filter((t) => t.done).length;
 
-                      const phaseCompleted = phaseTasks.filter((t) => t.done).length;
-
-                      return (
-                        <div key={phase} className="p-4 sm:p-5">
-                          {/* Phase Title & Completion */}
-                          <div className="flex items-center justify-between pb-3">
-                            <div className="flex items-center gap-2">
-                              <span className="text-text text-[13px] font-semibold tracking-tight">
-                                {phase}
-                              </span>
-                              <span className="text-text-subtle font-mono text-[11px]">
-                                ({phaseCompleted}/{phaseTasks.length})
-                              </span>
-                            </div>
-                            <span className="text-text-subtle hidden text-[11px] font-medium sm:inline">
-                              {phase === 'Before joining'
-                                ? 'Pre-boarding compliance & equipment setup'
-                                : phase === 'Day 1'
-                                  ? 'First-day welcome & team introduction'
-                                  : '30-day performance & cultural check-in'}
-                            </span>
-                          </div>
-
-                          {/* Phase Checklist Tasks Grid */}
-                          <div className="space-y-2">
-                            {phaseTasks.map((task) => (
-                              <div
-                                key={task.id}
-                                className={cn(
-                                  'group border-border/80 flex items-start justify-between gap-3 rounded-[8px] border p-3 transition-colors',
-                                  task.done
-                                    ? 'bg-surface-2/40 opacity-75'
-                                    : 'bg-surface-1 hover:bg-surface-2/30 hover:border-border-strong'
-                                )}
-                              >
-                                <div className="flex min-w-0 items-start gap-3">
-                                  <Checkbox
-                                    id={task.id}
-                                    checked={task.done}
-                                    onCheckedChange={(checked) =>
-                                      handleToggle(task.id, task.done, task.title)
-                                    }
-                                    className="mt-0.5 cursor-pointer"
-                                  />
-                                  <div className="min-w-0 space-y-0.5">
-                                    <label
-                                      htmlFor={task.id}
-                                      className={cn(
-                                        'block cursor-pointer text-[13px] leading-snug font-medium',
-                                        task.done
-                                          ? 'text-text-muted font-normal line-through'
-                                          : 'text-text'
-                                      )}
-                                    >
-                                      {task.title}
-                                    </label>
-                                    {task.notes && (
-                                      <p className="text-text-subtle truncate text-[12px]">
-                                        {task.notes}
-                                      </p>
-                                    )}
-                                  </div>
-                                </div>
-
-                                <div className="flex shrink-0 items-center gap-2 pt-0.5">
-                                  <Badge
-                                    variant="default"
+                        return (
+                          <div
+                            key={phase}
+                            className="rounded-[10px] border border-border/70 bg-surface-2/20 p-3 space-y-2.5 flex flex-col justify-between"
+                          >
+                            <div className="space-y-2.5">
+                              {/* Phase Header */}
+                              <div className="flex items-center justify-between pb-2 border-b border-border/60">
+                                <div className="flex items-center gap-1.5 min-w-0">
+                                  <span
                                     className={cn(
-                                      'px-1.5 py-0 text-[10px] font-medium',
-                                      task.owner === 'HR'
-                                        ? 'border-accent/30 text-accent bg-accent/10'
-                                        : 'border-border text-text-muted bg-surface-3'
+                                      'h-2 w-2 rounded-full shrink-0',
+                                      phase === 'Before joining'
+                                        ? 'bg-accent'
+                                        : phase === 'Day 1'
+                                          ? 'bg-indigo-400'
+                                          : 'bg-emerald-400'
                                     )}
-                                  >
-                                    {task.owner}
-                                  </Badge>
-
-                                  <span className="text-text-subtle hidden font-mono text-[11px] tabular-nums sm:inline">
-                                    {formatDate(task.dueDate, 'dd MMM')}
+                                  />
+                                  <span className="text-[12.5px] font-semibold text-text truncate">
+                                    {phase}
                                   </span>
                                 </div>
+                                <span
+                                  className={cn(
+                                    'font-mono text-[10.5px] font-semibold px-1.5 py-0.2 rounded-full shrink-0',
+                                    phaseCompleted === phaseTasks.length && phaseTasks.length > 0
+                                      ? 'bg-emerald-500/15 text-emerald-400'
+                                      : 'bg-surface-3 text-text-subtle'
+                                  )}
+                                >
+                                  {phaseCompleted}/{phaseTasks.length}
+                                </span>
                               </div>
-                            ))}
+
+                              {/* Task Cards */}
+                              {phaseTasks.length === 0 ? (
+                                <div className="rounded-[8px] border border-dashed border-border/60 p-4 text-center select-none">
+                                  <p className="text-[11px] text-text-subtle">No tasks in this phase</p>
+                                </div>
+                              ) : (
+                                <div className="space-y-2">
+                                  {phaseTasks.map((task) => (
+                                    <div
+                                      key={task.id}
+                                      className={cn(
+                                        'group rounded-[8px] border border-border/70 p-2.5 transition-all duration-140 space-y-1.5',
+                                        task.done
+                                          ? 'bg-surface-2/30 opacity-70 border-border/50'
+                                          : 'bg-surface-1 hover:border-border-strong hover:bg-surface-2/40'
+                                      )}
+                                    >
+                                      {/* Checkbox + Title */}
+                                      <div className="flex items-start gap-2.5 min-w-0">
+                                        <Checkbox
+                                          id={task.id}
+                                          checked={task.done}
+                                          onCheckedChange={() =>
+                                            handleToggle(task.id, task.done, task.title)
+                                          }
+                                          className="mt-0.5 h-4 w-4 shrink-0 cursor-pointer"
+                                        />
+                                        <label
+                                          htmlFor={task.id}
+                                          className={cn(
+                                            'text-[12.5px] leading-[17px] font-medium cursor-pointer block min-w-0 select-none transition-all duration-200',
+                                            task.done
+                                              ? 'text-text-muted font-normal blur-[0.8px] opacity-75'
+                                              : 'text-text'
+                                          )}
+                                        >
+                                          {task.title}
+                                        </label>
+                                      </div>
+
+                                      {/* Optional Note */}
+                                      {task.notes && (
+                                        <p
+                                          className="text-[11px] text-text-subtle pl-[26px] line-clamp-1 truncate"
+                                          title={task.notes}
+                                        >
+                                          {task.notes}
+                                        </p>
+                                      )}
+
+                                      {/* Bottom Meta: Owner Badge + Due Date */}
+                                      <div className="flex items-center justify-between pl-[26px] pt-1 text-[11px]">
+                                        <Badge
+                                          variant="default"
+                                          className={cn(
+                                            'px-1.5 py-0 text-[10px] font-medium rounded-[4px] leading-tight',
+                                            task.owner === 'HR'
+                                              ? 'border-accent/30 text-accent bg-accent/10'
+                                              : 'border-border text-text-muted bg-surface-3'
+                                          )}
+                                        >
+                                          {task.owner}
+                                        </Badge>
+
+                                        <span className="text-text-subtle font-mono text-[10.5px] tabular-nums">
+                                          {formatDate(task.dueDate, 'dd MMM')}
+                                        </span>
+                                      </div>
+                                    </div>
+                                  ))}
+                                </div>
+                              )}
+                            </div>
                           </div>
-                        </div>
-                      );
-                    })}
+                        );
+                      })}
+                    </div>
 
                     {candidateTasks.length === 0 && (
                       <div className="text-text-muted p-6 text-center text-[12px]">
@@ -824,9 +844,9 @@ export function OnboardingDashboard() {
                               />
                               <div className="min-w-0 flex-1 space-y-1 overflow-hidden">
                                 <span
-                                  className={`block truncate text-[13px] leading-snug font-medium ${
+                                  className={`block truncate text-[13px] leading-snug font-medium transition-all duration-200 ${
                                     item.done
-                                      ? 'text-text-muted decoration-text-subtle/40 line-through'
+                                      ? 'text-text-muted blur-[0.8px] opacity-75'
                                       : 'text-text'
                                   }`}
                                   title={item.title}
@@ -943,9 +963,9 @@ export function OnboardingDashboard() {
                           <div className="flex flex-col gap-0.5 pr-2">
                             <span
                               className={cn(
-                                'text-[13px] leading-snug font-medium break-words',
+                                'text-[13px] leading-snug font-medium break-words transition-all duration-200',
                                 item.done
-                                  ? 'text-text-muted decoration-text-subtle/40 line-through'
+                                  ? 'text-text-muted blur-[0.8px] opacity-75'
                                   : 'text-text'
                               )}
                             >
