@@ -10,13 +10,7 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Progress } from '@/components/ui/progress';
-import {
-  Briefcase,
-  Users,
-  Clock,
-  CheckCircle2,
-  ChevronRight,
-} from 'lucide-react';
+import { Users, Clock, ChevronRight } from 'lucide-react';
 import { toast } from 'sonner';
 
 export function HrDashboard() {
@@ -89,14 +83,12 @@ export function HrDashboard() {
               value={openRequisitions.length}
               delta="+2 this month"
               href="/openings"
-              icon={<Briefcase className="h-4 w-4 stroke-[1.75]" />}
             />
             <StatCard
               label="Active Candidates"
               value={candidates.length}
               delta="In recruitment"
               href="/candidates"
-              icon={<Users className="h-4 w-4 stroke-[1.75]" />}
             />
             <StatCard
               label="On-Hold Openings"
@@ -104,32 +96,30 @@ export function HrDashboard() {
               delta={onHoldRequisitions.length > 0 ? 'Requires attention' : 'All active'}
               isWarning={onHoldRequisitions.length > 0}
               href="/openings"
-              icon={<Clock className="h-4 w-4 stroke-[1.75]" />}
             />
             <StatCard
               label="Onboarding Progress"
               value={`${onboardingPercent}%`}
               delta={`${completedTasks} of ${totalTasks} tasks`}
               href="/onboarding"
-              icon={<CheckCircle2 className="h-4 w-4 stroke-[1.75]" />}
             />
           </>
         )}
       </div>
 
       {/* 3. Bottom Grid: Pipeline Throughput (8 cols) & Onboarding Readiness (4 cols) */}
-      <div className="grid grid-cols-12 gap-6 items-stretch">
+      <div className="grid grid-cols-12 items-stretch gap-6">
         {/* ROW 2 LEFT (8 cols): Active Pipeline Throughput */}
         <div className="col-span-12 flex flex-col lg:col-span-8">
-          <div className="border border-border bg-surface-1 flex h-full flex-col rounded-[12px] p-5 shadow-xs">
+          <div className="border-border bg-surface-1 flex h-full flex-col rounded-[12px] border p-5 shadow-xs">
             {/* Header (No 30 candidates badge) */}
-            <div className="flex items-center justify-between gap-4 pb-4 border-b border-border/60">
-              <h2 className="text-[15px] font-semibold tracking-[-0.01em] text-text">
+            <div className="border-border/60 flex items-center justify-between gap-4 border-b pb-4">
+              <h2 className="text-text text-[15px] font-semibold tracking-[-0.01em]">
                 Active Pipeline Throughput
               </h2>
               <Link
                 href="/pipeline"
-                className="inline-flex items-center gap-1 text-[12px] font-medium text-text-muted hover:text-text transition-colors shrink-0"
+                className="text-text-muted hover:text-text inline-flex shrink-0 items-center gap-1 text-[12px] font-medium transition-colors"
               >
                 <span>View pipeline</span>
                 <ChevronRight className="h-3.5 w-3.5" />
@@ -137,15 +127,15 @@ export function HrDashboard() {
             </div>
 
             {/* Content: Unified Connected Progression Track */}
-            <div className="flex-1 pt-4 flex flex-col justify-between gap-4">
-              <div className="rounded-[10px] border border-border/80 bg-surface-2/30 divide-y sm:divide-y-0 sm:divide-x divide-border/60 grid grid-cols-2 sm:grid-cols-5 overflow-hidden">
+            <div className="flex flex-1 flex-col justify-between gap-4 pt-4">
+              <div className="border-border/80 bg-surface-2/30 divide-border/60 grid grid-cols-2 divide-y overflow-hidden rounded-[10px] border sm:grid-cols-5 sm:divide-x sm:divide-y-0">
                 {/* Stage 1: Sourced */}
-                <div className="flex flex-col justify-between p-3.5 hover:bg-surface-2/60 transition-colors">
+                <div className="hover:bg-surface-2/60 flex flex-col justify-between p-3.5 transition-colors">
                   <div className="flex items-center justify-between">
                     <span className="text-text-muted text-[12px] font-medium select-none">
                       1. Sourced
                     </span>
-                    <span className="text-text-subtle text-[11px] tabular-nums font-mono font-normal">
+                    <span className="text-text-subtle font-mono text-[11px] font-normal tabular-nums">
                       {Math.round((stagesCount.sourced / totalCandidates) * 100)}%
                     </span>
                   </div>
@@ -155,9 +145,9 @@ export function HrDashboard() {
                     </span>
                     <span className="text-text-subtle text-[11px]">candidates</span>
                   </div>
-                  <div className="mt-2.5 h-1 w-full rounded-full bg-surface-3 overflow-hidden">
+                  <div className="bg-surface-3 mt-2.5 h-1 w-full overflow-hidden rounded-full">
                     <div
-                      className="h-full bg-text-subtle rounded-full"
+                      className="bg-text-subtle h-full rounded-full"
                       style={{
                         width: `${Math.round((stagesCount.sourced / totalCandidates) * 100)}%`,
                       }}
@@ -166,12 +156,12 @@ export function HrDashboard() {
                 </div>
 
                 {/* Stage 2: Manager Review */}
-                <div className="flex flex-col justify-between p-3.5 hover:bg-surface-2/60 transition-colors">
+                <div className="hover:bg-surface-2/60 flex flex-col justify-between p-3.5 transition-colors">
                   <div className="flex items-center justify-between">
-                    <span className="text-text-muted text-[12px] font-medium select-none truncate">
+                    <span className="text-text-muted truncate text-[12px] font-medium select-none">
                       2. Mgr Review
                     </span>
-                    <span className="text-text-subtle text-[11px] tabular-nums font-mono font-normal">
+                    <span className="text-text-subtle font-mono text-[11px] font-normal tabular-nums">
                       {Math.round((stagesCount.shared / totalCandidates) * 100)}%
                     </span>
                   </div>
@@ -181,9 +171,9 @@ export function HrDashboard() {
                     </span>
                     <span className="text-text-subtle text-[11px]">in review</span>
                   </div>
-                  <div className="mt-2.5 h-1 w-full rounded-full bg-surface-3 overflow-hidden">
+                  <div className="bg-surface-3 mt-2.5 h-1 w-full overflow-hidden rounded-full">
                     <div
-                      className="h-full bg-text-subtle rounded-full"
+                      className="bg-text-subtle h-full rounded-full"
                       style={{
                         width: `${Math.round((stagesCount.shared / totalCandidates) * 100)}%`,
                       }}
@@ -192,12 +182,12 @@ export function HrDashboard() {
                 </div>
 
                 {/* Stage 3: Interview */}
-                <div className="flex flex-col justify-between p-3.5 hover:bg-surface-2/60 transition-colors">
+                <div className="hover:bg-surface-2/60 flex flex-col justify-between p-3.5 transition-colors">
                   <div className="flex items-center justify-between">
                     <span className="text-text-muted text-[12px] font-medium select-none">
                       3. Interview
                     </span>
-                    <span className="text-text-subtle text-[11px] tabular-nums font-mono font-normal">
+                    <span className="text-text-subtle font-mono text-[11px] font-normal tabular-nums">
                       {Math.round((stagesCount.interview / totalCandidates) * 100)}%
                     </span>
                   </div>
@@ -207,9 +197,9 @@ export function HrDashboard() {
                     </span>
                     <span className="text-text-subtle text-[11px]">rounds</span>
                   </div>
-                  <div className="mt-2.5 h-1 w-full rounded-full bg-surface-3 overflow-hidden">
+                  <div className="bg-surface-3 mt-2.5 h-1 w-full overflow-hidden rounded-full">
                     <div
-                      className="h-full bg-text-muted rounded-full"
+                      className="bg-text-muted h-full rounded-full"
                       style={{
                         width: `${Math.round((stagesCount.interview / totalCandidates) * 100)}%`,
                       }}
@@ -218,12 +208,12 @@ export function HrDashboard() {
                 </div>
 
                 {/* Stage 4: Offer */}
-                <div className="flex flex-col justify-between p-3.5 hover:bg-surface-2/60 transition-colors">
+                <div className="hover:bg-surface-2/60 flex flex-col justify-between p-3.5 transition-colors">
                   <div className="flex items-center justify-between">
                     <span className="text-text-muted text-[12px] font-medium select-none">
                       4. Offer
                     </span>
-                    <span className="text-text-subtle text-[11px] tabular-nums font-mono font-normal">
+                    <span className="text-text-subtle font-mono text-[11px] font-normal tabular-nums">
                       {Math.round((stagesCount.offer / totalCandidates) * 100)}%
                     </span>
                   </div>
@@ -233,9 +223,9 @@ export function HrDashboard() {
                     </span>
                     <span className="text-text-subtle text-[11px]">extended</span>
                   </div>
-                  <div className="mt-2.5 h-1 w-full rounded-full bg-surface-3 overflow-hidden">
+                  <div className="bg-surface-3 mt-2.5 h-1 w-full overflow-hidden rounded-full">
                     <div
-                      className="h-full bg-text-muted rounded-full"
+                      className="bg-text-muted h-full rounded-full"
                       style={{
                         width: `${Math.round((stagesCount.offer / totalCandidates) * 100)}%`,
                       }}
@@ -244,12 +234,12 @@ export function HrDashboard() {
                 </div>
 
                 {/* Stage 5: Joined */}
-                <div className="col-span-2 sm:col-span-1 flex flex-col justify-between p-3.5 hover:bg-surface-2/60 transition-colors bg-accent-subtle/20">
+                <div className="hover:bg-surface-2/60 bg-accent-subtle/20 col-span-2 flex flex-col justify-between p-3.5 transition-colors sm:col-span-1">
                   <div className="flex items-center justify-between">
                     <span className="text-accent text-[12px] font-medium select-none">
                       5. Joined
                     </span>
-                    <span className="text-accent text-[11px] tabular-nums font-mono font-normal">
+                    <span className="text-accent font-mono text-[11px] font-normal tabular-nums">
                       {Math.round((stagesCount.hired / totalCandidates) * 100)}%
                     </span>
                   </div>
@@ -259,9 +249,9 @@ export function HrDashboard() {
                     </span>
                     <span className="text-accent/80 text-[11px]">hired</span>
                   </div>
-                  <div className="mt-2.5 h-1 w-full rounded-full bg-accent/20 overflow-hidden">
+                  <div className="bg-accent/20 mt-2.5 h-1 w-full overflow-hidden rounded-full">
                     <div
-                      className="h-full bg-accent rounded-full"
+                      className="bg-accent h-full rounded-full"
                       style={{
                         width: `${Math.round((stagesCount.hired / totalCandidates) * 100)}%`,
                       }}
@@ -272,7 +262,7 @@ export function HrDashboard() {
 
               {/* Proportional Segment Bar */}
               <div className="space-y-1.5 pt-1">
-                <div className="h-2 w-full flex rounded-full overflow-hidden bg-surface-2 gap-0.5">
+                <div className="bg-surface-2 flex h-2 w-full gap-0.5 overflow-hidden rounded-full">
                   <div
                     style={{ width: `${(stagesCount.sourced / totalCandidates) * 100}%` }}
                     className="bg-surface-3 transition-all"
@@ -299,10 +289,11 @@ export function HrDashboard() {
                     title={`Joined: ${stagesCount.hired}`}
                   />
                 </div>
-                <div className="flex items-center justify-between text-[11px] text-text-subtle select-none">
+                <div className="text-text-subtle flex items-center justify-between text-[11px] select-none">
                   <span>Talent acquisition progression</span>
-                  <span className="font-medium text-text-muted">
-                    {stagesCount.hired} hires finalized ({Math.round((stagesCount.hired / totalCandidates) * 100)}% conversion)
+                  <span className="text-text-muted font-medium">
+                    {stagesCount.hired} hires finalized (
+                    {Math.round((stagesCount.hired / totalCandidates) * 100)}% conversion)
                   </span>
                 </div>
               </div>
@@ -312,15 +303,15 @@ export function HrDashboard() {
 
         {/* ROW 2 RIGHT (4 cols): Onboarding Readiness */}
         <div className="col-span-12 flex flex-col lg:col-span-4">
-          <div className="border border-border bg-surface-1 flex h-full flex-col rounded-[12px] p-5 shadow-xs">
+          <div className="border-border bg-surface-1 flex h-full flex-col rounded-[12px] border p-5 shadow-xs">
             {/* Header */}
-            <div className="flex items-center justify-between gap-4 pb-4 border-b border-border/60">
-              <h2 className="text-[15px] font-semibold tracking-[-0.01em] text-text">
+            <div className="border-border/60 flex items-center justify-between gap-4 border-b pb-4">
+              <h2 className="text-text text-[15px] font-semibold tracking-[-0.01em]">
                 Onboarding Readiness
               </h2>
               <Link
                 href="/onboarding"
-                className="inline-flex items-center gap-1 text-[12px] font-medium text-text-muted hover:text-text transition-colors shrink-0"
+                className="text-text-muted hover:text-text inline-flex shrink-0 items-center gap-1 text-[12px] font-medium transition-colors"
               >
                 <span>View checklist</span>
                 <ChevronRight className="h-3.5 w-3.5" />
@@ -328,7 +319,7 @@ export function HrDashboard() {
             </div>
 
             {/* Content: Progress bar & Incoming Hires */}
-            <div className="flex-1 pt-4 space-y-4 flex flex-col justify-between">
+            <div className="flex flex-1 flex-col justify-between space-y-4 pt-4">
               <div className="space-y-2">
                 <div className="flex justify-between text-[12px]">
                   <span className="text-text-muted font-medium">Task Completion</span>
@@ -341,7 +332,7 @@ export function HrDashboard() {
 
               <div className="border-border/60 space-y-2 border-t pt-3">
                 <div className="flex items-center justify-between">
-                  <span className="text-text-subtle text-[11px] font-medium uppercase tracking-wider">
+                  <span className="text-text-subtle text-[11px] font-medium tracking-wider uppercase">
                     Incoming Hires
                   </span>
                   <span className="text-text-subtle text-[11px] tabular-nums">
@@ -349,7 +340,9 @@ export function HrDashboard() {
                   </span>
                 </div>
                 {hiredCandidates.length === 0 ? (
-                  <p className="text-text-muted text-[12px] py-2">No pending hires in onboarding.</p>
+                  <p className="text-text-muted py-2 text-[12px]">
+                    No pending hires in onboarding.
+                  </p>
                 ) : (
                   <div className="divide-border/60 divide-y">
                     {hiredCandidates.slice(0, 2).map((candidate) => (
@@ -357,13 +350,13 @@ export function HrDashboard() {
                         key={candidate.id}
                         className="flex items-center justify-between py-2 text-[12px]"
                       >
-                        <div className="flex items-center gap-2 min-w-0">
-                          <div className="h-6 w-6 rounded-full bg-surface-2 text-text font-medium text-[11px] flex items-center justify-center shrink-0">
+                        <div className="flex min-w-0 items-center gap-2">
+                          <div className="bg-surface-2 text-text flex h-6 w-6 shrink-0 items-center justify-center rounded-full text-[11px] font-medium">
                             {candidate.name.slice(0, 2).toUpperCase()}
                           </div>
-                          <span className="text-text font-medium truncate">{candidate.name}</span>
+                          <span className="text-text truncate font-medium">{candidate.name}</span>
                         </div>
-                        <span className="text-text-muted truncate ml-2 text-[11px]">
+                        <span className="text-text-muted ml-2 truncate text-[11px]">
                           {candidate.currentRole}
                         </span>
                       </div>
@@ -377,15 +370,15 @@ export function HrDashboard() {
 
         {/* ROW 3: SLA Watchlist (Redesigned Table Format) */}
         <div className="col-span-12 flex flex-col">
-          <div className="border border-border bg-surface-1 flex h-full flex-col rounded-[12px] p-5 shadow-xs overflow-hidden">
+          <div className="border-border bg-surface-1 flex h-full flex-col overflow-hidden rounded-[12px] border p-5 shadow-xs">
             {/* Header (No count badge) */}
             <div className="flex items-center justify-between gap-4 pb-4">
-              <h2 className="text-[15px] font-semibold tracking-[-0.01em] text-text">
+              <h2 className="text-text text-[15px] font-semibold tracking-[-0.01em]">
                 SLA Watchlist
               </h2>
               <Link
                 href="/candidates"
-                className="inline-flex items-center gap-1 text-[12px] font-medium text-text-muted hover:text-text transition-colors shrink-0"
+                className="text-text-muted hover:text-text inline-flex shrink-0 items-center gap-1 text-[12px] font-medium transition-colors"
               >
                 <span>View all candidates</span>
                 <ChevronRight className="h-3.5 w-3.5" />
@@ -393,10 +386,10 @@ export function HrDashboard() {
             </div>
 
             {/* Structured Table Container */}
-            <div className="overflow-x-auto -mx-5 px-5">
+            <div className="-mx-5 overflow-x-auto px-5">
               <div className="min-w-[580px]">
                 {/* Table Column Header */}
-                <div className="grid grid-cols-[minmax(200px,1.3fr)_minmax(140px,1.05fr)_minmax(130px,1.05fr)_minmax(90px,0.7fr)_minmax(95px,0.7fr)] gap-3 sm:gap-4 items-center px-4 py-2 text-[11px] font-medium uppercase tracking-wider text-text-subtle border-y border-border bg-surface-2/40 select-none">
+                <div className="text-text-subtle border-border bg-surface-2/40 grid grid-cols-[minmax(200px,1.3fr)_minmax(140px,1.05fr)_minmax(130px,1.05fr)_minmax(90px,0.7fr)_minmax(95px,0.7fr)] items-center gap-3 border-y px-4 py-2 text-[11px] font-medium tracking-wider uppercase select-none sm:gap-4">
                   <div>Candidate</div>
                   <div>Current Stage</div>
                   <div>SLA Status</div>
@@ -405,7 +398,7 @@ export function HrDashboard() {
                 </div>
 
                 {/* Table Content Rows */}
-                <div className="divide-y divide-border/60">
+                <div className="divide-border/60 divide-y">
                   {slaAlertCandidates.length === 0 ? (
                     <div className="text-text-muted flex flex-col items-center justify-center py-8 text-center text-[13px]">
                       <p className="font-medium">All candidate SLAs are currently on track</p>
@@ -416,18 +409,18 @@ export function HrDashboard() {
                       return (
                         <div
                           key={candidate.id}
-                          className="grid grid-cols-[minmax(200px,1.3fr)_minmax(140px,1.05fr)_minmax(130px,1.05fr)_minmax(90px,0.7fr)_minmax(95px,0.7fr)] gap-3 sm:gap-4 items-center px-4 py-3 hover:bg-surface-2/50 transition-colors"
+                          className="hover:bg-surface-2/50 grid grid-cols-[minmax(200px,1.3fr)_minmax(140px,1.05fr)_minmax(130px,1.05fr)_minmax(90px,0.7fr)_minmax(95px,0.7fr)] items-center gap-3 px-4 py-3 transition-colors sm:gap-4"
                         >
                           {/* 1. Candidate Info */}
-                          <div className="flex items-center gap-3 min-w-0">
-                            <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-surface-2 border border-border text-[11px] font-semibold text-text">
+                          <div className="flex min-w-0 items-center gap-3">
+                            <div className="bg-surface-2 border-border text-text flex h-8 w-8 shrink-0 items-center justify-center rounded-full border text-[11px] font-semibold">
                               {candidate.name.slice(0, 2).toUpperCase()}
                             </div>
                             <div className="min-w-0">
-                              <p className="truncate text-[13px] font-medium text-text leading-tight">
+                              <p className="text-text truncate text-[13px] leading-tight font-medium">
                                 {candidate.name}
                               </p>
-                              <p className="truncate text-[11px] text-text-muted leading-tight mt-0.5">
+                              <p className="text-text-muted mt-0.5 truncate text-[11px] leading-tight">
                                 {opening?.title || candidate.currentRole}
                               </p>
                             </div>
@@ -435,21 +428,24 @@ export function HrDashboard() {
 
                           {/* 2. Stage Badge */}
                           <div className="flex items-center">
-                            <Badge variant="default" className="text-[11px] font-medium py-0.5 px-2">
+                            <Badge
+                              variant="default"
+                              className="px-2 py-0.5 text-[11px] font-medium"
+                            >
                               {candidate.stage}
                             </Badge>
                           </div>
 
                           {/* 3. SLA Status */}
-                          <div className="flex items-center gap-1.5 text-text-muted">
-                            <Clock className="h-3.5 w-3.5 stroke-[1.75] text-text-subtle shrink-0" />
+                          <div className="text-text-muted flex items-center gap-1.5">
+                            <Clock className="text-text-subtle h-3.5 w-3.5 shrink-0 stroke-[1.75]" />
                             <span className="text-[12px] font-normal tabular-nums">
                               Action required
                             </span>
                           </div>
 
                           {/* 4. Notice Period */}
-                          <div className="text-[12px] text-text-muted tabular-nums font-mono">
+                          <div className="text-text-muted font-mono text-[12px] tabular-nums">
                             {candidate.noticePeriod}
                           </div>
 
@@ -458,8 +454,10 @@ export function HrDashboard() {
                             <Button
                               variant="outline"
                               size="sm"
-                              className="h-7 px-2.5 text-[11px] font-medium border-border hover:bg-surface-2 hover:text-text cursor-pointer"
-                              onClick={() => toast.success(`Nudge reminder sent for ${candidate.name}`)}
+                              className="border-border hover:bg-surface-2 hover:text-text h-7 cursor-pointer px-2.5 text-[11px] font-medium"
+                              onClick={() =>
+                                toast.success(`Nudge reminder sent for ${candidate.name}`)
+                              }
                             >
                               Nudge Team
                             </Button>
