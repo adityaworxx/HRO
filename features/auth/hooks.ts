@@ -1,3 +1,4 @@
+import { notificationsKeys } from '@/features/notifications/hooks';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { api } from '@/services';
 import type { UserRole } from '@/lib/navigation';
@@ -28,6 +29,7 @@ export function useSwitchRole() {
     mutationFn: (role: UserRole) => api.auth.switchRole(role),
     onSuccess: () => {
       void queryClient.invalidateQueries({ queryKey: authKeys.currentUser() });
+      void queryClient.invalidateQueries({ queryKey: notificationsKeys.all });
     },
   });
 }

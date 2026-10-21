@@ -11,6 +11,8 @@ export function useNotifications(role: UserRole) {
   return useQuery({
     queryKey: notificationsKeys.list(role),
     queryFn: () => api.notifications.list(role),
+    staleTime: 0,
+    refetchInterval: 3000,
   });
 }
 

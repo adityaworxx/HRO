@@ -191,6 +191,26 @@ function mapNotification(row: NotificationRow): Notification {
   };
 }
 
+async function createNotification(
+  recipientRole: 'manager' | 'hr',
+  title: string,
+  message: string,
+  link?: string
+) {
+  try {
+    await supabase.from('notifications').insert({
+      recipient_role: recipientRole,
+      title,
+      message,
+      link: link || null,
+      timestamp: new Date().toISOString(),
+      read: false,
+    });
+  } catch (err) {
+    console.warn('Failed to insert notification into Supabase', err);
+  }
+}
+
 async function recordActivity(
   entityType: 'opening' | 'candidate' | 'onboarding',
   entityId: string,
@@ -261,6 +281,12 @@ export const supabaseApi: HroApiClient = {
       const created = mapOpening(data as OpeningRow);
 
       await recordActivity('opening', created.id, `Created new opening "${created.title}"`);
+      await createNotification(
+        'hr',
+        'New Opening Created',
+        `Hiring Manager created new opening "${created.title}" in ${created.department}.`,
+        '/openings'
+      );
       return created;
     },
 
@@ -385,6 +411,14 @@ export const supabaseApi: HroApiClient = {
       if (error) throw error;
       const updated = mapCandidate(data as CandidateRow);
       await recordActivity('candidate', id, `Moved to stage "${stage}"`);
+      if (stage === 'Shared with Manager') {
+        await createNotification(
+          'manager',
+          'Candidate Shared for Review',
+          `HR shared candidate "${updated.name}" for technical review.`,
+          '/shortlist'
+        );
+      }
       return updated;
     },
 
@@ -404,6 +438,16 @@ export const supabaseApi: HroApiClient = {
 
       for (const c of updated) {
         await recordActivity('candidate', c.id, 'Shared with hiring manager for review');
+      }
+
+      if (updated.length > 0) {
+        const names = updated.map((c) => c.name).join(', ');
+        await createNotification(
+          'manager',
+          updated.length === 1 ? 'Candidate Shared for Review' : `${updated.length} Candidates Shared for Review`,
+          `HR shared ${names} for technical evaluation.`,
+          '/shortlist'
+        );
       }
 
       return updated;

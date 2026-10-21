@@ -396,7 +396,7 @@ export function HrDashboard() {
             <div className="overflow-x-auto -mx-5 px-5">
               <div className="min-w-[580px]">
                 {/* Table Column Header */}
-                <div className="grid grid-cols-[minmax(200px,2fr)_140px_130px_110px_100px] gap-3 sm:gap-4 items-center px-4 py-2 text-[11px] font-medium uppercase tracking-wider text-text-subtle border-y border-border bg-surface-2/40 select-none">
+                <div className="grid grid-cols-[minmax(200px,1.3fr)_minmax(140px,1.05fr)_minmax(130px,1.05fr)_minmax(90px,0.7fr)_minmax(95px,0.7fr)] gap-3 sm:gap-4 items-center px-4 py-2 text-[11px] font-medium uppercase tracking-wider text-text-subtle border-y border-border bg-surface-2/40 select-none">
                   <div>Candidate</div>
                   <div>Current Stage</div>
                   <div>SLA Status</div>
@@ -416,7 +416,7 @@ export function HrDashboard() {
                       return (
                         <div
                           key={candidate.id}
-                          className="grid grid-cols-[minmax(200px,2fr)_140px_130px_110px_100px] gap-3 sm:gap-4 items-center px-4 py-3 hover:bg-surface-2/50 transition-colors"
+                          className="grid grid-cols-[minmax(200px,1.3fr)_minmax(140px,1.05fr)_minmax(130px,1.05fr)_minmax(90px,0.7fr)_minmax(95px,0.7fr)] gap-3 sm:gap-4 items-center px-4 py-3 hover:bg-surface-2/50 transition-colors"
                         >
                           {/* 1. Candidate Info */}
                           <div className="flex items-center gap-3 min-w-0">
