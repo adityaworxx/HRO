@@ -2,7 +2,7 @@
 
 import * as React from 'react';
 import Link from 'next/link';
-import { ChevronRight } from 'lucide-react';
+import { ChevronRight, ChevronLeft } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { Skeleton } from '@/components/ui/skeleton';
 import { OpeningRow, OpeningHeaderRow } from './opening-row';
@@ -17,7 +17,10 @@ export interface ActiveOpeningsCardProps {
   isLoading?: boolean;
   className?: string;
   onReactivate?: (id: string, title: string) => void;
+  pageSize?: number;
 }
+
+const DEFAULT_PAGE_SIZE = 6;
 
 export function ActiveOpeningsCard({
   openings,
@@ -28,20 +31,28 @@ export function ActiveOpeningsCard({
   isLoading = false,
   className,
   onReactivate,
+  pageSize = DEFAULT_PAGE_SIZE,
 }: ActiveOpeningsCardProps) {
-  const activeCount = React.useMemo(
-    () => openings.filter((o) => o.status !== 'On Hold' && o.status !== 'Closed').length,
-    [openings]
-  );
-  const onHoldCount = React.useMemo(
-    () => openings.filter((o) => o.status === 'On Hold').length,
-    [openings]
-  );
+  const [currentPage, setCurrentPage] = React.useState<number>(1);
+
+  // Reset pagination when the openings list count changes
+  React.useEffect(() => {
+    setCurrentPage(1);
+  }, [openings.length]);
+
+  const totalCount = openings.length;
+  const totalPages = Math.ceil(totalCount / pageSize);
+  const validPage = Math.min(Math.max(1, currentPage), Math.max(1, totalPages));
+  const startIndex = (validPage - 1) * pageSize;
+  const visibleOpenings = React.useMemo(() => {
+    return openings.slice(startIndex, startIndex + pageSize);
+  }, [openings, startIndex, pageSize]);
 
   return (
     <div
       className={cn(
-        'border border-border bg-surface-1 rounded-[12px] pt-5 pb-1 overflow-hidden',
+        'border border-border bg-surface-1 rounded-[12px] pt-5 overflow-hidden',
+        totalPages > 1 ? 'pb-0' : 'pb-1',
         className
       )}
     >
@@ -80,7 +91,7 @@ export function ActiveOpeningsCard({
         </div>
       ) : (
         <div>
-          {openings.map((opening) => {
+          {visibleOpenings.map((opening) => {
             const openingCandidates = candidates.filter((c) => c.openingId === opening.id);
             const candidatesCount = openingCandidates.length;
 
@@ -93,6 +104,43 @@ export function ActiveOpeningsCard({
               />
             );
           })}
+        </div>
+      )}
+
+      {/* 4. Pagination Footer when > 6 openings */}
+      {!isLoading && totalPages > 1 && (
+        <div className="flex items-center justify-between border-t border-border/70 px-5 py-3 text-[12px] select-none bg-surface-1">
+          <span className="font-mono text-text-subtle text-[11.5px]">
+            Showing {startIndex + 1}–{Math.min(startIndex + pageSize, totalCount)} of {totalCount} openings
+          </span>
+
+          <div className="flex items-center gap-1.5">
+            <button
+              type="button"
+              disabled={validPage <= 1}
+              onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
+              className="h-7 w-7 inline-flex items-center justify-center rounded-[6px] border border-border/70 bg-surface-2/40 hover:bg-surface-2 text-text-muted hover:text-text disabled:opacity-30 disabled:cursor-not-allowed transition-colors cursor-pointer"
+              title="Previous page"
+              aria-label="Previous page"
+            >
+              <ChevronLeft className="h-3.5 w-3.5" />
+            </button>
+
+            <span className="px-2 font-mono text-text-muted text-[11.5px]">
+              Page {validPage} of {totalPages}
+            </span>
+
+            <button
+              type="button"
+              disabled={validPage >= totalPages}
+              onClick={() => setCurrentPage((p) => Math.min(totalPages, p + 1))}
+              className="h-7 w-7 inline-flex items-center justify-center rounded-[6px] border border-border/70 bg-surface-2/40 hover:bg-surface-2 text-text-muted hover:text-text disabled:opacity-30 disabled:cursor-not-allowed transition-colors cursor-pointer"
+              title="Next page"
+              aria-label="Next page"
+            >
+              <ChevronRight className="h-3.5 w-3.5" />
+            </button>
+          </div>
         </div>
       )}
     </div>
