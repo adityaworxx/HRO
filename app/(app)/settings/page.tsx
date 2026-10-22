@@ -336,15 +336,15 @@ export default function SettingsPage() {
             {/* Account Attributes */}
             <div className="grid grid-cols-2 gap-3 py-3 border-b border-border/50 text-[12px]">
               <div>
-                <span className="text-text-subtle text-[11px] uppercase tracking-wider font-mono">Department</span>
+                <span className="text-text text-[11px] uppercase tracking-wider font-mono font-bold">Department</span>
                 <p className="text-text mt-0.5 font-medium">{currentPersona.department}</p>
               </div>
               <div>
-                <span className="text-text-subtle text-[11px] uppercase tracking-wider font-mono">Assigned Role</span>
+                <span className="text-text text-[11px] uppercase tracking-wider font-mono font-bold">Assigned Role</span>
                 <p className="text-text mt-0.5 font-mono font-medium uppercase">{currentPersona.role}</p>
               </div>
               <div className="col-span-2 pt-1 border-t border-border/40">
-                <span className="text-text-subtle text-[11px] uppercase tracking-wider font-mono">Access Scope</span>
+                <span className="text-text text-[11px] uppercase tracking-wider font-mono font-bold">Access Scope</span>
                 <p className="text-text mt-0.5 font-medium text-[12px]">
                   {isHr ? 'Full Talent Pipeline & Onboarding Operations' : 'Requisitions & Interview Scorecards'}
                 </p>
