@@ -192,7 +192,7 @@ export function ManagerDashboard() {
                               {candidate.currentRole} at {candidate.currentCompany}
                             </span>
                             <MetaSeparator />
-                            <span className="shrink-0 tabular-nums">{candidate.experienceYears}y exp</span>
+                            <span className="shrink-0 tabular-nums font-bold text-text">{candidate.experienceYears}y exp</span>
                           </div>
                         </div>
                       </div>
@@ -236,7 +236,7 @@ export function ManagerDashboard() {
                                 <div className="text-text-muted flex items-center gap-2">
                                   <span className="tabular-nums">
                                     Expected: {formatCtc(candidate.expectedCtc)} (Notice:{' '}
-                                    {candidate.noticePeriod})
+                                    <span className="font-bold text-text">{candidate.noticePeriod}</span>)
                                   </span>
                                 </div>
                               </div>

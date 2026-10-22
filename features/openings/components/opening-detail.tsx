@@ -312,7 +312,9 @@ export function OpeningDetail({ id }: OpeningDetailProps) {
                             </div>
                             <p className="text-[11px] text-text-muted">
                               {candidate.currentRole} at {candidate.currentCompany} •{' '}
-                              {candidate.experienceYears} yrs exp
+                              <span className="font-bold text-text">
+                                {candidate.experienceYears} yrs exp
+                              </span>
                             </p>
                           </div>
                         </div>
@@ -321,7 +323,7 @@ export function OpeningDetail({ id }: OpeningDetailProps) {
                           <span className="font-mono font-medium text-text">
                             Expected: {formatCtc(candidate.expectedCtc)}
                           </span>
-                          <span>Notice: {candidate.noticePeriod}</span>
+                          <span className="font-bold text-text">Notice: {candidate.noticePeriod}</span>
                         </div>
                       </div>
                     ))

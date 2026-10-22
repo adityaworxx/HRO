@@ -250,7 +250,7 @@ export function DepartmentClusterView({
                             {formatCtcRange(opening.budgetRange.min, opening.budgetRange.max)}
                           </span>
                           <span className="text-text-subtle">·</span>
-                          <span>
+                          <span className="font-bold text-text">
                             {opening.experienceRange.min}–{opening.experienceRange.max} yrs exp
                           </span>
                         </div>

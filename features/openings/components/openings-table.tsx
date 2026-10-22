@@ -162,7 +162,7 @@ export function OpeningsTable() {
         id: 'experience',
         header: 'Experience',
         cell: ({ row }) => (
-          <span className="text-text text-[13px]">
+          <span className="text-text text-[13px] font-bold">
             {row.original.experienceRange.min}-{row.original.experienceRange.max} yrs
           </span>
         ),

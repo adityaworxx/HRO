@@ -445,7 +445,7 @@ export function HrDashboard() {
                           </div>
 
                           {/* 4. Notice Period */}
-                          <div className="text-text-muted font-mono text-[12px] tabular-nums">
+                          <div className="text-text font-bold font-mono text-[12px] tabular-nums">
                             {candidate.noticePeriod}
                           </div>
 

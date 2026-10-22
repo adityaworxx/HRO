@@ -125,7 +125,7 @@ export function ShortlistReview() {
                       <p className="text-text text-[12px] font-medium">{candidate.currentRole}</p>
                     </div>
                   </div>
-                  <Badge variant="default" className="text-[10px]">
+                  <Badge variant="default" className="text-[10px] font-bold">
                     {candidate.experienceYears}y exp
                   </Badge>
                 </div>
@@ -174,7 +174,7 @@ export function ShortlistReview() {
               <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
                 <div className="border-border bg-surface-2/40 rounded-lg border p-2.5">
                   <span className="text-text-subtle text-[11px]">Experience</span>
-                  <p className="text-text font-semibold">{activeCandidate.experienceYears} Years</p>
+                  <p className="text-text font-bold">{activeCandidate.experienceYears} Years</p>
                 </div>
                 <div className="border-border bg-surface-2/40 rounded-lg border p-2.5">
                   <span className="text-text-subtle text-[11px]">Expected CTC</span>
@@ -184,7 +184,7 @@ export function ShortlistReview() {
                 </div>
                 <div className="border-border bg-surface-2/40 rounded-lg border p-2.5">
                   <span className="text-text-subtle text-[11px]">Notice Period</span>
-                  <p className="text-text font-semibold">{activeCandidate.noticePeriod}</p>
+                  <p className="text-text font-bold">{activeCandidate.noticePeriod}</p>
                 </div>
                 <div className="border-border bg-surface-2/40 rounded-lg border p-2.5">
                   <span className="text-text-subtle text-[11px]">Contact</span>

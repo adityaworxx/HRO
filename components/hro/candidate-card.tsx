@@ -59,10 +59,10 @@ export function CandidateCard({
         </div>
       </div>
 
-      <div className="border-border/80 text-text-muted mt-1 flex items-center justify-between border-t pt-2 text-[11.5px] font-medium">
-        <span>{candidate.experienceYears}y exp</span>
-        <span className="flex items-center gap-1">
-          <Clock className="h-3 w-3 text-text-muted stroke-[2]" />
+      <div className="border-border/80 mt-1 flex items-center justify-between border-t pt-2 text-[11.5px]">
+        <span className="font-bold text-text">{candidate.experienceYears}y exp</span>
+        <span className="flex items-center gap-1 font-bold text-text">
+          <Clock className="h-3.5 w-3.5 text-text-muted stroke-[2.25]" />
           <span>{candidate.noticePeriod}</span>
         </span>
       </div>
