@@ -360,17 +360,23 @@ export function OnboardingDashboard() {
             onValueChange={(val) => setViewMode(val as typeof viewMode)}
             className="w-full lg:w-auto"
           >
-            <TabsList className="grid h-9 w-full grid-cols-3 lg:flex lg:w-auto">
-              <TabsTrigger value="by-candidate" className="gap-1.5 px-2 text-[12px] sm:px-3">
-                <Users className="h-3.5 w-3.5" />
+            <TabsList className="bg-surface-2/40 border-border/80 h-auto w-full grid-cols-3 gap-1 rounded-[10px] border p-1 grid lg:flex lg:w-auto">
+              <TabsTrigger
+                value="by-candidate"
+                className="data-[state=active]:bg-accent data-[state=active]:text-white data-[state=active]:font-bold text-text-muted hover:text-text rounded-[8px] px-3.5 py-1.5 text-[12px] font-medium transition-colors"
+              >
                 <span>By New Hire</span>
               </TabsTrigger>
-              <TabsTrigger value="by-phase" className="gap-1.5 px-2 text-[12px] sm:px-3">
-                <Layers className="h-3.5 w-3.5" />
+              <TabsTrigger
+                value="by-phase"
+                className="data-[state=active]:bg-accent data-[state=active]:text-white data-[state=active]:font-bold text-text-muted hover:text-text rounded-[8px] px-3.5 py-1.5 text-[12px] font-medium transition-colors"
+              >
                 <span>By Phase</span>
               </TabsTrigger>
-              <TabsTrigger value="all-tasks" className="gap-1.5 px-2 text-[12px] sm:px-3">
-                <ListChecks className="h-3.5 w-3.5" />
+              <TabsTrigger
+                value="all-tasks"
+                className="data-[state=active]:bg-accent data-[state=active]:text-white data-[state=active]:font-bold text-text-muted hover:text-text rounded-[8px] px-3.5 py-1.5 text-[12px] font-medium transition-colors"
+              >
                 <span>All Tasks ({filteredItems.length})</span>
               </TabsTrigger>
             </TabsList>
