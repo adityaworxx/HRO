@@ -48,10 +48,10 @@
   --source-indeed-text: #a5b4fc;
   --source-indeed-brand: #6366f1;
 
-  --source-referral-bg: rgba(16, 185, 129, 0.16);
-  --source-referral-border: rgba(16, 185, 129, 0.38);
-  --source-referral-text: #34d399;
-  --source-referral-brand: #10b981;
+  --source-referral-bg: rgba(245, 158, 11, 0.18);
+  --source-referral-border: rgba(245, 158, 11, 0.45);
+  --source-referral-text: #fbbf24;
+  --source-referral-brand: #f59e0b;
 
   --source-other-bg: rgba(148, 163, 184, 0.14);
   --source-other-border: rgba(148, 163, 184, 0.30);
@@ -112,10 +112,10 @@
   --source-indeed-text: #4338ca;
   --source-indeed-brand: #4f46e5;
 
-  --source-referral-bg: rgba(16, 185, 129, 0.10);
-  --source-referral-border: rgba(16, 185, 129, 0.30);
-  --source-referral-text: #047857;
-  --source-referral-brand: #059669;
+  --source-referral-bg: rgba(245, 158, 11, 0.15);
+  --source-referral-border: rgba(217, 119, 6, 0.38);
+  --source-referral-text: #b45309;
+  --source-referral-brand: #d97706;
 
   --source-other-bg: rgba(100, 116, 139, 0.08);
   --source-other-border: rgba(100, 116, 139, 0.25);

@@ -17,14 +17,14 @@ export function SourceBadge({
 }: SourceBadgeProps) {
   const normalized = (source || '').trim().toLowerCase();
 
+  const baseBadgeClass = cn(
+    'inline-flex items-center gap-1.5 rounded-[4px] border border-border bg-surface-2 px-1.5 py-0.5 text-[10.5px] font-medium text-text select-none shrink-0 shadow-2xs',
+    className
+  );
+
   if (normalized === 'linkedin') {
     return (
-      <span
-        className={cn(
-          'badge-source-linkedin inline-flex items-center gap-1 rounded-[4px] border px-1.5 py-0.5 text-[10.5px] font-semibold tracking-tight select-none shrink-0 shadow-2xs',
-          className
-        )}
-      >
+      <span className={baseBadgeClass}>
         {showIcon && (
           <span
             aria-hidden="true"
@@ -40,12 +40,7 @@ export function SourceBadge({
 
   if (normalized === 'naukri') {
     return (
-      <span
-        className={cn(
-          'badge-source-naukri inline-flex items-center gap-1.5 rounded-[4px] border px-1.5 py-0.5 text-[10.5px] font-semibold tracking-tight select-none shrink-0 shadow-2xs',
-          className
-        )}
-      >
+      <span className={baseBadgeClass}>
         {showIcon && (
           <img
             src="/icons/naukri.png"
@@ -63,12 +58,7 @@ export function SourceBadge({
 
   if (normalized === 'indeed') {
     return (
-      <span
-        className={cn(
-          'badge-source-indeed inline-flex items-center gap-1.5 rounded-[4px] border px-1.5 py-0.5 text-[10.5px] font-semibold tracking-tight select-none shrink-0 shadow-2xs',
-          className
-        )}
-      >
+      <span className={baseBadgeClass}>
         {showIcon && (
           <span
             aria-hidden="true"
@@ -91,16 +81,11 @@ export function SourceBadge({
 
   if (normalized === 'referral') {
     return (
-      <span
-        className={cn(
-          'badge-source-referral inline-flex items-center gap-1 rounded-[4px] border px-1.5 py-0.5 text-[10.5px] font-semibold tracking-tight select-none shrink-0 shadow-2xs',
-          className
-        )}
-      >
+      <span className={baseBadgeClass}>
         {showIcon && (
           <Users
             aria-hidden="true"
-            className="h-3 w-3 shrink-0 stroke-[2.2]"
+            className="h-3 w-3 shrink-0 stroke-[2.4] text-[var(--source-referral-brand)]"
           />
         )}
         <span>Referral</span>
@@ -109,16 +94,11 @@ export function SourceBadge({
   }
 
   return (
-    <span
-      className={cn(
-        'badge-source-other inline-flex items-center gap-1.5 rounded-[4px] border px-1.5 py-0.5 text-[10.5px] font-semibold tracking-tight select-none shrink-0 shadow-2xs',
-        className
-      )}
-    >
+    <span className={baseBadgeClass}>
       {showIcon && (
         <span
           aria-hidden="true"
-          className="h-1.5 w-1.5 rounded-full bg-[var(--source-other-brand)] shrink-0"
+          className="h-1.5 w-1.5 rounded-full bg-text-subtle shrink-0"
         />
       )}
       <span>{source}</span>
