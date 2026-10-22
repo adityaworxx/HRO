@@ -20,7 +20,7 @@ export function OpeningHeaderRow({ className }: { className?: string }) {
   return (
     <div
       className={cn(
-        'hidden sm:grid h-[34px] items-center px-4 sm:px-5 border-y border-border bg-surface-2/40 text-[11px] font-medium uppercase tracking-wider text-text-subtle select-none',
+        'hidden sm:grid h-[34px] items-center px-4 sm:px-5 border-y border-border bg-surface-2/40 text-[11px] font-bold uppercase tracking-wider text-text-muted select-none',
         'grid-cols-[minmax(180px,1.4fr)_minmax(100px,1fr)_minmax(110px,1fr)_24px] lg:grid-cols-[minmax(180px,1.05fr)_minmax(100px,0.95fr)_minmax(130px,1fr)_minmax(110px,1fr)_minmax(120px,1fr)_24px] gap-3 sm:gap-4',
         className
       )}
