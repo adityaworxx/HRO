@@ -118,7 +118,7 @@ export function CandidatesTable() {
         accessorKey: 'experienceYears',
         header: 'Experience',
         cell: ({ row }) => (
-          <span className="text-text font-mono text-[13px] font-medium tabular-nums whitespace-nowrap">
+          <span className="text-text font-mono text-[13px] font-bold tabular-nums whitespace-nowrap">
             {row.original.experienceYears} yrs
           </span>
         ),
@@ -355,7 +355,7 @@ export function CandidatesTable() {
         <DataTable
           columns={columns}
           data={filteredCandidates}
-          searchPlaceholder="Filter candidate by name, role, email..."
+          showControls={false}
           loading={isLoading}
           error={isError ? 'Failed to fetch candidate directory' : null}
           onRetry={() => void refetch()}

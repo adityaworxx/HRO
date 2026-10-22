@@ -24,6 +24,8 @@ export interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
   data: TData[];
   searchPlaceholder?: string;
+  showSearch?: boolean;
+  showControls?: boolean;
   loading?: boolean;
   error?: string | null;
   onRetry?: () => void;
@@ -35,6 +37,8 @@ export function DataTable<TData, TValue>({
   columns,
   data,
   searchPlaceholder = 'Search records...',
+  showSearch = true,
+  showControls = true,
   loading = false,
   error = null,
   onRetry,
@@ -77,29 +81,33 @@ export function DataTable<TData, TValue>({
   return (
     <div className={cn('flex flex-col gap-3', className)}>
       {/* Controls Bar */}
-      <div className="flex flex-col gap-2.5 sm:flex-row sm:items-center sm:justify-between">
-        <div className="relative w-full sm:max-w-xs">
-          <Search className="text-text-subtle absolute top-2.5 left-3 h-4 w-4 pointer-events-none" />
-          <Input
-            placeholder={searchPlaceholder}
-            value={globalFilter ?? ''}
-            onChange={(e) => setGlobalFilter(e.target.value)}
-            className="h-9 pl-9 text-[13px] bg-surface-2/40 border-border/70 hover:border-border focus:bg-surface-1 rounded-[8px] transition-all shadow-2xs"
-          />
-        </div>
+      {showControls && (
+        <div className="flex flex-col gap-2.5 sm:flex-row sm:items-center sm:justify-between">
+          {showSearch ? (
+            <div className="relative w-full sm:max-w-xs">
+              <Search className="text-text-subtle absolute top-2.5 left-3 h-4 w-4 pointer-events-none" />
+              <Input
+                placeholder={searchPlaceholder}
+                value={globalFilter ?? ''}
+                onChange={(e) => setGlobalFilter(e.target.value)}
+                className="h-9 pl-9 text-[13px] bg-surface-2/40 border-border/70 hover:border-border focus:bg-surface-1 rounded-[8px] transition-all shadow-2xs"
+              />
+            </div>
+          ) : null}
 
-        <div className="flex items-center gap-2">
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={() => setDensity(density === 'compact' ? 'normal' : 'compact')}
-            className="h-9 text-[12px] font-medium border-border/70 bg-surface-2/40 hover:bg-surface-2 text-text-muted hover:text-text rounded-[8px] shadow-2xs transition-all"
-          >
-            <SlidersHorizontal className="mr-1.5 h-3.5 w-3.5 text-text-subtle" />
-            {density === 'compact' ? 'Comfortable' : 'Compact'}
-          </Button>
+          <div className={cn("flex items-center gap-2", !showSearch && "ml-auto")}>
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => setDensity(density === 'compact' ? 'normal' : 'compact')}
+              className="h-9 text-[12px] font-medium border-border/70 bg-surface-2/40 hover:bg-surface-2 text-text-muted hover:text-text rounded-[8px] shadow-2xs transition-all"
+            >
+              <SlidersHorizontal className="mr-1.5 h-3.5 w-3.5 text-text-subtle" />
+              {density === 'compact' ? 'Comfortable' : 'Compact'}
+            </Button>
+          </div>
         </div>
-      </div>
+      )}
 
       {/* Table Container */}
       <div className="border border-border/80 bg-surface-1/70 backdrop-blur-xs overflow-hidden rounded-[12px] shadow-xs">
@@ -112,7 +120,7 @@ export function DataTable<TData, TValue>({
                     <th
                       key={header.id}
                       className={cn(
-                        'text-text-subtle text-[11px] font-medium tracking-wider uppercase first:pl-5 last:pr-5 transition-colors whitespace-nowrap',
+                        'text-text-muted text-[11px] font-bold tracking-wider uppercase first:pl-5 last:pr-5 transition-colors whitespace-nowrap',
                         rowPadding
                       )}
                     >
