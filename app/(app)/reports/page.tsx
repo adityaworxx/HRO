@@ -223,15 +223,15 @@ export default function ReportsPage() {
                 </div>
 
                 {/* Graph Mode Segmented Toggle Buttons */}
-                <div className="flex items-center gap-1 bg-surface-2 p-0.5 rounded-[6px] border border-border shrink-0 self-start">
+                <div className="flex items-center gap-1 bg-surface-2/40 p-1 rounded-[10px] border border-border/80 shrink-0 self-start">
                   <button
                     type="button"
                     onClick={() => setGraphMode('velocity')}
                     className={cn(
-                      'px-2 py-1 text-[11px] font-medium rounded-[4px] transition-colors cursor-pointer select-none',
+                      'px-3.5 py-1.5 text-[12px] rounded-[8px] transition-colors cursor-pointer select-none',
                       graphMode === 'velocity'
-                        ? 'bg-surface-1 text-text shadow-xs border border-border/80 font-semibold'
-                        : 'text-text-muted hover:text-text'
+                        ? 'bg-accent text-white font-bold shadow-xs'
+                        : 'text-text-muted hover:text-text font-medium'
                     )}
                   >
                     Velocity
@@ -240,10 +240,10 @@ export default function ReportsPage() {
                     type="button"
                     onClick={() => setGraphMode('sources')}
                     className={cn(
-                      'px-2 py-1 text-[11px] font-medium rounded-[4px] transition-colors cursor-pointer select-none',
+                      'px-3.5 py-1.5 text-[12px] rounded-[8px] transition-colors cursor-pointer select-none',
                       graphMode === 'sources'
-                        ? 'bg-surface-1 text-text shadow-xs border border-border/80 font-semibold'
-                        : 'text-text-muted hover:text-text'
+                        ? 'bg-accent text-white font-bold shadow-xs'
+                        : 'text-text-muted hover:text-text font-medium'
                     )}
                   >
                     Sources vs Shared
@@ -252,10 +252,10 @@ export default function ReportsPage() {
                     type="button"
                     onClick={() => setGraphMode('monthly')}
                     className={cn(
-                      'px-2 py-1 text-[11px] font-medium rounded-[4px] transition-colors cursor-pointer select-none',
+                      'px-3.5 py-1.5 text-[12px] rounded-[8px] transition-colors cursor-pointer select-none',
                       graphMode === 'monthly'
-                        ? 'bg-surface-1 text-text shadow-xs border border-border/80 font-semibold'
-                        : 'text-text-muted hover:text-text'
+                        ? 'bg-accent text-white font-bold shadow-xs'
+                        : 'text-text-muted hover:text-text font-medium'
                     )}
                   >
                     Monthly Shared
