@@ -172,7 +172,7 @@ export default function SettingsPage() {
               <h2 className="text-text text-[14px] font-semibold">
                 {isHr ? 'HR Operations & SLA Policies' : 'Hiring Manager Preferences'}
               </h2>
-              <span className="text-text-subtle text-[11px] font-mono uppercase tracking-wider">
+              <span className="text-text text-[11px] font-mono font-bold uppercase tracking-wider">
                 {isHr ? 'Recruitment Policies' : 'Interview Policies'}
               </span>
             </div>
@@ -296,7 +296,7 @@ export default function SettingsPage() {
           <div>
             <div className="border-border flex items-center justify-between border-b pb-3 mb-4">
               <h2 className="text-text text-[14px] font-semibold">Profile & Workspace Preferences</h2>
-              <span className="text-text-subtle text-[11px] font-mono uppercase tracking-wider">
+              <span className="text-text text-[11px] font-mono font-bold uppercase tracking-wider">
                 Active Account
               </span>
             </div>
