@@ -389,7 +389,7 @@ export function HrDashboard() {
             <div className="-mx-5 overflow-x-auto px-5">
               <div className="min-w-[580px]">
                 {/* Table Column Header */}
-                <div className="text-text-subtle border-border bg-surface-2/40 grid grid-cols-[minmax(200px,1.3fr)_minmax(140px,1.05fr)_minmax(130px,1.05fr)_minmax(90px,0.7fr)_minmax(95px,0.7fr)] items-center gap-3 border-y px-4 py-2 text-[11px] font-medium tracking-wider uppercase select-none sm:gap-4">
+                <div className="text-text-muted border-border bg-surface-2/40 grid grid-cols-[minmax(200px,1.3fr)_minmax(140px,1.05fr)_minmax(130px,1.05fr)_minmax(90px,0.7fr)_minmax(95px,0.7fr)] items-center gap-3 border-y px-4 py-2 text-[11px] font-bold tracking-wider uppercase select-none sm:gap-4">
                   <div>Candidate</div>
                   <div>Current Stage</div>
                   <div>SLA Status</div>
