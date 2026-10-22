@@ -373,7 +373,13 @@ export function CandidateDetailSheet({ candidate, open, onOpenChange }: Candidat
                   <div className="text-text-muted space-y-1 text-[12px]">
                     <p>
                       <strong className="text-text">Date & Time:</strong>{' '}
-                      {new Date(candidate.interviewDate).toLocaleString()}
+                      {new Date(candidate.interviewDate).toLocaleString(undefined, {
+                        year: 'numeric',
+                        month: 'numeric',
+                        day: 'numeric',
+                        hour: 'numeric',
+                        minute: '2-digit',
+                      })}
                     </p>
                     <p>
                       <strong className="text-text">Mode:</strong>{' '}

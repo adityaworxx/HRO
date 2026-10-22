@@ -180,7 +180,13 @@ export function InterviewsView() {
                       <Clock className="h-3.5 w-3.5" />
                       <span>
                         {candidate.interviewDate
-                          ? new Date(candidate.interviewDate).toLocaleString()
+                          ? new Date(candidate.interviewDate).toLocaleString(undefined, {
+                              year: 'numeric',
+                              month: 'numeric',
+                              day: 'numeric',
+                              hour: 'numeric',
+                              minute: '2-digit',
+                            })
                           : 'Slot not assigned yet'}
                       </span>
                     </span>
