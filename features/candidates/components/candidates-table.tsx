@@ -19,6 +19,7 @@ import {
 } from '@/components/ui/select';
 import { CandidateDetailSheet } from './candidate-detail-sheet';
 import { CandidateColumnsView } from './candidate-columns-view';
+import { SourceBadge } from '@/components/hro/source-badge';
 import { formatCtc } from '@/lib/format';
 import { cn } from '@/lib/utils';
 import { Columns3, List, Search } from 'lucide-react';
@@ -135,11 +136,7 @@ export function CandidatesTable() {
       {
         accessorKey: 'source',
         header: 'Source',
-        cell: ({ row }) => (
-          <span className="text-text-muted text-[12px] font-normal whitespace-nowrap">
-            {row.original.source}
-          </span>
-        ),
+        cell: ({ row }) => <SourceBadge source={row.original.source} />,
       },
       {
         accessorKey: 'stage',

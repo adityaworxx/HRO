@@ -37,6 +37,33 @@
   transform: scale(0.98);
 }
 
+/* Candidate Source Badges */
+.badge-source-linkedin {
+  background-color: var(--source-linkedin-bg);
+  border-color: var(--source-linkedin-border);
+  color: var(--source-linkedin-text);
+}
+.badge-source-naukri {
+  background-color: var(--source-naukri-bg);
+  border-color: var(--source-naukri-border);
+  color: var(--source-naukri-text);
+}
+.badge-source-indeed {
+  background-color: var(--source-indeed-bg);
+  border-color: var(--source-indeed-border);
+  color: var(--source-indeed-text);
+}
+.badge-source-referral {
+  background-color: var(--source-referral-bg);
+  border-color: var(--source-referral-border);
+  color: var(--source-referral-text);
+}
+.badge-source-other {
+  background-color: var(--source-other-bg);
+  border-color: var(--source-other-border);
+  color: var(--source-other-text);
+}
+
 *,
 *::before,
 *::after {

@@ -32,6 +32,32 @@
   --badge-danger-bg: rgba(229, 88, 79, 0.14);
   --badge-neutral-bg: rgba(163, 169, 184, 0.14);
 
+  /* Candidate Source Badge Tokens (Brand Colors) */
+  --source-linkedin-bg: rgba(10, 102, 194, 0.16);
+  --source-linkedin-border: rgba(10, 102, 194, 0.38);
+  --source-linkedin-text: #70b5f9;
+  --source-linkedin-brand: #0a66c2;
+
+  --source-naukri-bg: rgba(6, 182, 212, 0.16);
+  --source-naukri-border: rgba(6, 182, 212, 0.38);
+  --source-naukri-text: #22d3ee;
+  --source-naukri-brand: #06b6d4;
+
+  --source-indeed-bg: rgba(99, 102, 241, 0.16);
+  --source-indeed-border: rgba(99, 102, 241, 0.38);
+  --source-indeed-text: #a5b4fc;
+  --source-indeed-brand: #6366f1;
+
+  --source-referral-bg: rgba(16, 185, 129, 0.16);
+  --source-referral-border: rgba(16, 185, 129, 0.38);
+  --source-referral-text: #34d399;
+  --source-referral-brand: #10b981;
+
+  --source-other-bg: rgba(148, 163, 184, 0.14);
+  --source-other-border: rgba(148, 163, 184, 0.30);
+  --source-other-text: #cbd5e1;
+  --source-other-brand: #94a3b8;
+
   /* Radius Scale */
   --radius-sm: 6px;
   --radius-md: 8px;
@@ -69,4 +95,30 @@
   --badge-success-bg: rgba(31, 143, 104, 0.14);
   --badge-danger-bg: rgba(201, 61, 53, 0.14);
   --badge-neutral-bg: rgba(46, 51, 61, 0.1);
+
+  /* Candidate Source Badge Tokens (Brand Colors) */
+  --source-linkedin-bg: rgba(10, 102, 194, 0.08);
+  --source-linkedin-border: rgba(10, 102, 194, 0.28);
+  --source-linkedin-text: #0a66c2;
+  --source-linkedin-brand: #0a66c2;
+
+  --source-naukri-bg: rgba(14, 116, 144, 0.08);
+  --source-naukri-border: rgba(14, 116, 144, 0.28);
+  --source-naukri-text: #0891b2;
+  --source-naukri-brand: #0891b2;
+
+  --source-indeed-bg: rgba(79, 70, 229, 0.08);
+  --source-indeed-border: rgba(79, 70, 229, 0.28);
+  --source-indeed-text: #4338ca;
+  --source-indeed-brand: #4f46e5;
+
+  --source-referral-bg: rgba(16, 185, 129, 0.10);
+  --source-referral-border: rgba(16, 185, 129, 0.30);
+  --source-referral-text: #047857;
+  --source-referral-brand: #059669;
+
+  --source-other-bg: rgba(100, 116, 139, 0.08);
+  --source-other-border: rgba(100, 116, 139, 0.25);
+  --source-other-text: #475569;
+  --source-other-brand: #64748b;
 }

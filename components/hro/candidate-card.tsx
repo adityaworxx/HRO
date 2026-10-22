@@ -3,6 +3,7 @@ import type { Candidate } from '@/types/entities';
 import { cn } from '@/lib/utils';
 import { Building2, Briefcase, Clock } from 'lucide-react';
 import { ReorderIcon } from './reorder-icon';
+import { SourceBadge } from './source-badge';
 
 export interface CandidateCardProps {
   candidate: Candidate;
@@ -41,9 +42,7 @@ export function CandidateCard({
           {candidate.name}
         </h4>
         <div className="flex items-center gap-1.5 shrink-0">
-          <span className="text-[10.5px] font-medium text-text-muted bg-surface-2 border border-border rounded-[4px] px-1.5 py-0.5">
-            {candidate.source}
-          </span>
+          <SourceBadge source={candidate.source} />
           {showReorderIcon && <ReorderIcon isActive={isDragging} />}
         </div>
       </div>

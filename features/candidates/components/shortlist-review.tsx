@@ -8,6 +8,7 @@ import { Badge } from '@/components/ui/badge';
 import { Textarea } from '@/components/ui/textarea';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import { StatusBadge } from '@/components/hro/status-badge';
+import { SourceBadge } from '@/components/hro/source-badge';
 import { EmptyState } from '@/components/hro/empty-state';
 import { formatCtc } from '@/lib/format';
 import { CheckCircle2, XCircle, FileText } from 'lucide-react';
@@ -162,9 +163,7 @@ export function ShortlistReview() {
                 </div>
                 <div className="flex items-center gap-2">
                   <StatusBadge status={activeCandidate.stage} type="candidate" />
-                  <Badge variant="default" className="text-[11px]">
-                    {activeCandidate.source}
-                  </Badge>
+                  <SourceBadge source={activeCandidate.source} />
                 </div>
               </div>
             </CardHeader>

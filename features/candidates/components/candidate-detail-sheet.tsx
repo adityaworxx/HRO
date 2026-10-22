@@ -10,6 +10,7 @@ import {
   SheetContent,
 } from '@/components/ui/sheet';
 import { Badge } from '@/components/ui/badge';
+import { SourceBadge } from '@/components/hro/source-badge';
 import { Button } from '@/components/ui/button';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import {
@@ -236,9 +237,9 @@ export function CandidateDetailSheet({ candidate, open, onOpenChange }: Candidat
             <span className="text-[10px] sm:text-[11px] font-medium text-text-subtle uppercase tracking-wider block">
               Source
             </span>
-            <span className="text-[15px] sm:text-[16px] font-bold text-text truncate mt-0.5 block">
-              {candidate.source}
-            </span>
+            <div className="mt-1">
+              <SourceBadge source={candidate.source} />
+            </div>
           </div>
         </div>
 
