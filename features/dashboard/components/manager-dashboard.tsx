@@ -187,9 +187,9 @@ export function ManagerDashboard() {
                               Shared 2d ago
                             </span>
                           </div>
-                          <div className="text-text-muted flex items-center text-[13px] leading-[20px]">
+                          <div className="text-text-muted flex items-center gap-1.5 sm:gap-2 text-[13px] leading-[20px]">
                             <span
-                              className="w-[240px] sm:w-[260px] shrink-0 truncate"
+                              className="max-w-[170px] xs:max-w-[210px] sm:max-w-none sm:w-[260px] shrink-0 truncate"
                               title={`${candidate.currentRole} at ${candidate.currentCompany}`}
                             >
                               {candidate.currentRole} at {candidate.currentCompany}

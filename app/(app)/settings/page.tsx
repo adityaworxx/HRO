@@ -162,17 +162,17 @@ export default function SettingsPage() {
   };
 
   return (
-    <div className="flex min-h-[calc(100vh-7.5rem)] w-full items-center justify-center">
+    <div className="flex min-h-[calc(100vh-7.5rem)] w-full items-start lg:items-center justify-center py-2 sm:py-4 lg:py-0">
       <div className="w-full max-w-5xl">
         <div className="grid grid-cols-1 gap-5 lg:grid-cols-2 items-stretch">
         {/* Left Card: Role-Specific Operational Policies */}
         <section className="border-border bg-surface-1 rounded-[var(--radius-md)] border p-5 shadow-xs flex flex-col justify-between">
           <div>
-            <div className="border-border flex items-center justify-between border-b pb-3 mb-4">
+            <div className="border-border flex items-center justify-between border-b pb-3 mb-4 gap-2">
               <h2 className="text-text text-[14px] font-semibold">
                 {isHr ? 'HR Operations & SLA Policies' : 'Hiring Manager Preferences'}
               </h2>
-              <span className="text-text text-[11px] font-mono font-bold uppercase tracking-wider">
+              <span className="text-text text-[11px] font-mono font-bold uppercase tracking-wider shrink-0">
                 {isHr ? 'Recruitment Policies' : 'Interview Policies'}
               </span>
             </div>
@@ -294,9 +294,9 @@ export default function SettingsPage() {
         {/* Right Card: Profile & System Preferences */}
         <section className="border-border bg-surface-1 rounded-[var(--radius-md)] border p-5 shadow-xs flex flex-col justify-between">
           <div>
-            <div className="border-border flex items-center justify-between border-b pb-3 mb-4">
+            <div className="border-border flex items-center justify-between border-b pb-3 mb-4 gap-2">
               <h2 className="text-text text-[14px] font-semibold">Profile & Workspace Preferences</h2>
-              <span className="text-text text-[11px] font-mono font-bold uppercase tracking-wider">
+              <span className="text-text text-[11px] font-mono font-bold uppercase tracking-wider shrink-0">
                 Active Account
               </span>
             </div>

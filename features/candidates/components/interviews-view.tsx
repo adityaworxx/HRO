@@ -175,10 +175,10 @@ export function InterviewsView() {
 
               <CardContent className="space-y-3 pt-1 text-[13px]">
                 <div className="border-border bg-surface-2/40 space-y-1.5 rounded-md border p-3">
-                  <div className="flex items-center justify-between text-[12px]">
-                    <span className="text-text-muted flex items-center gap-1.5">
-                      <Clock className="h-3.5 w-3.5" />
-                      <span>
+                  <div className="flex items-center justify-between text-[12px] gap-2">
+                    <span className="text-text-muted flex items-center gap-1.5 min-w-0">
+                      <Clock className="h-3.5 w-3.5 shrink-0" />
+                      <span className="truncate">
                         {candidate.interviewDate
                           ? new Date(candidate.interviewDate).toLocaleString(undefined, {
                               year: 'numeric',
@@ -191,7 +191,7 @@ export function InterviewsView() {
                       </span>
                     </span>
                     <span
-                      className="text-text-muted flex items-center"
+                      className="text-text-muted flex items-center shrink-0"
                       title={`${candidate.interviewMode ?? 'Video'} Interview`}
                       aria-label={`${candidate.interviewMode ?? 'Video'} Interview`}
                     >
@@ -215,20 +215,20 @@ export function InterviewsView() {
                     variant="outline"
                     size="sm"
                     onClick={() => handleOpenSchedule(candidate)}
-                    className="h-8 flex-1 gap-1 text-[12px]"
+                    className="h-8 flex-1 gap-1 text-[12px] min-w-0"
                   >
-                    <Calendar className="h-3.5 w-3.5" />
-                    <span>{candidate.interviewDate ? 'Reschedule' : 'Set Slot'}</span>
+                    <Calendar className="h-3.5 w-3.5 shrink-0" />
+                    <span className="truncate">{candidate.interviewDate ? 'Reschedule' : 'Set Slot'}</span>
                   </Button>
 
                   <Button
                     variant="primary"
                     size="sm"
                     onClick={() => handleOpenOutcome(candidate)}
-                    className="h-8 flex-1 gap-1 text-[12px]"
+                    className="h-8 flex-1 gap-1 text-[12px] min-w-0"
                   >
-                    <CheckCircle2 className="h-3.5 w-3.5" />
-                    <span>Record Outcome</span>
+                    <CheckCircle2 className="h-3.5 w-3.5 shrink-0" />
+                    <span className="truncate">Record Outcome</span>
                   </Button>
                 </div>
               </CardContent>

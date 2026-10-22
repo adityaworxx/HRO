@@ -223,12 +223,12 @@ export default function ReportsPage() {
                 </div>
 
                 {/* Graph Mode Segmented Toggle Buttons */}
-                <div className="flex items-center gap-1 bg-surface-2/40 p-1 rounded-[10px] border border-border/80 shrink-0 self-start">
+                <div className="flex items-center gap-1 bg-surface-2/40 p-1 rounded-[10px] border border-border/80 shrink-0 self-start max-w-full overflow-x-auto">
                   <button
                     type="button"
                     onClick={() => setGraphMode('velocity')}
                     className={cn(
-                      'px-3.5 py-1.5 text-[12px] rounded-[8px] transition-colors cursor-pointer select-none',
+                      'px-2.5 sm:px-3.5 py-1.5 text-[11.5px] sm:text-[12px] whitespace-nowrap rounded-[8px] transition-colors cursor-pointer select-none',
                       graphMode === 'velocity'
                         ? 'bg-accent text-white font-bold shadow-xs'
                         : 'text-text-muted hover:text-text font-medium'
@@ -240,7 +240,7 @@ export default function ReportsPage() {
                     type="button"
                     onClick={() => setGraphMode('sources')}
                     className={cn(
-                      'px-3.5 py-1.5 text-[12px] rounded-[8px] transition-colors cursor-pointer select-none',
+                      'px-2.5 sm:px-3.5 py-1.5 text-[11.5px] sm:text-[12px] whitespace-nowrap rounded-[8px] transition-colors cursor-pointer select-none',
                       graphMode === 'sources'
                         ? 'bg-accent text-white font-bold shadow-xs'
                         : 'text-text-muted hover:text-text font-medium'
@@ -252,7 +252,7 @@ export default function ReportsPage() {
                     type="button"
                     onClick={() => setGraphMode('monthly')}
                     className={cn(
-                      'px-3.5 py-1.5 text-[12px] rounded-[8px] transition-colors cursor-pointer select-none',
+                      'px-2.5 sm:px-3.5 py-1.5 text-[11.5px] sm:text-[12px] whitespace-nowrap rounded-[8px] transition-colors cursor-pointer select-none',
                       graphMode === 'monthly'
                         ? 'bg-accent text-white font-bold shadow-xs'
                         : 'text-text-muted hover:text-text font-medium'

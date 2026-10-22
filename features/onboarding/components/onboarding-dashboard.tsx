@@ -363,19 +363,19 @@ export function OnboardingDashboard() {
             <TabsList className="bg-surface-2/40 border-border/80 h-auto w-full grid-cols-3 gap-1 rounded-[10px] border p-1 grid lg:flex lg:w-auto">
               <TabsTrigger
                 value="by-candidate"
-                className="data-[state=active]:bg-accent data-[state=active]:text-white data-[state=active]:font-bold text-text-muted hover:text-text rounded-[8px] px-3.5 py-1.5 text-[12px] font-medium transition-colors"
+                className="data-[state=active]:bg-accent data-[state=active]:text-white data-[state=active]:font-bold text-text-muted hover:text-text rounded-[8px] px-2 sm:px-3.5 py-1.5 text-[11px] sm:text-[12px] font-medium transition-colors whitespace-nowrap"
               >
                 <span>By New Hire</span>
               </TabsTrigger>
               <TabsTrigger
                 value="by-phase"
-                className="data-[state=active]:bg-accent data-[state=active]:text-white data-[state=active]:font-bold text-text-muted hover:text-text rounded-[8px] px-3.5 py-1.5 text-[12px] font-medium transition-colors"
+                className="data-[state=active]:bg-accent data-[state=active]:text-white data-[state=active]:font-bold text-text-muted hover:text-text rounded-[8px] px-2 sm:px-3.5 py-1.5 text-[11px] sm:text-[12px] font-medium transition-colors whitespace-nowrap"
               >
                 <span>By Phase</span>
               </TabsTrigger>
               <TabsTrigger
                 value="all-tasks"
-                className="data-[state=active]:bg-accent data-[state=active]:text-white data-[state=active]:font-bold text-text-muted hover:text-text rounded-[8px] px-3.5 py-1.5 text-[12px] font-medium transition-colors"
+                className="data-[state=active]:bg-accent data-[state=active]:text-white data-[state=active]:font-bold text-text-muted hover:text-text rounded-[8px] px-2 sm:px-3.5 py-1.5 text-[11px] sm:text-[12px] font-medium transition-colors whitespace-nowrap"
               >
                 <span>All Tasks ({filteredItems.length})</span>
               </TabsTrigger>

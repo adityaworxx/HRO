@@ -38,8 +38,8 @@ export function Topbar() {
           <span className="text-text text-[14px] font-semibold tracking-tight">HRO</span>
         </Link>
 
-        {/* Left-Aligned Page Title across dashboards & pages */}
-        <div className="flex min-w-0 items-center">
+        {/* Left-Aligned Page Title across dashboards & pages (Desktop only, avoiding mixing with HRO on mobile) */}
+        <div className="hidden lg:flex min-w-0 items-center">
           <React.Suspense fallback={null}>
             <Breadcrumbs />
           </React.Suspense>
