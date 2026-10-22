@@ -28,7 +28,7 @@ export function SourceBadge({
         {showIcon && (
           <span
             aria-hidden="true"
-            className="flex h-3 w-3 items-center justify-center rounded-[2px] bg-[var(--source-linkedin-brand)] text-[8px] font-bold text-white leading-none shrink-0 select-none"
+            className="flex h-3.5 w-3.5 items-center justify-center rounded-[2px] bg-[var(--source-linkedin-brand)] text-[8.5px] font-bold text-white leading-none shrink-0 select-none"
           >
             in
           </span>
@@ -47,9 +47,13 @@ export function SourceBadge({
         )}
       >
         {showIcon && (
-          <span
+          <img
+            src="/icons/naukri.png"
+            alt=""
             aria-hidden="true"
-            className="h-1.5 w-1.5 rounded-full bg-[var(--source-naukri-brand)] shrink-0"
+            width={14}
+            height={14}
+            className="h-3.5 w-3.5 rounded-full object-contain shrink-0 select-none"
           />
         )}
         <span>Naukri</span>
@@ -66,9 +70,13 @@ export function SourceBadge({
         )}
       >
         {showIcon && (
-          <span
+          <img
+            src="/icons/indeed.png"
+            alt=""
             aria-hidden="true"
-            className="h-1.5 w-1.5 rounded-full bg-[var(--source-indeed-brand)] shrink-0"
+            width={14}
+            height={14}
+            className="h-3.5 w-3.5 rounded-[2px] object-contain shrink-0 select-none"
           />
         )}
         <span>Indeed</span>
@@ -87,7 +95,7 @@ export function SourceBadge({
         {showIcon && (
           <Users
             aria-hidden="true"
-            className="h-2.5 w-2.5 shrink-0 stroke-[2.5]"
+            className="h-3 w-3 shrink-0 stroke-[2.2]"
           />
         )}
         <span>Referral</span>
