@@ -187,11 +187,13 @@ export function ManagerDashboard() {
                               Shared 2d ago
                             </span>
                           </div>
-                          <div className="text-text-muted flex items-center text-[13px] leading-[20px] truncate">
-                            <span className="truncate">
+                          <div className="text-text-muted flex items-center text-[13px] leading-[20px]">
+                            <span
+                              className="w-[240px] sm:w-[260px] shrink-0 truncate"
+                              title={`${candidate.currentRole} at ${candidate.currentCompany}`}
+                            >
                               {candidate.currentRole} at {candidate.currentCompany}
                             </span>
-                            <MetaSeparator />
                             <span className="shrink-0 tabular-nums font-bold text-text">{candidate.experienceYears}y exp</span>
                           </div>
                         </div>
