@@ -479,12 +479,12 @@ export function OnboardingDashboard() {
                     <col className="w-[22%]" />
                   </colgroup>
                   <thead>
-                    <tr className="border-border text-text-subtle bg-surface-2/40 border-b text-[11px] font-medium tracking-wider uppercase">
-                      <th className="px-4 py-2.5 font-medium sm:px-5">Candidate</th>
-                      <th className="px-3 py-2.5 font-medium sm:px-4">Role & Company</th>
-                      <th className="px-3 py-2.5 font-medium sm:px-4">Stage</th>
-                      <th className="px-3 py-2.5 font-medium sm:px-4">Joining Date</th>
-                      <th className="px-4 py-2.5 text-right font-medium sm:px-5">Actions</th>
+                    <tr className="border-border text-text-muted bg-surface-2/40 border-b text-[11px] font-bold tracking-wider uppercase">
+                      <th className="px-4 py-2.5 font-bold sm:px-5">Candidate</th>
+                      <th className="px-3 py-2.5 font-bold sm:px-4">Role & Company</th>
+                      <th className="px-3 py-2.5 font-bold sm:px-4">Stage</th>
+                      <th className="px-3 py-2.5 font-bold sm:px-4">Joining Date</th>
+                      <th className="px-4 py-2.5 text-right font-bold sm:px-5">Actions</th>
                     </tr>
                   </thead>
                   <tbody className="divide-border divide-y text-[12px]">
@@ -914,16 +914,16 @@ export function OnboardingDashboard() {
           <div className="-mx-px overflow-x-auto">
             <table className="w-full min-w-[760px] border-collapse text-left">
               <thead>
-                <tr className="border-border/80 bg-surface-2/50 text-text-subtle border-b text-[11px] font-medium tracking-wider uppercase select-none">
+                <tr className="border-border/80 bg-surface-2/50 text-text-muted border-b text-[11px] font-bold tracking-wider uppercase select-none">
                   <th className="w-12 px-3.5 py-2.5 text-center sm:px-4">
                     <span className="sr-only">Status Toggle</span>
                   </th>
-                  <th className="min-w-[260px] px-3 py-2.5 font-medium">Task</th>
-                  <th className="w-[170px] px-3 py-2.5 font-medium">New Hire</th>
-                  <th className="w-[130px] px-3 py-2.5 font-medium">Phase</th>
-                  <th className="w-[100px] px-3 py-2.5 font-medium">Owner</th>
-                  <th className="w-[110px] px-3 py-2.5 font-medium">Due Date</th>
-                  <th className="w-[100px] py-2.5 pr-4 text-right font-medium sm:pr-5">Status</th>
+                  <th className="min-w-[260px] px-3 py-2.5 font-bold">Task</th>
+                  <th className="w-[170px] px-3 py-2.5 font-bold">New Hire</th>
+                  <th className="w-[130px] px-3 py-2.5 font-bold">Phase</th>
+                  <th className="w-[100px] px-3 py-2.5 font-bold">Owner</th>
+                  <th className="w-[110px] px-3 py-2.5 font-bold">Due Date</th>
+                  <th className="w-[100px] py-2.5 pr-4 text-right font-bold sm:pr-5">Status</th>
                 </tr>
               </thead>
               <tbody className="divide-border/60 divide-y text-[13px]">
