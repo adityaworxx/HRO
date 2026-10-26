@@ -109,7 +109,7 @@ export function ActiveOpeningsCard({
 
       {/* 4. Pagination Footer when > 6 openings */}
       {!isLoading && totalPages > 1 && (
-        <div className="flex items-center justify-between border-t border-border px-5 py-3 text-[12px] select-none bg-surface-1">
+        <div className="flex items-center justify-between border-t border-border/70 px-5 py-3 text-[12px] select-none bg-surface-1">
           <span className="font-mono text-text-subtle text-[11.5px]">
             Showing {startIndex + 1}–{Math.min(startIndex + pageSize, totalCount)} of {totalCount} openings
           </span>
@@ -119,7 +119,7 @@ export function ActiveOpeningsCard({
               type="button"
               disabled={validPage <= 1}
               onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
-              className="h-7 w-7 inline-flex items-center justify-center rounded-[6px] border border-border bg-surface-2/40 hover:bg-surface-2 text-text-muted hover:text-text disabled:opacity-30 disabled:cursor-not-allowed transition-colors cursor-pointer"
+              className="h-7 w-7 inline-flex items-center justify-center rounded-[6px] border border-border/70 bg-surface-2/40 hover:bg-surface-2 text-text-muted hover:text-text disabled:opacity-30 disabled:cursor-not-allowed transition-colors cursor-pointer"
               title="Previous page"
               aria-label="Previous page"
             >
@@ -134,7 +134,7 @@ export function ActiveOpeningsCard({
               type="button"
               disabled={validPage >= totalPages}
               onClick={() => setCurrentPage((p) => Math.min(totalPages, p + 1))}
-              className="h-7 w-7 inline-flex items-center justify-center rounded-[6px] border border-border bg-surface-2/40 hover:bg-surface-2 text-text-muted hover:text-text disabled:opacity-30 disabled:cursor-not-allowed transition-colors cursor-pointer"
+              className="h-7 w-7 inline-flex items-center justify-center rounded-[6px] border border-border/70 bg-surface-2/40 hover:bg-surface-2 text-text-muted hover:text-text disabled:opacity-30 disabled:cursor-not-allowed transition-colors cursor-pointer"
               title="Next page"
               aria-label="Next page"
             >

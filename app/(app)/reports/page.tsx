@@ -139,7 +139,7 @@ export default function ReportsPage() {
         {/* Card 1: Recruitment Conversion Funnel */}
         <Card className="flex flex-col justify-between h-full">
           <div>
-            <CardHeader className="pb-4 border-b border-border">
+            <CardHeader className="pb-4 border-b border-border/40">
               <div className="flex items-center justify-between">
                 <div>
                   <CardTitle className="text-[16px] font-semibold text-text tracking-[-0.01em]">
@@ -185,7 +185,7 @@ export default function ReportsPage() {
           </div>
 
           {/* Footer Summary Strip */}
-          <div className="border-t border-border px-4 sm:px-6 py-2.5 sm:py-3 bg-surface-2/30 flex flex-wrap items-center justify-between gap-2 text-[11px] select-none rounded-b-[12px]">
+          <div className="border-t border-border/50 px-4 sm:px-6 py-2.5 sm:py-3 bg-surface-2/30 flex flex-wrap items-center justify-between gap-2 text-[11px] select-none rounded-b-[12px]">
             <span className="text-text-subtle">
               Net Yield: <strong className="text-accent font-mono font-semibold">27%</strong>
             </span>
@@ -201,7 +201,7 @@ export default function ReportsPage() {
         {/* Card 2: Hiring Velocity & Trends Graph (with Toggle for Sources / Shared with Manager) */}
         <Card className="flex flex-col justify-between h-full">
           <div>
-            <CardHeader className="pb-4 border-b border-border">
+            <CardHeader className="pb-4 border-b border-border/40">
               <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-3">
                 <div>
                   <div className="flex items-center gap-2 flex-wrap">
@@ -373,7 +373,7 @@ export default function ReportsPage() {
           </div>
 
           {/* Footer Summary Strip */}
-          <div className="border-t border-border px-4 sm:px-6 py-2.5 sm:py-3 bg-surface-2/30 flex flex-wrap items-center justify-between gap-2 text-[11px] select-none rounded-b-[12px]">
+          <div className="border-t border-border/50 px-4 sm:px-6 py-2.5 sm:py-3 bg-surface-2/30 flex flex-wrap items-center justify-between gap-2 text-[11px] select-none rounded-b-[12px]">
             {graphMode === 'velocity' ? (
               <>
                 <span className="text-text-subtle">
@@ -420,7 +420,7 @@ export default function ReportsPage() {
         {/* Card 3: Department Headcount Allocations */}
         <Card className="flex flex-col justify-between h-full">
           <div>
-            <CardHeader className="pb-4 border-b border-border">
+            <CardHeader className="pb-4 border-b border-border/40">
               <div className="flex items-center justify-between">
                 <div>
                   <CardTitle className="text-[16px] font-semibold text-text tracking-[-0.01em]">
@@ -436,7 +436,7 @@ export default function ReportsPage() {
               </div>
             </CardHeader>
 
-            <CardContent className="pt-2 divide-y divide-border">
+            <CardContent className="pt-2 divide-y divide-border/40">
               {departmentStats.map((item) => (
                 <div
                   key={item.department}
@@ -470,7 +470,7 @@ export default function ReportsPage() {
           </div>
 
           {/* Footer Summary Strip */}
-          <div className="border-t border-border px-4 sm:px-6 py-2.5 sm:py-3 bg-surface-2/30 flex flex-wrap items-center justify-between gap-2 text-[11px] select-none rounded-b-[12px]">
+          <div className="border-t border-border/50 px-4 sm:px-6 py-2.5 sm:py-3 bg-surface-2/30 flex flex-wrap items-center justify-between gap-2 text-[11px] select-none rounded-b-[12px]">
             <span className="text-text-subtle">
               Total Quota: <strong className="text-text font-mono font-semibold">{totalHeadcount}</strong>
             </span>
@@ -486,7 +486,7 @@ export default function ReportsPage() {
         {/* Card 4: Sourcing Channel Performance */}
         <Card className="flex flex-col justify-between h-full">
           <div>
-            <CardHeader className="pb-4 border-b border-border">
+            <CardHeader className="pb-4 border-b border-border/40">
               <div className="flex items-center justify-between">
                 <div>
                   <CardTitle className="text-[16px] font-semibold text-text tracking-[-0.01em]">
@@ -502,7 +502,7 @@ export default function ReportsPage() {
               </div>
             </CardHeader>
 
-            <CardContent className="pt-2 divide-y divide-border">
+            <CardContent className="pt-2 divide-y divide-border/40">
               {channelBreakdownData.map((item) => (
                 <div
                   key={item.source}
@@ -542,7 +542,7 @@ export default function ReportsPage() {
           </div>
 
           {/* Footer Summary Strip */}
-          <div className="border-t border-border px-4 sm:px-6 py-2.5 sm:py-3 bg-surface-2/30 flex flex-wrap items-center justify-between gap-2 text-[11px] select-none rounded-b-[12px]">
+          <div className="border-t border-border/50 px-4 sm:px-6 py-2.5 sm:py-3 bg-surface-2/30 flex flex-wrap items-center justify-between gap-2 text-[11px] select-none rounded-b-[12px]">
             <span className="text-text-subtle">
               Primary Source: <strong className="text-text font-mono font-semibold">LinkedIn (33%)</strong>
             </span>

@@ -37,8 +37,6 @@ import {
 import { VideoCameraIcon } from '@/components/ui/icons';
 import { toast } from 'sonner';
 import { formatCtc, formatInterviewDateTime } from '@/lib/format';
-import { cn } from '@/lib/utils';
-import { getAvatarColorClass } from '@/lib/avatar';
 
 export function ManagerDashboard() {
   const { data: openings = [], isLoading: loadingOpenings } = useOpenings();
@@ -177,10 +175,7 @@ export function ManagerDashboard() {
                     >
                       {/* Candidate Avatar & Meta Info */}
                       <div className="flex min-w-0 items-start sm:items-center gap-3">
-                        <div className={cn(
-                          'flex h-8 w-8 shrink-0 items-center justify-center rounded-full border text-[12px] font-bold select-none shadow-2xs mt-0.5 sm:mt-0',
-                          getAvatarColorClass(candidate.name)
-                        )}>
+                        <div className="bg-surface-2 text-text flex h-8 w-8 shrink-0 items-center justify-center rounded-full text-[12px] font-medium select-none mt-0.5 sm:mt-0">
                           {candidate.name.slice(0, 2).toUpperCase()}
                         </div>
                         <div className="min-w-0 space-y-0.5">

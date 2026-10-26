@@ -12,8 +12,6 @@ import { Skeleton } from '@/components/ui/skeleton';
 import { Progress } from '@/components/ui/progress';
 import { Users, Clock, ChevronRight } from 'lucide-react';
 import { toast } from 'sonner';
-import { cn } from '@/lib/utils';
-import { getAvatarColorClass } from '@/lib/avatar';
 
 export function HrDashboard() {
   const { data: openings = [], isLoading: loadingOpenings } = useOpenings();
@@ -115,7 +113,7 @@ export function HrDashboard() {
         <div className="col-span-12 flex flex-col lg:col-span-8">
           <div className="border-border bg-surface-1 flex h-full flex-col rounded-[12px] border p-5 shadow-xs">
             {/* Header (No 30 candidates badge) */}
-            <div className="border-border flex items-center justify-between gap-4 border-b pb-4">
+            <div className="border-border/60 flex items-center justify-between gap-4 border-b pb-4">
               <h2 className="text-text text-[15px] font-semibold tracking-[-0.01em]">
                 Active Pipeline Throughput
               </h2>
@@ -130,7 +128,7 @@ export function HrDashboard() {
 
             {/* Content: Unified Connected Progression Track */}
             <div className="flex flex-1 flex-col justify-between gap-4 pt-4">
-              <div className="border-border bg-surface-2/30 divide-border grid grid-cols-2 divide-y overflow-hidden rounded-[10px] border sm:grid-cols-5 sm:divide-x sm:divide-y-0">
+              <div className="border-border/80 bg-surface-2/30 divide-border/60 grid grid-cols-2 divide-y overflow-hidden rounded-[10px] border sm:grid-cols-5 sm:divide-x sm:divide-y-0">
                 {/* Stage 1: Sourced */}
                 <div className="hover:bg-surface-2/60 flex flex-col justify-between p-3.5 transition-colors">
                   <div className="flex items-center justify-between">
@@ -307,7 +305,7 @@ export function HrDashboard() {
         <div className="col-span-12 flex flex-col lg:col-span-4">
           <div className="border-border bg-surface-1 flex h-full flex-col rounded-[12px] border p-5 shadow-xs">
             {/* Header */}
-            <div className="border-border flex items-center justify-between gap-4 border-b pb-4">
+            <div className="border-border/60 flex items-center justify-between gap-4 border-b pb-4">
               <h2 className="text-text text-[15px] font-semibold tracking-[-0.01em]">
                 Onboarding Readiness
               </h2>
@@ -346,7 +344,7 @@ export function HrDashboard() {
                     No pending hires in onboarding.
                   </p>
                 ) : (
-                  <div className="divide-border divide-y">
+                  <div className="divide-border/60 divide-y">
                     {hiredCandidates.slice(0, 2).map((candidate) => (
                       <div
                         key={candidate.id}
@@ -400,7 +398,7 @@ export function HrDashboard() {
                 </div>
 
                 {/* Table Content Rows */}
-                <div className="divide-border divide-y">
+                <div className="divide-border/60 divide-y">
                   {slaAlertCandidates.length === 0 ? (
                     <div className="text-text-muted flex flex-col items-center justify-center py-8 text-center text-[13px]">
                       <p className="font-medium">All candidate SLAs are currently on track</p>
@@ -415,10 +413,7 @@ export function HrDashboard() {
                         >
                           {/* 1. Candidate Info */}
                           <div className="flex min-w-0 items-center gap-3">
-                            <div className={cn(
-                              'flex h-8 w-8 shrink-0 items-center justify-center rounded-full border text-[11px] font-bold select-none shadow-2xs',
-                              getAvatarColorClass(candidate.name)
-                            )}>
+                            <div className="bg-surface-2 border-border text-text flex h-8 w-8 shrink-0 items-center justify-center rounded-full border text-[11px] font-semibold">
                               {candidate.name.slice(0, 2).toUpperCase()}
                             </div>
                             <div className="min-w-0">

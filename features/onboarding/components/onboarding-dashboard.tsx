@@ -33,7 +33,6 @@ import {
 import { DatePicker } from '@/components/ui/date-picker';
 import { Skeleton } from '@/components/ui/skeleton';
 import { deriveOnboardingProgress } from '@/lib/domain/derive';
-import { getAvatarColorClass } from '@/lib/avatar';
 import { formatDate } from '@/lib/format';
 import {
   Check,
@@ -503,7 +502,7 @@ export function OnboardingDashboard() {
                           <td className="px-4 py-2.5 whitespace-nowrap sm:px-5">
                             <div className="flex items-center gap-2">
                               <Avatar className="border-border h-6 w-6 shrink-0 border">
-                                <AvatarFallback className={cn('text-[9px] font-semibold border', getAvatarColorClass(candidate.name))}>
+                                <AvatarFallback className="bg-surface-3 text-text text-[9px] font-medium">
                                   {candidate.name.slice(0, 2).toUpperCase()}
                                 </AvatarFallback>
                               </Avatar>
@@ -592,7 +591,7 @@ export function OnboardingDashboard() {
                   <div className="border-border bg-surface-2/40 flex flex-col gap-3 border-b px-4 py-3 sm:flex-row sm:items-center sm:justify-between sm:px-5 sm:py-3.5">
                     <div className="flex min-w-0 items-center gap-3">
                       <Avatar className="border-border h-9 w-9 shrink-0 border">
-                        <AvatarFallback className={cn('text-[12px] font-semibold border', getAvatarColorClass(candidate.name))}>
+                        <AvatarFallback className="bg-surface-3 text-text text-[12px] font-semibold">
                           {candidate.name.slice(0, 2).toUpperCase()}
                         </AvatarFallback>
                       </Avatar>
@@ -863,7 +862,7 @@ export function OnboardingDashboard() {
                                 {candidate && (
                                   <div className="text-text-muted flex items-center gap-1.5 truncate text-[11px]">
                                     <Avatar className="h-4 w-4 shrink-0">
-                                      <AvatarFallback className={cn('text-[8px] font-bold border', getAvatarColorClass(candidate.name))}>
+                                      <AvatarFallback className="bg-surface-3 text-[8px]">
                                         {candidate.name.slice(0, 2).toUpperCase()}
                                       </AvatarFallback>
                                     </Avatar>
@@ -991,7 +990,7 @@ export function OnboardingDashboard() {
                           {candidate ? (
                             <div className="flex items-center gap-2">
                               <Avatar className="border-border/80 h-5 w-5 shrink-0 border">
-                                <AvatarFallback className={cn('text-[9px] font-semibold border', getAvatarColorClass(candidate.name))}>
+                                <AvatarFallback className="bg-surface-3 text-text text-[9px] font-semibold">
                                   {candidate.name.slice(0, 2).toUpperCase()}
                                 </AvatarFallback>
                               </Avatar>

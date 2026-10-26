@@ -29,8 +29,6 @@ import {
 } from '@/components/ui/select';
 import { DateTimePicker } from '@/components/ui/date-time-picker';
 import { toast } from 'sonner';
-import { cn } from '@/lib/utils';
-import { getAvatarColorClass } from '@/lib/avatar';
 
 function getCurrentLocalDateTime(): string {
   const now = new Date();
@@ -155,7 +153,7 @@ export function InterviewsView() {
               <CardHeader className="flex flex-row items-center justify-between gap-3 pb-3">
                 <div className="flex items-center gap-3 min-w-0 flex-1">
                   <Avatar className="h-10 w-10 shrink-0">
-                    <AvatarFallback className={cn('text-[12px] font-bold border', getAvatarColorClass(candidate.name))}>
+                    <AvatarFallback className="text-[12px] font-bold">
                       {candidate.name.slice(0, 2).toUpperCase()}
                     </AvatarFallback>
                   </Avatar>

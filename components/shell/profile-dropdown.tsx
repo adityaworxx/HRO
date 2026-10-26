@@ -13,8 +13,6 @@ import {
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import { useCurrentUser, useSwitchRole } from '@/features/auth/hooks';
 import { useUiStore } from '@/lib/store';
-import { cn } from '@/lib/utils';
-import { getAvatarColorClass } from '@/lib/avatar';
 import { Check, Settings, LogOut, ArrowLeftRight, Shield } from 'lucide-react';
 
 import { PRIMARY_MANAGER, PRIMARY_HR } from '@/fixtures/users';
@@ -48,7 +46,7 @@ export function ProfileDropdown() {
           title={`${displayName} (${displayDepartment})`}
         >
           <Avatar className="border-border/80 hover:border-border-strong h-8 w-8 border shadow-2xs transition-colors">
-            <AvatarFallback className={cn('text-[12px] font-bold border', getAvatarColorClass(displayName))} suppressHydrationWarning>
+            <AvatarFallback className="bg-surface-3 text-text text-[12px] font-bold" suppressHydrationWarning>
               {displayInitials}
             </AvatarFallback>
           </Avatar>

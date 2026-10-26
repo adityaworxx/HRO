@@ -32,7 +32,7 @@ export function CandidateCard({
         }
       }}
       className={cn(
-        'group border border-border bg-surface-1 hover:border-border-strong flex cursor-grab active:cursor-grabbing flex-col gap-2 rounded-[8px] p-3 shadow-2xs transition-colors duration-[140ms] focus-visible:outline-none select-none',
+        'group border border-border/80 bg-surface-1 hover:border-border-strong flex cursor-grab active:cursor-grabbing flex-col gap-2 rounded-[8px] p-3 shadow-2xs transition-colors duration-[140ms] focus-visible:outline-none select-none',
         isDragging && 'border-border-strong shadow-2xl ring-1 ring-border-strong bg-surface-1 scale-[1.02]',
         className
       )}
@@ -58,7 +58,7 @@ export function CandidateCard({
         </div>
       </div>
 
-      <div className="border-border mt-1 flex items-center justify-between border-t pt-2 text-[11.5px]">
+      <div className="border-border/80 mt-1 flex items-center justify-between border-t pt-2 text-[11.5px]">
         <span className="font-bold text-text">{candidate.experienceYears}y exp</span>
         <span className="flex items-center gap-1 font-bold text-text">
           <Clock className="h-3.5 w-3.5 text-text-muted stroke-[2.25]" />

@@ -13,8 +13,6 @@ import { EmptyState } from '@/components/hro/empty-state';
 import { formatCtc } from '@/lib/format';
 import { CheckCircle2, XCircle, FileText } from 'lucide-react';
 import { toast } from 'sonner';
-import { cn } from '@/lib/utils';
-import { getAvatarColorClass } from '@/lib/avatar';
 
 export function ShortlistReview() {
   const { data: candidates = [], isLoading } = useCandidates();
@@ -119,7 +117,7 @@ export function ShortlistReview() {
                 <div className="flex items-start justify-between gap-2">
                   <div className="flex items-center gap-2.5">
                     <Avatar className="h-8 w-8">
-                      <AvatarFallback className={cn('text-[11px] font-bold border', getAvatarColorClass(candidate.name))}>
+                      <AvatarFallback className="text-[11px] font-bold">
                         {candidate.name.slice(0, 2).toUpperCase()}
                       </AvatarFallback>
                     </Avatar>
@@ -152,7 +150,7 @@ export function ShortlistReview() {
               <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
                 <div className="flex items-center gap-3">
                   <Avatar className="h-12 w-12">
-                    <AvatarFallback className={cn('text-[16px] font-bold border', getAvatarColorClass(activeCandidate.name))}>
+                    <AvatarFallback className="bg-accent/10 text-accent text-[16px] font-bold">
                       {activeCandidate.name.slice(0, 2).toUpperCase()}
                     </AvatarFallback>
                   </Avatar>

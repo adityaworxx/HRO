@@ -22,7 +22,6 @@ import { CandidateColumnsView } from './candidate-columns-view';
 import { SourceBadge } from '@/components/hro/source-badge';
 import { formatCtc } from '@/lib/format';
 import { cn } from '@/lib/utils';
-import { getAvatarColorClass } from '@/lib/avatar';
 import { Columns3, List, Search } from 'lucide-react';
 
 export function CandidatesTable() {
@@ -82,8 +81,8 @@ export function CandidatesTable() {
           const candidate = row.original;
           return (
             <div className="flex items-center gap-2.5 min-w-[160px] max-w-[210px]">
-              <Avatar className="h-7 w-7 shrink-0 shadow-2xs">
-                <AvatarFallback className={cn('text-[10px] font-bold select-none border', getAvatarColorClass(candidate.name))}>
+              <Avatar className="h-7 w-7 shrink-0 border border-border/80 bg-surface-3 shadow-2xs">
+                <AvatarFallback className="text-[10px] font-semibold text-text bg-surface-3 tracking-wide">
                   {candidate.name.slice(0, 2).toUpperCase()}
                 </AvatarFallback>
               </Avatar>

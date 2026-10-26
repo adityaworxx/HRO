@@ -36,8 +36,6 @@ import {
 import { DateTimePicker } from '@/components/ui/date-time-picker';
 import { toast } from 'sonner';
 import { formatCtc } from '@/lib/format';
-import { cn } from '@/lib/utils';
-import { getAvatarColorClass } from '@/lib/avatar';
 
 interface CandidateDetailSheetProps {
   candidate: Candidate | null;
@@ -139,7 +137,7 @@ export function CandidateDetailSheet({ candidate, open, onOpenChange }: Candidat
         <div className="px-6 flex items-end justify-between -mt-10 sm:-mt-12 relative z-10">
           <div className="relative">
             <Avatar className="h-20 w-20 sm:h-22 sm:w-22 rounded-full border-4 border-surface-1 shadow-xl bg-surface-2 select-none ring-1 ring-border/50">
-              <AvatarFallback className={cn('text-[22px] font-bold tracking-tight', getAvatarColorClass(candidate.name))}>
+              <AvatarFallback className="bg-gradient-to-br from-surface-3 via-surface-2 to-surface-1 text-text text-[22px] font-bold tracking-tight">
                 {candidate.name.slice(0, 2).toUpperCase()}
               </AvatarFallback>
             </Avatar>

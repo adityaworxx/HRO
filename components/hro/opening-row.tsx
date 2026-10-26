@@ -54,7 +54,7 @@ export function OpeningRow({
     <Link
       href={`/openings/${opening.id}`}
       className={cn(
-        'group relative grid min-h-[54px] py-3 items-center px-4 sm:px-5 border-b border-border last:border-b-0 transition-colors',
+        'group relative grid min-h-[54px] py-3 items-center px-4 sm:px-5 border-b border-border/60 last:border-b-0 transition-colors',
         'hover:bg-surface-2/60 active:bg-surface-3',
         'focus-visible:outline-none focus:outline-none',
         'grid-cols-[minmax(0,1fr)_24px] sm:grid-cols-[minmax(180px,1.4fr)_minmax(100px,1fr)_minmax(110px,1fr)_24px] lg:grid-cols-[minmax(180px,1.05fr)_minmax(100px,0.95fr)_minmax(130px,1fr)_minmax(110px,1fr)_minmax(120px,1fr)_24px] gap-3 sm:gap-4',

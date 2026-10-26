@@ -79,7 +79,7 @@ function MinimalOpeningCard({
   return (
     <div
       className={cn(
-        'group relative rounded-[10px] border border-border bg-surface-1 p-3.5 transition-all duration-140',
+        'group relative rounded-[10px] border border-border/70 bg-surface-1 p-3.5 transition-all duration-140',
         'hover:border-border-strong hover:bg-surface-2/20 flex flex-col justify-between gap-3'
       )}
     >
@@ -153,7 +153,7 @@ function MinimalOpeningCard({
       </div>
 
       {/* 3. Subtle Footer Line: Budget & Candidate Count */}
-      <div className="flex items-center justify-between pt-2 border-t border-border text-[11.5px]">
+      <div className="flex items-center justify-between pt-2 border-t border-border/50 text-[11.5px]">
         <span className="font-mono text-text font-medium">
           {formatCtcRange(opening.budgetRange.min, opening.budgetRange.max)}
         </span>
@@ -248,11 +248,11 @@ export function OpeningColumnsView({
           return (
             <div
               key={column.id}
-              className="w-[300px] sm:w-[320px] shrink-0 flex flex-col justify-between rounded-[12px] bg-surface-2/30 border border-border border-t-2 border-t-accent p-3 space-y-2.5"
+              className="w-[300px] sm:w-[320px] shrink-0 flex flex-col justify-between rounded-[12px] bg-surface-2/30 border border-border/70 border-t-2 border-t-accent p-3 space-y-2.5"
             >
               <div className="space-y-2.5">
                 {/* Column Header */}
-                <div className="flex items-center justify-between pb-2 border-b border-border">
+                <div className="flex items-center justify-between pb-2 border-b border-border/60">
                   <div className="flex items-center gap-2 min-w-0">
                     {ColIcon ? (
                       <div className="flex h-5 w-5 items-center justify-center rounded-[4px] bg-accent/15 text-accent shrink-0">
@@ -292,7 +292,7 @@ export function OpeningColumnsView({
 
               {/* Per-Column Pagination Footer when more than 4 openings */}
               {totalPages > 1 && (
-                <div className="flex items-center justify-between pt-2 border-t border-border text-[11.5px] select-none">
+                <div className="flex items-center justify-between pt-2 border-t border-border/60 text-[11.5px] select-none">
                   <button
                     type="button"
                     disabled={validPage <= 1}

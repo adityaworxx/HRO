@@ -110,10 +110,10 @@ export function DataTable<TData, TValue>({
       )}
 
       {/* Table Container */}
-      <div className="border border-border bg-surface-1/70 backdrop-blur-xs overflow-hidden rounded-[12px] shadow-xs">
+      <div className="border border-border/80 bg-surface-1/70 backdrop-blur-xs overflow-hidden rounded-[12px] shadow-xs">
         <div className="overflow-x-auto">
           <table className="w-full border-collapse text-left text-[13px] min-w-[640px]">
-            <thead className="border-b border-border bg-surface-2/50 backdrop-blur-sm select-none">
+            <thead className="border-b border-border/70 bg-surface-2/50 backdrop-blur-sm select-none">
               {table.getHeaderGroups().map((headerGroup) => (
                 <tr key={headerGroup.id}>
                   {headerGroup.headers.map((header) => (
@@ -132,7 +132,7 @@ export function DataTable<TData, TValue>({
                 </tr>
               ))}
             </thead>
-            <tbody className="divide-y divide-border">
+            <tbody className="divide-y divide-border/40">
               {loading ? (
                 Array.from({ length: 5 }).map((_, i) => (
                   <tr key={`loading-row-${i}`}>
