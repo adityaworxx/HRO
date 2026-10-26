@@ -64,6 +64,48 @@
   color: var(--source-other-text);
 }
 
+/* Candidate Avatar Color Variations */
+.avatar-tint-blue {
+  background-color: var(--avatar-blue-bg) !important;
+  border-color: var(--avatar-blue-border) !important;
+  color: var(--avatar-blue-text) !important;
+}
+.avatar-tint-emerald {
+  background-color: var(--avatar-emerald-bg) !important;
+  border-color: var(--avatar-emerald-border) !important;
+  color: var(--avatar-emerald-text) !important;
+}
+.avatar-tint-purple {
+  background-color: var(--avatar-purple-bg) !important;
+  border-color: var(--avatar-purple-border) !important;
+  color: var(--avatar-purple-text) !important;
+}
+.avatar-tint-amber {
+  background-color: var(--avatar-amber-bg) !important;
+  border-color: var(--avatar-amber-border) !important;
+  color: var(--avatar-amber-text) !important;
+}
+.avatar-tint-rose {
+  background-color: var(--avatar-rose-bg) !important;
+  border-color: var(--avatar-rose-border) !important;
+  color: var(--avatar-rose-text) !important;
+}
+.avatar-tint-cyan {
+  background-color: var(--avatar-cyan-bg) !important;
+  border-color: var(--avatar-cyan-border) !important;
+  color: var(--avatar-cyan-text) !important;
+}
+.avatar-tint-indigo {
+  background-color: var(--avatar-indigo-bg) !important;
+  border-color: var(--avatar-indigo-border) !important;
+  color: var(--avatar-indigo-text) !important;
+}
+.avatar-tint-orange {
+  background-color: var(--avatar-orange-bg) !important;
+  border-color: var(--avatar-orange-border) !important;
+  color: var(--avatar-orange-text) !important;
+}
+
 *,
 *::before,
 *::after {

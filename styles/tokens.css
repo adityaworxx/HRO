@@ -58,6 +58,39 @@
   --source-other-text: #cbd5e1;
   --source-other-brand: #94a3b8;
 
+  /* Candidate Avatar Palette (Dark Theme - Rich Dark/Solid Colors with White Initials) */
+  --avatar-blue-bg: #1d4ed8;
+  --avatar-blue-border: rgba(255, 255, 255, 0.18);
+  --avatar-blue-text: #ffffff;
+
+  --avatar-emerald-bg: #047857;
+  --avatar-emerald-border: rgba(255, 255, 255, 0.18);
+  --avatar-emerald-text: #ffffff;
+
+  --avatar-purple-bg: #6b21a8;
+  --avatar-purple-border: rgba(255, 255, 255, 0.18);
+  --avatar-purple-text: #ffffff;
+
+  --avatar-amber-bg: #b45309;
+  --avatar-amber-border: rgba(255, 255, 255, 0.18);
+  --avatar-amber-text: #ffffff;
+
+  --avatar-rose-bg: #be123c;
+  --avatar-rose-border: rgba(255, 255, 255, 0.18);
+  --avatar-rose-text: #ffffff;
+
+  --avatar-cyan-bg: #0e7490;
+  --avatar-cyan-border: rgba(255, 255, 255, 0.18);
+  --avatar-cyan-text: #ffffff;
+
+  --avatar-indigo-bg: #3730a3;
+  --avatar-indigo-border: rgba(255, 255, 255, 0.18);
+  --avatar-indigo-text: #ffffff;
+
+  --avatar-orange-bg: #c2410c;
+  --avatar-orange-border: rgba(255, 255, 255, 0.18);
+  --avatar-orange-text: #ffffff;
+
   /* Radius Scale */
   --radius-sm: 6px;
   --radius-md: 8px;
@@ -121,4 +154,37 @@
   --source-other-border: rgba(100, 116, 139, 0.25);
   --source-other-text: #475569;
   --source-other-brand: #64748b;
+
+  /* Candidate Avatar Palette (Light Theme - Rich Dark/Solid Colors with White Initials) */
+  --avatar-blue-bg: #1d4ed8;
+  --avatar-blue-border: #1e40af;
+  --avatar-blue-text: #ffffff;
+
+  --avatar-emerald-bg: #047857;
+  --avatar-emerald-border: #065f46;
+  --avatar-emerald-text: #ffffff;
+
+  --avatar-purple-bg: #6b21a8;
+  --avatar-purple-border: #581c87;
+  --avatar-purple-text: #ffffff;
+
+  --avatar-amber-bg: #b45309;
+  --avatar-amber-border: #92400e;
+  --avatar-amber-text: #ffffff;
+
+  --avatar-rose-bg: #be123c;
+  --avatar-rose-border: #9f1239;
+  --avatar-rose-text: #ffffff;
+
+  --avatar-cyan-bg: #0e7490;
+  --avatar-cyan-border: #155e75;
+  --avatar-cyan-text: #ffffff;
+
+  --avatar-indigo-bg: #3730a3;
+  --avatar-indigo-border: #312e81;
+  --avatar-indigo-text: #ffffff;
+
+  --avatar-orange-bg: #c2410c;
+  --avatar-orange-border: #9a3412;
+  --avatar-orange-text: #ffffff;
 }

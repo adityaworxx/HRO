@@ -26,7 +26,7 @@ export function RoleSwitcher({ isCollapsed = false }: { isCollapsed?: boolean })
           type="button"
           onClick={handleToggle}
           className={cn(
-            'group relative flex h-9 w-full items-center rounded-[8px] border border-border/70 bg-surface-2 text-[12px] font-medium text-text select-none cursor-pointer transition-colors hover:bg-surface-3 hover:border-border overflow-hidden'
+            'group relative flex h-9 w-full items-center rounded-[8px] border border-border bg-surface-2 text-[12px] font-medium text-text select-none cursor-pointer transition-colors hover:bg-surface-3 hover:border-border-strong overflow-hidden'
           )}
           title={!isCollapsed ? `Switch to ${isManager ? 'HR View' : 'Manager View'}` : undefined}
         >
@@ -46,7 +46,7 @@ export function RoleSwitcher({ isCollapsed = false }: { isCollapsed?: boolean })
           >
             <div className="flex items-center justify-between text-[11px] leading-tight">
               <span className="text-text-muted font-medium truncate">Demo Role</span>
-              <span className="text-accent font-mono font-semibold uppercase text-[10px] px-1.5 py-0.5 rounded-[4px] bg-surface-3 border border-border/60">
+              <span className="text-accent font-mono font-semibold uppercase text-[10px] px-1.5 py-0.5 rounded-[4px] bg-surface-3 border border-border">
                 {isManager ? 'Manager' : 'HR'}
               </span>
             </div>

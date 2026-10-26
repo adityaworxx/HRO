@@ -11,6 +11,7 @@ import { PRIMARY_HR, PRIMARY_MANAGER } from '@/fixtures/users';
 import { useTheme } from 'next-themes';
 import { toast } from 'sonner';
 import { cn } from '@/lib/utils';
+import { getAvatarColorClass } from '@/lib/avatar';
 import type { UserRole } from '@/lib/navigation';
 
 interface HrPreferences {
@@ -305,7 +306,7 @@ export default function SettingsPage() {
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3.5 border-b border-border/50">
               <div className="flex items-center gap-3 min-w-0">
                 <Avatar className="h-10 w-10 border border-border/80 shadow-2xs shrink-0">
-                  <AvatarFallback className="bg-surface-3 text-text text-[13px] font-bold" suppressHydrationWarning>
+                  <AvatarFallback className={cn('text-[13px] font-bold border', getAvatarColorClass(currentPersona.name))} suppressHydrationWarning>
                     {currentPersona.avatarInitials}
                   </AvatarFallback>
                 </Avatar>

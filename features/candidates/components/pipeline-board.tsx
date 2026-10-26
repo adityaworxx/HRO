@@ -173,7 +173,7 @@ export function PipelineBoard() {
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               placeholder="Search candidate or company..."
-              className="h-9 pl-9 text-[13px] bg-surface-2/40 border-border/70 hover:border-border focus:bg-surface-1 rounded-[8px] transition-all shadow-2xs w-full"
+              className="h-9 pl-9 text-[13px] bg-surface-2/40 border-border hover:border-border-strong focus:bg-surface-1 rounded-[8px] transition-all shadow-2xs w-full"
             />
           </div>
 
@@ -182,7 +182,7 @@ export function PipelineBoard() {
               value={selectedOpeningId}
               onValueChange={(val) => setSelectedOpeningId(val)}
             >
-              <SelectTrigger className="h-9 w-full sm:w-auto min-w-0 sm:min-w-[200px] gap-2 border-border/70 bg-surface-2/40 hover:bg-surface-2 text-text px-3 text-[13px] font-medium rounded-[8px] shadow-2xs">
+              <SelectTrigger className="h-9 w-full sm:w-auto min-w-0 sm:min-w-[200px] gap-2 border-border bg-surface-2/40 hover:bg-surface-2 text-text px-3 text-[13px] font-medium rounded-[8px] shadow-2xs">
                 <SelectValue placeholder={`All Requisitions (${openings.length})`} />
               </SelectTrigger>
               <SelectContent align="start" className="min-w-[240px]">

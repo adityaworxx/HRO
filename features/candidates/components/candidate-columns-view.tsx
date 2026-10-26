@@ -138,11 +138,11 @@ export function CandidateColumnsView({
           return (
             <div
               key={column.id}
-              className="w-[280px] xs:w-[300px] sm:w-[320px] max-w-[calc(100vw-2.5rem)] shrink-0 flex flex-col justify-between rounded-[12px] bg-surface-2/30 border border-border/70 border-t-2 border-t-accent p-3 space-y-2.5"
+              className="w-[280px] xs:w-[300px] sm:w-[320px] max-w-[calc(100vw-2.5rem)] shrink-0 flex flex-col justify-between rounded-[12px] bg-surface-2/30 border border-border border-t-2 border-t-accent p-3 space-y-2.5"
             >
               <div className="space-y-2.5">
                 {/* Column Header */}
-                <div className="flex items-center justify-between pb-2 border-b border-border/60">
+                <div className="flex items-center justify-between pb-2 border-b border-border">
                   <div className="flex items-center gap-2 min-w-0">
                     {ColIcon ? (
                       <div className="flex h-5 w-5 items-center justify-center rounded-[4px] bg-accent/15 text-accent shrink-0">
@@ -182,7 +182,7 @@ export function CandidateColumnsView({
 
               {/* Per-Column Pagination Footer when more than 4 candidates */}
               {totalPages > 1 && (
-                <div className="flex items-center justify-between pt-2 border-t border-border/60 text-[11.5px] select-none">
+                <div className="flex items-center justify-between pt-2 border-t border-border text-[11.5px] select-none">
                   <button
                     type="button"
                     disabled={validPage <= 1}

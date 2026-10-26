@@ -15,6 +15,8 @@ import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import { Skeleton } from '@/components/ui/skeleton';
 import { EmptyState } from '@/components/hro/empty-state';
+import { cn } from '@/lib/utils';
+import { getAvatarColorClass } from '@/lib/avatar';
 import {
   DropdownMenu,
   DropdownMenuTrigger,
@@ -215,7 +217,7 @@ export function OpeningDetail({ id }: OpeningDetailProps) {
             <TabsContent value="specification" className="space-y-6 pt-4">
               {/* Job Description Card */}
               <Card className="border-border bg-surface-1 shadow-sm">
-                <CardHeader className="border-b border-border/80 pb-3">
+                <CardHeader className="border-b border-border pb-3">
                   <CardTitle className="text-[16px] font-semibold text-text">
                     Job Description & Responsibilities
                   </CardTitle>
@@ -227,7 +229,7 @@ export function OpeningDetail({ id }: OpeningDetailProps) {
 
               {/* Technical Skills & Qualifications */}
               <Card className="border-border bg-surface-1 shadow-sm">
-                <CardHeader className="border-b border-border/80 pb-3">
+                <CardHeader className="border-b border-border pb-3">
                   <CardTitle className="text-[16px] font-semibold text-text">
                     Candidate Profile & Screening Criteria
                   </CardTitle>
@@ -299,7 +301,7 @@ export function OpeningDetail({ id }: OpeningDetailProps) {
                       >
                         <div className="flex items-center gap-3">
                           <Avatar className="h-8 w-8">
-                            <AvatarFallback className="bg-accent/20 text-[11px] font-semibold text-accent">
+                            <AvatarFallback className={cn('text-[11px] font-semibold border', getAvatarColorClass(candidate.name))}>
                               {candidate.name.slice(0, 2).toUpperCase()}
                             </AvatarFallback>
                           </Avatar>
@@ -335,7 +337,7 @@ export function OpeningDetail({ id }: OpeningDetailProps) {
             {/* Tab 3: Timeline & Audit */}
             <TabsContent value="timeline" className="pt-4">
               <Card className="border-border bg-surface-1 shadow-sm">
-                <CardHeader className="border-b border-border/80 pb-3">
+                <CardHeader className="border-b border-border pb-3">
                   <CardTitle className="text-[16px] font-semibold text-text">
                     Activity & Audit Log
                   </CardTitle>
@@ -366,7 +368,7 @@ export function OpeningDetail({ id }: OpeningDetailProps) {
           <div className="sticky top-0 space-y-4">
             {/* Requisition Overview Card */}
             <Card className="border-border bg-surface-1 shadow-sm">
-              <CardHeader className="border-b border-border/80 pb-3">
+              <CardHeader className="border-b border-border pb-3">
                 <CardTitle className="text-[14px] font-semibold text-text">
                   Requisition Overview
                 </CardTitle>
@@ -388,19 +390,19 @@ export function OpeningDetail({ id }: OpeningDetailProps) {
                 </div>
 
                 <div className="space-y-2 pt-1 text-[12px]">
-                  <div className="flex justify-between border-b border-border/60 pb-2">
+                  <div className="flex justify-between border-b border-border pb-2">
                     <span className="text-text-muted">Target Joining</span>
                     <span className="font-medium text-text">{formatDate(opening.targetStartDate)}</span>
                   </div>
-                  <div className="flex justify-between border-b border-border/60 pb-2">
+                  <div className="flex justify-between border-b border-border pb-2">
                     <span className="text-text-muted">Created Date</span>
                     <span className="font-medium text-text">{formatDate(opening.createdAt)}</span>
                   </div>
-                  <div className="flex justify-between border-b border-border/60 pb-2">
+                  <div className="flex justify-between border-b border-border pb-2">
                     <span className="text-text-muted">Department</span>
                     <span className="font-medium text-text">{opening.department}</span>
                   </div>
-                  <div className="flex justify-between border-b border-border/60 pb-2">
+                  <div className="flex justify-between border-b border-border pb-2">
                     <span className="text-text-muted">Employment Type</span>
                     <span className="font-medium text-text">{opening.employmentType}</span>
                   </div>
@@ -414,7 +416,7 @@ export function OpeningDetail({ id }: OpeningDetailProps) {
 
             {/* Quick Actions Card */}
             <Card className="border-border bg-surface-1 shadow-sm">
-              <CardHeader className="border-b border-border/80 pb-3">
+              <CardHeader className="border-b border-border pb-3">
                 <CardTitle className="text-[14px] font-semibold text-text">
                   Pipeline Actions
                 </CardTitle>
