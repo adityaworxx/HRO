@@ -20,6 +20,8 @@ export function CandidateCard({
   isDragging = false,
   showReorderIcon = true,
 }: CandidateCardProps) {
+  const isImmediate = candidate.noticePeriod?.toLowerCase().includes('immediate');
+
   return (
     <div
       role="button"
@@ -32,38 +34,57 @@ export function CandidateCard({
         }
       }}
       className={cn(
-        'group border border-border/80 bg-surface-1 hover:border-border-strong flex cursor-grab active:cursor-grabbing flex-col gap-2 rounded-[8px] p-3 shadow-2xs transition-colors duration-[140ms] focus-visible:outline-none select-none',
-        isDragging && 'border-border-strong shadow-2xl ring-1 ring-border-strong bg-surface-1 scale-[1.02]',
+        'group relative flex flex-col justify-between rounded-[8px] border border-border/80 bg-surface-1 p-3 shadow-2xs transition-all duration-150',
+        'hover:border-border-strong hover:shadow-xs cursor-grab active:cursor-grabbing select-none focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-accent',
+        isDragging && 'border-border-strong shadow-2xl ring-1 ring-border-strong bg-surface-1 scale-[1.02] z-50',
         className
       )}
     >
-      <div className="flex items-start justify-between gap-2">
-        <h4 className="text-text hover:text-accent text-[13px] font-semibold tracking-tight transition-colors min-w-0 flex-1 truncate cursor-pointer">
+      {/* 1. Top Header: Candidate Name (Primary Hero) + Clean Experience (Boxless) */}
+      <div className="flex items-center justify-between gap-2 mb-2">
+        <h4 className="text-[13.5px] font-semibold text-text tracking-tight leading-snug group-hover:text-accent transition-colors min-w-0 flex-1 truncate">
           {candidate.name}
         </h4>
         <div className="flex items-center gap-1.5 shrink-0">
-          <SourceBadge source={candidate.source} />
+          <span className="text-[11.5px] font-semibold text-text tabular-nums select-none">
+            {candidate.experienceYears}y exp
+          </span>
           {showReorderIcon && <ReorderIcon isActive={isDragging} />}
         </div>
       </div>
 
-      <div className="space-y-1.5 text-[12px]">
-        <div className="text-text flex items-center gap-1.5 truncate text-[12.5px] font-semibold">
-          <Briefcase className="text-text-muted h-3.5 w-3.5 shrink-0 stroke-[2]" />
+      {/* 2. Middle Body: Career Identity (Role & Company) */}
+      <div className="space-y-1 my-0.5">
+        <div className="flex items-center gap-1.5 min-w-0 text-[12px] font-semibold text-text leading-tight">
+          <Briefcase className="h-3 w-3 shrink-0 text-text-subtle stroke-[1.75]" />
           <span className="truncate">{candidate.currentRole}</span>
         </div>
-        <div className="text-text flex items-center gap-1.5 truncate text-[12px] font-medium">
-          <Building2 className="text-text-muted h-3.5 w-3.5 shrink-0 stroke-[2]" />
+
+        <div className="flex items-center gap-1.5 min-w-0 text-[11.5px] font-normal text-text-muted leading-tight">
+          <Building2 className="h-3 w-3 shrink-0 text-text-subtle/80 stroke-[1.75]" />
           <span className="truncate">{candidate.currentCompany}</span>
         </div>
       </div>
 
-      <div className="border-border/80 mt-1 flex items-center justify-between border-t pt-2 text-[11.5px]">
-        <span className="font-bold text-text">{candidate.experienceYears}y exp</span>
-        <span className="flex items-center gap-1 font-bold text-text">
-          <Clock className="h-3.5 w-3.5 text-text-muted stroke-[2.25]" />
-          <span>{candidate.noticePeriod}</span>
-        </span>
+      {/* 3. Bottom Footer: Clean Borderless Source + Availability */}
+      <div className="border-t border-border/60 mt-2.5 pt-2 flex items-center justify-between gap-2">
+        {/* Source Badge without outer box */}
+        <SourceBadge source={candidate.source} variant="plain" />
+
+        {/* Notice Period */}
+        <div className="flex items-center shrink-0">
+          {isImmediate ? (
+            <span className="inline-flex items-center gap-1.5 text-[11px] font-semibold text-emerald-600 dark:text-emerald-400 select-none">
+              <span className="h-1.5 w-1.5 rounded-full bg-emerald-500" />
+              <span>Immediate</span>
+            </span>
+          ) : (
+            <span className="inline-flex items-center gap-1 text-[11px] font-medium text-text-muted select-none">
+              <Clock className="h-3 w-3 text-text-subtle stroke-[1.75]" />
+              <span>{candidate.noticePeriod}</span>
+            </span>
+          )}
+        </div>
       </div>
     </div>
   );

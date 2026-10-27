@@ -8,17 +8,21 @@ export interface SourceBadgeProps {
   source: string;
   className?: string;
   showIcon?: boolean;
+  variant?: 'badge' | 'plain';
 }
 
 export function SourceBadge({
   source,
   className,
   showIcon = true,
+  variant = 'badge',
 }: SourceBadgeProps) {
   const normalized = (source || '').trim().toLowerCase();
 
   const baseBadgeClass = cn(
-    'inline-flex items-center gap-1.5 rounded-[4px] border border-border bg-surface-2 px-1.5 py-0.5 text-[10.5px] font-medium text-text select-none shrink-0 shadow-2xs',
+    variant === 'plain'
+      ? 'inline-flex items-center gap-1.5 text-[11px] font-medium text-text select-none shrink-0'
+      : 'inline-flex items-center gap-1.5 rounded-[4px] border border-border bg-surface-2 px-1.5 py-0.5 text-[10.5px] font-medium text-text select-none shrink-0 shadow-2xs',
     className
   );
 
