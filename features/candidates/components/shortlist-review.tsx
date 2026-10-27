@@ -4,14 +4,13 @@ import * as React from 'react';
 import { useCandidates, useRecordManagerDecision } from '../hooks';
 import { Card, CardHeader, CardTitle, CardContent, CardFooter } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
 import { Textarea } from '@/components/ui/textarea';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
-import { StatusBadge } from '@/components/hro/status-badge';
 import { SourceBadge } from '@/components/hro/source-badge';
 import { EmptyState } from '@/components/hro/empty-state';
 import { formatCtc } from '@/lib/format';
-import { CheckCircle2, XCircle, FileText } from 'lucide-react';
+import { cn } from '@/lib/utils';
+import { CheckCircle2, XCircle, FileText, Briefcase, Building2 } from 'lucide-react';
 import { toast } from 'sonner';
 
 export function ShortlistReview() {
@@ -108,31 +107,40 @@ export function ShortlistReview() {
                 role="button"
                 tabIndex={0}
                 onClick={() => setSelectedId(candidate.id)}
-                className={`cursor-pointer rounded-[var(--radius-md)] border p-3.5 transition-all ${
+                className={cn(
+                  'cursor-pointer rounded-[8px] border p-3.5 transition-all duration-150 shadow-2xs select-none',
                   isSelected
-                    ? 'border-accent bg-accent-subtle/30'
-                    : 'border-border bg-surface-1 hover:border-border-strong hover:bg-surface-2'
-                }`}
+                    ? 'border-accent bg-accent-subtle/25 shadow-xs ring-1 ring-accent'
+                    : 'border-border bg-surface-1 hover:border-border-strong hover:bg-surface-2/60'
+                )}
               >
                 <div className="flex items-start justify-between gap-2">
-                  <div className="flex items-center gap-2.5">
-                    <Avatar className="h-8 w-8">
-                      <AvatarFallback className="text-[11px] font-bold">
+                  <div className="flex min-w-0 items-center gap-2.5">
+                    <Avatar className="h-8 w-8 shrink-0">
+                      <AvatarFallback className="bg-surface-2 text-text text-[11px] font-bold">
                         {candidate.name.slice(0, 2).toUpperCase()}
                       </AvatarFallback>
                     </Avatar>
-                    <div>
-                      <h4 className="text-text text-[13px] font-semibold">{candidate.name}</h4>
-                      <p className="text-text text-[12px] font-medium">{candidate.currentRole}</p>
+                    <div className="min-w-0">
+                      <h4 className="text-text truncate text-[13.5px] font-semibold tracking-tight">
+                        {candidate.name}
+                      </h4>
+                      <div className="flex items-center gap-1.5 mt-0.5 text-[12px] font-medium text-text min-w-0">
+                        <Briefcase className="h-3 w-3 shrink-0 text-text-subtle stroke-[1.75]" />
+                        <span className="truncate">{candidate.currentRole}</span>
+                      </div>
                     </div>
                   </div>
-                  <Badge variant="default" className="text-[10px] font-bold">
-                    {candidate.experienceYears}y exp
-                  </Badge>
+                  <span className="text-text shrink-0 text-[11.5px] font-semibold tabular-nums select-none">
+                    {candidate.experienceYears} {candidate.experienceYears === 1 ? 'year' : 'years'} experience
+                  </span>
                 </div>
-                <div className="text-text-muted border-border/60 mt-2.5 flex items-center justify-between border-t pt-2 text-[12px] font-medium">
-                  <span>{candidate.currentCompany}</span>
-                  <span className="text-text font-mono font-semibold">
+                <div className="border-border/60 mt-2.5 flex items-center justify-between border-t pt-2 text-[12px]">
+                  <div className="flex items-center gap-1.5 min-w-0 text-text-muted font-medium">
+                    <Building2 className="h-3 w-3 shrink-0 text-text-subtle/80 stroke-[1.75]" />
+                    <span className="truncate">{candidate.currentCompany}</span>
+                  </div>
+                  <span className="text-text font-mono font-semibold tabular-nums">
                     {formatCtc(candidate.expectedCtc)}
                   </span>
                 </div>
@@ -145,25 +153,34 @@ export function ShortlistReview() {
       {/* Right Column (7/12): Active Candidate Assessment Panel */}
       <div className="lg:col-span-7">
         {activeCandidate && (
-          <Card className="border-border">
+          <Card className="border-border bg-surface-1 rounded-[10px] shadow-2xs">
             <CardHeader className="border-border border-b pb-4">
               <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
                 <div className="flex items-center gap-3">
-                  <Avatar className="h-12 w-12">
-                    <AvatarFallback className="bg-accent/10 text-accent text-[16px] font-bold">
+                  <Avatar className="h-11 w-11 shrink-0">
+                    <AvatarFallback className="bg-accent-subtle text-accent text-[15px] font-bold">
                       {activeCandidate.name.slice(0, 2).toUpperCase()}
                     </AvatarFallback>
                   </Avatar>
                   <div>
-                    <CardTitle className="text-[18px]">{activeCandidate.name}</CardTitle>
-                    <p className="text-text-muted text-[13px]">
-                      {activeCandidate.currentRole} at {activeCandidate.currentCompany}
-                    </p>
+                    <CardTitle className="text-text text-[18px] font-bold tracking-tight">
+                      {activeCandidate.name}
+                    </CardTitle>
+                    <div className="flex items-center gap-2.5 text-[13px] text-text-muted mt-1">
+                      <div className="flex items-center gap-1.5 text-text font-medium">
+                        <Briefcase className="h-3.5 w-3.5 shrink-0 text-text-subtle stroke-[1.75]" />
+                        <span>{activeCandidate.currentRole}</span>
+                      </div>
+                      <span className="text-text-subtle">at</span>
+                      <div className="flex items-center gap-1.5 text-text font-semibold">
+                        <Building2 className="h-3.5 w-3.5 shrink-0 text-text-subtle/80 stroke-[1.75]" />
+                        <span>{activeCandidate.currentCompany}</span>
+                      </div>
+                    </div>
                   </div>
                 </div>
-                <div className="flex items-center gap-2">
-                  <StatusBadge status={activeCandidate.stage} type="candidate" />
-                  <SourceBadge source={activeCandidate.source} />
+                <div className="flex items-center gap-2.5">
+                  <SourceBadge source={activeCandidate.source} variant="plain" />
                 </div>
               </div>
             </CardHeader>
@@ -171,33 +188,47 @@ export function ShortlistReview() {
             <CardContent className="space-y-5 pt-5 text-[13px]">
               {/* Quick Metrics */}
               <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
-                <div className="border-border bg-surface-2/40 rounded-lg border p-2.5">
-                  <span className="text-text-subtle text-[11px]">Experience</span>
-                  <p className="text-text font-bold">{activeCandidate.experienceYears} Years</p>
+                <div className="border-border/70 bg-surface-2/30 rounded-[8px] border p-2.5 transition-colors">
+                  <span className="text-text-subtle text-[11px] font-medium uppercase tracking-wider">
+                    Experience
+                  </span>
+                  <p className="text-text mt-0.5 text-[13px] font-semibold tracking-tight">
+                    {activeCandidate.experienceYears} Years Experience
+                  </p>
                 </div>
-                <div className="border-border bg-surface-2/40 rounded-lg border p-2.5">
-                  <span className="text-text-subtle text-[11px]">Expected CTC</span>
-                  <p className="text-text font-mono font-semibold">
+                <div className="border-border/70 bg-surface-2/30 rounded-[8px] border p-2.5 transition-colors">
+                  <span className="text-text-subtle text-[11px] font-medium uppercase tracking-wider">
+                    Expected CTC
+                  </span>
+                  <p className="text-text mt-0.5 font-mono text-[13px] font-semibold tracking-tight">
                     {formatCtc(activeCandidate.expectedCtc)}
                   </p>
                 </div>
-                <div className="border-border bg-surface-2/40 rounded-lg border p-2.5">
-                  <span className="text-text-subtle text-[11px]">Notice Period</span>
-                  <p className="text-text font-bold">{activeCandidate.noticePeriod}</p>
+                <div className="border-border/70 bg-surface-2/30 rounded-[8px] border p-2.5 transition-colors">
+                  <span className="text-text-subtle text-[11px] font-medium uppercase tracking-wider">
+                    Notice Period
+                  </span>
+                  <p className="text-text mt-0.5 text-[13px] font-semibold tracking-tight">
+                    {activeCandidate.noticePeriod}
+                  </p>
                 </div>
-                <div className="border-border bg-surface-2/40 rounded-lg border p-2.5">
-                  <span className="text-text-subtle text-[11px]">Contact</span>
-                  <p className="text-text truncate font-semibold">{activeCandidate.phone}</p>
+                <div className="border-border/70 bg-surface-2/30 rounded-[8px] border p-2.5 transition-colors">
+                  <span className="text-text-subtle text-[11px] font-medium uppercase tracking-wider">
+                    Contact
+                  </span>
+                  <p className="text-text mt-0.5 truncate text-[13px] font-semibold tracking-tight">
+                    {activeCandidate.phone}
+                  </p>
                 </div>
               </div>
 
               {/* HR Screening Notes */}
               <div className="space-y-1.5">
-                <h4 className="text-text flex items-center gap-1.5 font-semibold">
-                  <FileText className="text-accent h-4 w-4" />
+                <h4 className="text-text flex items-center gap-1.5 text-[12.5px] font-semibold">
+                  <FileText className="text-accent h-4 w-4 shrink-0" />
                   <span>HR Screening Notes & Initial Impression</span>
                 </h4>
-                <div className="border-border bg-surface-2/60 text-text rounded-md border p-3.5 leading-relaxed">
+                <div className="border-border/60 bg-surface-2/25 text-text rounded-[8px] border p-3.5 text-[12.5px] leading-relaxed">
                   {activeCandidate.hrNotes ??
                     'Candidate exhibits deep technical comprehension in React ecosystems, strong team mentorship credentials, and verified compensation expectations.'}
                 </div>
@@ -205,7 +236,7 @@ export function ShortlistReview() {
 
               {/* Manager Feedback Input */}
               <div className="space-y-1.5">
-                <label className="text-text text-[13px] font-semibold">
+                <label className="text-text text-[12.5px] font-semibold">
                   Manager Review Feedback (Optional)
                 </label>
                 <Textarea
@@ -213,6 +244,7 @@ export function ShortlistReview() {
                   value={managerComment}
                   onChange={(e) => setManagerComment(e.target.value)}
                   placeholder="Add specific topics or interviewers you would like for the technical round..."
+                  className="rounded-[8px] text-[12.5px]"
                 />
               </div>
             </CardContent>
@@ -223,7 +255,7 @@ export function ShortlistReview() {
                 onClick={() => handleDecision('Shortlisted')}
                 loading={pendingDecision === 'Shortlisted'}
                 disabled={recordDecision.isPending}
-                className="h-10 w-full cursor-pointer gap-2 text-[13px] font-medium sm:flex-1"
+                className="h-9.5 w-full cursor-pointer gap-2 rounded-[8px] text-[12.5px] font-semibold shadow-2xs sm:flex-1"
               >
                 <CheckCircle2 className="h-4 w-4 shrink-0" />
                 <span>
@@ -238,7 +270,7 @@ export function ShortlistReview() {
                 onClick={() => handleDecision('Rejected')}
                 loading={pendingDecision === 'Rejected'}
                 disabled={recordDecision.isPending}
-                className="h-10 w-full cursor-pointer gap-2 text-[13px] font-medium sm:flex-1"
+                className="h-9.5 w-full cursor-pointer gap-2 rounded-[8px] text-[12.5px] font-semibold shadow-2xs hover:border-danger/40 hover:text-danger sm:flex-1"
               >
                 <XCircle className="h-4 w-4 shrink-0" />
                 <span>{pendingDecision === 'Rejected' ? 'Rejecting...' : 'Reject Candidate'}</span>
