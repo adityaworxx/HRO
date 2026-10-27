@@ -47,6 +47,11 @@ export interface CandidatesApi {
     outcome: 'Selected' | 'Rejected' | 'On Hold',
     note?: string
   ): Promise<Candidate>;
+  assignToOpening(
+    id: string,
+    openingId: string,
+    stage?: CandidateStage
+  ): Promise<Candidate>;
 }
 
 export interface OnboardingApi {

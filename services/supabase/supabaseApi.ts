@@ -511,6 +511,24 @@ export const supabaseApi: HroApiClient = {
       await recordActivity('candidate', id, `Interview outcome recorded as "${outcome}"`);
       return updated;
     },
+
+    assignToOpening: async (id, openingId, stage = 'Shared with Manager') => {
+      const { data, error } = await supabase
+        .from('candidates')
+        .update({
+          opening_id: openingId,
+          stage,
+          manager_decision: 'Pending',
+        })
+        .eq('id', id)
+        .select()
+        .single();
+
+      if (error) throw error;
+      const updated = mapCandidate(data as CandidateRow);
+      await recordActivity('candidate', id, `Candidate assigned to opening and moved to "${stage}"`);
+      return updated;
+    },
   },
 
   onboarding: {

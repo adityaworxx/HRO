@@ -149,3 +149,23 @@ export function useUpdateCandidateStage() {
     },
   });
 }
+
+export function useAssignCandidateToOpening() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: ({
+      candidateId,
+      openingId,
+      stage,
+    }: {
+      candidateId: string;
+      openingId: string;
+      stage?: CandidateStage;
+    }) => api.candidates.assignToOpening(candidateId, openingId, stage),
+    onSuccess: (_, variables) => {
+      void queryClient.invalidateQueries({ queryKey: candidatesKeys.lists() });
+      void queryClient.invalidateQueries({ queryKey: candidatesKeys.detail(variables.candidateId) });
+      void queryClient.invalidateQueries({ queryKey: notificationsKeys.all });
+    },
+  });
+}

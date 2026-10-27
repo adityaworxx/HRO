@@ -30,7 +30,7 @@ import {
   SelectContent,
   SelectItem,
 } from '@/components/ui/select';
-import { Search } from 'lucide-react';
+import { Search, ChevronLeft, ChevronRight } from 'lucide-react';
 import { toast } from 'sonner';
 
 const PIPELINE_STAGES: CandidateStage[] = [
@@ -87,10 +87,28 @@ export function PipelineBoard() {
   const updateStage = useUpdateCandidateStage();
 
   const [selectedOpeningId, setSelectedOpeningId] = React.useState<string>('all');
+  const [selectedDepartment, setSelectedDepartment] = React.useState<string>('all');
   const [searchQuery, setSearchQuery] = React.useState<string>('');
+  const [pageByStage, setPageByStage] = React.useState<Record<string, number>>({});
   const [activeCandidate, setActiveCandidate] = React.useState<Candidate | null>(null);
   const [detailCandidate, setDetailCandidate] = React.useState<Candidate | null>(null);
   const [sheetOpen, setSheetOpen] = React.useState<boolean>(false);
+
+  const STAGE_PAGE_SIZE = 5;
+
+  // Reset pagination when filters change
+  React.useEffect(() => {
+    setPageByStage({});
+  }, [selectedOpeningId, selectedDepartment, searchQuery]);
+
+  // Unique departments for filter
+  const departments = React.useMemo(() => {
+    const deptSet = new Set<string>();
+    for (const o of openings) {
+      if (o.department) deptSet.add(o.department);
+    }
+    return Array.from(deptSet);
+  }, [openings]);
 
   // Configure pointer sensor with small activation distance so clicking doesn't trigger drag
   const sensors = useSensors(
@@ -104,16 +122,25 @@ export function PipelineBoard() {
   // Filter candidates
   const filteredCandidates = React.useMemo(() => {
     return candidates.filter((c) => {
+      const opening = openings.find((o) => o.id === c.openingId);
       const matchesOpening = selectedOpeningId === 'all' || c.openingId === selectedOpeningId;
+      const matchesDept =
+        selectedDepartment === 'all' || (opening && opening.department === selectedDepartment);
       const q = searchQuery.toLowerCase().trim();
       const matchesSearch =
         !q ||
         c.name.toLowerCase().includes(q) ||
+        c.email.toLowerCase().includes(q) ||
         c.currentCompany.toLowerCase().includes(q) ||
-        c.currentRole.toLowerCase().includes(q);
-      return matchesOpening && matchesSearch;
+        c.currentRole.toLowerCase().includes(q) ||
+        (opening && (
+          opening.title.toLowerCase().includes(q) ||
+          opening.department.toLowerCase().includes(q) ||
+          opening.mustHaveSkills.some((s) => s.toLowerCase().includes(q))
+        ));
+      return matchesOpening && matchesDept && matchesSearch;
     });
-  }, [candidates, selectedOpeningId, searchQuery]);
+  }, [candidates, openings, selectedOpeningId, selectedDepartment, searchQuery]);
 
   const handleDragStart = (event: DragStartEvent) => {
     const candidate = candidates.find((c) => c.id === event.active.id);
@@ -172,12 +199,35 @@ export function PipelineBoard() {
             <Input
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              placeholder="Search candidate or company..."
+              placeholder="Search candidate, role, skill..."
               className="h-9 pl-9 text-[13px] bg-surface-2/40 border-border/70 hover:border-border focus:bg-surface-1 rounded-[8px] transition-all shadow-2xs w-full"
             />
           </div>
 
           <div className="flex items-center gap-2">
+            {/* Department Filter */}
+            {departments.length > 0 && (
+              <Select
+                value={selectedDepartment}
+                onValueChange={(val) => setSelectedDepartment(val)}
+              >
+                <SelectTrigger className="h-9 w-full sm:w-auto min-w-0 sm:min-w-[150px] gap-2 border-border/70 bg-surface-2/40 hover:bg-surface-2 text-text px-3 text-[13px] font-medium rounded-[8px] shadow-2xs">
+                  <SelectValue placeholder="All Departments" />
+                </SelectTrigger>
+                <SelectContent align="start" className="min-w-[180px]">
+                  <SelectItem value="all" className="text-[13px] py-1.5 min-h-[32px] rounded-[6px]">
+                    All Departments
+                  </SelectItem>
+                  {departments.map((dept) => (
+                    <SelectItem key={dept} value={dept} className="text-[13px] py-1.5 min-h-[32px] rounded-[6px]">
+                      {dept}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            )}
+
+            {/* Requisition Filter */}
             <Select
               value={selectedOpeningId}
               onValueChange={(val) => setSelectedOpeningId(val)}
@@ -214,10 +264,66 @@ export function PipelineBoard() {
         <div className="flex gap-3 overflow-x-auto pt-1 pb-4">
           {PIPELINE_STAGES.map((stage) => {
             const stageCandidates = filteredCandidates.filter((c) => c.stage === stage);
+            const totalInStage = stageCandidates.length;
+            const stagePage = pageByStage[stage] || 1;
+            const stageTotalPages = Math.ceil(totalInStage / STAGE_PAGE_SIZE);
+            const validStagePage = Math.min(Math.max(1, stagePage), Math.max(1, stageTotalPages));
+            const startIndex = (validStagePage - 1) * STAGE_PAGE_SIZE;
+            const visibleStageCandidates = stageCandidates.slice(
+              startIndex,
+              startIndex + STAGE_PAGE_SIZE
+            );
+
+            const paginationFooter =
+              stageTotalPages > 1 ? (
+                <div className="flex items-center justify-between pt-2 border-t border-border/60 text-[11.5px] select-none">
+                  <button
+                    type="button"
+                    disabled={validStagePage <= 1}
+                    onClick={() =>
+                      setPageByStage((prev) => ({
+                        ...prev,
+                        [stage]: Math.max(1, validStagePage - 1),
+                      }))
+                    }
+                    className="h-6 w-6 inline-flex items-center justify-center rounded-[5px] border border-border/70 bg-surface-1 text-text-muted hover:text-text hover:bg-surface-2 disabled:opacity-25 disabled:cursor-not-allowed transition-colors cursor-pointer"
+                    title="Previous page"
+                    aria-label="Previous page"
+                  >
+                    <ChevronLeft className="h-3.5 w-3.5" />
+                  </button>
+
+                  <span className="font-mono text-text-subtle text-[11px]">
+                    {validStagePage} of {stageTotalPages}
+                  </span>
+
+                  <button
+                    type="button"
+                    disabled={validStagePage >= stageTotalPages}
+                    onClick={() =>
+                      setPageByStage((prev) => ({
+                        ...prev,
+                        [stage]: Math.min(stageTotalPages, validStagePage + 1),
+                      }))
+                    }
+                    className="h-6 w-6 inline-flex items-center justify-center rounded-[5px] border border-border/70 bg-surface-1 text-text-muted hover:text-text hover:bg-surface-2 disabled:opacity-25 disabled:cursor-not-allowed transition-colors cursor-pointer"
+                    title="Next page"
+                    aria-label="Next page"
+                  >
+                    <ChevronRight className="h-3.5 w-3.5" />
+                  </button>
+                </div>
+              ) : null;
 
             return (
-              <KanbanColumn key={stage} id={stage} title={stage} count={stageCandidates.length}>
-                {stageCandidates.map((candidate) => (
+              <KanbanColumn
+                key={stage}
+                id={stage}
+                title={stage}
+                count={stageCandidates.length}
+                footer={paginationFooter}
+              >
+                {visibleStageCandidates.map((candidate) => (
                   <DraggableCandidateCard
                     key={candidate.id}
                     candidate={candidate}

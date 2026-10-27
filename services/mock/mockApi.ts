@@ -295,6 +295,24 @@ export const mockApi: HroApiClient = {
       saveStore(store);
       return updated;
     },
+
+    assignToOpening: async (id, openingId, stage = 'Shared with Manager') => {
+      await simulateLatency();
+      checkFailure();
+      const store = getStore();
+      const idx = store.candidates.findIndex((c) => c.id === id);
+      if (idx === -1) throw { code: 'NOT_FOUND', message: `Candidate ${id} not found.` };
+
+      const updated = {
+        ...store.candidates[idx]!,
+        openingId,
+        stage,
+        managerDecision: 'Pending' as const,
+      };
+      store.candidates[idx] = updated;
+      saveStore(store);
+      return updated;
+    },
   },
 
   onboarding: {

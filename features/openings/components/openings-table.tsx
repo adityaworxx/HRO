@@ -9,6 +9,8 @@ import type { OpeningStatus } from '@/lib/domain/status-transitions';
 import { getNextAllowedOpeningStatuses } from '@/lib/domain/status-transitions';
 import { useOpenings, useUpdateOpeningStatus } from '../hooks';
 import { useCandidates } from '@/features/candidates/hooks';
+import { AiCandidateMatcherSheet, CandidateDetailSheet } from '@/features/candidates';
+import type { Candidate } from '@/types/entities';
 import { DataTable } from '@/components/hro/data-table';
 import { StatusBadge } from '@/components/hro/status-badge';
 import { DepartmentClusterView } from './department-cluster-view';
@@ -46,6 +48,7 @@ import {
   Columns3,
   List,
   SlidersHorizontal,
+  Sparkles,
 } from 'lucide-react';
 import { toast } from 'sonner';
 
@@ -58,6 +61,9 @@ export function OpeningsTable() {
   const [searchQuery, setSearchQuery] = React.useState<string>('');
   const [selectedStatus, setSelectedStatus] = React.useState<string>('all');
   const [selectedDepartment, setSelectedDepartment] = React.useState<string>('all');
+  const [aiMatchOpening, setAiMatchOpening] = React.useState<Opening | null>(null);
+  const [inspectedCandidate, setInspectedCandidate] = React.useState<Candidate | null>(null);
+  const [isCandidateSheetOpen, setIsCandidateSheetOpen] = React.useState(false);
 
   // Filter openings by search, status, and department
   const filteredOpenings = React.useMemo(() => {
@@ -198,7 +204,18 @@ export function OpeningsTable() {
           const allowedTransitions = getNextAllowedOpeningStatuses(opening.status);
 
           return (
-            <div className="flex justify-end" onClick={(e) => e.stopPropagation()}>
+            <div className="flex items-center justify-end gap-1.5" onClick={(e) => e.stopPropagation()}>
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => setAiMatchOpening(opening)}
+                className="border-accent/30 bg-accent/10 text-accent hover:bg-accent/20 h-7 gap-1 px-2 text-[11px] font-semibold"
+                title="Match candidates with AI"
+              >
+                <Sparkles className="h-3 w-3" />
+                <span>AI Match</span>
+              </Button>
+
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
                   <Button variant="ghost" size="icon" className="h-8 w-8">
@@ -382,8 +399,29 @@ export function OpeningsTable() {
           openings={filteredOpenings}
           candidates={candidates}
           onStatusChange={handleStatusChange}
+          onAiMatch={setAiMatchOpening}
         />
       )}
+
+      {/* AI Candidate Matcher Drawer */}
+      <AiCandidateMatcherSheet
+        opening={aiMatchOpening}
+        open={Boolean(aiMatchOpening)}
+        onOpenChange={(isOpen) => {
+          if (!isOpen) setAiMatchOpening(null);
+        }}
+        onInspectCandidate={(c) => {
+          setInspectedCandidate(c);
+          setIsCandidateSheetOpen(true);
+        }}
+      />
+
+      {/* Candidate Dossier Sheet */}
+      <CandidateDetailSheet
+        candidate={inspectedCandidate}
+        open={isCandidateSheetOpen}
+        onOpenChange={setIsCandidateSheetOpen}
+      />
     </div>
   );
 }

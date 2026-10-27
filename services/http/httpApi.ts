@@ -50,6 +50,9 @@ export const httpApi: HroApiClient = {
     recordInterviewOutcome: async () => {
       throw new NotImplementedError('candidates.recordInterviewOutcome');
     },
+    assignToOpening: async () => {
+      throw new NotImplementedError('candidates.assignToOpening');
+    },
   },
   onboarding: {
     listAll: async () => {

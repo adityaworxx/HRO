@@ -17,6 +17,7 @@ import {
   Users,
   ChevronLeft,
   ChevronRight,
+  Sparkles,
 } from 'lucide-react';
 import type { Opening, Candidate } from '@/types/entities';
 import type { OpeningStatus } from '@/lib/domain/status-transitions';
@@ -36,6 +37,7 @@ export interface OpeningColumnsViewProps {
   openings: Opening[];
   candidates: Candidate[];
   onStatusChange: (id: string, newStatus: OpeningStatus, title: string) => void;
+  onAiMatch?: (opening: Opening) => void;
 }
 
 // Department Icon Map
@@ -64,10 +66,12 @@ function MinimalOpeningCard({
   opening,
   candidates,
   onStatusChange,
+  onAiMatch,
 }: {
   opening: Opening;
   candidates: Candidate[];
   onStatusChange: (id: string, newStatus: OpeningStatus, title: string) => void;
+  onAiMatch?: (opening: Opening) => void;
 }) {
   const allowedTransitions = getNextAllowedOpeningStatuses(opening.status);
 
@@ -159,7 +163,20 @@ function MinimalOpeningCard({
           {formatCtcRange(opening.budgetRange.min, opening.budgetRange.max)}
         </span>
 
-        <div className="flex items-center shrink-0">
+        <div className="flex items-center gap-1.5 shrink-0">
+          <button
+            type="button"
+            onClick={(e) => {
+              e.stopPropagation();
+              onAiMatch?.(opening);
+            }}
+            className="border-accent/30 bg-accent/10 text-accent hover:bg-accent/20 inline-flex items-center gap-1 rounded-[4px] border px-1.5 py-0.5 text-[10px] font-semibold transition-colors cursor-pointer"
+            title="Scan & Match Candidates with AI"
+          >
+            <Sparkles className="h-2.5 w-2.5" />
+            <span>AI Match</span>
+          </button>
+
           {opening.urgency === 'High' ? (
             <span className="inline-flex items-center gap-1.5 text-[11px] font-semibold text-amber-600 dark:text-amber-400 select-none">
               <span className="h-1.5 w-1.5 rounded-full bg-amber-500 animate-pulse" />
@@ -192,6 +209,7 @@ export function OpeningColumnsView({
   openings,
   candidates,
   onStatusChange,
+  onAiMatch,
 }: OpeningColumnsViewProps) {
   // Per-column pagination state: { [departmentId]: pageNumber }
   const [pageByDept, setPageByDept] = React.useState<Record<string, number>>({});
@@ -305,6 +323,7 @@ export function OpeningColumnsView({
                         opening={opening}
                         candidates={candidates}
                         onStatusChange={onStatusChange}
+                        onAiMatch={onAiMatch}
                       />
                     ))
                   )}
