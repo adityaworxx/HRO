@@ -13,10 +13,12 @@ import {
   Palette,
   BarChart3,
   Layers,
+  Search,
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { formatCtcRange } from '@/lib/format';
 import { Skeleton } from '@/components/ui/skeleton';
+import { Input } from '@/components/ui/input';
 import type { Opening, Candidate } from '@/types/entities';
 
 const DEPARTMENT_ICONS: Record<string, React.ElementType> = {
@@ -179,18 +181,33 @@ export function ActiveOpeningsCard({
   onReactivate,
   pageSize = DEFAULT_CARDS_PER_COLUMN,
 }: ActiveOpeningsCardProps) {
+  const [searchQuery, setSearchQuery] = React.useState<string>('');
   // Per-column pagination state: { [department]: pageNumber }
   const [pageByDept, setPageByDept] = React.useState<Record<string, number>>({});
 
-  // Reset pagination when openings count changes
+  // Reset pagination when openings count or search query changes
   React.useEffect(() => {
     setPageByDept({});
-  }, [openings.length]);
+  }, [openings.length, searchQuery]);
+
+  // Filter openings by search query
+  const filteredOpenings = React.useMemo(() => {
+    const q = searchQuery.trim().toLowerCase();
+    if (!q) return openings;
+    return openings.filter((o) => {
+      return (
+        o.title.toLowerCase().includes(q) ||
+        o.department.toLowerCase().includes(q) ||
+        o.location.toLowerCase().includes(q) ||
+        (o.mustHaveSkills && o.mustHaveSkills.some((s) => s.toLowerCase().includes(q)))
+      );
+    });
+  }, [openings, searchQuery]);
 
   // Group openings by department
   const departmentGroups = React.useMemo(() => {
     const map = new Map<string, Opening[]>();
-    for (const o of openings) {
+    for (const o of filteredOpenings) {
       const dept = o.department || 'General';
       if (!map.has(dept)) {
         map.set(dept, []);
@@ -216,7 +233,7 @@ export function ActiveOpeningsCard({
         openings: map.get(dept) || [],
       };
     });
-  }, [openings]);
+  }, [filteredOpenings]);
 
   return (
     <div
@@ -225,8 +242,8 @@ export function ActiveOpeningsCard({
         className
       )}
     >
-      {/* 1. Header: Title + Count Badge + View all link */}
-      <div className="flex items-center justify-between gap-4 pb-4 border-b border-border/60">
+      {/* 1. Header: Title + Count Badge + Search + View all link */}
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-4 border-b border-border/60">
         <div className="flex items-center gap-2.5">
           <h2 className="text-text text-[16px] leading-[24px] font-semibold tracking-[-0.01em]">
             {title}
@@ -238,15 +255,29 @@ export function ActiveOpeningsCard({
           )}
         </div>
 
-        {viewAllHref && (
-          <Link
-            href={viewAllHref}
-            className="inline-flex items-center gap-1 text-[13px] leading-[20px] font-medium text-text-muted hover:text-text transition-colors shrink-0"
-          >
-            <span>View all</span>
-            <ChevronRight className="h-3.5 w-3.5" />
-          </Link>
-        )}
+        <div className="flex items-center gap-2.5">
+          <div className="relative w-full sm:w-[155px]">
+            <Search className="text-text-subtle pointer-events-none absolute top-1/2 left-2.5 h-3.5 w-3.5 -translate-y-1/2" />
+            <Input
+              type="text"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              placeholder="Search roles..."
+              aria-label="Search active openings"
+              className="bg-surface-2/40 border-border/70 hover:border-border focus:border-border-strong h-7.5 w-full pl-8 pr-2 text-[12px] rounded-[6px]"
+            />
+          </div>
+
+          {viewAllHref && (
+            <Link
+              href={viewAllHref}
+              className="inline-flex items-center gap-1 text-[13px] leading-[20px] font-medium text-text-muted hover:text-text transition-colors shrink-0"
+            >
+              <span>View all</span>
+              <ChevronRight className="h-3.5 w-3.5" />
+            </Link>
+          )}
+        </div>
       </div>
 
       {subtitle && (
@@ -276,6 +307,17 @@ export function ActiveOpeningsCard({
         ) : openings.length === 0 ? (
           <div className="py-12 text-center select-none">
             <p className="text-[13px] leading-[20px] text-text-muted">No active openings.</p>
+          </div>
+        ) : departmentGroups.length === 0 ? (
+          <div className="py-12 text-center select-none">
+            <p className="text-[13px] leading-[20px] text-text-muted">No roles match &quot;{searchQuery}&quot;</p>
+            <button
+              type="button"
+              onClick={() => setSearchQuery('')}
+              className="text-[12px] text-accent hover:underline mt-1 cursor-pointer"
+            >
+              Clear search
+            </button>
           </div>
         ) : (
           <div className="flex gap-3.5 overflow-x-auto pb-2 items-start scrollbar-thin">

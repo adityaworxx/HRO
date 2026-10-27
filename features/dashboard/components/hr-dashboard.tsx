@@ -10,7 +10,7 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Progress } from '@/components/ui/progress';
-import { Users, Clock, ChevronRight } from 'lucide-react';
+import { Users, Clock, ChevronRight, ChevronLeft } from 'lucide-react';
 import { toast } from 'sonner';
 
 export function HrDashboard() {
@@ -50,13 +50,23 @@ export function HrDashboard() {
   const totalCandidates = candidates.length || 1;
 
   // SLA warning candidates (candidates waiting in interview or manager review)
-  const slaAlertCandidates = React.useMemo(
+  const [slaPage, setSlaPage] = React.useState(1);
+  const SLA_PAGE_SIZE = 3;
+
+  const allSlaAlertCandidates = React.useMemo(
     () =>
-      candidates
-        .filter((c) => c.stage === 'Interview' || c.stage === 'Shared with Manager')
-        .slice(0, 3),
+      candidates.filter(
+        (c) => c.stage === 'Interview' || c.stage === 'Shared with Manager'
+      ),
     [candidates]
   );
+
+  const totalSlaPages = Math.ceil(allSlaAlertCandidates.length / SLA_PAGE_SIZE);
+  const validSlaPage = Math.min(Math.max(1, slaPage), Math.max(1, totalSlaPages));
+  const visibleSlaCandidates = React.useMemo(() => {
+    const start = (validSlaPage - 1) * SLA_PAGE_SIZE;
+    return allSlaAlertCandidates.slice(start, start + SLA_PAGE_SIZE);
+  }, [allSlaAlertCandidates, validSlaPage]);
 
   // Onboarding completion rate
   const completedTasks = onboardingItems.filter((item) => item.done).length;
@@ -371,18 +381,57 @@ export function HrDashboard() {
         {/* ROW 3: SLA Watchlist (Redesigned Table Format) */}
         <div className="col-span-12 flex flex-col">
           <div className="border-border bg-surface-1 flex h-full flex-col overflow-hidden rounded-[12px] border p-5 shadow-xs">
-            {/* Header (No count badge) */}
+            {/* Header: title + count badge left, pagination & view all right */}
             <div className="flex items-center justify-between gap-4 pb-4">
-              <h2 className="text-text text-[15px] font-semibold tracking-[-0.01em]">
-                SLA Watchlist
-              </h2>
-              <Link
-                href="/candidates"
-                className="text-text-muted hover:text-text inline-flex shrink-0 items-center gap-1 text-[12px] font-medium transition-colors"
-              >
-                <span>View all candidates</span>
-                <ChevronRight className="h-3.5 w-3.5" />
-              </Link>
+              <div className="flex items-center gap-2">
+                <h2 className="text-text text-[15px] font-semibold tracking-[-0.01em]">
+                  SLA Watchlist
+                </h2>
+                {allSlaAlertCandidates.length > 0 && (
+                  <span className="font-mono text-[11px] font-semibold text-accent bg-accent/10 px-2 py-0.5 rounded-full">
+                    {allSlaAlertCandidates.length}
+                  </span>
+                )}
+              </div>
+
+              <div className="flex items-center gap-3">
+                {totalSlaPages > 1 && (
+                  <div className="flex items-center gap-1.5 text-[11.5px] select-none">
+                    <span className="font-mono text-text-subtle text-[11px]">
+                      {validSlaPage} of {totalSlaPages}
+                    </span>
+                    <div className="flex items-center gap-1">
+                      <button
+                        type="button"
+                        disabled={validSlaPage <= 1}
+                        onClick={() => setSlaPage((p) => Math.max(1, p - 1))}
+                        className="h-6 w-6 inline-flex items-center justify-center rounded-[5px] border border-border/70 bg-surface-1 text-text-muted hover:text-text hover:bg-surface-2 disabled:opacity-25 disabled:cursor-not-allowed transition-colors cursor-pointer"
+                        title="Previous page"
+                        aria-label="Previous page"
+                      >
+                        <ChevronLeft className="h-3.5 w-3.5" />
+                      </button>
+                      <button
+                        type="button"
+                        disabled={validSlaPage >= totalSlaPages}
+                        onClick={() => setSlaPage((p) => Math.min(totalSlaPages, p + 1))}
+                        className="h-6 w-6 inline-flex items-center justify-center rounded-[5px] border border-border/70 bg-surface-1 text-text-muted hover:text-text hover:bg-surface-2 disabled:opacity-25 disabled:cursor-not-allowed transition-colors cursor-pointer"
+                        title="Next page"
+                        aria-label="Next page"
+                      >
+                        <ChevronRight className="h-3.5 w-3.5" />
+                      </button>
+                    </div>
+                  </div>
+                )}
+                <Link
+                  href="/candidates"
+                  className="text-text-muted hover:text-text inline-flex shrink-0 items-center gap-1 text-[12px] font-medium transition-colors"
+                >
+                  <span>View all</span>
+                  <ChevronRight className="h-3.5 w-3.5" />
+                </Link>
+              </div>
             </div>
 
             {/* Structured Table Container */}
@@ -399,12 +448,12 @@ export function HrDashboard() {
 
                 {/* Table Content Rows */}
                 <div className="divide-border/60 divide-y">
-                  {slaAlertCandidates.length === 0 ? (
+                  {visibleSlaCandidates.length === 0 ? (
                     <div className="text-text-muted flex flex-col items-center justify-center py-8 text-center text-[13px]">
                       <p className="font-medium">All candidate SLAs are currently on track</p>
                     </div>
                   ) : (
-                    slaAlertCandidates.map((candidate) => {
+                    visibleSlaCandidates.map((candidate) => {
                       const opening = openings.find((o) => o.id === candidate.openingId);
                       return (
                         <div

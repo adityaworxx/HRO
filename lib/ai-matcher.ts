@@ -416,3 +416,4 @@ export function rankCandidatesForOpening(
 
   return results;
 }
+

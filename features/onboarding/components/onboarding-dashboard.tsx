@@ -48,6 +48,8 @@ import {
   Layers,
   ListChecks,
   Calendar,
+  ChevronLeft,
+  ChevronRight,
 } from 'lucide-react';
 import { toast } from 'sonner';
 
@@ -242,6 +244,32 @@ export function OnboardingDashboard() {
     () => deriveOnboardingProgress(onboardingItems),
     [onboardingItems]
   );
+
+  // By New Hire pagination
+  const [hiresPage, setHiresPage] = React.useState(1);
+  const HIRES_PAGE_SIZE = 2;
+  const totalHiresPages = Math.ceil(candidatesWithActiveChecklists.length / HIRES_PAGE_SIZE);
+  const validHiresPage = Math.min(Math.max(1, hiresPage), Math.max(1, totalHiresPages));
+  const visibleHires = React.useMemo(() => {
+    const start = (validHiresPage - 1) * HIRES_PAGE_SIZE;
+    return candidatesWithActiveChecklists.slice(start, start + HIRES_PAGE_SIZE);
+  }, [candidatesWithActiveChecklists, validHiresPage]);
+
+  // All Tasks table pagination
+  const [tasksPage, setTasksPage] = React.useState(1);
+  const TASKS_PAGE_SIZE = 10;
+  const totalTasksPages = Math.ceil(filteredItems.length / TASKS_PAGE_SIZE);
+  const validTasksPage = Math.min(Math.max(1, tasksPage), Math.max(1, totalTasksPages));
+  const visibleTasks = React.useMemo(() => {
+    const start = (validTasksPage - 1) * TASKS_PAGE_SIZE;
+    return filteredItems.slice(start, start + TASKS_PAGE_SIZE);
+  }, [filteredItems, validTasksPage]);
+
+  // Reset pagination when search or filters change
+  React.useEffect(() => {
+    setHiresPage(1);
+    setTasksPage(1);
+  }, [searchQuery, selectedOwner, selectedStatus, selectedCandidateId]);
 
   const hrTasks = React.useMemo(
     () => onboardingItems.filter((i) => i.owner === 'HR'),
@@ -575,7 +603,8 @@ export function OnboardingDashboard() {
               </p>
             </Card>
           ) : (
-            candidatesWithActiveChecklists.map((candidate) => {
+            <>
+              {visibleHires.map((candidate) => {
               const candidateTasks = filteredItems.filter((i) => i.candidateId === candidate.id);
               const total = candidateTasks.length;
               const completed = candidateTasks.filter((i) => i.done).length;
@@ -770,10 +799,41 @@ export function OnboardingDashboard() {
                   </CardContent>
                 </Card>
               );
-            })
-          )}
-        </div>
-      )}
+            })}
+
+            {totalHiresPages > 1 && (
+              <div className="flex items-center justify-between pt-3 border-t border-border/60 text-[12px] select-none">
+                <span className="font-mono text-text-subtle text-[11.5px]">
+                  Showing {(validHiresPage - 1) * HIRES_PAGE_SIZE + 1}–{Math.min(validHiresPage * HIRES_PAGE_SIZE, candidatesWithActiveChecklists.length)} of {candidatesWithActiveChecklists.length} new hires (Page {validHiresPage} of {totalHiresPages})
+                </span>
+                <div className="flex items-center gap-1.5">
+                  <button
+                    type="button"
+                    disabled={validHiresPage <= 1}
+                    onClick={() => setHiresPage((p) => Math.max(1, p - 1))}
+                    className="h-7 w-7 inline-flex items-center justify-center rounded-[6px] border border-border/70 bg-surface-1 text-text-muted hover:text-text hover:bg-surface-2 disabled:opacity-25 disabled:cursor-not-allowed transition-colors cursor-pointer"
+                    title="Previous page"
+                    aria-label="Previous page"
+                  >
+                    <ChevronLeft className="h-3.5 w-3.5" />
+                  </button>
+                  <button
+                    type="button"
+                    disabled={validHiresPage >= totalHiresPages}
+                    onClick={() => setHiresPage((p) => Math.min(totalHiresPages, p + 1))}
+                    className="h-7 w-7 inline-flex items-center justify-center rounded-[6px] border border-border/70 bg-surface-1 text-text-muted hover:text-text hover:bg-surface-2 disabled:opacity-25 disabled:cursor-not-allowed transition-colors cursor-pointer"
+                    title="Next page"
+                    aria-label="Next page"
+                  >
+                    <ChevronRight className="h-3.5 w-3.5" />
+                  </button>
+                </div>
+              </div>
+            )}
+          </>
+        )}
+      </div>
+    )}
 
       {/* VIEW 2: BY PHASE (Timeline Stage View) */}
       {viewMode === 'by-phase' && (
@@ -933,14 +993,14 @@ export function OnboardingDashboard() {
                 </tr>
               </thead>
               <tbody className="divide-border/60 divide-y text-[13px]">
-                {filteredItems.length === 0 ? (
+                {visibleTasks.length === 0 ? (
                   <tr>
                     <td colSpan={7} className="text-text-muted p-8 text-center text-[13px]">
                       No tasks match your search or filter criteria.
                     </td>
                   </tr>
                 ) : (
-                  filteredItems.map((item) => {
+                  visibleTasks.map((item) => {
                     const candidate = candidates.find((c) => c.id === item.candidateId);
 
                     return (
@@ -1055,6 +1115,36 @@ export function OnboardingDashboard() {
               </tbody>
             </table>
           </div>
+
+          {totalTasksPages > 1 && (
+            <div className="border-border/80 bg-surface-2/20 flex items-center justify-between border-t px-4 py-2.5 sm:px-5 text-[12px] select-none">
+              <span className="font-mono text-text-subtle text-[11.5px]">
+                Showing {(validTasksPage - 1) * TASKS_PAGE_SIZE + 1}–{Math.min(validTasksPage * TASKS_PAGE_SIZE, filteredItems.length)} of {filteredItems.length} tasks (Page {validTasksPage} of {totalTasksPages})
+              </span>
+              <div className="flex items-center gap-1.5">
+                <button
+                  type="button"
+                  disabled={validTasksPage <= 1}
+                  onClick={() => setTasksPage((p) => Math.max(1, p - 1))}
+                  className="h-7 w-7 inline-flex items-center justify-center rounded-[6px] border border-border/70 bg-surface-1 text-text-muted hover:text-text hover:bg-surface-2 disabled:opacity-25 disabled:cursor-not-allowed transition-colors cursor-pointer"
+                  title="Previous page"
+                  aria-label="Previous page"
+                >
+                  <ChevronLeft className="h-3.5 w-3.5" />
+                </button>
+                <button
+                  type="button"
+                  disabled={validTasksPage >= totalTasksPages}
+                  onClick={() => setTasksPage((p) => Math.min(totalTasksPages, p + 1))}
+                  className="h-7 w-7 inline-flex items-center justify-center rounded-[6px] border border-border/70 bg-surface-1 text-text-muted hover:text-text hover:bg-surface-2 disabled:opacity-25 disabled:cursor-not-allowed transition-colors cursor-pointer"
+                  title="Next page"
+                  aria-label="Next page"
+                >
+                  <ChevronRight className="h-3.5 w-3.5" />
+                </button>
+              </div>
+            </div>
+          )}
         </Card>
       )}
 

@@ -2,19 +2,31 @@
 
 import * as React from 'react';
 import { useCandidates, useRecordManagerDecision } from '../hooks';
+import { useOpenings } from '@/features/openings/hooks';
 import { Card, CardHeader, CardTitle, CardContent, CardFooter } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import { SourceBadge } from '@/components/hro/source-badge';
 import { EmptyState } from '@/components/hro/empty-state';
 import { formatCtc } from '@/lib/format';
 import { cn } from '@/lib/utils';
-import { CheckCircle2, XCircle, FileText, Briefcase, Building2 } from 'lucide-react';
+import {
+  CheckCircle2,
+  XCircle,
+  FileText,
+  Briefcase,
+  Building2,
+  Search,
+  ChevronLeft,
+  ChevronRight,
+} from 'lucide-react';
 import { toast } from 'sonner';
 
 export function ShortlistReview() {
   const { data: candidates = [], isLoading } = useCandidates();
+  const { data: openings = [] } = useOpenings();
   const recordDecision = useRecordManagerDecision();
 
   // Candidates in 'Shared with Manager' stage or pending decision
@@ -24,18 +36,52 @@ export function ShortlistReview() {
     );
   }, [candidates]);
 
+  const [searchQuery, setSearchQuery] = React.useState<string>('');
+  const [currentPage, setCurrentPage] = React.useState<number>(1);
   const [selectedId, setSelectedId] = React.useState<string | null>(null);
   const [managerComment, setManagerComment] = React.useState<string>('');
   const [pendingDecision, setPendingDecision] = React.useState<'Shortlisted' | 'Rejected' | null>(
     null
   );
 
-  // Auto-select first pending candidate
+  const QUEUE_PAGE_SIZE = 4;
+
+  // Reset pagination when search changes
+  React.useEffect(() => {
+    setCurrentPage(1);
+  }, [searchQuery, pendingCandidates.length]);
+
+  const filteredPending = React.useMemo(() => {
+    const q = searchQuery.trim().toLowerCase();
+    if (!q) return pendingCandidates;
+    return pendingCandidates.filter((c) => {
+      const opening = openings.find((o) => o.id === c.openingId);
+      return (
+        c.name.toLowerCase().includes(q) ||
+        c.currentRole.toLowerCase().includes(q) ||
+        c.currentCompany.toLowerCase().includes(q) ||
+        (opening && (
+          opening.title.toLowerCase().includes(q) ||
+          opening.department.toLowerCase().includes(q) ||
+          opening.mustHaveSkills.some((s) => s.toLowerCase().includes(q))
+        ))
+      );
+    });
+  }, [pendingCandidates, searchQuery, openings]);
+
+  const totalPages = Math.ceil(filteredPending.length / QUEUE_PAGE_SIZE);
+  const validPage = Math.min(Math.max(1, currentPage), Math.max(1, totalPages));
+  const startIndex = (validPage - 1) * QUEUE_PAGE_SIZE;
+  const visibleCandidates = React.useMemo(() => {
+    return filteredPending.slice(startIndex, startIndex + QUEUE_PAGE_SIZE);
+  }, [filteredPending, startIndex]);
+
+  // Auto-select first candidate from visible list or selected
   const activeCandidate = React.useMemo(() => {
-    if (!pendingCandidates.length) return null;
-    const found = pendingCandidates.find((c) => c.id === selectedId);
-    return found ?? pendingCandidates[0] ?? null;
-  }, [pendingCandidates, selectedId]);
+    if (!filteredPending.length) return null;
+    const found = filteredPending.find((c) => c.id === selectedId);
+    return found ?? visibleCandidates[0] ?? filteredPending[0] ?? null;
+  }, [filteredPending, selectedId, visibleCandidates]);
 
   const handleDecision = (decision: 'Shortlisted' | 'Rejected') => {
     if (!activeCandidate) return;
@@ -89,65 +135,130 @@ export function ShortlistReview() {
 
   return (
     <div className="grid grid-cols-1 gap-6 lg:grid-cols-12">
-      {/* Left Column (5/12): Queue List */}
-      <div className="space-y-3 lg:col-span-5">
-        <div className="flex items-center justify-between pb-1">
-          <span className="text-text text-[13px] font-semibold">
-            Pending Queue ({pendingCandidates.length})
-          </span>
-        </div>
-
+      {/* Left Column (5/12): Queue List with Search & Pagination */}
+      <div className="flex flex-col justify-between space-y-3 lg:col-span-5">
         <div className="space-y-2.5">
-          {pendingCandidates.map((candidate) => {
-            const isSelected = activeCandidate?.id === candidate.id;
+          <div className="flex items-center justify-between pb-1">
+            <div className="flex items-center gap-2">
+              <span className="text-text text-[13.5px] font-semibold">
+                Pending Queue
+              </span>
+              <span className="font-mono text-[11px] font-semibold text-accent bg-accent/10 px-2 py-0.5 rounded-full">
+                {filteredPending.length}
+              </span>
+            </div>
+          </div>
 
-            return (
-              <div
-                key={candidate.id}
-                role="button"
-                tabIndex={0}
-                onClick={() => setSelectedId(candidate.id)}
-                className={cn(
-                  'cursor-pointer rounded-[8px] border p-3.5 transition-all duration-150 shadow-2xs select-none',
-                  isSelected
-                    ? 'border-accent bg-accent-subtle/25 shadow-xs ring-1 ring-accent'
-                    : 'border-border bg-surface-1 hover:border-border-strong hover:bg-surface-2/60'
-                )}
+          {/* Search Queue */}
+          <div className="relative w-full">
+            <Search className="text-text-subtle pointer-events-none absolute top-1/2 left-2.5 h-3.5 w-3.5 -translate-y-1/2" />
+            <Input
+              type="text"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              placeholder="Search by name, role, skill..."
+              aria-label="Search review queue"
+              className="bg-surface-2/40 border-border/70 hover:border-border focus:border-border-strong h-8 w-full pl-8 pr-2 text-[12px] rounded-[6px]"
+            />
+          </div>
+
+          {/* Candidate Queue Cards */}
+          {filteredPending.length === 0 ? (
+            <div className="rounded-[8px] border border-dashed border-border/70 p-6 text-center select-none">
+              <p className="text-[12.5px] text-text-muted">No candidates match &quot;{searchQuery}&quot;</p>
+              <button
+                type="button"
+                onClick={() => setSearchQuery('')}
+                className="text-[11.5px] text-accent hover:underline mt-1 cursor-pointer"
               >
-                <div className="flex items-start justify-between gap-2">
-                  <div className="flex min-w-0 items-center gap-2.5">
-                    <Avatar className="h-8 w-8 shrink-0">
-                      <AvatarFallback className="bg-surface-2 text-text text-[11px] font-bold">
-                        {candidate.name.slice(0, 2).toUpperCase()}
-                      </AvatarFallback>
-                    </Avatar>
-                    <div className="min-w-0">
-                      <h4 className="text-text truncate text-[13.5px] font-semibold tracking-tight">
-                        {candidate.name}
-                      </h4>
-                      <div className="flex items-center gap-1.5 mt-0.5 text-[12px] font-medium text-text min-w-0">
-                        <Briefcase className="h-3 w-3 shrink-0 text-text-subtle stroke-[1.75]" />
-                        <span className="truncate">{candidate.currentRole}</span>
+                Clear search
+              </button>
+            </div>
+          ) : (
+            <div className="space-y-2">
+              {visibleCandidates.map((candidate) => {
+                const isSelected = activeCandidate?.id === candidate.id;
+
+                return (
+                  <div
+                    key={candidate.id}
+                    role="button"
+                    tabIndex={0}
+                    onClick={() => setSelectedId(candidate.id)}
+                    className={cn(
+                      'cursor-pointer rounded-[8px] border p-3 transition-all duration-150 shadow-2xs select-none',
+                      isSelected
+                        ? 'border-accent bg-accent-subtle/25 shadow-xs ring-1 ring-accent'
+                        : 'border-border bg-surface-1 hover:border-border-strong hover:bg-surface-2/60'
+                    )}
+                  >
+                    <div className="flex items-start justify-between gap-2">
+                      <div className="flex min-w-0 items-center gap-2.5">
+                        <Avatar className="h-8 w-8 shrink-0 border border-border/70">
+                          <AvatarFallback className="bg-surface-2 text-text text-[11px] font-bold">
+                            {candidate.name.slice(0, 2).toUpperCase()}
+                          </AvatarFallback>
+                        </Avatar>
+                        <div className="min-w-0">
+                          <h4 className="text-text truncate text-[13.5px] font-semibold tracking-tight">
+                            {candidate.name}
+                          </h4>
+                          <div className="flex items-center gap-1.5 mt-0.5 text-[12px] font-medium text-text min-w-0">
+                            <Briefcase className="h-3 w-3 shrink-0 text-text-subtle stroke-[1.75]" />
+                            <span className="truncate">{candidate.currentRole}</span>
+                          </div>
+                        </div>
                       </div>
+                      <span className="text-text shrink-0 text-[11.5px] font-semibold tabular-nums select-none">
+                        {candidate.experienceYears}y exp
+                      </span>
+                    </div>
+                    <div className="border-border/60 mt-2.5 flex items-center justify-between border-t pt-2 text-[12px]">
+                      <div className="flex items-center gap-1.5 min-w-0 text-text-muted font-medium">
+                        <Building2 className="h-3 w-3 shrink-0 text-text-subtle/80 stroke-[1.75]" />
+                        <span className="truncate">{candidate.currentCompany}</span>
+                      </div>
+                      <span className="text-text font-mono font-semibold tabular-nums">
+                        {formatCtc(candidate.expectedCtc)}
+                      </span>
                     </div>
                   </div>
-                  <span className="text-text shrink-0 text-[11.5px] font-semibold tabular-nums select-none">
-                    {candidate.experienceYears} {candidate.experienceYears === 1 ? 'year' : 'years'} experience
-                  </span>
-                </div>
-                <div className="border-border/60 mt-2.5 flex items-center justify-between border-t pt-2 text-[12px]">
-                  <div className="flex items-center gap-1.5 min-w-0 text-text-muted font-medium">
-                    <Building2 className="h-3 w-3 shrink-0 text-text-subtle/80 stroke-[1.75]" />
-                    <span className="truncate">{candidate.currentCompany}</span>
-                  </div>
-                  <span className="text-text font-mono font-semibold tabular-nums">
-                    {formatCtc(candidate.expectedCtc)}
-                  </span>
-                </div>
-              </div>
-            );
-          })}
+                );
+              })}
+            </div>
+          )}
         </div>
+
+        {/* Queue Pagination Footer */}
+        {totalPages > 1 && (
+          <div className="flex items-center justify-between pt-2.5 border-t border-border/60 text-[11.5px] select-none">
+            <span className="font-mono text-text-subtle text-[11px]">
+              Page {validPage} of {totalPages}
+            </span>
+            <div className="flex items-center gap-1">
+              <button
+                type="button"
+                disabled={validPage <= 1}
+                onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
+                className="h-6 w-6 inline-flex items-center justify-center rounded-[5px] border border-border/70 bg-surface-1 text-text-muted hover:text-text hover:bg-surface-2 disabled:opacity-25 disabled:cursor-not-allowed transition-colors cursor-pointer"
+                title="Previous page"
+                aria-label="Previous page"
+              >
+                <ChevronLeft className="h-3.5 w-3.5" />
+              </button>
+              <button
+                type="button"
+                disabled={validPage >= totalPages}
+                onClick={() => setCurrentPage((p) => Math.min(totalPages, p + 1))}
+                className="h-6 w-6 inline-flex items-center justify-center rounded-[5px] border border-border/70 bg-surface-1 text-text-muted hover:text-text hover:bg-surface-2 disabled:opacity-25 disabled:cursor-not-allowed transition-colors cursor-pointer"
+                title="Next page"
+                aria-label="Next page"
+              >
+                <ChevronRight className="h-3.5 w-3.5" />
+              </button>
+            </div>
+          </div>
+        )}
       </div>
 
       {/* Right Column (7/12): Active Candidate Assessment Panel */}

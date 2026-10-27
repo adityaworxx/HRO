@@ -296,6 +296,6 @@ export const DEPARTMENT_PROFILES: Record<string, DepartmentProfile> = {
 };
 
 export function getDepartmentProfile(department: string): DepartmentProfile {
-  const profile = DEPARTMENT_PROFILES[department];
-  return profile ?? ENGINEERING_PROFILE;
+  return DEPARTMENT_PROFILES[department] || ENGINEERING_PROFILE;
 }
+

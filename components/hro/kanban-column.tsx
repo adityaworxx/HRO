@@ -26,6 +26,7 @@ export interface KanbanColumnProps {
   availableStages?: string[];
   onMoveToStage?: (targetStage: string) => void;
   className?: string;
+  footer?: React.ReactNode;
 }
 
 const STAGE_ICONS: Record<string, React.ElementType> = {
@@ -45,6 +46,7 @@ export function KanbanColumn({
   availableStages = [],
   onMoveToStage,
   className,
+  footer,
 }: KanbanColumnProps) {
   const { setNodeRef, isOver } = useDroppable({ id });
   const StageIcon = STAGE_ICONS[title];
@@ -105,6 +107,8 @@ export function KanbanColumn({
           </div>
         )}
       </div>
+
+      {footer && <div className="mt-2 shrink-0">{footer}</div>}
     </div>
   );
 }

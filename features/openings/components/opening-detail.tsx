@@ -46,6 +46,8 @@ import {
   ArrowRight,
   Filter,
   X,
+  ChevronLeft,
+  ChevronRight,
 } from 'lucide-react';
 import { toast } from 'sonner';
 import { cn } from '@/lib/utils';
@@ -155,6 +157,16 @@ export function OpeningDetail({ id }: OpeningDetailProps) {
 
     return list;
   }, [rankedMatches, searchQuery, selectedTier, sortBy]);
+
+  // Candidates Pipeline Tab Pagination
+  const [pipelinePage, setPipelinePage] = React.useState(1);
+  const PIPELINE_PAGE_SIZE = 5;
+  const totalPipelinePages = Math.ceil(openingCandidates.length / PIPELINE_PAGE_SIZE);
+  const validPipelinePage = Math.min(Math.max(1, pipelinePage), Math.max(1, totalPipelinePages));
+  const visiblePipelineCandidates = React.useMemo(() => {
+    const start = (validPipelinePage - 1) * PIPELINE_PAGE_SIZE;
+    return openingCandidates.slice(start, start + PIPELINE_PAGE_SIZE);
+  }, [openingCandidates, validPipelinePage]);
 
   const handleShortlistCandidate = (match: CandidateMatchResult) => {
     if (!opening) return;
@@ -813,43 +825,75 @@ export function OpeningDetail({ id }: OpeningDetailProps) {
                       </p>
                     </div>
                   ) : (
-                    openingCandidates.map((candidate) => (
-                      <div
-                        key={candidate.id}
-                        className="border-border bg-surface-2/40 hover:bg-surface-2 flex flex-col justify-between gap-3 rounded-[var(--radius-md)] border p-3.5 transition-colors sm:flex-row sm:items-center"
-                      >
-                        <div className="flex items-center gap-3">
-                          <Avatar className="h-8 w-8">
-                            <AvatarFallback className="bg-accent/20 text-accent text-[11px] font-semibold">
-                              {candidate.name.slice(0, 2).toUpperCase()}
-                            </AvatarFallback>
-                          </Avatar>
-                          <div>
-                            <div className="flex items-center gap-2">
-                              <span className="text-text text-[13px] font-semibold">
-                                {candidate.name}
-                              </span>
-                              <StatusBadge status={candidate.stage} type="candidate" />
+                    <>
+                      {visiblePipelineCandidates.map((candidate) => (
+                        <div
+                          key={candidate.id}
+                          className="border-border bg-surface-2/40 hover:bg-surface-2 flex flex-col justify-between gap-3 rounded-[var(--radius-md)] border p-3.5 transition-colors sm:flex-row sm:items-center"
+                        >
+                          <div className="flex items-center gap-3">
+                            <Avatar className="h-8 w-8">
+                              <AvatarFallback className="bg-accent/20 text-accent text-[11px] font-semibold">
+                                {candidate.name.slice(0, 2).toUpperCase()}
+                              </AvatarFallback>
+                            </Avatar>
+                            <div>
+                              <div className="flex items-center gap-2">
+                                <span className="text-text text-[13px] font-semibold">
+                                  {candidate.name}
+                                </span>
+                                <StatusBadge status={candidate.stage} type="candidate" />
+                              </div>
+                              <p className="text-text-muted text-[11px]">
+                                {candidate.currentRole} at {candidate.currentCompany} •{' '}
+                                <span className="text-text font-bold">
+                                  {candidate.experienceYears} yrs exp
+                                </span>
+                              </p>
                             </div>
-                            <p className="text-text-muted text-[11px]">
-                              {candidate.currentRole} at {candidate.currentCompany} •{' '}
-                              <span className="text-text font-bold">
-                                {candidate.experienceYears} yrs exp
-                              </span>
-                            </p>
+                          </div>
+
+                          <div className="text-text-muted flex items-center gap-4 self-end text-[11px] sm:self-center">
+                            <span className="text-text font-mono font-medium">
+                              Expected: {formatCtc(candidate.expectedCtc)}
+                            </span>
+                            <span className="text-text font-bold">
+                              Notice: {candidate.noticePeriod}
+                            </span>
                           </div>
                         </div>
+                      ))}
 
-                        <div className="text-text-muted flex items-center gap-4 self-end text-[11px] sm:self-center">
-                          <span className="text-text font-mono font-medium">
-                            Expected: {formatCtc(candidate.expectedCtc)}
+                      {totalPipelinePages > 1 && (
+                        <div className="flex items-center justify-between pt-3 border-t border-border/60 text-[12px] select-none">
+                          <span className="font-mono text-text-subtle text-[11.5px]">
+                            Showing {(validPipelinePage - 1) * PIPELINE_PAGE_SIZE + 1}–{Math.min(validPipelinePage * PIPELINE_PAGE_SIZE, openingCandidates.length)} of {openingCandidates.length} candidates (Page {validPipelinePage} of {totalPipelinePages})
                           </span>
-                          <span className="text-text font-bold">
-                            Notice: {candidate.noticePeriod}
-                          </span>
+                          <div className="flex items-center gap-1.5">
+                            <button
+                              type="button"
+                              disabled={validPipelinePage <= 1}
+                              onClick={() => setPipelinePage((p) => Math.max(1, p - 1))}
+                              className="h-7 w-7 inline-flex items-center justify-center rounded-[6px] border border-border/70 bg-surface-1 text-text-muted hover:text-text hover:bg-surface-2 disabled:opacity-25 disabled:cursor-not-allowed transition-colors cursor-pointer"
+                              title="Previous page"
+                              aria-label="Previous page"
+                            >
+                              <ChevronLeft className="h-3.5 w-3.5" />
+                            </button>
+                            <button
+                              type="button"
+                              disabled={validPipelinePage >= totalPipelinePages}
+                              onClick={() => setPipelinePage((p) => Math.min(totalPipelinePages, p + 1))}
+                              className="h-7 w-7 inline-flex items-center justify-center rounded-[6px] border border-border/70 bg-surface-1 text-text-muted hover:text-text hover:bg-surface-2 disabled:opacity-25 disabled:cursor-not-allowed transition-colors cursor-pointer"
+                              title="Next page"
+                              aria-label="Next page"
+                            >
+                              <ChevronRight className="h-3.5 w-3.5" />
+                            </button>
+                          </div>
                         </div>
-                      </div>
-                    ))
+                      )}
+                    </>
                   )}
                 </CardContent>
               </Card>

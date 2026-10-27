@@ -53,7 +53,12 @@ export function CandidatesTable() {
         c.email.toLowerCase().includes(query) ||
         c.currentRole.toLowerCase().includes(query) ||
         c.currentCompany.toLowerCase().includes(query) ||
-        (Boolean(opening) && opening!.title.toLowerCase().includes(query));
+        (c.noticePeriod && c.noticePeriod.toLowerCase().includes(query)) ||
+        (opening && (
+          opening.title.toLowerCase().includes(query) ||
+          opening.department.toLowerCase().includes(query) ||
+          (opening.mustHaveSkills && opening.mustHaveSkills.some((s) => s.toLowerCase().includes(query)))
+        ));
 
       return matchesStage && matchesSource && matchesDept && matchesSearch;
     });

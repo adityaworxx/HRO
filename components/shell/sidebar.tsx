@@ -2,14 +2,14 @@
 
 import * as React from 'react';
 import Link from 'next/link';
-import { usePathname } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
 import { useUiStore } from '@/lib/store';
 import { NAVIGATION_ITEMS } from '@/lib/navigation';
-import { RoleSwitcher } from './role-switcher';
 import { cn } from '@/lib/utils';
-import { PanelLeftClose, PanelLeftOpen, X } from 'lucide-react';
+import { PanelLeftClose, PanelLeftOpen, X, LogOut } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { TooltipProvider, Tooltip, TooltipTrigger, TooltipContent } from '@/components/ui/tooltip';
+import { toast } from 'sonner';
 
 function NavItemTooltip({
   enabled,
@@ -97,6 +97,7 @@ function SidebarNav({ collapsed, onItemClick }: { collapsed: boolean; onItemClic
 
 export function Sidebar() {
   const pathname = usePathname();
+  const router = useRouter();
   const { sidebarCollapsed, toggleSidebar, mobileSidebarOpen, setMobileSidebarOpen } = useUiStore();
 
   const mounted = React.useSyncExternalStore(
@@ -106,6 +107,15 @@ export function Sidebar() {
   );
 
   const isCollapsed = mounted ? sidebarCollapsed : false;
+
+  const handleLogout = () => {
+    if (typeof window !== 'undefined') {
+      localStorage.removeItem('hro:demo-role');
+      localStorage.removeItem('hro:user');
+    }
+    toast.success('Logged out successfully');
+    router.push('/login');
+  };
 
   // Auto-close mobile drawer when navigating
   React.useEffect(() => {
@@ -174,38 +184,41 @@ export function Sidebar() {
               size="icon"
               onClick={() => setMobileSidebarOpen(false)}
               className="text-text-subtle hover:text-text h-8 w-8 cursor-pointer"
-              aria-label="Close sidebar"
+              aria-label="Close navigation"
             >
-              <X className="h-4 w-4" />
+              <X className="h-4.5 w-4.5" />
             </Button>
           </div>
 
-          {/* Navigation */}
+          {/* Mobile Drawer Nav */}
           <React.Suspense fallback={<div className="flex-1" />}>
             <SidebarNav collapsed={false} onItemClick={() => setMobileSidebarOpen(false)} />
           </React.Suspense>
 
-          {/* Role Switcher */}
-          <div className="border-border shrink-0 border-t px-3.5 py-3">
-            <RoleSwitcher isCollapsed={false} />
+          {/* Mobile Drawer Footer with Logout */}
+          <div className="border-border shrink-0 border-t p-3">
+            <button
+              type="button"
+              onClick={handleLogout}
+              className="flex w-full items-center justify-center gap-2 rounded-[8px] border border-border/70 bg-surface-2 p-2.5 text-[13px] font-medium text-text-muted hover:text-danger hover:bg-surface-3 transition-colors cursor-pointer select-none"
+            >
+              <LogOut className="h-4 w-4 stroke-[1.75]" />
+              <span>Log out</span>
+            </button>
           </div>
         </aside>
       </div>
 
-      {/* 2. DESKTOP SIDEBAR (hidden on mobile, visible on lg:) */}
-      <TooltipProvider delayDuration={50}>
+      {/* 2. DESKTOP PERMANENT SIDEBAR (hidden on mobile, flex on lg+) */}
+      <TooltipProvider delayDuration={150}>
         <aside
-          style={{
-            transition: 'width 280ms cubic-bezier(0.16, 1, 0.3, 1)',
-            willChange: 'width',
-          }}
           className={cn(
-            'border-border bg-surface-1 relative z-30 hidden h-full shrink-0 flex-col overflow-x-hidden border-r select-none lg:flex',
-            isCollapsed ? 'w-16' : 'w-60'
+            'border-border bg-surface-1 relative hidden h-full flex-col border-r transition-[width] ease-out lg:flex select-none z-10',
+            isCollapsed ? 'w-16 duration-150' : 'w-60 duration-200'
           )}
         >
-          {/* Brand Header: Unified container, zero unmounting */}
-          <div className="border-border relative flex h-14 w-full shrink-0 items-center overflow-hidden border-b px-3.5">
+          {/* Sidebar Header with Brand & Collapse Trigger */}
+          <div className="border-border relative flex h-14 w-full shrink-0 items-center border-b px-3.5">
             {isCollapsed ? (
               <NavItemTooltip enabled={true} title="Expand sidebar (Ctrl+B)">
                 <button
@@ -267,9 +280,29 @@ export function Sidebar() {
             <SidebarNav collapsed={isCollapsed} />
           </React.Suspense>
 
-          {/* Sidebar Footer with Role Switcher */}
-          <div className="border-border shrink-0 border-t px-3.5 py-2.5">
-            <RoleSwitcher isCollapsed={isCollapsed} />
+          {/* Sidebar Footer with Logout ONLY */}
+          <div className="border-border shrink-0 border-t p-3">
+            {isCollapsed ? (
+              <NavItemTooltip enabled={true} title="Log out">
+                <button
+                  type="button"
+                  onClick={handleLogout}
+                  aria-label="Log out"
+                  className="hover:bg-surface-2 hover:text-danger text-text-subtle flex h-9 w-9 shrink-0 items-center justify-center rounded-[var(--radius-md)] transition-colors cursor-pointer select-none mx-auto"
+                >
+                  <LogOut className="h-4 w-4 stroke-[1.75]" />
+                </button>
+              </NavItemTooltip>
+            ) : (
+              <button
+                type="button"
+                onClick={handleLogout}
+                className="hover:bg-surface-2 hover:text-danger text-text-muted flex h-9 w-full items-center gap-2.5 rounded-[8px] px-3 text-[13px] font-medium transition-colors cursor-pointer select-none"
+              >
+                <LogOut className="h-4 w-4 stroke-[1.75] shrink-0" />
+                <span className="truncate">Log out</span>
+              </button>
+            )}
           </div>
         </aside>
       </TooltipProvider>
