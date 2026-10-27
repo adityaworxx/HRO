@@ -50,7 +50,8 @@ export interface CandidatesApi {
   assignToOpening(
     id: string,
     openingId: string,
-    stage?: CandidateStage
+    stage?: CandidateStage,
+    notes?: string
   ): Promise<Candidate>;
 }
 

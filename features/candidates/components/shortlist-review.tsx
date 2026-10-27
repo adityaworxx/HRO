@@ -21,7 +21,10 @@ import {
   Search,
   ChevronLeft,
   ChevronRight,
+  Sparkles,
+  Check,
 } from 'lucide-react';
+import { matchCandidateToOpening } from '@/lib/ai-matcher';
 import { toast } from 'sonner';
 
 export function ShortlistReview() {
@@ -82,6 +85,16 @@ export function ShortlistReview() {
     const found = filteredPending.find((c) => c.id === selectedId);
     return found ?? visibleCandidates[0] ?? filteredPending[0] ?? null;
   }, [filteredPending, selectedId, visibleCandidates]);
+
+  const activeOpening = React.useMemo(() => {
+    if (!activeCandidate) return null;
+    return openings.find((o) => o.id === activeCandidate.openingId) ?? null;
+  }, [activeCandidate, openings]);
+
+  const aiMatch = React.useMemo(() => {
+    if (!activeCandidate || !activeOpening) return null;
+    return matchCandidateToOpening(activeCandidate, activeOpening);
+  }, [activeCandidate, activeOpening]);
 
   const handleDecision = (decision: 'Shortlisted' | 'Rejected') => {
     if (!activeCandidate) return;
@@ -178,6 +191,7 @@ export function ShortlistReview() {
             <div className="space-y-2">
               {visibleCandidates.map((candidate) => {
                 const isSelected = activeCandidate?.id === candidate.id;
+                const candidateOpening = openings.find((o) => o.id === candidate.openingId);
 
                 return (
                   <div
@@ -200,9 +214,16 @@ export function ShortlistReview() {
                           </AvatarFallback>
                         </Avatar>
                         <div className="min-w-0">
-                          <h4 className="text-text truncate text-[13.5px] font-semibold tracking-tight">
-                            {candidate.name}
-                          </h4>
+                          <div className="flex items-center gap-1.5 min-w-0">
+                            <h4 className="text-text truncate text-[13.5px] font-semibold tracking-tight">
+                              {candidate.name}
+                            </h4>
+                            {candidate.hrNotes?.includes('[AI Match:') && (
+                              <span className="inline-flex items-center gap-0.5 rounded-full border border-accent/40 bg-accent/15 px-1.5 py-0.2 text-[9px] font-mono font-bold text-accent shrink-0 select-none">
+                                AI Fit
+                              </span>
+                            )}
+                          </div>
                           <div className="flex items-center gap-1.5 mt-0.5 text-[12px] font-medium text-text min-w-0">
                             <Briefcase className="h-3 w-3 shrink-0 text-text-subtle stroke-[1.75]" />
                             <span className="truncate">{candidate.currentRole}</span>
@@ -222,6 +243,12 @@ export function ShortlistReview() {
                         {formatCtc(candidate.expectedCtc)}
                       </span>
                     </div>
+                    {candidateOpening && (
+                      <div className="mt-1.5 text-[10.5px] text-text-subtle truncate flex items-center gap-1">
+                        <span>Role:</span>
+                        <span className="font-medium text-text truncate">{candidateOpening.title}</span>
+                      </div>
+                    )}
                   </div>
                 );
               })}
@@ -332,6 +359,52 @@ export function ShortlistReview() {
                   </p>
                 </div>
               </div>
+
+              {/* AI Candidate Assessment */}
+              {aiMatch && (
+                <div className="rounded-[8px] border border-accent/40 bg-accent/10 p-3.5 space-y-2.5">
+                  <div className="flex items-center justify-between gap-2 flex-wrap">
+                    <div className="flex items-center gap-1.5 font-semibold text-text text-[13px]">
+                      <Sparkles className="h-4 w-4 text-accent" />
+                      <span>AI Candidate Assessment</span>
+                      {activeOpening && (
+                        <span className="text-text-subtle text-[11.5px] font-normal">
+                          for {activeOpening.title}
+                        </span>
+                      )}
+                    </div>
+                    <span
+                      className={cn(
+                        'font-mono text-[10.5px] font-bold px-2 py-0.5 rounded-full border',
+                        aiMatch.tier === 'Strong Fit'
+                          ? 'bg-accent/20 border-accent/40 text-accent'
+                          : aiMatch.tier === 'Good Match'
+                            ? 'bg-success/15 border-success/30 text-success'
+                            : 'bg-surface-2 border-border text-text-muted'
+                      )}
+                    >
+                      {aiMatch.score}% Match • {aiMatch.tier}
+                    </span>
+                  </div>
+                  <p className="text-text-muted text-[12px] leading-relaxed">
+                    {aiMatch.summary}
+                  </p>
+                  {aiMatch.matchedMustSkills.length > 0 && (
+                    <div className="flex flex-wrap items-center gap-1.5 pt-0.5">
+                      <span className="text-text-subtle text-[11px] font-medium">Screened Skills:</span>
+                      {aiMatch.matchedMustSkills.map((skill: string) => (
+                        <span
+                          key={skill}
+                          className="inline-flex items-center gap-1 rounded-full border border-accent/30 bg-accent/15 px-2 py-0.5 text-[10px] font-semibold text-accent"
+                        >
+                          <Check className="h-2.5 w-2.5 stroke-[3]" />
+                          <span>{skill}</span>
+                        </span>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              )}
 
               {/* HR Screening Notes */}
               <div className="space-y-1.5">

@@ -6,7 +6,6 @@ import { useOpening, useUpdateOpeningStatus } from '../hooks';
 import {
   useCandidates,
   useAssignCandidateToOpening,
-  useRecordManagerDecision,
 } from '@/features/candidates/hooks';
 import { CandidateDetailSheet } from '@/features/candidates/components/candidate-detail-sheet';
 import { useUsers } from '@/features/auth/hooks';
@@ -46,6 +45,7 @@ import {
   ArrowRight,
   Filter,
   X,
+  Clock,
   ChevronLeft,
   ChevronRight,
 } from 'lucide-react';
@@ -63,7 +63,6 @@ export function OpeningDetail({ id }: OpeningDetailProps) {
   const { data: users = [] } = useUsers();
   const updateStatus = useUpdateOpeningStatus();
   const assignCandidate = useAssignCandidateToOpening();
-  const recordDecision = useRecordManagerDecision();
 
   const [activeTab, setActiveTab] = React.useState<string>('ai-matcher');
   const [selectedCandidate, setSelectedCandidate] = React.useState<Candidate | null>(null);
@@ -171,24 +170,22 @@ export function OpeningDetail({ id }: OpeningDetailProps) {
   const handleShortlistCandidate = (match: CandidateMatchResult) => {
     if (!opening) return;
     const { candidate } = match;
+    const notes = `[AI Match: ${match.score}% • ${match.tier}] ${match.summary}`;
 
     assignCandidate.mutate(
       {
         candidateId: candidate.id,
         openingId: opening.id,
         stage: 'Shared with Manager',
+        notes,
       },
       {
         onSuccess: () => {
-          recordDecision.mutate(
-            { id: candidate.id, decision: 'Shortlisted' },
-            {
-              onSuccess: () => {
-                setShortlistedMap((prev) => ({ ...prev, [candidate.id]: true }));
-                toast.success(`✨ ${candidate.name} shortlisted for "${opening.title}"!`);
-              },
-            }
-          );
+          setShortlistedMap((prev) => ({ ...prev, [candidate.id]: true }));
+          toast.success(`🎯 ${candidate.name} (${match.score}% match) shared with Hiring Manager!`);
+        },
+        onError: (err) => {
+          toast.error(err instanceof Error ? err.message : 'Failed to share candidate with manager');
         },
       }
     );
@@ -200,19 +197,17 @@ export function OpeningDetail({ id }: OpeningDetailProps) {
     if (topMatches.length === 0) return;
 
     for (const match of topMatches) {
+      const notes = `[AI Match: ${match.score}% • ${match.tier}] ${match.summary}`;
       assignCandidate.mutate({
         candidateId: match.candidate.id,
         openingId: opening.id,
         stage: 'Shared with Manager',
-      });
-      recordDecision.mutate({
-        id: match.candidate.id,
-        decision: 'Shortlisted',
+        notes,
       });
       setShortlistedMap((prev) => ({ ...prev, [match.candidate.id]: true }));
     }
 
-    toast.success(`✨ Successfully shortlisted top ${topMatches.length} AI matches!`);
+    toast.success(`🎯 Top ${topMatches.length} AI matches shared with Hiring Manager for review!`);
   };
 
   const handleInspect = (candidate: Candidate) => {
@@ -569,9 +564,12 @@ export function OpeningDetail({ id }: OpeningDetailProps) {
                       {filteredMatches.map((match, idx) => {
                         const { candidate, score, tier, summary, matchedMustSkills, missingMustSkills } =
                           match;
-                        const isShortlisted =
-                          shortlistedMap[candidate.id] ||
-                          (candidate.openingId === opening.id && candidate.managerDecision === 'Shortlisted');
+                        const isAssigned = candidate.openingId === opening.id;
+                        const isSharedWithManager =
+                          (isAssigned && candidate.stage === 'Shared with Manager' && candidate.managerDecision === 'Pending') ||
+                          Boolean(shortlistedMap[candidate.id]);
+                        const isManagerApproved =
+                          isAssigned && (candidate.managerDecision === 'Shortlisted' || candidate.stage === 'Interview');
 
                         return (
                           <div
@@ -628,9 +626,19 @@ export function OpeningDetail({ id }: OpeningDetailProps) {
                               </div>
 
                               <div className="shrink-0 text-right">
-                                <span className="bg-surface-2 text-text-subtle border-border rounded-full border px-2 py-0.5 text-[10px] font-medium">
-                                  {candidate.stage}
-                                </span>
+                                {isSharedWithManager ? (
+                                  <span className="border-accent/30 bg-accent/15 text-accent rounded-full border px-2 py-0.5 text-[10px] font-semibold">
+                                    ⏳ Shared with Mgr
+                                  </span>
+                                ) : isManagerApproved ? (
+                                  <span className="border-success/30 bg-success/15 text-success rounded-full border px-2 py-0.5 text-[10px] font-semibold">
+                                    ✓ Shortlisted
+                                  </span>
+                                ) : (
+                                  <span className="bg-surface-2 text-text-subtle border-border rounded-full border px-2 py-0.5 text-[10px] font-medium">
+                                    {candidate.stage}
+                                  </span>
+                                )}
                               </div>
                             </div>
 
@@ -717,20 +725,25 @@ export function OpeningDetail({ id }: OpeningDetailProps) {
                               <Button
                                 type="button"
                                 size="sm"
-                                variant={isShortlisted ? 'secondary' : 'primary'}
-                                disabled={isShortlisted || assignCandidate.isPending}
+                                variant={isManagerApproved ? 'secondary' : isSharedWithManager ? 'secondary' : 'primary'}
+                                disabled={isManagerApproved || isSharedWithManager || assignCandidate.isPending}
                                 onClick={() => handleShortlistCandidate(match)}
-                                className="h-8 gap-1.5 text-[11.5px] px-3 font-semibold"
+                                className="h-8 gap-1.5 text-[11.5px] px-3 font-semibold cursor-pointer"
                               >
-                                {isShortlisted ? (
+                                {isManagerApproved ? (
                                   <>
                                     <CheckCircle2 className="h-3.5 w-3.5 text-success" />
-                                    <span>Shortlisted for Role</span>
+                                    <span>Manager Approved</span>
+                                  </>
+                                ) : isSharedWithManager ? (
+                                  <>
+                                    <Clock className="h-3.5 w-3.5 text-accent" />
+                                    <span>In Manager Queue</span>
                                   </>
                                 ) : (
                                   <>
                                     <UserCheck className="h-3.5 w-3.5" />
-                                    <span>Shortlist Candidate</span>
+                                    <span>Send to Manager</span>
                                   </>
                                 )}
                               </Button>

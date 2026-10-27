@@ -152,11 +152,16 @@ export function matchCandidateToOpening(
     }
   }
 
+  const candidateSkills = Array.isArray((candidate as Record<string, unknown>).skills)
+    ? ((candidate as Record<string, unknown>).skills as string[])
+    : [];
+
   const candidateCorpus = [
     candidate.currentRole,
     candidate.currentCompany,
     candidate.hrNotes || '',
     candidate.resumeFileName || '',
+    ...candidateSkills,
     ...impliedSkills,
   ].join(' ');
 

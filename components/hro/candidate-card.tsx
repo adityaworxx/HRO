@@ -45,9 +45,19 @@ export function CandidateCard({
     >
       {/* 1. Top Header: Candidate Name (Primary Hero) + Clean Experience (Boxless) */}
       <div className="flex items-center justify-between gap-2 mb-2">
-        <h4 className="text-[13.5px] font-semibold text-text tracking-tight leading-snug group-hover:text-accent transition-colors min-w-0 flex-1 truncate">
-          {candidate.name}
-        </h4>
+        <div className="flex items-center gap-1.5 min-w-0 flex-1">
+          <h4 className="text-[13.5px] font-semibold text-text tracking-tight leading-snug group-hover:text-accent transition-colors truncate">
+            {candidate.name}
+          </h4>
+          {candidate.hrNotes?.includes('[AI Match:') && (
+            <span
+              className="inline-flex items-center gap-0.5 rounded-full border border-accent/40 bg-accent/15 px-1.5 py-0.5 text-[9.5px] font-mono font-bold text-accent shrink-0 select-none"
+              title="Screened & matched by AI Talent Scout"
+            >
+              AI Fit
+            </span>
+          )}
+        </div>
         <div className="flex items-center gap-1.5 shrink-0">
           <span className="text-[11.5px] font-semibold text-text tabular-nums select-none">
             {candidate.experienceYears}y exp

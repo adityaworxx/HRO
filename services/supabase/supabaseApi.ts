@@ -512,14 +512,33 @@ export const supabaseApi: HroApiClient = {
       return updated;
     },
 
-    assignToOpening: async (id, openingId, stage = 'Shared with Manager') => {
+    assignToOpening: async (id, openingId, stage = 'Shared with Manager', notes) => {
+      // Fetch existing candidate to combine hr_notes if provided
+      let combinedNotes: string | null = null;
+      if (notes) {
+        const { data: existing } = await supabase
+          .from('candidates')
+          .select('hr_notes')
+          .eq('id', id)
+          .maybeSingle();
+
+        combinedNotes = existing?.hr_notes
+          ? `${notes}\n\n${existing.hr_notes}`
+          : notes;
+      }
+
+      const updatePayload: Record<string, unknown> = {
+        opening_id: openingId,
+        stage,
+        manager_decision: 'Pending',
+      };
+      if (combinedNotes !== null) {
+        updatePayload.hr_notes = combinedNotes;
+      }
+
       const { data, error } = await supabase
         .from('candidates')
-        .update({
-          opening_id: openingId,
-          stage,
-          manager_decision: 'Pending',
-        })
+        .update(updatePayload)
         .eq('id', id)
         .select()
         .single();
@@ -527,6 +546,16 @@ export const supabaseApi: HroApiClient = {
       if (error) throw error;
       const updated = mapCandidate(data as CandidateRow);
       await recordActivity('candidate', id, `Candidate assigned to opening and moved to "${stage}"`);
+
+      if (stage === 'Shared with Manager') {
+        await createNotification(
+          'manager',
+          'Candidate Shared for Review',
+          `AI Scout matched candidate "${updated.name}" and shared for technical review.`,
+          '/shortlist'
+        );
+      }
+
       return updated;
     },
   },

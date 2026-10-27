@@ -296,20 +296,40 @@ export const mockApi: HroApiClient = {
       return updated;
     },
 
-    assignToOpening: async (id, openingId, stage = 'Shared with Manager') => {
+    assignToOpening: async (id, openingId, stage = 'Shared with Manager', notes) => {
       await simulateLatency();
       checkFailure();
       const store = getStore();
       const idx = store.candidates.findIndex((c) => c.id === id);
       if (idx === -1) throw { code: 'NOT_FOUND', message: `Candidate ${id} not found.` };
 
+      const existingCandidate = store.candidates[idx]!;
+      const opening = store.openings.find((o) => o.id === openingId);
+
       const updated = {
-        ...store.candidates[idx]!,
+        ...existingCandidate,
         openingId,
         stage,
         managerDecision: 'Pending' as const,
+        hrNotes: notes
+          ? (existingCandidate.hrNotes ? `${notes}\n\n${existingCandidate.hrNotes}` : notes)
+          : existingCandidate.hrNotes,
       };
       store.candidates[idx] = updated;
+
+      if (stage === 'Shared with Manager') {
+        const mgrNotification = {
+          id: `notif-${Date.now()}-${Math.random()}`,
+          recipientRole: 'manager' as const,
+          title: 'Candidate Shared for Review',
+          message: `${updated.name} has been matched by AI and shared for your review on opening "${opening?.title || 'Open Role'}".`,
+          timestamp: new Date().toISOString(),
+          read: false,
+          link: '/shortlist',
+        };
+        store.notifications = [mgrNotification, ...(store.notifications || [])];
+      }
+
       saveStore(store);
       return updated;
     },

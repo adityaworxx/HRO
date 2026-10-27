@@ -1,4 +1,5 @@
 import { notificationsKeys } from '@/features/notifications/hooks';
+import { openingsKeys } from '@/features/openings/hooks';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { api } from '@/services';
 import type { Candidate } from '@/types/entities';
@@ -157,14 +158,17 @@ export function useAssignCandidateToOpening() {
       candidateId,
       openingId,
       stage,
+      notes,
     }: {
       candidateId: string;
       openingId: string;
       stage?: CandidateStage;
-    }) => api.candidates.assignToOpening(candidateId, openingId, stage),
+      notes?: string;
+    }) => api.candidates.assignToOpening(candidateId, openingId, stage, notes),
     onSuccess: (_, variables) => {
       void queryClient.invalidateQueries({ queryKey: candidatesKeys.lists() });
       void queryClient.invalidateQueries({ queryKey: candidatesKeys.detail(variables.candidateId) });
+      void queryClient.invalidateQueries({ queryKey: openingsKeys.all });
       void queryClient.invalidateQueries({ queryKey: notificationsKeys.all });
     },
   });

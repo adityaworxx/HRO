@@ -274,7 +274,8 @@ export function InterviewsView() {
               </button>
             </div>
           ) : (
-            <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+            <div className="space-y-4">
+              <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
               {visibleInterviews.map((candidate) => {
             const outcomeConfig = {
               Pending: {
@@ -408,40 +409,41 @@ export function InterviewsView() {
             );
           })}
         </div>
-      )}
 
-      {/* Interviews Pagination Footer */}
-      {totalPages > 1 && (
-        <div className="flex items-center justify-between pt-3 border-t border-border/60 text-[12px] select-none">
-          <span className="font-mono text-text-subtle text-[11.5px]">
-            Showing {startIndex + 1}–{Math.min(startIndex + PAGE_SIZE, filteredInterviews.length)} of {filteredInterviews.length} interviews (Page {validPage} of {totalPages})
-          </span>
-          <div className="flex items-center gap-1.5">
-            <button
-              type="button"
-              disabled={validPage <= 1}
-              onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
-              className="h-7 w-7 inline-flex items-center justify-center rounded-[6px] border border-border/70 bg-surface-1 text-text-muted hover:text-text hover:bg-surface-2 disabled:opacity-25 disabled:cursor-not-allowed transition-colors cursor-pointer"
-              title="Previous page"
-              aria-label="Previous page"
-            >
-              <ChevronLeft className="h-3.5 w-3.5" />
-            </button>
-            <button
-              type="button"
-              disabled={validPage >= totalPages}
-              onClick={() => setCurrentPage((p) => Math.min(totalPages, p + 1))}
-              className="h-7 w-7 inline-flex items-center justify-center rounded-[6px] border border-border/70 bg-surface-1 text-text-muted hover:text-text hover:bg-surface-2 disabled:opacity-25 disabled:cursor-not-allowed transition-colors cursor-pointer"
-              title="Next page"
-              aria-label="Next page"
-            >
-              <ChevronRight className="h-3.5 w-3.5" />
-            </button>
+        {/* Interviews Pagination Footer */}
+        {totalPages > 1 && (
+          <div className="flex items-center justify-between pt-3 border-t border-border/60 text-[12px] select-none">
+            <span className="font-mono text-text-subtle text-[11.5px]">
+              Showing {startIndex + 1}–{Math.min(startIndex + PAGE_SIZE, filteredInterviews.length)} of {filteredInterviews.length} interviews (Page {validPage} of {totalPages})
+            </span>
+            <div className="flex items-center gap-1.5">
+              <button
+                type="button"
+                disabled={validPage <= 1}
+                onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
+                className="h-7 w-7 inline-flex items-center justify-center rounded-[6px] border border-border/70 bg-surface-1 text-text-muted hover:text-text hover:bg-surface-2 disabled:opacity-25 disabled:cursor-not-allowed transition-colors cursor-pointer"
+                title="Previous page"
+                aria-label="Previous page"
+              >
+                <ChevronLeft className="h-3.5 w-3.5" />
+              </button>
+              <button
+                type="button"
+                disabled={validPage >= totalPages}
+                onClick={() => setCurrentPage((p) => Math.min(totalPages, p + 1))}
+                className="h-7 w-7 inline-flex items-center justify-center rounded-[6px] border border-border/70 bg-surface-1 text-text-muted hover:text-text hover:bg-surface-2 disabled:opacity-25 disabled:cursor-not-allowed transition-colors cursor-pointer"
+                title="Next page"
+                aria-label="Next page"
+              >
+                <ChevronRight className="h-3.5 w-3.5" />
+              </button>
+            </div>
           </div>
-        </div>
-      )}
-    </div>
-  )}
+        )}
+      </div>
+    )}
+  </div>
+)}
 
       {/* Schedule Slot Dialog */}
       <Dialog open={scheduleModalOpen} onOpenChange={setScheduleModalOpen}>
