@@ -13,7 +13,7 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
 import { toast } from 'sonner';
-import { ArrowLeft, CheckCircle2, Check, Send, Plus, X, Sparkles } from 'lucide-react';
+import { ArrowLeft, CheckCircle2, Check, Send, X } from 'lucide-react';
 import {
   Select,
   SelectContent,
@@ -552,18 +552,16 @@ export function OpeningForm({ initialData, isEditing = false }: OpeningFormProps
           </CardContent>
         </Card>
 
-        {/* Card 3: Department-Specific Tech Stack & Screening Criteria */}
+        {/* Card 3: Screening Criteria & Competencies */}
         <Card className="border-border bg-surface-1 shadow-sm">
           <CardHeader className="border-border/80 border-b pb-3">
             <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
               <div>
-                <CardTitle className="text-text text-[16px] font-semibold">
+                <CardTitle className="text-text text-[15px] font-semibold">
                   Candidate Profile & Screening Criteria
                 </CardTitle>
                 <p className="text-text-muted mt-0.5 text-[12px]">
-                  1-click tech stack selection tailored to{' '}
-                  <span className="text-accent font-semibold">{department}</span>. Click pills to
-                  select without manual typing.
+                  Specify required competencies and optional skills for resume screening.
                 </p>
               </div>
               <Button
@@ -571,77 +569,99 @@ export function OpeningForm({ initialData, isEditing = false }: OpeningFormProps
                 variant="outline"
                 size="sm"
                 onClick={handleResetToDepartmentStack}
-                className="h-8 gap-1.5 px-2.5 text-[11px] self-start sm:self-auto"
-                title="Reset to recommended skills for this department"
+                className="h-7 px-2.5 text-[11.5px] font-normal text-text-muted hover:text-text hover:bg-surface-2 rounded-[6px] border border-border/80 self-start sm:self-auto cursor-pointer"
+                title={`Pre-fill recommended skills for ${department}`}
               >
-                <Sparkles className="text-accent h-3.5 w-3.5" />
-                <span>Reset to {department} Stack</span>
+                Reset to {department} stack
               </Button>
             </div>
           </CardHeader>
 
-          <CardContent className="space-y-6 pt-5">
+          <CardContent className="space-y-5 pt-5">
             {/* Must-Have Skills Section */}
-            <div className="space-y-3">
+            <div className="space-y-2.5">
               <div className="flex items-center justify-between">
                 <div>
                   <label className="text-text flex items-center gap-1.5 text-[13px] font-semibold">
                     <span>Must-Have Skills</span>
                     <span className="text-danger">*</span>
-                    <Badge variant="default" className="font-mono text-[11px]">
-                      {mustSkills.length} selected
-                    </Badge>
+                    {mustSkills.length > 0 && (
+                      <span className="font-mono text-[11px] text-text-subtle font-normal">
+                        ({mustSkills.length})
+                      </span>
+                    )}
                   </label>
-                  <p className="text-text-subtle text-[11px]">
-                    Required core competencies for candidate shortlisting and resume screening
+                  <p className="text-text-subtle text-[11.5px]">
+                    Required core competencies for candidate shortlisting
                   </p>
                 </div>
               </div>
 
-              {/* Selected Must-Have Pills */}
-              {mustSkills.length > 0 ? (
-                <div className="border-border bg-surface-2/40 flex min-h-[44px] flex-wrap items-center gap-1.5 rounded-[var(--radius-md)] border p-2.5">
-                  {mustSkills.map((skill) => (
-                    <span
-                      key={skill}
-                      className="border-accent/30 bg-accent/15 text-accent inline-flex items-center gap-1.5 rounded-full border px-3 py-1 text-[12px] font-medium transition-all"
+              {/* Sleek Tag Input Box */}
+              <div
+                className={cn(
+                  'min-h-[44px] w-full rounded-[8px] border bg-surface-1 p-2 flex flex-wrap items-center gap-1.5 transition-all',
+                  errors.skills
+                    ? 'border-danger/70 focus-within:border-danger focus-within:ring-1 focus-within:ring-danger/20'
+                    : 'border-border focus-within:border-border-strong focus-within:ring-1 focus-within:ring-border/80'
+                )}
+              >
+                {mustSkills.map((skill) => (
+                  <span
+                    key={skill}
+                    className="inline-flex items-center gap-1.5 rounded-[5px] bg-surface-2 border border-border/70 px-2.5 py-1 text-[12px] font-medium text-text select-none"
+                  >
+                    <span>{skill}</span>
+                    <button
+                      type="button"
+                      onClick={() => removeMustSkill(skill)}
+                      className="text-text-subtle hover:text-text -mr-0.5 p-0.5 rounded-[3px] hover:bg-surface-3 transition-colors cursor-pointer"
+                      title={`Remove ${skill}`}
+                      aria-label={`Remove ${skill}`}
                     >
-                      <Check className="h-3 w-3 stroke-[2.5]" />
-                      <span>{skill}</span>
-                      <button
-                        type="button"
-                        onClick={() => removeMustSkill(skill)}
-                        className="hover:bg-accent/25 -mr-1 flex h-4 w-4 items-center justify-center rounded-full transition-colors"
-                        title={`Remove ${skill}`}
-                      >
-                        <X className="h-3 w-3" />
-                      </button>
-                    </span>
-                  ))}
+                      <X className="h-3 w-3" />
+                    </button>
+                  </span>
+                ))}
+                <div className="flex-1 min-w-[170px] flex items-center gap-1">
+                  <input
+                    value={customMustInput}
+                    onChange={(e) => setCustomMustInput(e.target.value)}
+                    onKeyDown={(e) => {
+                      if (e.key === 'Enter' || e.key === ',') {
+                        e.preventDefault();
+                        handleAddCustomMustSkill();
+                      }
+                    }}
+                    placeholder={
+                      mustSkills.length === 0
+                        ? 'Type a skill and press Enter, or pick below...'
+                        : 'Add skill...'
+                    }
+                    className="w-full bg-transparent text-[12.5px] text-text placeholder:text-text-subtle/70 focus:outline-none px-1 h-6"
+                  />
+                  {customMustInput.trim() && (
+                    <button
+                      type="button"
+                      onClick={() => handleAddCustomMustSkill()}
+                      className="h-6 px-2 text-[11px] font-medium text-text bg-surface-2 hover:bg-surface-3 rounded-[4px] border border-border/70 cursor-pointer shrink-0 transition-colors"
+                    >
+                      Add
+                    </button>
+                  )}
                 </div>
-              ) : (
-                <div className="border-border/60 bg-surface-2/30 rounded-[var(--radius-md)] border border-dashed p-3 text-center text-[12px] text-text-subtle">
-                  No must-have skills selected yet. Click any pill from the {department} tech stack
-                  below.
-                </div>
-              )}
+              </div>
 
               {errors.skills && (
                 <p className="text-danger text-[11px] font-medium">{errors.skills}</p>
               )}
 
-              {/* Interactive Clickable Department Tech Stack for Must-Have */}
-              <div className="border-border bg-surface-2/50 space-y-2 rounded-[var(--radius-md)] border p-3.5">
-                <div className="flex items-center justify-between text-[11px]">
-                  <span className="text-text-muted font-semibold uppercase tracking-wider">
-                    {department} Tech Stack (Click to Add as Must-Have)
-                  </span>
-                  <span className="text-text-subtle">
-                    {currentProfile.techStack.length} tools available
-                  </span>
-                </div>
-
-                <div className="flex max-h-[140px] flex-wrap gap-1.5 overflow-y-auto pr-1">
+              {/* Clean, Non-intrusive Suggestions */}
+              <div className="space-y-1.5 pt-0.5">
+                <span className="text-[11.5px] text-text-subtle font-medium select-none">
+                  Suggested for {department}:
+                </span>
+                <div className="flex flex-wrap gap-1.5">
                   {currentProfile.techStack.map((tech) => {
                     const isSelected = mustSkills.includes(tech);
                     const isNice = niceSkills.includes(tech);
@@ -650,111 +670,104 @@ export function OpeningForm({ initialData, isEditing = false }: OpeningFormProps
                         key={tech}
                         type="button"
                         onClick={() => toggleMustSkill(tech)}
+                        disabled={isNice}
                         className={cn(
-                          'inline-flex cursor-pointer items-center gap-1 rounded-[6px] border px-2.5 py-1 text-[11.5px] font-medium transition-all select-none',
+                          'cursor-pointer rounded-[6px] border px-2.5 py-1 text-[11.5px] transition-all select-none',
                           isSelected
-                            ? 'border-accent bg-accent/20 text-accent font-semibold shadow-xs'
+                            ? 'border-border-strong bg-surface-3 text-text font-medium shadow-2xs'
                             : isNice
-                              ? 'border-border bg-surface-3/50 text-text-subtle opacity-60'
-                              : 'border-border bg-surface-1 text-text hover:border-accent hover:bg-surface-3 hover:text-accent'
+                              ? 'border-border/30 bg-surface-2/20 text-text-subtle/40 cursor-not-allowed opacity-50'
+                              : 'border-border/60 bg-surface-1 text-text-muted hover:border-border hover:bg-surface-2 hover:text-text'
                         )}
                         title={
                           isSelected
-                            ? `Selected in Must-Have (click to deselect)`
-                            : `Add ${tech} to Must-Have`
+                            ? `${tech} selected in Must-Have (click to remove)`
+                            : isNice
+                              ? `${tech} already in Nice-to-Have`
+                              : `Add ${tech} to Must-Have`
                         }
                       >
-                        {isSelected ? (
-                          <Check className="h-3 w-3 stroke-[2.5]" />
-                        ) : (
-                          <Plus className="h-3 w-3 stroke-[2] opacity-70" />
-                        )}
-                        <span>{tech}</span>
+                        {tech}
                       </button>
                     );
                   })}
-                </div>
-
-                {/* Inline Custom Must-Have Input for unlisted skills */}
-                <div className="border-border/60 flex items-center gap-2 border-t pt-2.5">
-                  <Input
-                    value={customMustInput}
-                    onChange={(e) => setCustomMustInput(e.target.value)}
-                    onKeyDown={(e) => {
-                      if (e.key === 'Enter') {
-                        e.preventDefault();
-                        handleAddCustomMustSkill();
-                      }
-                    }}
-                    placeholder="Add unlisted custom skill and press Enter..."
-                    className="bg-surface-1 h-8 text-[12px]"
-                  />
-                  <Button
-                    type="button"
-                    variant="secondary"
-                    size="sm"
-                    onClick={() => handleAddCustomMustSkill()}
-                    disabled={!customMustInput.trim()}
-                    className="h-8 shrink-0 px-3 text-[11px]"
-                  >
-                    <Plus className="mr-1 h-3 w-3" />
-                    <span>Add</span>
-                  </Button>
                 </div>
               </div>
             </div>
 
             {/* Nice-to-Have Skills Section */}
-            <div className="border-border/70 space-y-3 border-t pt-4">
+            <div className="border-border/60 space-y-2.5 border-t pt-4">
               <div className="flex items-center justify-between">
                 <div>
                   <label className="text-text flex items-center gap-1.5 text-[13px] font-semibold">
                     <span>Nice-to-Have Skills</span>
-                    <Badge variant="default" className="font-mono text-[11px]">
-                      {niceSkills.length} selected
-                    </Badge>
+                    <span className="text-text-subtle font-normal text-[11.5px]">(Optional)</span>
+                    {niceSkills.length > 0 && (
+                      <span className="font-mono text-[11px] text-text-subtle font-normal">
+                        ({niceSkills.length})
+                      </span>
+                    )}
                   </label>
-                  <p className="text-text-subtle text-[11px]">
-                    Preferred secondary skills, bonus libraries, or architectural experience
+                  <p className="text-text-subtle text-[11.5px]">
+                    Preferred secondary skills or bonus experience
                   </p>
                 </div>
               </div>
 
-              {/* Selected Nice-to-Have Pills */}
-              {niceSkills.length > 0 ? (
-                <div className="border-border bg-surface-2/40 flex min-h-[44px] flex-wrap items-center gap-1.5 rounded-[var(--radius-md)] border p-2.5">
-                  {niceSkills.map((skill) => (
-                    <span
-                      key={skill}
-                      className="border-border bg-surface-3 text-text inline-flex items-center gap-1.5 rounded-full border px-3 py-1 text-[12px] font-medium transition-all"
+              {/* Sleek Tag Input Box */}
+              <div className="min-h-[44px] w-full rounded-[8px] border border-border bg-surface-1 p-2 flex flex-wrap items-center gap-1.5 focus-within:border-border-strong focus-within:ring-1 focus-within:ring-border/80 transition-all">
+                {niceSkills.map((skill) => (
+                  <span
+                    key={skill}
+                    className="inline-flex items-center gap-1.5 rounded-[5px] bg-surface-2 border border-border/70 px-2.5 py-1 text-[12px] font-medium text-text select-none"
+                  >
+                    <span>{skill}</span>
+                    <button
+                      type="button"
+                      onClick={() => removeNiceSkill(skill)}
+                      className="text-text-subtle hover:text-text -mr-0.5 p-0.5 rounded-[3px] hover:bg-surface-3 transition-colors cursor-pointer"
+                      title={`Remove ${skill}`}
+                      aria-label={`Remove ${skill}`}
                     >
-                      <span>{skill}</span>
-                      <button
-                        type="button"
-                        onClick={() => removeNiceSkill(skill)}
-                        className="text-text-muted hover:text-text hover:bg-surface-2 -mr-1 flex h-4 w-4 items-center justify-center rounded-full transition-colors"
-                        title={`Remove ${skill}`}
-                      >
-                        <X className="h-3 w-3" />
-                      </button>
-                    </span>
-                  ))}
-                </div>
-              ) : (
-                <div className="border-border/60 bg-surface-2/30 rounded-[var(--radius-md)] border border-dashed p-3 text-center text-[12px] text-text-subtle">
-                  No nice-to-have skills selected.
-                </div>
-              )}
-
-              {/* Interactive Clickable Department Tech Stack for Nice-to-Have */}
-              <div className="border-border bg-surface-2/50 space-y-2 rounded-[var(--radius-md)] border p-3.5">
-                <div className="flex items-center justify-between text-[11px]">
-                  <span className="text-text-muted font-semibold uppercase tracking-wider">
-                    {department} Tech Stack (Click to Add as Nice-to-Have)
+                      <X className="h-3 w-3" />
+                    </button>
                   </span>
+                ))}
+                <div className="flex-1 min-w-[170px] flex items-center gap-1">
+                  <input
+                    value={customNiceInput}
+                    onChange={(e) => setCustomNiceInput(e.target.value)}
+                    onKeyDown={(e) => {
+                      if (e.key === 'Enter' || e.key === ',') {
+                        e.preventDefault();
+                        handleAddCustomNiceSkill();
+                      }
+                    }}
+                    placeholder={
+                      niceSkills.length === 0
+                        ? 'Type a skill and press Enter, or pick below...'
+                        : 'Add skill...'
+                    }
+                    className="w-full bg-transparent text-[12.5px] text-text placeholder:text-text-subtle/70 focus:outline-none px-1 h-6"
+                  />
+                  {customNiceInput.trim() && (
+                    <button
+                      type="button"
+                      onClick={() => handleAddCustomNiceSkill()}
+                      className="h-6 px-2 text-[11px] font-medium text-text bg-surface-2 hover:bg-surface-3 rounded-[4px] border border-border/70 cursor-pointer shrink-0 transition-colors"
+                    >
+                      Add
+                    </button>
+                  )}
                 </div>
+              </div>
 
-                <div className="flex max-h-[140px] flex-wrap gap-1.5 overflow-y-auto pr-1">
+              {/* Clean, Non-intrusive Suggestions */}
+              <div className="space-y-1.5 pt-0.5">
+                <span className="text-[11.5px] text-text-subtle font-medium select-none">
+                  Suggested for {department}:
+                </span>
+                <div className="flex flex-wrap gap-1.5">
                   {currentProfile.techStack.map((tech) => {
                     const isMust = mustSkills.includes(tech);
                     const isSelected = niceSkills.includes(tech);
@@ -763,56 +776,27 @@ export function OpeningForm({ initialData, isEditing = false }: OpeningFormProps
                         key={tech}
                         type="button"
                         onClick={() => toggleNiceSkill(tech)}
+                        disabled={isMust}
                         className={cn(
-                          'inline-flex cursor-pointer items-center gap-1 rounded-[6px] border px-2.5 py-1 text-[11.5px] font-medium transition-all select-none',
+                          'cursor-pointer rounded-[6px] border px-2.5 py-1 text-[11.5px] transition-all select-none',
                           isSelected
-                            ? 'border-border-strong bg-surface-3 text-text font-semibold shadow-xs'
+                            ? 'border-border-strong bg-surface-3 text-text font-medium shadow-2xs'
                             : isMust
-                              ? 'border-border bg-surface-2/40 text-text-subtle opacity-50'
-                              : 'border-border bg-surface-1 text-text-muted hover:border-border-strong hover:bg-surface-3 hover:text-text'
+                              ? 'border-border/30 bg-surface-2/20 text-text-subtle/40 cursor-not-allowed opacity-50'
+                              : 'border-border/60 bg-surface-1 text-text-muted hover:border-border hover:bg-surface-2 hover:text-text'
                         )}
                         title={
                           isSelected
-                            ? `Selected in Nice-to-Have (click to deselect)`
-                            : `Add ${tech} to Nice-to-Have`
+                            ? `${tech} selected in Nice-to-Have (click to remove)`
+                            : isMust
+                              ? `${tech} already in Must-Have`
+                              : `Add ${tech} to Nice-to-Have`
                         }
                       >
-                        {isSelected ? (
-                          <Check className="h-3 w-3 stroke-[2.5]" />
-                        ) : (
-                          <Plus className="h-3 w-3 stroke-[2] opacity-70" />
-                        )}
-                        <span>{tech}</span>
+                        {tech}
                       </button>
                     );
                   })}
-                </div>
-
-                {/* Inline Custom Nice-to-Have Input */}
-                <div className="border-border/60 flex items-center gap-2 border-t pt-2.5">
-                  <Input
-                    value={customNiceInput}
-                    onChange={(e) => setCustomNiceInput(e.target.value)}
-                    onKeyDown={(e) => {
-                      if (e.key === 'Enter') {
-                        e.preventDefault();
-                        handleAddCustomNiceSkill();
-                      }
-                    }}
-                    placeholder="Add custom bonus skill and press Enter..."
-                    className="bg-surface-1 h-8 text-[12px]"
-                  />
-                  <Button
-                    type="button"
-                    variant="secondary"
-                    size="sm"
-                    onClick={() => handleAddCustomNiceSkill()}
-                    disabled={!customNiceInput.trim()}
-                    className="h-8 shrink-0 px-3 text-[11px]"
-                  >
-                    <Plus className="mr-1 h-3 w-3" />
-                    <span>Add</span>
-                  </Button>
                 </div>
               </div>
             </div>
