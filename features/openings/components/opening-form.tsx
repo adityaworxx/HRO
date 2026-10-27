@@ -13,7 +13,7 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
 import { toast } from 'sonner';
-import { ArrowLeft, CheckCircle2, Check, Send } from 'lucide-react';
+import { ArrowLeft, CheckCircle2, Check, Send, Plus, X, Sparkles } from 'lucide-react';
 import {
   Select,
   SelectContent,
@@ -24,22 +24,12 @@ import {
 import { DatePicker } from '@/components/ui/date-picker';
 import { cn } from '@/lib/utils';
 import { formatCtcRange } from '@/lib/format';
+import { DEPARTMENTS, getDepartmentProfile } from '../constants';
 
 interface OpeningFormProps {
   initialData?: Opening;
   isEditing?: boolean;
 }
-
-const DEPARTMENTS = [
-  'Engineering',
-  'Product',
-  'Design',
-  'Data & AI',
-  'Marketing',
-  'Sales',
-  'Operations',
-  'Human Resources',
-];
 
 const EMPLOYMENT_TYPES = ['Full-time', 'Part-time', 'Contract', 'Internship'] as const;
 
@@ -53,9 +43,37 @@ export function OpeningForm({ initialData, isEditing = false }: OpeningFormProps
     setMounted(true);
   }, []);
 
-  const [title, setTitle] = React.useState(initialData?.title ?? '');
-  const [department, setDepartment] = React.useState(initialData?.department ?? 'Engineering');
-  const [location, setLocation] = React.useState(initialData?.location ?? 'Bangalore (Hybrid)');
+  const [department, setDepartment] = React.useState<string>(
+    initialData?.department ?? 'Engineering'
+  );
+
+  const currentProfile = React.useMemo(
+    () => getDepartmentProfile(department),
+    [department]
+  );
+
+  const initialProfile = React.useMemo(
+    () => getDepartmentProfile(initialData?.department ?? 'Engineering'),
+    [initialData?.department]
+  );
+
+  const [isCustomPosition, setIsCustomPosition] = React.useState<boolean>(() => {
+    if (!initialData?.title) return false;
+    return !initialProfile.positions.includes(initialData.title);
+  });
+
+  const [customPositionText, setCustomPositionText] = React.useState<string>(() => {
+    if (!initialData?.title) return '';
+    return initialProfile.positions.includes(initialData.title) ? '' : initialData.title;
+  });
+
+  const [title, setTitle] = React.useState<string>(
+    initialData?.title ?? getDepartmentProfile('Engineering').defaultRole
+  );
+
+  const [location, setLocation] = React.useState(
+    initialData?.location ?? 'Bangalore (Hybrid)'
+  );
   const [employmentType, setEmploymentType] = React.useState<
     'Full-time' | 'Part-time' | 'Contract' | 'Internship'
   >(initialData?.employmentType ?? 'Full-time');
@@ -80,43 +98,124 @@ export function OpeningForm({ initialData, isEditing = false }: OpeningFormProps
   const [targetDate, setTargetDate] = React.useState(
     initialData?.targetStartDate ? initialData.targetStartDate.split('T')[0] : '2026-11-01'
   );
-  const [mustHaveSkills, setMustHaveSkills] = React.useState(
-    initialData?.mustHaveSkills?.join(', ') ?? 'React, TypeScript, Next.js, Tailwind CSS'
-  );
-  const [niceToHaveSkills, setNiceToHaveSkills] = React.useState(
-    initialData?.niceToHaveSkills?.join(', ') ?? 'GraphQL, TanStack Query, Docker'
-  );
+
+  const [mustSkills, setMustSkills] = React.useState<string[]>(() => {
+    if (initialData?.mustHaveSkills && initialData.mustHaveSkills.length > 0) {
+      return initialData.mustHaveSkills;
+    }
+    return ['React', 'TypeScript', 'Next.js', 'Tailwind CSS'];
+  });
+
+  const [niceSkills, setNiceSkills] = React.useState<string[]>(() => {
+    if (initialData?.niceToHaveSkills && initialData.niceToHaveSkills.length > 0) {
+      return initialData.niceToHaveSkills;
+    }
+    return ['GraphQL', 'Docker', 'PostgreSQL'];
+  });
+
+  const [customMustInput, setCustomMustInput] = React.useState('');
+  const [customNiceInput, setCustomNiceInput] = React.useState('');
+
   const [description, setDescription] = React.useState(
-    initialData?.description ??
-      'We are looking for an experienced engineer to lead frontend architecture, implement scalable design systems, and accelerate customer-facing product development.'
+    initialData?.description ?? getDepartmentProfile('Engineering').defaultDescription
   );
 
   const [errors, setErrors] = React.useState<Record<string, string>>({});
 
-  // Computed skill pill lists
-  const mustSkillsList = React.useMemo(
-    () =>
-      mustHaveSkills
-        .split(',')
-        .map((s) => s.trim())
-        .filter(Boolean),
-    [mustHaveSkills]
-  );
+  // When manager changes department, update profile, positions, and tech stack
+  const handleDepartmentChange = (newDept: string) => {
+    setDepartment(newDept);
+    const profile = getDepartmentProfile(newDept);
 
-  const niceSkillsList = React.useMemo(
-    () =>
-      niceToHaveSkills
-        .split(',')
-        .map((s) => s.trim())
-        .filter(Boolean),
-    [niceToHaveSkills]
-  );
+    if (!isEditing) {
+      setTitle(profile.defaultRole);
+      setIsCustomPosition(false);
+      setCustomPositionText('');
+      setDescription(profile.defaultDescription);
+
+      // Pre-select recommended initial skills for this department
+      setMustSkills(profile.techStack.slice(0, 4));
+      setNiceSkills(profile.techStack.slice(4, 7));
+    } else {
+      if (!profile.positions.includes(title)) {
+        setIsCustomPosition(true);
+        setCustomPositionText(title);
+      }
+    }
+  };
+
+  const handlePositionChange = (val: string) => {
+    if (val === '__custom__') {
+      setIsCustomPosition(true);
+      setTitle(customPositionText);
+    } else {
+      setIsCustomPosition(false);
+      setTitle(val);
+    }
+  };
+
+  // Must-Have skills handlers
+  const toggleMustSkill = (skill: string) => {
+    if (mustSkills.includes(skill)) {
+      setMustSkills(mustSkills.filter((s) => s !== skill));
+    } else {
+      setMustSkills([...mustSkills, skill]);
+      setNiceSkills(niceSkills.filter((s) => s !== skill));
+    }
+  };
+
+  const removeMustSkill = (skill: string) => {
+    setMustSkills(mustSkills.filter((s) => s !== skill));
+  };
+
+  const handleAddCustomMustSkill = (e?: React.FormEvent) => {
+    if (e) e.preventDefault();
+    const trimmed = customMustInput.trim();
+    if (!trimmed) return;
+    if (!mustSkills.includes(trimmed)) {
+      setMustSkills([...mustSkills, trimmed]);
+      setNiceSkills(niceSkills.filter((s) => s !== trimmed));
+    }
+    setCustomMustInput('');
+  };
+
+  // Nice-to-Have skills handlers
+  const toggleNiceSkill = (skill: string) => {
+    if (niceSkills.includes(skill)) {
+      setNiceSkills(niceSkills.filter((s) => s !== skill));
+    } else {
+      setNiceSkills([...niceSkills, skill]);
+      setMustSkills(mustSkills.filter((s) => s !== skill));
+    }
+  };
+
+  const removeNiceSkill = (skill: string) => {
+    setNiceSkills(niceSkills.filter((s) => s !== skill));
+  };
+
+  const handleAddCustomNiceSkill = (e?: React.FormEvent) => {
+    if (e) e.preventDefault();
+    const trimmed = customNiceInput.trim();
+    if (!trimmed) return;
+    if (!niceSkills.includes(trimmed)) {
+      setNiceSkills([...niceSkills, trimmed]);
+      setMustSkills(mustSkills.filter((s) => s !== trimmed));
+    }
+    setCustomNiceInput('');
+  };
+
+  const handleResetToDepartmentStack = () => {
+    const profile = getDepartmentProfile(department);
+    setMustSkills(profile.techStack.slice(0, 4));
+    setNiceSkills(profile.techStack.slice(4, 7));
+    toast.success(`Loaded recommended ${department} skills`);
+  };
 
   // Readiness Checklist Calculation
   const checklist = React.useMemo(() => {
     return [
-      { id: 'title', label: 'Job Title specified', done: title.trim().length > 3 },
       { id: 'dept', label: 'Department allocated', done: !!department },
+      { id: 'title', label: 'Job Title specified', done: title.trim().length > 3 },
       { id: 'headcount', label: 'Valid headcount set (≥ 1)', done: parseInt(headcount, 10) >= 1 },
       {
         id: 'budget',
@@ -126,7 +225,7 @@ export function OpeningForm({ initialData, isEditing = false }: OpeningFormProps
       {
         id: 'skills',
         label: 'Must-have skills added',
-        done: mustSkillsList.length >= 1,
+        done: mustSkills.length >= 1,
       },
       {
         id: 'desc',
@@ -134,7 +233,7 @@ export function OpeningForm({ initialData, isEditing = false }: OpeningFormProps
         done: description.trim().length >= 20,
       },
     ];
-  }, [title, department, headcount, budgetMin, budgetMax, mustSkillsList, description]);
+  }, [department, title, headcount, budgetMin, budgetMax, mustSkills, description]);
 
   const completedCount = checklist.filter((item) => item.done).length;
   const readinessPercent = Math.round((completedCount / checklist.length) * 100);
@@ -147,6 +246,8 @@ export function OpeningForm({ initialData, isEditing = false }: OpeningFormProps
     if (!description.trim()) newErrors.description = 'Description is required';
     if (!headcount || parseInt(headcount, 10) <= 0)
       newErrors.headcount = 'Valid headcount is required';
+    if (mustSkills.length === 0)
+      newErrors.skills = 'At least 1 must-have skill is required';
 
     if (Object.keys(newErrors).length > 0) {
       setErrors(newErrors);
@@ -171,8 +272,8 @@ export function OpeningForm({ initialData, isEditing = false }: OpeningFormProps
         min: parseFloat(budgetMin) || 0,
         max: parseFloat(budgetMax) || 0,
       },
-      mustHaveSkills: mustSkillsList,
-      niceToHaveSkills: niceSkillsList,
+      mustHaveSkills: mustSkills,
+      niceToHaveSkills: niceSkills,
       description,
       targetStartDate: new Date(targetDate || '2026-11-01').toISOString(),
       status: (initialData?.status ?? 'Open') as Opening['status'],
@@ -209,17 +310,9 @@ export function OpeningForm({ initialData, isEditing = false }: OpeningFormProps
 
           <CardContent className="space-y-5 pt-5">
             <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-              <FormField label="Job Position Title" required error={errors.title}>
-                <Input
-                  value={title}
-                  onChange={(e) => setTitle(e.target.value)}
-                  placeholder="e.g. Senior Frontend Engineer"
-                  className="h-9 text-[13px]"
-                />
-              </FormField>
-
+              {/* Department Dropdown - Select first to drive positions & tech stack */}
               <FormField label="Department" required>
-                <Select value={department} onValueChange={setDepartment}>
+                <Select value={department} onValueChange={handleDepartmentChange}>
                   <SelectTrigger className="border-border bg-surface-2 text-text hover:bg-surface-3 h-9 w-full rounded-[var(--radius-sm)] border px-3 text-[13px] transition-colors">
                     <SelectValue placeholder="Select department" />
                   </SelectTrigger>
@@ -232,7 +325,48 @@ export function OpeningForm({ initialData, isEditing = false }: OpeningFormProps
                   </SelectContent>
                 </Select>
               </FormField>
+
+              {/* Dynamic Job Profile / Position Dropdown */}
+              <FormField label="Job Position Title" required error={errors.title}>
+                <Select
+                  value={isCustomPosition ? '__custom__' : title}
+                  onValueChange={handlePositionChange}
+                >
+                  <SelectTrigger className="border-border bg-surface-2 text-text hover:bg-surface-3 h-9 w-full rounded-[var(--radius-sm)] border px-3 text-[13px] transition-colors">
+                    <SelectValue placeholder="Select position title" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <div className="px-2 py-1.5 text-[11px] font-semibold text-text-muted uppercase tracking-wider">
+                      {department} Roles ({currentProfile.positions.length})
+                    </div>
+                    {currentProfile.positions.map((pos) => (
+                      <SelectItem key={pos} value={pos}>
+                        {pos}
+                      </SelectItem>
+                    ))}
+                    <SelectItem value="__custom__" className="text-accent font-medium">
+                      + Custom / Other Position...
+                    </SelectItem>
+                  </SelectContent>
+                </Select>
+              </FormField>
             </div>
+
+            {/* Custom Position Title Input if custom option is selected */}
+            {isCustomPosition && (
+              <FormField label="Custom Position Title" required error={errors.title}>
+                <Input
+                  value={customPositionText}
+                  onChange={(e) => {
+                    setCustomPositionText(e.target.value);
+                    setTitle(e.target.value);
+                  }}
+                  placeholder="e.g. Lead Distributed Systems Engineer"
+                  className="h-9 text-[13px]"
+                  autoFocus
+                />
+              </FormField>
+            )}
 
             <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
               <FormField label="Work Location" required>
@@ -418,58 +552,272 @@ export function OpeningForm({ initialData, isEditing = false }: OpeningFormProps
           </CardContent>
         </Card>
 
-        {/* Card 3: Skills & Job Description */}
+        {/* Card 3: Department-Specific Tech Stack & Screening Criteria */}
         <Card className="border-border bg-surface-1 shadow-sm">
           <CardHeader className="border-border/80 border-b pb-3">
-            <CardTitle className="text-text text-[16px] font-semibold">
-              Candidate Profile & Screening Criteria
-            </CardTitle>
+            <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
+              <div>
+                <CardTitle className="text-text text-[16px] font-semibold">
+                  Candidate Profile & Screening Criteria
+                </CardTitle>
+                <p className="text-text-muted mt-0.5 text-[12px]">
+                  1-click tech stack selection tailored to{' '}
+                  <span className="text-accent font-semibold">{department}</span>. Click pills to
+                  select without manual typing.
+                </p>
+              </div>
+              <Button
+                type="button"
+                variant="outline"
+                size="sm"
+                onClick={handleResetToDepartmentStack}
+                className="h-8 gap-1.5 px-2.5 text-[11px] self-start sm:self-auto"
+                title="Reset to recommended skills for this department"
+              >
+                <Sparkles className="text-accent h-3.5 w-3.5" />
+                <span>Reset to {department} Stack</span>
+              </Button>
+            </div>
           </CardHeader>
 
-          <CardContent className="space-y-5 pt-5">
-            <FormField label="Must-Have Skills" hint="Separated by comma">
-              <Input
-                value={mustHaveSkills}
-                onChange={(e) => setMustHaveSkills(e.target.value)}
-                placeholder="e.g. React, TypeScript, Next.js, Node.js"
-                className="h-9 text-[13px]"
-              />
-              {mustSkillsList.length > 0 && (
-                <div className="mt-2.5 flex flex-wrap gap-1.5">
-                  {mustSkillsList.map((skill) => (
+          <CardContent className="space-y-6 pt-5">
+            {/* Must-Have Skills Section */}
+            <div className="space-y-3">
+              <div className="flex items-center justify-between">
+                <div>
+                  <label className="text-text flex items-center gap-1.5 text-[13px] font-semibold">
+                    <span>Must-Have Skills</span>
+                    <span className="text-danger">*</span>
+                    <Badge variant="default" className="font-mono text-[11px]">
+                      {mustSkills.length} selected
+                    </Badge>
+                  </label>
+                  <p className="text-text-subtle text-[11px]">
+                    Required core competencies for candidate shortlisting and resume screening
+                  </p>
+                </div>
+              </div>
+
+              {/* Selected Must-Have Pills */}
+              {mustSkills.length > 0 ? (
+                <div className="border-border bg-surface-2/40 flex min-h-[44px] flex-wrap items-center gap-1.5 rounded-[var(--radius-md)] border p-2.5">
+                  {mustSkills.map((skill) => (
                     <span
                       key={skill}
-                      className="border-accent/20 bg-accent/10 text-accent inline-flex items-center gap-1 rounded-full border px-2.5 py-0.5 text-[11px] font-medium"
+                      className="border-accent/30 bg-accent/15 text-accent inline-flex items-center gap-1.5 rounded-full border px-3 py-1 text-[12px] font-medium transition-all"
                     >
-                      <Check className="h-3 w-3" />
+                      <Check className="h-3 w-3 stroke-[2.5]" />
                       <span>{skill}</span>
+                      <button
+                        type="button"
+                        onClick={() => removeMustSkill(skill)}
+                        className="hover:bg-accent/25 -mr-1 flex h-4 w-4 items-center justify-center rounded-full transition-colors"
+                        title={`Remove ${skill}`}
+                      >
+                        <X className="h-3 w-3" />
+                      </button>
                     </span>
                   ))}
                 </div>
+              ) : (
+                <div className="border-border/60 bg-surface-2/30 rounded-[var(--radius-md)] border border-dashed p-3 text-center text-[12px] text-text-subtle">
+                  No must-have skills selected yet. Click any pill from the {department} tech stack
+                  below.
+                </div>
               )}
-            </FormField>
 
-            <FormField label="Nice-to-Have Skills" hint="Separated by comma">
-              <Input
-                value={niceToHaveSkills}
-                onChange={(e) => setNiceToHaveSkills(e.target.value)}
-                placeholder="e.g. GraphQL, TanStack Query, Docker, AWS"
-                className="h-9 text-[13px]"
-              />
-              {niceSkillsList.length > 0 && (
-                <div className="mt-2.5 flex flex-wrap gap-1.5">
-                  {niceSkillsList.map((skill) => (
+              {errors.skills && (
+                <p className="text-danger text-[11px] font-medium">{errors.skills}</p>
+              )}
+
+              {/* Interactive Clickable Department Tech Stack for Must-Have */}
+              <div className="border-border bg-surface-2/50 space-y-2 rounded-[var(--radius-md)] border p-3.5">
+                <div className="flex items-center justify-between text-[11px]">
+                  <span className="text-text-muted font-semibold uppercase tracking-wider">
+                    {department} Tech Stack (Click to Add as Must-Have)
+                  </span>
+                  <span className="text-text-subtle">
+                    {currentProfile.techStack.length} tools available
+                  </span>
+                </div>
+
+                <div className="flex max-h-[140px] flex-wrap gap-1.5 overflow-y-auto pr-1">
+                  {currentProfile.techStack.map((tech) => {
+                    const isSelected = mustSkills.includes(tech);
+                    const isNice = niceSkills.includes(tech);
+                    return (
+                      <button
+                        key={tech}
+                        type="button"
+                        onClick={() => toggleMustSkill(tech)}
+                        className={cn(
+                          'inline-flex cursor-pointer items-center gap-1 rounded-[6px] border px-2.5 py-1 text-[11.5px] font-medium transition-all select-none',
+                          isSelected
+                            ? 'border-accent bg-accent/20 text-accent font-semibold shadow-xs'
+                            : isNice
+                              ? 'border-border bg-surface-3/50 text-text-subtle opacity-60'
+                              : 'border-border bg-surface-1 text-text hover:border-accent hover:bg-surface-3 hover:text-accent'
+                        )}
+                        title={
+                          isSelected
+                            ? `Selected in Must-Have (click to deselect)`
+                            : `Add ${tech} to Must-Have`
+                        }
+                      >
+                        {isSelected ? (
+                          <Check className="h-3 w-3 stroke-[2.5]" />
+                        ) : (
+                          <Plus className="h-3 w-3 stroke-[2] opacity-70" />
+                        )}
+                        <span>{tech}</span>
+                      </button>
+                    );
+                  })}
+                </div>
+
+                {/* Inline Custom Must-Have Input for unlisted skills */}
+                <div className="border-border/60 flex items-center gap-2 border-t pt-2.5">
+                  <Input
+                    value={customMustInput}
+                    onChange={(e) => setCustomMustInput(e.target.value)}
+                    onKeyDown={(e) => {
+                      if (e.key === 'Enter') {
+                        e.preventDefault();
+                        handleAddCustomMustSkill();
+                      }
+                    }}
+                    placeholder="Add unlisted custom skill and press Enter..."
+                    className="bg-surface-1 h-8 text-[12px]"
+                  />
+                  <Button
+                    type="button"
+                    variant="secondary"
+                    size="sm"
+                    onClick={() => handleAddCustomMustSkill()}
+                    disabled={!customMustInput.trim()}
+                    className="h-8 shrink-0 px-3 text-[11px]"
+                  >
+                    <Plus className="mr-1 h-3 w-3" />
+                    <span>Add</span>
+                  </Button>
+                </div>
+              </div>
+            </div>
+
+            {/* Nice-to-Have Skills Section */}
+            <div className="border-border/70 space-y-3 border-t pt-4">
+              <div className="flex items-center justify-between">
+                <div>
+                  <label className="text-text flex items-center gap-1.5 text-[13px] font-semibold">
+                    <span>Nice-to-Have Skills</span>
+                    <Badge variant="default" className="font-mono text-[11px]">
+                      {niceSkills.length} selected
+                    </Badge>
+                  </label>
+                  <p className="text-text-subtle text-[11px]">
+                    Preferred secondary skills, bonus libraries, or architectural experience
+                  </p>
+                </div>
+              </div>
+
+              {/* Selected Nice-to-Have Pills */}
+              {niceSkills.length > 0 ? (
+                <div className="border-border bg-surface-2/40 flex min-h-[44px] flex-wrap items-center gap-1.5 rounded-[var(--radius-md)] border p-2.5">
+                  {niceSkills.map((skill) => (
                     <span
                       key={skill}
-                      className="border-border bg-surface-2 text-text-muted inline-flex items-center rounded-full border px-2.5 py-0.5 text-[11px] font-medium"
+                      className="border-border bg-surface-3 text-text inline-flex items-center gap-1.5 rounded-full border px-3 py-1 text-[12px] font-medium transition-all"
                     >
-                      {skill}
+                      <span>{skill}</span>
+                      <button
+                        type="button"
+                        onClick={() => removeNiceSkill(skill)}
+                        className="text-text-muted hover:text-text hover:bg-surface-2 -mr-1 flex h-4 w-4 items-center justify-center rounded-full transition-colors"
+                        title={`Remove ${skill}`}
+                      >
+                        <X className="h-3 w-3" />
+                      </button>
                     </span>
                   ))}
                 </div>
+              ) : (
+                <div className="border-border/60 bg-surface-2/30 rounded-[var(--radius-md)] border border-dashed p-3 text-center text-[12px] text-text-subtle">
+                  No nice-to-have skills selected.
+                </div>
               )}
-            </FormField>
 
+              {/* Interactive Clickable Department Tech Stack for Nice-to-Have */}
+              <div className="border-border bg-surface-2/50 space-y-2 rounded-[var(--radius-md)] border p-3.5">
+                <div className="flex items-center justify-between text-[11px]">
+                  <span className="text-text-muted font-semibold uppercase tracking-wider">
+                    {department} Tech Stack (Click to Add as Nice-to-Have)
+                  </span>
+                </div>
+
+                <div className="flex max-h-[140px] flex-wrap gap-1.5 overflow-y-auto pr-1">
+                  {currentProfile.techStack.map((tech) => {
+                    const isMust = mustSkills.includes(tech);
+                    const isSelected = niceSkills.includes(tech);
+                    return (
+                      <button
+                        key={tech}
+                        type="button"
+                        onClick={() => toggleNiceSkill(tech)}
+                        className={cn(
+                          'inline-flex cursor-pointer items-center gap-1 rounded-[6px] border px-2.5 py-1 text-[11.5px] font-medium transition-all select-none',
+                          isSelected
+                            ? 'border-border-strong bg-surface-3 text-text font-semibold shadow-xs'
+                            : isMust
+                              ? 'border-border bg-surface-2/40 text-text-subtle opacity-50'
+                              : 'border-border bg-surface-1 text-text-muted hover:border-border-strong hover:bg-surface-3 hover:text-text'
+                        )}
+                        title={
+                          isSelected
+                            ? `Selected in Nice-to-Have (click to deselect)`
+                            : `Add ${tech} to Nice-to-Have`
+                        }
+                      >
+                        {isSelected ? (
+                          <Check className="h-3 w-3 stroke-[2.5]" />
+                        ) : (
+                          <Plus className="h-3 w-3 stroke-[2] opacity-70" />
+                        )}
+                        <span>{tech}</span>
+                      </button>
+                    );
+                  })}
+                </div>
+
+                {/* Inline Custom Nice-to-Have Input */}
+                <div className="border-border/60 flex items-center gap-2 border-t pt-2.5">
+                  <Input
+                    value={customNiceInput}
+                    onChange={(e) => setCustomNiceInput(e.target.value)}
+                    onKeyDown={(e) => {
+                      if (e.key === 'Enter') {
+                        e.preventDefault();
+                        handleAddCustomNiceSkill();
+                      }
+                    }}
+                    placeholder="Add custom bonus skill and press Enter..."
+                    className="bg-surface-1 h-8 text-[12px]"
+                  />
+                  <Button
+                    type="button"
+                    variant="secondary"
+                    size="sm"
+                    onClick={() => handleAddCustomNiceSkill()}
+                    disabled={!customNiceInput.trim()}
+                    className="h-8 shrink-0 px-3 text-[11px]"
+                  >
+                    <Plus className="mr-1 h-3 w-3" />
+                    <span>Add</span>
+                  </Button>
+                </div>
+              </div>
+            </div>
+
+            {/* Job Description & Deliverables */}
             <FormField
               label="Job Description & Responsibilities"
               required
@@ -489,7 +837,7 @@ export function OpeningForm({ initialData, isEditing = false }: OpeningFormProps
           </CardContent>
         </Card>
 
-        {/* Bottom Action Footer (For convenience after scrolling to bottom) */}
+        {/* Bottom Action Footer */}
         <div className="border-border bg-surface-1 flex items-center justify-between rounded-[var(--radius-md)] border p-4 shadow-sm">
           <Button asChild variant="outline" size="sm" className="gap-2">
             <Link href="/openings">
@@ -576,9 +924,9 @@ export function OpeningForm({ initialData, isEditing = false }: OpeningFormProps
                   </span>
                 </div>
 
-                {mustSkillsList.length > 0 && (
+                {mustSkills.length > 0 && (
                   <div className="flex flex-wrap gap-1 pt-1">
-                    {mustSkillsList.slice(0, 4).map((s) => (
+                    {mustSkills.slice(0, 4).map((s) => (
                       <span
                         key={s}
                         className="border-border bg-surface-1 text-text-muted rounded-[4px] border px-1.5 py-0.5 text-[10px]"
@@ -586,9 +934,9 @@ export function OpeningForm({ initialData, isEditing = false }: OpeningFormProps
                         {s}
                       </span>
                     ))}
-                    {mustSkillsList.length > 4 && (
+                    {mustSkills.length > 4 && (
                       <span className="text-text-subtle self-center text-[10px]">
-                        +{mustSkillsList.length - 4} more
+                        +{mustSkills.length - 4} more
                       </span>
                     )}
                   </div>
