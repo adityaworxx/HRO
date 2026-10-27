@@ -8,16 +8,11 @@ import { StatCard } from '@/components/hro/stat-card';
 import { StatusBadge } from '@/components/hro/status-badge';
 import { MetaSeparator } from '@/components/hro/meta-separator';
 import { ActiveOpeningsCard } from '@/components/hro/active-openings-card';
+import { CandidateCard } from '@/components/hro/candidate-card';
+import { CandidateDetailSheet } from '@/features/candidates/components/candidate-detail-sheet';
 import { Button } from '@/components/ui/button';
 import { Skeleton } from '@/components/ui/skeleton';
-import {
-  Sheet,
-  SheetTrigger,
-  SheetContent,
-  SheetHeader,
-  SheetTitle,
-  SheetDescription,
-} from '@/components/ui/sheet';
+import type { Candidate, Opening } from '@/types/entities';
 import {
   ArrowRight,
   Check,
@@ -33,15 +28,38 @@ import {
   Mail,
   PhoneCall,
   CheckCircle2,
+  Code2,
+  Palette,
+  BarChart3,
+  Layers,
+  Users,
 } from 'lucide-react';
 import { VideoCameraIcon } from '@/components/ui/icons';
 import { toast } from 'sonner';
 import { formatCtc, formatInterviewDateTime } from '@/lib/format';
 
+// Department Icon Map matching Openings & Candidates view
+const DEPARTMENT_ICONS: Record<string, React.ElementType> = {
+  Engineering: Code2,
+  Design: Palette,
+  'Data & Analytics': BarChart3,
+  Product: Layers,
+  'Human Resources': Users,
+  Operations: Building2,
+};
+
 export function ManagerDashboard() {
   const { data: openings = [], isLoading: loadingOpenings } = useOpenings();
   const { data: candidates = [], isLoading: loadingCandidates } = useCandidates();
   const recordDecision = useRecordManagerDecision();
+
+  const [selectedCandidate, setSelectedCandidate] = React.useState<Candidate | null>(null);
+  const [isSheetOpen, setIsSheetOpen] = React.useState(false);
+
+  // Map openingId to Opening for O(1) lookups
+  const openingsMap = React.useMemo(() => {
+    return new Map<string, Opening>(openings.map((o) => [o.id, o]));
+  }, [openings]);
 
   // Active openings (renamed from requisitions per Rule 9)
   const activeOpenings = React.useMemo(
@@ -60,6 +78,47 @@ export function ManagerDashboard() {
       ),
     [candidates]
   );
+
+  // Group pending review candidates by department
+  const departmentGroups = React.useMemo(() => {
+    const map = new Map<string, Candidate[]>();
+    for (const c of pendingReviewCandidates) {
+      const opening = openingsMap.get(c.openingId);
+      const dept = opening?.department || 'General';
+      if (!map.has(dept)) {
+        map.set(dept, []);
+      }
+      map.get(dept)!.push(c);
+    }
+
+    const preferredOrder = [
+      'Engineering',
+      'Product',
+      'Design',
+      'Data & Analytics',
+      'Operations',
+      'Human Resources',
+    ];
+
+    const sortedDepts = Array.from(map.keys()).sort((a, b) => {
+      const indexA = preferredOrder.indexOf(a);
+      const indexB = preferredOrder.indexOf(b);
+      if (indexA !== -1 && indexB !== -1) return indexA - indexB;
+      if (indexA !== -1) return -1;
+      if (indexB !== -1) return 1;
+      return a.localeCompare(b);
+    });
+
+    return sortedDepts.map((dept) => {
+      const Icon = DEPARTMENT_ICONS[dept] || Building2;
+      return {
+        id: dept,
+        title: dept,
+        icon: Icon,
+        candidates: map.get(dept) || [],
+      };
+    });
+  }, [pendingReviewCandidates, openingsMap]);
 
   // Candidates in technical interview stage
   const interviewCandidates = React.useMemo(
@@ -138,10 +197,17 @@ export function ManagerDashboard() {
         <div className="col-span-12 flex flex-col lg:col-span-8">
           <div className="border border-border bg-surface-1 flex h-full flex-col rounded-[12px] p-5">
             {/* Header: title left, text link right */}
-            <div className="flex items-center justify-between gap-4 pb-4">
-              <h2 className="text-text text-[16px] leading-[24px] font-medium tracking-[-0.01em]">
-                Candidates Awaiting Your Review
-              </h2>
+            <div className="flex items-center justify-between gap-4 pb-4 border-b border-border/60">
+              <div className="flex items-center gap-2.5">
+                <h2 className="text-text text-[16px] leading-[24px] font-semibold tracking-[-0.01em]">
+                  Candidates Awaiting Your Review
+                </h2>
+                {pendingReviewCandidates.length > 0 && (
+                  <span className="font-mono text-[11px] font-semibold text-accent bg-accent/10 px-2 py-0.5 rounded-full">
+                    {pendingReviewCandidates.length}
+                  </span>
+                )}
+              </div>
               <Link
                 href="/shortlist"
                 className="inline-flex items-center gap-1 text-[13px] leading-[20px] font-medium text-text-muted hover:text-text transition-colors shrink-0"
@@ -152,12 +218,10 @@ export function ManagerDashboard() {
             </div>
 
             {/* Content Area: flex-1 */}
-            <div className="flex-1">
+            <div className="flex-1 pt-4">
               {isInitialLoading ? (
                 <div className="space-y-3 py-2">
-                  <Skeleton className="h-[56px] rounded-[8px]" />
-                  <Skeleton className="h-[56px] rounded-[8px]" />
-                  <Skeleton className="h-[56px] rounded-[8px]" />
+                  <Skeleton className="h-[120px] rounded-[10px]" />
                 </div>
               ) : pendingReviewCandidates.length === 0 ? (
                 <div className="flex h-40 flex-col items-center justify-center text-center">
@@ -167,145 +231,72 @@ export function ManagerDashboard() {
                   </p>
                 </div>
               ) : (
-                <div className="divide-border divide-y">
-                  {pendingReviewCandidates.slice(0, 4).map((candidate) => (
-                    <div
-                      key={candidate.id}
-                      className="group -mx-2 flex flex-col justify-between gap-2.5 rounded-[8px] px-2 py-3 transition-colors hover:bg-surface-2 sm:min-h-[56px] sm:flex-row sm:items-center"
-                    >
-                      {/* Candidate Avatar & Meta Info */}
-                      <div className="flex min-w-0 items-start sm:items-center gap-3">
-                        <div className="bg-surface-2 text-text flex h-8 w-8 shrink-0 items-center justify-center rounded-full text-[12px] font-medium select-none mt-0.5 sm:mt-0">
-                          {candidate.name.slice(0, 2).toUpperCase()}
-                        </div>
-                        <div className="min-w-0 space-y-0.5">
-                          <div className="flex items-center gap-2 flex-wrap">
-                            <span className="text-text text-[14px] leading-[20px] font-medium">
-                              {candidate.name}
-                            </span>
-                            <span className="text-text-subtle text-[12px] leading-[16px]">
-                              Shared 2d ago
-                            </span>
-                          </div>
-                          <div className="text-text-muted flex items-center gap-1.5 sm:gap-2 text-[13px] leading-[20px]">
-                            <span
-                              className="max-w-[170px] xs:max-w-[210px] sm:max-w-none sm:w-[260px] shrink-0 truncate"
-                              title={`${candidate.currentRole} at ${candidate.currentCompany}`}
-                            >
-                              {candidate.currentRole} at {candidate.currentCompany}
-                            </span>
-                            <span className="shrink-0 tabular-nums font-bold text-text">{candidate.experienceYears}y exp</span>
-                          </div>
-                        </div>
-                      </div>
-
-                      {/* Right-aligned Actions: ghost buttons that appear on hover */}
-                      <div className="flex shrink-0 items-center gap-1 pl-11 sm:pl-0 opacity-100 sm:opacity-0 group-hover:opacity-100 focus-within:opacity-100 transition-opacity">
-                        {/* Profile Sheet Drawer */}
-                        <Sheet>
-                          <SheetTrigger asChild>
-                            <Button
-                              variant="ghost"
-                              size="sm"
-                              className="h-8 gap-1.5 rounded-[6px] px-2 text-[13px] font-medium text-text-muted hover:text-text"
-                            >
-                              <FileText className="h-3.5 w-3.5" />
-                              <span>Profile</span>
-                            </Button>
-                          </SheetTrigger>
-                          <SheetContent side="right" className="w-full sm:max-w-md">
-                            <SheetHeader>
-                              <SheetTitle className="text-[18px]">{candidate.name}</SheetTitle>
-                              <SheetDescription className="text-[13px]">
-                                Candidate Profile & Review Sheet
-                              </SheetDescription>
-                            </SheetHeader>
-                            <div className="space-y-4 py-4 text-[13px]">
-                              <div className="border border-border bg-surface-2 space-y-2 rounded-[var(--radius-md)] p-3.5">
-                                <div className="text-text-muted flex items-center gap-2">
-                                  <Mail className="h-4 w-4" />
-                                  <span>{candidate.email}</span>
-                                </div>
-                                <div className="text-text-muted flex items-center gap-2">
-                                  <PhoneCall className="h-4 w-4" />
-                                  <span>{candidate.phone}</span>
-                                </div>
-                                <div className="text-text-muted flex items-center gap-2">
-                                  <span>
-                                    Role: {candidate.currentRole} ({candidate.currentCompany})
-                                  </span>
-                                </div>
-                                <div className="text-text-muted flex items-center gap-2">
-                                  <span className="tabular-nums">
-                                    Expected: {formatCtc(candidate.expectedCtc)} (Notice:{' '}
-                                    <span className="font-bold text-text">{candidate.noticePeriod}</span>)
-                                  </span>
-                                </div>
+                <div className="flex gap-3.5 overflow-x-auto pb-2 items-start scrollbar-thin">
+                  {departmentGroups.map((group) => {
+                    const GroupIcon = group.icon;
+                    return (
+                      <div
+                        key={group.id}
+                        className="flex-1 min-w-[210px] sm:min-w-[215px] shrink-0 flex flex-col justify-between rounded-[12px] bg-surface-2/30 border border-border/70 border-t-2 border-t-accent p-3 space-y-2.5"
+                      >
+                        <div className="space-y-2.5">
+                          {/* Column Header */}
+                          <div className="flex items-center justify-between pb-2 border-b border-border/60">
+                            <div className="flex items-center gap-2 min-w-0">
+                              <div className="flex h-5 w-5 items-center justify-center rounded-[4px] bg-accent/15 text-accent shrink-0">
+                                <GroupIcon className="h-3.5 w-3.5" />
                               </div>
-
-                              {candidate.hrNotes && (
-                                <div className="space-y-1.5">
-                                  <h4 className="text-text font-medium">HR Screening Notes</h4>
-                                  <p className="border border-border bg-surface-2 text-text-muted rounded-[var(--radius-md)] p-3 leading-relaxed">
-                                    {candidate.hrNotes}
-                                  </p>
-                                </div>
-                              )}
-
-                              <div className="flex gap-2 pt-4">
-                                <Button
-                                  className="flex-1 gap-1.5"
-                                  variant="primary"
-                                  onClick={() =>
-                                    handleDecision(candidate.id, candidate.name, 'Shortlisted')
-                                  }
-                                >
-                                  <Check className="h-4 w-4" />
-                                  <span>Shortlist</span>
-                                </Button>
-                                <Button
-                                  className="flex-1 gap-1.5"
-                                  variant="secondary"
-                                  onClick={() =>
-                                    handleDecision(candidate.id, candidate.name, 'Rejected')
-                                  }
-                                >
-                                  <X className="h-4 w-4" />
-                                  <span>Reject</span>
-                                </Button>
-                              </div>
+                              <h3 className="text-[13px] font-semibold text-text truncate">
+                                {group.title}
+                              </h3>
                             </div>
-                          </SheetContent>
-                        </Sheet>
+                            <span className="font-mono text-[11px] font-semibold text-accent bg-accent/10 px-2 py-0.5 rounded-full shrink-0">
+                              {group.candidates.length}
+                            </span>
+                          </div>
 
-                        {/* Shortlist Action */}
-                        <Button
-                          variant="ghost"
-                          size="sm"
-                          onClick={() =>
-                            handleDecision(candidate.id, candidate.name, 'Shortlisted')
-                          }
-                          className="text-text-muted hover:text-text h-8 gap-1 rounded-[6px] px-2 text-[13px] font-medium"
-                          title="Shortlist candidate for interview"
-                        >
-                          <Check className="text-success h-3.5 w-3.5" />
-                          <span>Shortlist</span>
-                        </Button>
-
-                        {/* Reject Action */}
-                        <Button
-                          variant="ghost"
-                          size="sm"
-                          onClick={() => handleDecision(candidate.id, candidate.name, 'Rejected')}
-                          className="text-text-muted hover:text-danger h-8 gap-1 rounded-[6px] px-2 text-[13px] font-medium"
-                          title="Reject candidate"
-                        >
-                          <X className="h-3.5 w-3.5" />
-                          <span>Reject</span>
-                        </Button>
+                          {/* Candidate Cards */}
+                          <div className="space-y-2">
+                            {group.candidates.map((candidate) => (
+                              <CandidateCard
+                                key={candidate.id}
+                                candidate={candidate}
+                                onClick={() => {
+                                  setSelectedCandidate(candidate);
+                                  setIsSheetOpen(true);
+                                }}
+                                showReorderIcon={false}
+                                actions={
+                                  <div className="flex items-center gap-1.5 w-full">
+                                    <Button
+                                      size="sm"
+                                      variant="ghost"
+                                      className="h-7 flex-1 gap-1 text-[11.5px] font-medium text-emerald-600 hover:text-emerald-700 hover:bg-emerald-500/10 dark:text-emerald-400 dark:hover:bg-emerald-500/15 rounded-[6px]"
+                                      onClick={() => handleDecision(candidate.id, candidate.name, 'Shortlisted')}
+                                      title="Shortlist candidate for interview"
+                                    >
+                                      <Check className="h-3.5 w-3.5 text-emerald-600 dark:text-emerald-400" />
+                                      <span>Shortlist</span>
+                                    </Button>
+                                    <Button
+                                      size="sm"
+                                      variant="ghost"
+                                      className="h-7 flex-1 gap-1 text-[11.5px] font-medium text-text-muted hover:text-danger hover:bg-danger/10 rounded-[6px]"
+                                      onClick={() => handleDecision(candidate.id, candidate.name, 'Rejected')}
+                                      title="Reject candidate"
+                                    >
+                                      <X className="h-3.5 w-3.5" />
+                                      <span>Reject</span>
+                                    </Button>
+                                  </div>
+                                }
+                              />
+                            ))}
+                          </div>
+                        </div>
                       </div>
-                    </div>
-                  ))}
+                    );
+                  })}
                 </div>
               )}
             </div>
@@ -402,6 +393,13 @@ export function ManagerDashboard() {
           />
         </div>
       </div>
+
+      {/* Candidate Profile & Review Drawer */}
+      <CandidateDetailSheet
+        candidate={selectedCandidate}
+        open={isSheetOpen}
+        onOpenChange={setIsSheetOpen}
+      />
     </div>
   );
 }

@@ -11,6 +11,7 @@ export interface CandidateCardProps {
   className?: string;
   isDragging?: boolean;
   showReorderIcon?: boolean;
+  actions?: React.ReactNode;
 }
 
 export function CandidateCard({
@@ -19,6 +20,7 @@ export function CandidateCard({
   className,
   isDragging = false,
   showReorderIcon = true,
+  actions,
 }: CandidateCardProps) {
   const isImmediate = candidate.noticePeriod?.toLowerCase().includes('immediate');
 
@@ -35,7 +37,8 @@ export function CandidateCard({
       }}
       className={cn(
         'group relative flex flex-col justify-between rounded-[8px] border border-border/80 bg-surface-1 p-3 shadow-2xs transition-all duration-150',
-        'hover:border-border-strong hover:shadow-xs cursor-grab active:cursor-grabbing select-none focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-accent',
+        'hover:border-border-strong hover:shadow-xs select-none focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-accent',
+        showReorderIcon ? 'cursor-grab active:cursor-grabbing' : 'cursor-pointer',
         isDragging && 'border-border-strong shadow-2xl ring-1 ring-border-strong bg-surface-1 scale-[1.02] z-50',
         className
       )}
@@ -86,6 +89,16 @@ export function CandidateCard({
           )}
         </div>
       </div>
+
+      {/* 4. Optional Actions Footer */}
+      {actions && (
+        <div
+          className="border-t border-border/60 mt-2.5 pt-2 flex items-center gap-1.5"
+          onClick={(e) => e.stopPropagation()}
+        >
+          {actions}
+        </div>
+      )}
     </div>
   );
 }
