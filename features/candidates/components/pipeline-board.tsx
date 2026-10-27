@@ -66,7 +66,7 @@ function DraggableCandidateCard({
     return (
       <div
         ref={setNodeRef}
-        className="h-[105px] w-full rounded-[8px] border border-dashed border-border/80 bg-surface-2/20 select-none pointer-events-none opacity-40"
+        className="h-[113px] w-full rounded-[8px] border border-dashed border-border/80 bg-surface-2/20 select-none pointer-events-none opacity-40"
       />
     );
   }
@@ -232,7 +232,7 @@ export function PipelineBoard() {
         {/* Drag Overlay Preview */}
         <DragOverlay dropAnimation={{ duration: 150, easing: 'cubic-bezier(0.18, 0.67, 0.6, 1.22)' }}>
           {activeCandidate ? (
-            <div className="w-[253px] cursor-grabbing select-none pointer-events-none rounded-[8px] overflow-hidden shadow-2xl">
+            <div className="w-[296px] cursor-grabbing select-none pointer-events-none rounded-[8px] overflow-hidden shadow-2xl">
               <CandidateCard candidate={activeCandidate} isDragging />
             </div>
           ) : null}

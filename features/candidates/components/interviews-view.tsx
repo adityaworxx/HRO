@@ -29,6 +29,7 @@ import {
 } from '@/components/ui/select';
 import { DateTimePicker } from '@/components/ui/date-time-picker';
 import { toast } from 'sonner';
+import { cn } from '@/lib/utils';
 
 function getCurrentLocalDateTime(): string {
   const now = new Date();
@@ -148,74 +149,120 @@ export function InterviewsView() {
         />
       ) : (
         <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-          {interviewCandidates.map((candidate) => (
-            <Card key={candidate.id} className="border-border">
-              <CardHeader className="flex flex-row items-center justify-between gap-3 pb-3">
-                <div className="flex items-center gap-3 min-w-0 flex-1">
-                  <Avatar className="h-10 w-10 shrink-0">
-                    <AvatarFallback className="text-[12px] font-bold">
-                      {candidate.name.slice(0, 2).toUpperCase()}
-                    </AvatarFallback>
-                  </Avatar>
-                  <div className="min-w-0 flex-1">
-                    <CardTitle className="text-[15px] truncate">{candidate.name}</CardTitle>
-                    <p className="text-text text-[12.5px] font-medium truncate">
-                      {candidate.currentRole} <span className="text-text-muted font-normal">at</span>{' '}
-                      <span className="text-text font-semibold">{candidate.currentCompany}</span>
-                    </p>
-                  </div>
-                </div>
-                <Badge
-                  variant="default"
-                  className="text-[11px] font-medium shrink-0"
-                >
-                  {candidate.interviewOutcome}
-                </Badge>
-              </CardHeader>
+          {interviewCandidates.map((candidate) => {
+            const outcomeConfig = {
+              Pending: {
+                dot: 'bg-amber-500 animate-pulse',
+                text: 'text-amber-600 dark:text-amber-400',
+                label: 'Pending',
+              },
+              Selected: {
+                dot: 'bg-emerald-500',
+                text: 'text-emerald-600 dark:text-emerald-400',
+                label: 'Selected',
+              },
+              Rejected: {
+                dot: 'bg-rose-500',
+                text: 'text-rose-600 dark:text-rose-400',
+                label: 'Rejected',
+              },
+              'On Hold': {
+                dot: 'bg-text-subtle',
+                text: 'text-text-muted',
+                label: 'On Hold',
+              },
+            }[candidate.interviewOutcome ?? 'Pending'] ?? {
+              dot: 'bg-amber-500',
+              text: 'text-amber-600 dark:text-amber-400',
+              label: candidate.interviewOutcome,
+            };
 
-              <CardContent className="space-y-3 pt-1 text-[13px]">
-                <div className="border-border bg-surface-2/40 space-y-1.5 rounded-md border p-3">
-                  <div className="flex items-center justify-between text-[12px] gap-2">
-                    <span className="text-text-muted flex items-center gap-1.5 min-w-0">
-                      <Clock className="h-3.5 w-3.5 shrink-0" />
-                      <span className="truncate">
-                        {candidate.interviewDate
-                          ? new Date(candidate.interviewDate).toLocaleString(undefined, {
-                              year: 'numeric',
-                              month: 'numeric',
-                              day: 'numeric',
-                              hour: 'numeric',
-                              minute: '2-digit',
-                            })
-                          : 'Slot not assigned yet'}
+            const isPhone = candidate.interviewMode === 'Phone';
+            const ModeIcon = isPhone ? Phone : VideoCameraIcon;
+
+            return (
+              <div
+                key={candidate.id}
+                className="group relative flex flex-col justify-between rounded-[8px] border border-border/80 bg-surface-1 p-3.5 shadow-2xs transition-all duration-150 hover:border-border-strong hover:shadow-xs select-none"
+              >
+                <div className="space-y-3">
+                  {/* 1. Header: Avatar + Candidate Name & Role + Boxless Status Badge */}
+                  <div className="flex items-center justify-between gap-3">
+                    <div className="flex items-center gap-2.5 min-w-0 flex-1">
+                      <Avatar className="h-9 w-9 shrink-0 border border-border/70 bg-surface-2 shadow-2xs">
+                        <AvatarFallback className="text-[11.5px] font-semibold text-text bg-surface-2 tracking-wide">
+                          {candidate.name.slice(0, 2).toUpperCase()}
+                        </AvatarFallback>
+                      </Avatar>
+                      <div className="min-w-0 flex-1">
+                        <h4 className="text-[13.5px] font-semibold text-text tracking-tight leading-snug truncate">
+                          {candidate.name}
+                        </h4>
+                        <p className="text-[11.5px] text-text-muted leading-tight truncate mt-0.5">
+                          <span className="font-medium text-text">{candidate.currentRole}</span>
+                          <span className="text-text-subtle/80 mx-1">at</span>
+                          <span className="font-medium text-text">{candidate.currentCompany}</span>
+                        </p>
+                      </div>
+                    </div>
+
+                    {/* Boxless Status Badge (Consistent with Candidate and Opening Cards) */}
+                    <div className="flex items-center gap-1.5 shrink-0 select-none">
+                      <span className={cn('h-1.5 w-1.5 rounded-full', outcomeConfig.dot)} />
+                      <span className={cn('text-[11.5px] font-semibold tabular-nums', outcomeConfig.text)}>
+                        {outcomeConfig.label}
                       </span>
-                    </span>
-                    <span
-                      className="text-text-muted flex items-center shrink-0"
-                      title={`${candidate.interviewMode ?? 'Video'} Interview`}
-                      aria-label={`${candidate.interviewMode ?? 'Video'} Interview`}
-                    >
-                      {candidate.interviewMode === 'Phone' ? (
-                        <Phone className="h-4 w-4" />
-                      ) : (
-                        <VideoCameraIcon className="h-4 w-4" />
-                      )}
-                    </span>
+                    </div>
                   </div>
 
-                  {candidate.interviewNote && (
-                    <p className="text-text-muted border-border/60 border-t pt-1 text-[12px]">
-                      <strong>Notes:</strong> {candidate.interviewNote}
-                    </p>
-                  )}
+                  {/* 2. Middle Body: Notes (Left) + Video Icon & Date/Time (Right side) */}
+                  <div className="border-t border-border/60 pt-2.5 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+                    {/* Notes (Agenda word removed) */}
+                    <div className="space-y-0.5 min-w-0 flex-1">
+                      <span className="text-[11px] font-medium text-text-subtle tracking-wide uppercase">
+                        Notes
+                      </span>
+                      <p className="text-[12.5px] font-medium text-text leading-snug">
+                        {candidate.interviewNote ? (
+                          candidate.interviewNote
+                        ) : (
+                          <span className="text-text-subtle italic">No notes specified</span>
+                        )}
+                      </p>
+                    </div>
+
+                    {/* Video Icon & Time/Date on Right side */}
+                    <div className="flex flex-col sm:items-end gap-1 shrink-0 sm:text-right">
+                      <div className="flex items-center gap-1.5 text-[12px] font-semibold text-text">
+                        <ModeIcon className="h-3.5 w-3.5 text-accent stroke-[1.75]" />
+                        <span>{candidate.interviewMode ?? 'Video'} Interview</span>
+                      </div>
+                      <div className="flex items-center gap-1.5 text-[11.5px] font-normal text-text-muted">
+                        <Clock className="h-3 w-3 text-text-subtle shrink-0 stroke-[1.75]" />
+                        <span className="tabular-nums">
+                          {candidate.interviewDate
+                            ? new Date(candidate.interviewDate).toLocaleString(undefined, {
+                                weekday: 'short',
+                                month: 'short',
+                                day: 'numeric',
+                                year: 'numeric',
+                                hour: 'numeric',
+                                minute: '2-digit',
+                              })
+                            : 'Slot not assigned yet'}
+                        </span>
+                      </div>
+                    </div>
+                  </div>
                 </div>
 
-                <div className="flex gap-2 pt-1">
+                {/* 3. Bottom Action Buttons */}
+                <div className="flex items-center gap-2 pt-3 border-t border-border/60 mt-3">
                   <Button
                     variant="outline"
                     size="sm"
                     onClick={() => handleOpenSchedule(candidate)}
-                    className="h-8 flex-1 gap-1 text-[12px] min-w-0"
+                    className="h-8 flex-1 gap-1.5 text-[12px] font-medium border-border/80 hover:bg-surface-2 rounded-[6px]"
                   >
                     <Calendar className="h-3.5 w-3.5 shrink-0" />
                     <span className="truncate">{candidate.interviewDate ? 'Reschedule' : 'Set Slot'}</span>
@@ -225,15 +272,15 @@ export function InterviewsView() {
                     variant="primary"
                     size="sm"
                     onClick={() => handleOpenOutcome(candidate)}
-                    className="h-8 flex-1 gap-1 text-[12px] min-w-0"
+                    className="h-8 flex-1 gap-1.5 text-[12px] font-medium rounded-[6px]"
                   >
                     <CheckCircle2 className="h-3.5 w-3.5 shrink-0" />
                     <span className="truncate">Record Outcome</span>
                   </Button>
                 </div>
-              </CardContent>
-            </Card>
-          ))}
+              </div>
+            );
+          })}
         </div>
       )}
 

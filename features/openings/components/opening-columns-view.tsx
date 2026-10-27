@@ -57,8 +57,8 @@ interface ColumnDef {
 }
 
 /**
- * Ultra-Minimalist Opening Card
- * Clean, calm, zero nested boxes, pure typography and whitespace.
+ * Opening Card - Direct sibling styling to CandidateCard
+ * Identical typography, boxless experience/budget, sharp hierarchy, and hover effects.
  */
 function MinimalOpeningCard({
   opening,
@@ -69,97 +69,118 @@ function MinimalOpeningCard({
   candidates: Candidate[];
   onStatusChange: (id: string, newStatus: OpeningStatus, title: string) => void;
 }) {
-  const candidateCount = React.useMemo(
-    () => candidates.filter((c) => c.openingId === opening.id).length,
-    [candidates, opening.id]
-  );
-
   const allowedTransitions = getNextAllowedOpeningStatuses(opening.status);
 
   return (
     <div
       className={cn(
-        'group relative rounded-[10px] border border-border/70 bg-surface-1 p-3.5 transition-all duration-140',
-        'hover:border-border-strong hover:bg-surface-2/20 flex flex-col justify-between gap-3'
+        'group relative flex flex-col justify-between rounded-[8px] border border-border/80 bg-surface-1 p-3 shadow-2xs transition-all duration-150',
+        'hover:border-border-strong hover:shadow-xs select-none'
       )}
     >
-      {/* 1. Status Indicator & Context Menu */}
-      <div className="flex items-center justify-between gap-2">
-        <div className="flex items-center gap-1.5 text-[11.5px] select-none">
-          <span className="font-medium text-text-muted">{opening.status}</span>
-          {opening.urgency === 'High' && (
-            <span className="text-[11px] font-semibold text-accent">· Urgent</span>
-          )}
-        </div>
-
-        {/* Minimal Action Trigger */}
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <button
-              type="button"
-              className="h-6 w-6 inline-flex items-center justify-center text-text-subtle hover:text-text rounded transition-colors opacity-60 group-hover:opacity-100"
-            >
-              <MoreHorizontal className="h-3.5 w-3.5" />
-              <span className="sr-only">Actions</span>
-            </button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align="end" className="w-48">
-            <DropdownMenuItem asChild>
-              <Link href={`/openings/${opening.id}`} className="flex items-center gap-2">
-                <Eye className="h-4 w-4" />
-                <span>View Requisition</span>
-              </Link>
-            </DropdownMenuItem>
-            <DropdownMenuItem asChild>
-              <Link href={`/openings/${opening.id}/edit`} className="flex items-center gap-2">
-                <Edit className="h-4 w-4" />
-                <span>Edit Details</span>
-              </Link>
-            </DropdownMenuItem>
-            {allowedTransitions.length > 0 && (
-              <>
-                <DropdownMenuSeparator />
-                <DropdownMenuLabel className="text-text-subtle text-[11px]">
-                  Move Status
-                </DropdownMenuLabel>
-                {allowedTransitions.map((nextStatus) => (
-                  <DropdownMenuItem
-                    key={nextStatus}
-                    onClick={() => onStatusChange(opening.id, nextStatus, opening.title)}
-                    className="flex items-center gap-2"
-                  >
-                    <ArrowRightCircle className="text-accent h-3.5 w-3.5" />
-                    <span>Move to {nextStatus}</span>
-                  </DropdownMenuItem>
-                ))}
-              </>
-            )}
-          </DropdownMenuContent>
-        </DropdownMenu>
-      </div>
-
-      {/* 2. Position Title & Location */}
-      <div className="space-y-0.5">
+      {/* 1. Top Header: Position Title (Primary Hero) + Boxless Experience & Actions */}
+      <div className="flex items-center justify-between gap-2 mb-2">
         <Link
           href={`/openings/${opening.id}`}
-          className="text-[14px] font-semibold text-text hover:text-accent tracking-tight transition-colors line-clamp-1 block"
+          className="text-[13.5px] font-semibold text-text tracking-tight leading-snug group-hover:text-accent transition-colors min-w-0 flex-1 truncate"
           title={opening.title}
         >
           {opening.title}
         </Link>
-        <p className="text-[12px] text-text-muted truncate">
-          {opening.location} · {opening.headcount} {opening.headcount > 1 ? 'roles' : 'role'}
-        </p>
+        <div className="flex items-center gap-1.5 shrink-0">
+          <span className="text-[11.5px] font-semibold text-text tabular-nums select-none">
+            {opening.experienceRange.min === opening.experienceRange.max
+              ? `${opening.experienceRange.min}y exp`
+              : `${opening.experienceRange.min}-${opening.experienceRange.max}y exp`}
+          </span>
+
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <button
+                type="button"
+                aria-label="Opening actions"
+                className="cursor-pointer text-text-subtle/60 hover:text-text transition-colors p-0.5 rounded-[4px] hover:bg-surface-2 focus:outline-none flex items-center justify-center shrink-0"
+              >
+                <MoreHorizontal className="h-3.5 w-3.5" />
+              </button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end" className="w-48">
+              <DropdownMenuItem asChild>
+                <Link href={`/openings/${opening.id}`} className="flex items-center gap-2">
+                  <Eye className="h-4 w-4" />
+                  <span>View Requisition</span>
+                </Link>
+              </DropdownMenuItem>
+              <DropdownMenuItem asChild>
+                <Link href={`/openings/${opening.id}/edit`} className="flex items-center gap-2">
+                  <Edit className="h-4 w-4" />
+                  <span>Edit Details</span>
+                </Link>
+              </DropdownMenuItem>
+              {allowedTransitions.length > 0 && (
+                <>
+                  <DropdownMenuSeparator />
+                  <DropdownMenuLabel className="text-text-subtle text-[11px]">
+                    Move Status
+                  </DropdownMenuLabel>
+                  {allowedTransitions.map((nextStatus) => (
+                    <DropdownMenuItem
+                      key={nextStatus}
+                      onClick={() => onStatusChange(opening.id, nextStatus, opening.title)}
+                      className="flex items-center gap-2"
+                    >
+                      <ArrowRightCircle className="text-accent h-3.5 w-3.5" />
+                      <span>Move to {nextStatus}</span>
+                    </DropdownMenuItem>
+                  ))}
+                </>
+              )}
+            </DropdownMenuContent>
+          </DropdownMenu>
+        </div>
       </div>
 
-      {/* 3. Subtle Footer Line: Budget & Candidate Count */}
-      <div className="flex items-center justify-between pt-2 border-t border-border/50 text-[11.5px]">
-        <span className="font-mono text-text font-medium">
+      {/* 2. Middle Body: Career Identity (Location & Headcount/Type) */}
+      <div className="space-y-1 my-0.5">
+        <div className="flex items-center gap-1.5 min-w-0 text-[12px] font-semibold text-text leading-tight">
+          <MapPin className="h-3 w-3 shrink-0 text-text-subtle stroke-[1.75]" />
+          <span className="truncate">{opening.location}</span>
+        </div>
+
+        <div className="flex items-center gap-1.5 min-w-0 text-[11.5px] font-normal text-text-muted leading-tight">
+          <Briefcase className="h-3 w-3 shrink-0 text-text-subtle/80 stroke-[1.75]" />
+          <span className="truncate">{opening.employmentType}</span>
+        </div>
+      </div>
+
+      {/* 3. Bottom Footer: Clean Borderless Budget + Status & Applicants */}
+      <div className="border-t border-border/60 mt-2.5 pt-2 flex items-center justify-between gap-2">
+        <span className="text-[11.5px] font-semibold text-text tabular-nums select-none">
           {formatCtcRange(opening.budgetRange.min, opening.budgetRange.max)}
         </span>
-        <span className="font-mono text-text-subtle">
-          {candidateCount} {candidateCount === 1 ? 'candidate' : 'candidates'}
-        </span>
+
+        <div className="flex items-center shrink-0">
+          {opening.urgency === 'High' ? (
+            <span className="inline-flex items-center gap-1.5 text-[11px] font-semibold text-amber-600 dark:text-amber-400 select-none">
+              <span className="h-1.5 w-1.5 rounded-full bg-amber-500 animate-pulse" />
+              <span>Urgent</span>
+            </span>
+          ) : (
+            <span className="inline-flex items-center gap-1.5 text-[11px] font-medium text-text-muted select-none">
+              <span
+                className={cn(
+                  'h-1.5 w-1.5 rounded-full',
+                  opening.status === 'Open'
+                    ? 'bg-emerald-500'
+                    : opening.status === 'Closed' || opening.status === 'Filled'
+                      ? 'bg-text-subtle'
+                      : 'bg-accent'
+                )}
+              />
+              <span>{opening.status}</span>
+            </span>
+          )}
+        </div>
       </div>
     </div>
   );
@@ -229,7 +250,7 @@ export function OpeningColumnsView({
 
   return (
     <div className="space-y-4">
-      {/* Horizontal Multi-Column Board */}
+      {/* Horizontal Multi-Column Board - Exact same responsive breadth as Candidates & Pipeline */}
       <div className="flex gap-4 overflow-x-auto pb-6 items-start pt-1 scrollbar-thin">
         {columns.map((column) => {
           const ColIcon = column.icon;
@@ -248,7 +269,7 @@ export function OpeningColumnsView({
           return (
             <div
               key={column.id}
-              className="w-[300px] sm:w-[320px] shrink-0 flex flex-col justify-between rounded-[12px] bg-surface-2/30 border border-border/70 border-t-2 border-t-accent p-3 space-y-2.5"
+              className="w-[280px] xs:w-[300px] sm:w-[320px] max-w-[calc(100vw-2.5rem)] shrink-0 flex flex-col justify-between rounded-[12px] bg-surface-2/30 border border-border/70 border-t-2 border-t-accent p-3 space-y-2.5"
             >
               <div className="space-y-2.5">
                 {/* Column Header */}
@@ -271,7 +292,7 @@ export function OpeningColumnsView({
                   </span>
                 </div>
 
-                {/* Minimal Column Cards Container */}
+                {/* Column Cards Container: Identical layout and spacing to Candidate Cards */}
                 <div className="space-y-2 min-h-[100px]">
                   {column.openings.length === 0 ? (
                     <div className="rounded-[8px] border border-dashed border-border/60 p-5 text-center select-none">
