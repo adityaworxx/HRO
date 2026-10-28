@@ -51,11 +51,10 @@ export function CandidateCard({
         }
       }}
       className={cn(
-        'group relative flex flex-col justify-between rounded-[14px] border border-border/70 bg-surface-1/95 p-4 backdrop-blur-md transition-all duration-200 ease-out',
-        'shadow-[0_2px_8px_rgba(0,0,0,0.03),0_1px_2px_rgba(0,0,0,0.02)] dark:shadow-[0_2px_12px_rgba(0,0,0,0.35)]',
-        'hover:-translate-y-0.5 hover:border-border-strong hover:shadow-[0_8px_20px_rgba(0,0,0,0.06)] dark:hover:shadow-[0_8px_24px_rgba(0,0,0,0.5)] select-none focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-accent space-y-3',
+        'group relative flex flex-col justify-between rounded-[12px] border border-border/70 bg-surface-1 p-3.5 transition-colors duration-150',
+        'hover:border-border-strong select-none focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-accent space-y-2.5',
         showReorderIcon ? 'cursor-grab active:cursor-grabbing' : 'cursor-pointer',
-        isDragging && 'border-border-strong shadow-2xl ring-1 ring-border-strong bg-surface-1 scale-[1.02] z-50',
+        isDragging && 'border-border-strong ring-1 ring-border-strong bg-surface-2 scale-[1.01] z-50',
         className
       )}
     >

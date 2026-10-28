@@ -291,7 +291,7 @@ export function ManagerDashboard() {
               })}
             </div>
 
-            {/* Content: Clean Open List (Zero Boxes, Matching Technical Interviews Typography) */}
+            {/* Content: Structured Table View (Clean & Highly Organized, AI without Box) */}
             <div className="pt-2 flex-1">
               {isInitialLoading ? (
                 <div className="space-y-3 py-2">
@@ -308,68 +308,100 @@ export function ManagerDashboard() {
                   </p>
                 </div>
               ) : (
-                <div className="divide-y divide-border/60">
-                  {paginatedReviewCandidates.map((candidate) => {
-                    const opening = openingsMap.get(candidate.openingId);
-                    const dept = opening?.department || 'General';
-                    const aiMatch = opening ? matchCandidateToOpening(candidate, opening) : null;
+                <div className="border border-border/70 rounded-[10px] overflow-hidden bg-surface-1 shadow-2xs">
+                  <div className="overflow-x-auto no-scrollbar">
+                    {/* Table Header */}
+                    <div className="grid grid-cols-[minmax(180px,2fr)_minmax(140px,1.5fr)_minmax(90px,1fr)_minmax(95px,1fr)_minmax(90px,1fr)] items-center gap-3 px-3.5 py-2 bg-surface-2/40 border-b border-border/60 text-[11px] font-semibold uppercase tracking-wider text-text-subtle select-none">
+                      <div>Candidate</div>
+                      <div>Target Requisition</div>
+                      <div>Exp & Notice</div>
+                      <div>AI Match</div>
+                      <div className="text-right">Expected CTC</div>
+                    </div>
 
-                    return (
-                      <Link
-                        key={candidate.id}
-                        href="/shortlist"
-                        className="group hover:bg-surface-2 -mx-2 flex flex-col justify-between gap-1.5 rounded-[8px] px-2 py-3 transition-colors cursor-pointer"
-                      >
-                        {/* Line 1: Logo + Name · Department · AI Match on left; Monospace CTC + Chevron on right */}
-                        <div className="flex items-center justify-between gap-3">
-                          <div className="flex items-center gap-2 min-w-0">
-                            <CompanyLogo
-                              company={candidate.currentCompany}
-                              className="h-4 w-4 rounded-[3px] shrink-0 shadow-2xs"
-                            />
-                            <span className="text-text truncate text-[14px] leading-[20px] font-medium group-hover:text-accent transition-colors">
-                              {candidate.name}
-                            </span>
-                            <span className="text-text-subtle text-[12px]">·</span>
-                            <span className="text-text-muted text-[13px] leading-[20px] truncate">
-                              {dept}
-                            </span>
-                            {aiMatch && (
-                              <>
-                                <span className="text-text-subtle text-[12px] hidden sm:inline">·</span>
-                                <span className="text-accent text-[12.5px] leading-[20px] font-medium hidden sm:inline-flex items-center gap-1">
-                                  <Sparkles className="h-3 w-3 text-accent" />
-                                  <span>{aiMatch.score}% Match</span>
+                    {/* Table Rows */}
+                    <div className="divide-y divide-border/50">
+                      {paginatedReviewCandidates.map((candidate) => {
+                        const opening = openingsMap.get(candidate.openingId);
+                        const dept = opening?.department || 'General';
+                        const aiMatch = opening ? matchCandidateToOpening(candidate, opening) : null;
+
+                        return (
+                          <Link
+                            key={candidate.id}
+                            href="/shortlist"
+                            className="grid grid-cols-[minmax(180px,2fr)_minmax(140px,1.5fr)_minmax(90px,1fr)_minmax(95px,1fr)_minmax(90px,1fr)] items-center gap-3 px-3.5 py-2.5 hover:bg-surface-2/60 transition-colors group cursor-pointer"
+                          >
+                            {/* 1. Candidate Info */}
+                            <div className="flex items-center gap-2.5 min-w-0 pr-2">
+                              <CompanyLogo
+                                company={candidate.currentCompany}
+                                className="h-4 w-4 rounded-[3px] shrink-0 shadow-2xs"
+                              />
+                              <div className="min-w-0 truncate">
+                                <span className="text-text text-[13.5px] leading-[18px] font-medium group-hover:text-accent transition-colors block truncate">
+                                  {candidate.name}
                                 </span>
-                              </>
-                            )}
-                          </div>
+                                <span className="text-text-muted text-[11.5px] leading-[15px] block truncate">
+                                  {candidate.currentRole}
+                                </span>
+                              </div>
+                            </div>
 
-                          <div className="flex items-center gap-2 shrink-0">
-                            <span className="font-mono text-emerald-600 dark:text-emerald-400 text-[13px] leading-[20px] font-semibold tabular-nums">
-                              {formatCtc(candidate.expectedCtc)}
-                            </span>
-                            <ChevronRight className="h-3.5 w-3.5 text-text-subtle group-hover:text-text transition-colors" />
-                          </div>
-                        </div>
+                            {/* 2. Target Requisition */}
+                            <div className="min-w-0 pr-2">
+                              <span className="text-text text-[13px] leading-[18px] font-medium block truncate">
+                                {opening?.title ?? 'Requisition'}
+                              </span>
+                              <span className="text-text-muted text-[11.5px] leading-[15px] block truncate mt-0.5">
+                                {dept}
+                              </span>
+                            </div>
 
-                        {/* Line 2: Role at Company · Target Requisition · Experience · Notice */}
-                        <div className="text-text-muted flex items-center truncate text-[13px] leading-[20px]">
-                          <span className="truncate">
-                            {candidate.currentRole} at {candidate.currentCompany}
-                          </span>
-                          <MetaSeparator />
-                          <span className="truncate text-text/80">
-                            Target: {opening?.title ?? 'Requisition'}
-                          </span>
-                          <MetaSeparator />
-                          <span className="truncate shrink-0">{candidate.experienceYears}y exp</span>
-                          <MetaSeparator />
-                          <span className="truncate shrink-0">{candidate.noticePeriod}</span>
-                        </div>
-                      </Link>
-                    );
-                  })}
+                            {/* 3. Exp & Notice */}
+                            <div className="min-w-0 pr-2">
+                              <span className="font-mono text-[12px] font-medium text-text block tabular-nums">
+                                {candidate.experienceYears}y exp
+                              </span>
+                              <span className="text-text-subtle text-[11px] block truncate">
+                                {candidate.noticePeriod}
+                              </span>
+                            </div>
+
+                            {/* 4. AI Match (Without Box: Clean text with Sparkles icon) */}
+                            <div className="min-w-0 pr-2">
+                              {aiMatch ? (
+                                <div className="space-y-0.5">
+                                  <div className="inline-flex items-center gap-1 font-mono text-[11.5px] font-semibold text-accent">
+                                    <Sparkles className="h-3 w-3 text-accent shrink-0" />
+                                    <span>{aiMatch.score}% Match</span>
+                                  </div>
+                                  <span className="text-text-subtle text-[10.5px] block truncate">
+                                    {aiMatch.tier}
+                                  </span>
+                                </div>
+                              ) : (
+                                <span className="text-text-subtle text-[11.5px]">—</span>
+                              )}
+                            </div>
+
+                            {/* 5. Expected CTC & Chevron */}
+                            <div className="flex items-center justify-end gap-1.5 text-right shrink-0">
+                              <div className="text-right">
+                                <span className="font-mono text-text text-[13px] font-semibold tabular-nums block whitespace-nowrap">
+                                  {formatCtc(candidate.expectedCtc)}
+                                </span>
+                                <span className="text-text-subtle text-[10px] block">
+                                  In budget
+                                </span>
+                              </div>
+                              <ChevronRight className="h-3.5 w-3.5 text-text-subtle group-hover:text-text group-hover:translate-x-0.5 transition-all shrink-0 ml-1" />
+                            </div>
+                          </Link>
+                        );
+                      })}
+                    </div>
+                  </div>
                 </div>
               )}
             </div>
