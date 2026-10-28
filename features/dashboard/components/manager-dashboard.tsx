@@ -27,7 +27,6 @@ import {
   BarChart3,
   Layers,
   Users,
-  TrendingUp,
 } from 'lucide-react';
 import { VideoCameraIcon } from '@/components/ui/icons';
 import { formatCtc, formatInterviewDateTime, formatCtcRange, formatRoleTitle } from '@/lib/format';
@@ -721,15 +720,9 @@ export function ManagerDashboard() {
           <div className="border-border bg-surface-1 flex flex-col justify-between rounded-[12px] border p-5 shadow-xs">
             <div>
               <div className="border-border/60 flex items-center justify-between border-b pb-3.5">
-                <div className="flex items-center gap-2">
-                  <TrendingUp className="text-text-muted h-4 w-4" />
-                  <h2 className="text-text text-[15px] font-semibold tracking-[-0.01em]">
-                    Hiring Telemetry
-                  </h2>
-                </div>
-                <span className="text-text bg-surface-2 border-border/60 rounded-full border px-2 py-0.5 font-sans text-[11px] font-medium select-none">
-                  Healthy Velocity
-                </span>
+                <h2 className="text-text text-[15px] font-semibold tracking-[-0.01em]">
+                  Hiring Telemetry
+                </h2>
               </div>
 
               <div className="grid grid-cols-2 gap-4 pt-3.5">
