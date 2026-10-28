@@ -66,7 +66,7 @@ function DraggableCandidateCard({
     return (
       <div
         ref={setNodeRef}
-        className="h-[113px] w-full rounded-[8px] border border-dashed border-border/80 bg-surface-2/20 select-none pointer-events-none opacity-40"
+        className="h-[160px] min-h-[160px] w-full rounded-[10px] border border-dashed border-border/80 bg-surface-2/20 select-none pointer-events-none opacity-40"
       />
     );
   }

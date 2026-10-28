@@ -14,6 +14,7 @@ import type { OpeningStatus } from '@/lib/domain/status-transitions';
 import type { Candidate } from '@/types/entities';
 import { rankCandidatesForOpening, type CandidateMatchResult } from '@/lib/ai-matcher';
 import { StatusBadge } from '@/components/hro/status-badge';
+import { SourceBadge } from '@/components/hro/source-badge';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -22,6 +23,13 @@ import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import { Skeleton } from '@/components/ui/skeleton';
 import { EmptyState } from '@/components/hro/empty-state';
+import {
+  Select,
+  SelectTrigger,
+  SelectValue,
+  SelectContent,
+  SelectItem,
+} from '@/components/ui/select';
 import {
   DropdownMenu,
   DropdownMenuTrigger,
@@ -48,6 +56,10 @@ import {
   Clock,
   ChevronLeft,
   ChevronRight,
+  ChevronDown,
+  Briefcase,
+  IndianRupee,
+  Lightbulb,
 } from 'lucide-react';
 import { toast } from 'sonner';
 import { cn } from '@/lib/utils';
@@ -71,6 +83,7 @@ export function OpeningDetail({ id }: OpeningDetailProps) {
   const [selectedTier, setSelectedTier] = React.useState<'all' | 'strong' | 'good' | 'fast'>('all');
   const [sortBy, setSortBy] = React.useState<'score' | 'experience' | 'notice' | 'ctc'>('score');
   const [shortlistedMap, setShortlistedMap] = React.useState<Record<string, boolean>>({});
+  const [expandedQuestionsMap, setExpandedQuestionsMap] = React.useState<Record<string, boolean>>({});
 
   // Candidates for this specific opening
   const openingCandidates = React.useMemo(() => {
@@ -480,15 +493,16 @@ export function OpeningDetail({ id }: OpeningDetailProps) {
                     </div>
 
                     <div className="flex flex-wrap items-center justify-between gap-2 text-[12px]">
-                      <div className="flex flex-wrap gap-1">
+                      {/* Filter Pills */}
+                      <div className="flex flex-wrap items-center gap-1.5">
                         <button
                           type="button"
                           onClick={() => setSelectedTier('all')}
                           className={cn(
-                            'rounded-[var(--radius-sm)] border px-2.5 py-1 text-[11px] font-medium transition-colors cursor-pointer',
+                            'h-7.5 px-2.5 rounded-[6px] border text-[11.5px] font-medium transition-all cursor-pointer',
                             selectedTier === 'all'
-                              ? 'border-accent bg-accent/15 text-accent font-semibold'
-                              : 'border-border bg-surface-2 text-text-muted hover:text-text'
+                              ? 'border-accent/40 bg-accent/15 text-accent font-semibold shadow-2xs'
+                              : 'border-border/70 bg-surface-2/40 text-text-muted hover:text-text hover:bg-surface-2'
                           )}
                         >
                           All Matches ({rankedMatches.length})
@@ -497,61 +511,72 @@ export function OpeningDetail({ id }: OpeningDetailProps) {
                           type="button"
                           onClick={() => setSelectedTier('strong')}
                           className={cn(
-                            'rounded-[var(--radius-sm)] border px-2.5 py-1 text-[11px] font-medium transition-colors cursor-pointer',
+                            'h-7.5 px-2.5 rounded-[6px] border text-[11.5px] font-medium transition-all cursor-pointer inline-flex items-center gap-1.5',
                             selectedTier === 'strong'
-                              ? 'border-accent bg-accent/20 text-accent font-semibold'
-                              : 'border-border bg-surface-2 text-text-muted hover:text-text'
+                              ? 'border-accent/40 bg-accent/15 text-accent font-semibold shadow-2xs'
+                              : 'border-border/70 bg-surface-2/40 text-text-muted hover:text-text hover:bg-surface-2'
                           )}
                         >
-                          🔥 Strong Fits ({strongMatches.length})
+                          <span className="h-1.5 w-1.5 rounded-full bg-accent animate-pulse" />
+                          <span>Strong Fits ({strongMatches.length})</span>
                         </button>
                         <button
                           type="button"
                           onClick={() => setSelectedTier('good')}
                           className={cn(
-                            'rounded-[var(--radius-sm)] border px-2.5 py-1 text-[11px] font-medium transition-colors cursor-pointer',
+                            'h-7.5 px-2.5 rounded-[6px] border text-[11.5px] font-medium transition-all cursor-pointer inline-flex items-center gap-1.5',
                             selectedTier === 'good'
-                              ? 'border-success/30 bg-success/15 text-success font-semibold'
-                              : 'border-border bg-surface-2 text-text-muted hover:text-text'
+                              ? 'border-emerald-500/40 bg-emerald-500/15 text-emerald-600 dark:text-emerald-400 font-semibold shadow-2xs'
+                              : 'border-border/70 bg-surface-2/40 text-text-muted hover:text-text hover:bg-surface-2'
                           )}
                         >
-                          👍 Good Fits ({goodMatches.length})
+                          <span className="h-1.5 w-1.5 rounded-full bg-emerald-500" />
+                          <span>Good Matches ({goodMatches.length})</span>
                         </button>
                         <button
                           type="button"
                           onClick={() => setSelectedTier('fast')}
                           className={cn(
-                            'rounded-[var(--radius-sm)] border px-2.5 py-1 text-[11px] font-medium transition-colors cursor-pointer',
+                            'h-7.5 px-2.5 rounded-[6px] border text-[11.5px] font-medium transition-all cursor-pointer inline-flex items-center gap-1.5',
                             selectedTier === 'fast'
-                              ? 'border-border-strong bg-surface-3 text-text font-semibold'
-                              : 'border-border bg-surface-2 text-text-muted hover:text-text'
+                              ? 'border-border-strong bg-surface-3 text-text font-semibold shadow-2xs'
+                              : 'border-border/70 bg-surface-2/40 text-text-muted hover:text-text hover:bg-surface-2'
                           )}
                         >
-                          ⚡ Fast Joiners ({fastJoiners.length})
+                          <Clock className="h-3 w-3 text-text-subtle" />
+                          <span>Fast Joiners ({fastJoiners.length})</span>
                         </button>
                       </div>
 
-                      <div className="flex items-center gap-1.5 text-[11px] text-text-muted">
-                        <span>Sort:</span>
-                        <select
-                          value={sortBy}
-                          onChange={(e) => setSortBy(e.target.value as any)}
-                          aria-label="Sort AI candidate matches"
-                          className="border-border bg-surface-2 text-text rounded-[var(--radius-sm)] border px-2 py-1 text-[11px]"
-                        >
-                          <option value="score">AI Match Score (Highest)</option>
-                          <option value="experience">Experience (Highest)</option>
-                          <option value="notice">Notice Period (Fastest)</option>
-                          <option value="ctc">Expected CTC (Lowest)</option>
-                        </select>
+                      {/* Custom Sort Select */}
+                      <div className="flex items-center gap-1.5 shrink-0">
+                        <Select value={sortBy} onValueChange={(val) => setSortBy(val as any)}>
+                          <SelectTrigger className="h-7.5 w-[165px] gap-1.5 border-border/70 bg-surface-2/40 hover:bg-surface-2 text-text px-2.5 text-[11.5px] font-medium rounded-[6px] shadow-2xs">
+                            <SelectValue placeholder="Sort candidate matches" />
+                          </SelectTrigger>
+                          <SelectContent align="end" className="min-w-[180px]">
+                            <SelectItem value="score" className="text-[12px] py-1.5 rounded-[5px]">
+                              AI Match Score (Highest)
+                            </SelectItem>
+                            <SelectItem value="experience" className="text-[12px] py-1.5 rounded-[5px]">
+                              Experience (Highest)
+                            </SelectItem>
+                            <SelectItem value="notice" className="text-[12px] py-1.5 rounded-[5px]">
+                              Notice Period (Fastest)
+                            </SelectItem>
+                            <SelectItem value="ctc" className="text-[12px] py-1.5 rounded-[5px]">
+                              Expected CTC (Lowest)
+                            </SelectItem>
+                          </SelectContent>
+                        </Select>
                       </div>
                     </div>
                   </div>
 
                   {/* Ranked Candidate List */}
                   {filteredMatches.length === 0 ? (
-                    <div className="border-border/60 bg-surface-2/30 flex flex-col items-center justify-center rounded-[var(--radius-md)] border border-dashed py-12 text-center">
-                      <Filter className="text-text-subtle h-8 w-8" />
+                    <div className="border-border/60 bg-surface-2/30 flex flex-col items-center justify-center rounded-[8px] border border-dashed py-12 text-center select-none">
+                      <Filter className="text-text-subtle h-7 w-7" />
                       <p className="text-text mt-2.5 text-[13px] font-semibold">
                         No candidates match your current filter
                       </p>
@@ -560,8 +585,8 @@ export function OpeningDetail({ id }: OpeningDetailProps) {
                       </p>
                     </div>
                   ) : (
-                    <div className="space-y-3">
-                      {filteredMatches.map((match, idx) => {
+                    <div className="space-y-3.5">
+                      {filteredMatches.map((match) => {
                         const { candidate, score, tier, summary, matchedMustSkills, missingMustSkills } =
                           match;
                         const isAssigned = candidate.openingId === opening.id;
@@ -570,123 +595,147 @@ export function OpeningDetail({ id }: OpeningDetailProps) {
                           Boolean(shortlistedMap[candidate.id]);
                         const isManagerApproved =
                           isAssigned && (candidate.managerDecision === 'Shortlisted' || candidate.stage === 'Interview');
+                        const isQuestionsExpanded = Boolean(expandedQuestionsMap[candidate.id]);
 
                         return (
                           <div
                             key={candidate.id}
                             className={cn(
-                              'border-border bg-surface-1 hover:border-accent/50 rounded-[var(--radius-md)] border p-4 shadow-xs transition-all space-y-3',
-                              tier === 'Strong Fit' && 'border-accent/40 bg-accent/5'
+                              'group relative flex flex-col justify-between rounded-[10px] border border-border/80 bg-surface-1 p-4 shadow-2xs transition-all duration-150',
+                              'hover:border-border-strong hover:shadow-xs space-y-3.5 select-none',
+                              tier === 'Strong Fit' && 'border-accent/40 bg-gradient-to-b from-accent/[0.03] to-surface-1'
                             )}
                           >
-                            {/* Card Header: Candidate Info + Match Score */}
+                            {/* Card Header: Avatar + Meta + Match Score */}
                             <div className="flex items-start justify-between gap-3">
-                              <div className="flex items-center gap-3 min-w-0">
-                                <div className="relative">
-                                  <Avatar className="h-10 w-10 border border-border">
-                                    <AvatarFallback className="bg-surface-3 text-text text-[12px] font-bold">
-                                      {candidate.name.slice(0, 2).toUpperCase()}
-                                    </AvatarFallback>
-                                  </Avatar>
-                                  <span className="text-text-subtle font-mono text-[9px] absolute -bottom-1 -right-1 bg-surface-2 border border-border px-1 rounded-full">
-                                    #{idx + 1}
-                                  </span>
-                                </div>
+                              <div className="flex items-center gap-3 min-w-0 flex-1">
+                                <Avatar className="h-10 w-10 shrink-0 border border-border/70 bg-surface-2 shadow-2xs">
+                                  <AvatarFallback className="bg-surface-2 text-text text-[12px] font-semibold tracking-wide">
+                                    {candidate.name.slice(0, 2).toUpperCase()}
+                                  </AvatarFallback>
+                                </Avatar>
 
-                                <div className="min-w-0">
+                                <div className="min-w-0 flex-1">
                                   <div className="flex items-center gap-2 flex-wrap">
                                     <button
                                       type="button"
                                       onClick={() => handleInspect(candidate)}
-                                      className="text-text hover:text-accent font-bold text-[14px] truncate cursor-pointer text-left"
+                                      className="text-text hover:text-accent font-bold text-[14px] truncate cursor-pointer text-left transition-colors"
                                     >
                                       {candidate.name}
                                     </button>
-                                    <Badge
-                                      variant="default"
-                                      className={cn(
-                                        'text-[10px] font-bold font-mono px-2 py-0.5',
-                                        tier === 'Strong Fit'
-                                          ? 'border-accent/30 bg-accent/20 text-accent'
-                                          : tier === 'Good Match'
-                                            ? 'border-success/30 bg-success/15 text-success'
-                                            : 'border-border bg-surface-2 text-text-muted'
-                                      )}
-                                    >
-                                      {score}% Match • {tier}
-                                    </Badge>
+                                    <SourceBadge source={candidate.source} variant="badge" />
                                   </div>
-                                  <p className="text-text-muted text-[12px] truncate">
-                                    {candidate.currentRole} at{' '}
-                                    <span className="font-semibold text-text">
-                                      {candidate.currentCompany}
-                                    </span>
+                                  <p className="text-text-muted text-[12px] truncate mt-0.5">
+                                    <span className="font-semibold text-text">{candidate.currentRole}</span>
+                                    <span className="text-text-subtle/80 mx-1">at</span>
+                                    <span className="font-medium text-text">{candidate.currentCompany}</span>
                                   </p>
                                 </div>
                               </div>
 
-                              <div className="shrink-0 text-right">
-                                {isSharedWithManager ? (
-                                  <span className="border-accent/30 bg-accent/15 text-accent rounded-full border px-2 py-0.5 text-[10px] font-semibold">
-                                    ⏳ Shared with Mgr
+                              {/* Match Score Badge & Status */}
+                              <div className="flex flex-col items-end gap-1.5 shrink-0 select-none">
+                                {tier === 'Strong Fit' ? (
+                                  <span className="inline-flex items-center gap-1.5 rounded-full border border-accent/40 bg-accent/15 px-2.5 py-0.5 text-[11px] font-mono font-bold text-accent shadow-2xs">
+                                    <Sparkles className="h-3 w-3 animate-pulse" />
+                                    <span>{score}% Match • Strong Fit</span>
                                   </span>
-                                ) : isManagerApproved ? (
-                                  <span className="border-success/30 bg-success/15 text-success rounded-full border px-2 py-0.5 text-[10px] font-semibold">
-                                    ✓ Shortlisted
+                                ) : tier === 'Good Match' ? (
+                                  <span className="inline-flex items-center gap-1.5 rounded-full border border-emerald-500/40 bg-emerald-500/15 px-2.5 py-0.5 text-[11px] font-mono font-bold text-emerald-600 dark:text-emerald-400 shadow-2xs">
+                                    <Check className="h-3 w-3 stroke-[2.5]" />
+                                    <span>{score}% Match • Good Match</span>
                                   </span>
                                 ) : (
-                                  <span className="bg-surface-2 text-text-subtle border-border rounded-full border px-2 py-0.5 text-[10px] font-medium">
-                                    {candidate.stage}
+                                  <span className="inline-flex items-center gap-1.5 rounded-full border border-border bg-surface-2 px-2.5 py-0.5 text-[11px] font-mono font-medium text-text-muted">
+                                    <span>{score}% Match</span>
                                   </span>
                                 )}
+
+                                <div>
+                                  {isSharedWithManager ? (
+                                    <span className="inline-flex items-center gap-1 text-[11px] font-medium text-accent">
+                                      <Clock className="h-3 w-3 animate-pulse" />
+                                      <span>In Manager Queue</span>
+                                    </span>
+                                  ) : isManagerApproved ? (
+                                    <span className="inline-flex items-center gap-1 text-[11px] font-semibold text-emerald-600 dark:text-emerald-400">
+                                      <CheckCircle2 className="h-3.5 w-3.5" />
+                                      <span>Shortlisted</span>
+                                    </span>
+                                  ) : (
+                                    <span className="inline-flex items-center gap-1 text-[10.5px] font-medium text-text-subtle">
+                                      <span className="h-1.5 w-1.5 rounded-full bg-text-subtle/60" />
+                                      <span>{candidate.stage}</span>
+                                    </span>
+                                  )}
+                                </div>
                               </div>
                             </div>
 
-                            {/* Core Parameters Row */}
-                            <div className="grid grid-cols-3 gap-2 text-[11px] border-y border-border/60 py-2">
+                            {/* Core Parameters Row (3 Cells) */}
+                            <div className="grid grid-cols-3 gap-2 bg-surface-2/40 border border-border/60 rounded-[8px] p-2.5 text-[11.5px]">
                               <div>
-                                <span className="text-text-subtle block">Experience:</span>
-                                <span className="text-text font-semibold font-mono">
-                                  {candidate.experienceYears} yrs
-                                </span>
-                                <span className="text-text-subtle block text-[10px]">
-                                  ({match.experienceVerdict.status === 'optimal' ? 'Fits Req' : match.experienceVerdict.status})
+                                <div className="flex items-center gap-1 text-[10.5px] uppercase font-semibold text-text-subtle">
+                                  <Briefcase className="h-3 w-3 text-text-subtle" />
+                                  <span>Experience</span>
+                                </div>
+                                <div className="text-text font-bold font-mono text-[13px] mt-0.5">
+                                  {candidate.experienceYears} Years
+                                </div>
+                                <span className="text-[10px] text-emerald-600 dark:text-emerald-400 font-medium block truncate mt-0.5">
+                                  {match.experienceVerdict.status === 'optimal'
+                                    ? '✓ Fits Requisition'
+                                    : match.experienceVerdict.label}
                                 </span>
                               </div>
 
                               <div>
-                                <span className="text-text-subtle block">Expected CTC:</span>
-                                <span className="text-success font-semibold font-mono">
+                                <div className="flex items-center gap-1 text-[10.5px] uppercase font-semibold text-text-subtle">
+                                  <IndianRupee className="h-3 w-3 text-text-subtle" />
+                                  <span>Expected CTC</span>
+                                </div>
+                                <div className="text-emerald-600 dark:text-emerald-400 font-bold font-mono text-[13px] mt-0.5">
                                   {formatCtc(candidate.expectedCtc)}
-                                </span>
-                                <span className="text-text-subtle block text-[10px]">
-                                  ({match.budgetVerdict.status === 'within' ? 'In Budget' : match.budgetVerdict.status})
+                                </div>
+                                <span className="text-[10px] text-text-subtle font-medium block truncate mt-0.5">
+                                  {match.budgetVerdict.status === 'within'
+                                    ? '✓ Within Budget'
+                                    : match.budgetVerdict.label}
                                 </span>
                               </div>
 
                               <div>
-                                <span className="text-text-subtle block">Notice Period:</span>
-                                <span className="text-text font-semibold">
+                                <div className="flex items-center gap-1 text-[10.5px] uppercase font-semibold text-text-subtle">
+                                  <Clock className="h-3 w-3 text-text-subtle" />
+                                  <span>Notice Period</span>
+                                </div>
+                                <div className="text-text font-bold text-[13px] mt-0.5">
                                   {candidate.noticePeriod}
-                                </span>
-                                <span className="text-text-subtle block text-[10px]">
-                                  Fast joiner
+                                </div>
+                                <span className="text-[10px] text-text-subtle font-medium block truncate mt-0.5">
+                                  {candidate.noticePeriod.toLowerCase().includes('immediate')
+                                    ? '⚡ Immediate Joining'
+                                    : 'Available soon'}
                                 </span>
                               </div>
                             </div>
 
                             {/* Screened Skills Chips */}
                             <div className="space-y-1.5">
-                              <span className="text-text-subtle text-[11px] font-medium block">
-                                Screened Core Skills:
-                              </span>
+                              <div className="flex items-center justify-between text-[11px] font-semibold uppercase tracking-wider text-text-subtle">
+                                <span>Screened Competencies</span>
+                                <span className="font-mono text-[10px] lowercase font-normal">
+                                  {matchedMustSkills.length} of {matchedMustSkills.length + missingMustSkills.length} verified
+                                </span>
+                              </div>
                               <div className="flex flex-wrap gap-1.5">
                                 {matchedMustSkills.map((s) => (
                                   <span
                                     key={s}
-                                    className="border-accent/30 bg-accent/15 text-accent inline-flex items-center gap-1 rounded-full border px-2 py-0.5 text-[10px] font-medium"
+                                    className="border-border/70 bg-surface-2 text-text inline-flex items-center gap-1 rounded-[5px] border px-2 py-0.5 text-[11px] font-medium"
                                   >
-                                    <Check className="h-2.5 w-2.5 stroke-[3]" />
+                                    <Check className="h-2.5 w-2.5 text-emerald-500 stroke-[3]" />
                                     <span>{s}</span>
                                   </span>
                                 ))}
@@ -694,9 +743,10 @@ export function OpeningDetail({ id }: OpeningDetailProps) {
                                 {missingMustSkills.map((s) => (
                                   <span
                                     key={s}
-                                    className="border-border bg-surface-2 text-text-subtle inline-flex items-center gap-1 rounded-full border px-2 py-0.5 text-[10px] opacity-75"
+                                    className="border-border/50 bg-surface-2/30 text-text-subtle inline-flex items-center gap-1 rounded-[5px] border border-dashed px-2 py-0.5 text-[11px] font-normal opacity-75"
+                                    title="Skill not explicitly verified in candidate profile"
                                   >
-                                    <AlertTriangle className="h-2.5 w-2.5 text-warning" />
+                                    <AlertTriangle className="h-2.5 w-2.5 text-amber-500/80" />
                                     <span>{s}</span>
                                   </span>
                                 ))}
@@ -704,49 +754,105 @@ export function OpeningDetail({ id }: OpeningDetailProps) {
                             </div>
 
                             {/* AI Reasoning Callout */}
-                            <div className="border-border/70 bg-surface-2/60 rounded-[var(--radius-sm)] border p-2.5 text-[11.5px] leading-relaxed">
-                              <div className="flex items-center gap-1.5 font-semibold text-text mb-1">
-                                <Sparkles className="h-3 w-3 text-accent" />
-                                <span>AI Fit Reasoning:</span>
+                            <div className="border-accent/25 bg-accent/5 rounded-[8px] border p-3 space-y-2">
+                              <div className="flex items-center justify-between gap-2">
+                                <div className="flex items-center gap-1.5 font-semibold text-text text-[11.5px]">
+                                  <Sparkles className="h-3.5 w-3.5 text-accent" />
+                                  <span>AI Fit Reasoning</span>
+                                </div>
+                                <span className="font-mono text-[10.5px] font-semibold text-accent">
+                                  {score}% Conviction
+                                </span>
                               </div>
-                              <p className="text-text-muted">{summary}</p>
+                              <p className="text-text-muted text-[12px] leading-relaxed font-normal">
+                                {summary}
+                              </p>
+
+                              {/* Probing Technical Questions (Collapsible) */}
+                              {match.suggestedQuestions && match.suggestedQuestions.length > 0 && (
+                                <div className="pt-2 border-t border-accent/15">
+                                  <button
+                                    type="button"
+                                    onClick={() =>
+                                      setExpandedQuestionsMap((prev) => ({
+                                        ...prev,
+                                        [candidate.id]: !prev[candidate.id],
+                                      }))
+                                    }
+                                    className="flex items-center justify-between w-full text-left text-[11px] font-medium text-text-muted hover:text-text cursor-pointer transition-colors"
+                                  >
+                                    <span className="flex items-center gap-1">
+                                      <Lightbulb className="h-3 w-3 text-accent" />
+                                      <span>AI Probing Questions ({match.suggestedQuestions.length})</span>
+                                    </span>
+                                    <ChevronDown
+                                      className={cn(
+                                        'h-3.5 w-3.5 text-text-subtle transition-transform duration-150',
+                                        isQuestionsExpanded && 'rotate-180'
+                                      )}
+                                    />
+                                  </button>
+                                  {isQuestionsExpanded && (
+                                    <ul className="mt-2 space-y-1.5 pl-3 border-l-2 border-accent/30 text-[11.5px] text-text-muted">
+                                      {match.suggestedQuestions.map((q, qIdx) => (
+                                        <li key={qIdx} className="leading-snug">
+                                          {q}
+                                        </li>
+                                      ))}
+                                    </ul>
+                                  )}
+                                </div>
+                              )}
                             </div>
 
                             {/* Action Row */}
-                            <div className="flex items-center justify-between pt-1">
+                            <div className="flex items-center justify-between pt-2.5 border-t border-border/60">
                               <button
                                 type="button"
                                 onClick={() => handleInspect(candidate)}
-                                className="text-text-muted hover:text-text text-[11.5px] font-medium underline-offset-4 hover:underline cursor-pointer"
+                                className="inline-flex items-center gap-1 text-[11.5px] font-medium text-text-muted hover:text-accent transition-colors cursor-pointer"
                               >
-                                View Full Dossier &rarr;
+                                <span>View Full Dossier</span>
+                                <ArrowRight className="h-3 w-3" />
                               </button>
 
-                              <Button
-                                type="button"
-                                size="sm"
-                                variant={isManagerApproved ? 'secondary' : isSharedWithManager ? 'secondary' : 'primary'}
-                                disabled={isManagerApproved || isSharedWithManager || assignCandidate.isPending}
-                                onClick={() => handleShortlistCandidate(match)}
-                                className="h-8 gap-1.5 text-[11.5px] px-3 font-semibold cursor-pointer"
-                              >
+                              <div className="flex items-center gap-2">
                                 {isManagerApproved ? (
-                                  <>
-                                    <CheckCircle2 className="h-3.5 w-3.5 text-success" />
+                                  <Button
+                                    type="button"
+                                    size="sm"
+                                    variant="outline"
+                                    disabled
+                                    className="h-8 gap-1.5 text-[11.5px] text-emerald-600 dark:text-emerald-400 border-emerald-500/30 bg-emerald-500/10 font-semibold cursor-default"
+                                  >
+                                    <CheckCircle2 className="h-3.5 w-3.5 text-emerald-500" />
                                     <span>Manager Approved</span>
-                                  </>
+                                  </Button>
                                 ) : isSharedWithManager ? (
-                                  <>
-                                    <Clock className="h-3.5 w-3.5 text-accent" />
+                                  <Button
+                                    type="button"
+                                    size="sm"
+                                    variant="outline"
+                                    disabled
+                                    className="h-8 gap-1.5 text-[11.5px] text-accent border-accent/30 bg-accent/10 font-semibold cursor-default"
+                                  >
+                                    <Clock className="h-3.5 w-3.5 animate-pulse" />
                                     <span>In Manager Queue</span>
-                                  </>
+                                  </Button>
                                 ) : (
-                                  <>
+                                  <Button
+                                    type="button"
+                                    size="sm"
+                                    variant="primary"
+                                    disabled={assignCandidate.isPending}
+                                    onClick={() => handleShortlistCandidate(match)}
+                                    className="h-8 gap-1.5 text-[11.5px] font-semibold rounded-[6px] shadow-xs cursor-pointer"
+                                  >
                                     <UserCheck className="h-3.5 w-3.5" />
                                     <span>Send to Manager</span>
-                                  </>
+                                  </Button>
                                 )}
-                              </Button>
+                              </div>
                             </div>
                           </div>
                         );

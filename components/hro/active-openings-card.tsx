@@ -53,122 +53,7 @@ export interface ActiveOpeningsCardProps {
   pageSize?: number;
 }
 
-interface OpeningDashboardCardProps {
-  opening: Opening;
-  candidatesCount: number;
-  onReactivate?: (id: string, title: string) => void;
-}
-
-function OpeningDashboardCard({
-  opening,
-  candidatesCount,
-  onReactivate,
-}: OpeningDashboardCardProps) {
-  const minBudget = opening.budgetRange?.min ?? 0;
-  const maxBudget = opening.budgetRange?.max ?? 0;
-  const minExp = opening.experienceRange?.min ?? 0;
-  const maxExp = opening.experienceRange?.max ?? 0;
-  const expText = minExp === maxExp ? `${minExp}y exp` : `${minExp}–${maxExp}y exp`;
-
-  return (
-    <Link
-      href={`/openings/${opening.id}`}
-      className={cn(
-        'group relative flex flex-col justify-between rounded-[8px] border border-border/80 bg-surface-1 p-3 shadow-2xs transition-all duration-150',
-        'hover:border-border-strong hover:shadow-xs select-none cursor-pointer'
-      )}
-    >
-      {/* 1. Header: Position Title + Boxless Experience (Right-aligned, clean, no leading dot) */}
-      <div className="flex items-center justify-between gap-2 mb-2">
-        <h4
-          className="text-[13.5px] font-semibold text-text tracking-tight leading-snug group-hover:text-accent transition-colors min-w-0 flex-1 truncate"
-          title={opening.title}
-        >
-          {opening.title}
-        </h4>
-        <span className="text-[11.5px] font-semibold text-text tabular-nums select-none shrink-0">
-          {expText}
-        </span>
-      </div>
-
-      {/* 2. Middle Body: Location & Headcount/Employment Type */}
-      <div className="space-y-1 my-0.5">
-        <div className="flex items-center gap-1.5 min-w-0 text-[12px] font-semibold text-text leading-tight">
-          <MapPin className="h-3 w-3 shrink-0 text-text-subtle stroke-[1.75]" />
-          <span className="truncate">{opening.location}</span>
-        </div>
-
-        <div className="flex items-center gap-1.5 min-w-0 text-[11.5px] font-normal text-text-muted leading-tight">
-          <Briefcase className="h-3 w-3 shrink-0 text-text-subtle/80 stroke-[1.75]" />
-          <span className="truncate">
-            {opening.employmentType}
-            {opening.headcount ? ` · ${opening.headcount} ${opening.headcount === 1 ? 'opening' : 'openings'}` : ''}
-          </span>
-        </div>
-      </div>
-
-      {/* 3. Footer: Budget + Applicants Count + Status Indicator */}
-      <div className="border-t border-border/60 mt-2.5 pt-2 flex items-center justify-between gap-2">
-        <div className="flex items-center gap-2 min-w-0">
-          <span className="text-[11.5px] font-semibold text-text tabular-nums select-none">
-            {formatCtcRange(minBudget, maxBudget)}
-          </span>
-          <span className="text-text-subtle/50 text-[10px]">·</span>
-          <span
-            className="text-[11px] text-text-muted flex items-center gap-1 tabular-nums font-mono"
-            title={`${candidatesCount} candidates in pipeline`}
-          >
-            <Users className="h-3 w-3 text-text-subtle stroke-[1.75]" />
-            <span>{candidatesCount}</span>
-          </span>
-        </div>
-
-        <div className="flex items-center shrink-0">
-          {opening.status === 'On Hold' ? (
-            <div className="flex items-center gap-1.5">
-              <span className="inline-flex items-center gap-1.5 text-[11px] font-medium text-amber-600 dark:text-amber-400 select-none">
-                <span className="h-1.5 w-1.5 rounded-full bg-amber-500" />
-                <span>On Hold</span>
-              </span>
-              {onReactivate && (
-                <button
-                  type="button"
-                  onClick={(e) => {
-                    e.preventDefault();
-                    e.stopPropagation();
-                    onReactivate(opening.id, opening.title);
-                  }}
-                  className="text-[11px] font-medium text-accent hover:underline cursor-pointer"
-                >
-                  Reactivate
-                </button>
-              )}
-            </div>
-          ) : opening.urgency === 'High' ? (
-            <span className="inline-flex items-center gap-1.5 text-[11px] font-semibold text-amber-600 dark:text-amber-400 select-none">
-              <span className="h-1.5 w-1.5 rounded-full bg-amber-500 animate-pulse" />
-              <span>Urgent</span>
-            </span>
-          ) : (
-            <span className="inline-flex items-center gap-1.5 text-[11px] font-medium text-text-muted select-none">
-              <span
-                className={cn(
-                  'h-1.5 w-1.5 rounded-full',
-                  opening.status === 'Open'
-                    ? 'bg-emerald-500'
-                    : opening.status === 'Closed' || opening.status === 'Filled'
-                      ? 'bg-text-subtle'
-                      : 'bg-accent'
-                )}
-              />
-              <span>{opening.status}</span>
-            </span>
-          )}
-        </div>
-      </div>
-    </Link>
-  );
-}
+import { OpeningCard } from './opening-card';
 
 export function ActiveOpeningsCard({
   openings,
@@ -358,7 +243,7 @@ export function ActiveOpeningsCard({
                           (c) => c.openingId === opening.id
                         );
                         return (
-                          <OpeningDashboardCard
+                          <OpeningCard
                             key={opening.id}
                             opening={opening}
                             candidatesCount={openingCandidates.length}

@@ -58,150 +58,7 @@ interface ColumnDef {
   openings: Opening[];
 }
 
-/**
- * Opening Card - Direct sibling styling to CandidateCard
- * Identical typography, boxless experience/budget, sharp hierarchy, and hover effects.
- */
-function MinimalOpeningCard({
-  opening,
-  candidates,
-  onStatusChange,
-  onAiMatch,
-}: {
-  opening: Opening;
-  candidates: Candidate[];
-  onStatusChange: (id: string, newStatus: OpeningStatus, title: string) => void;
-  onAiMatch?: (opening: Opening) => void;
-}) {
-  const allowedTransitions = getNextAllowedOpeningStatuses(opening.status);
-
-  return (
-    <div
-      className={cn(
-        'group relative flex flex-col justify-between rounded-[8px] border border-border/80 bg-surface-1 p-3 shadow-2xs transition-all duration-150',
-        'hover:border-border-strong hover:shadow-xs select-none'
-      )}
-    >
-      {/* 1. Top Header: Position Title (Primary Hero) + Boxless Experience & Actions */}
-      <div className="flex items-center justify-between gap-2 mb-2">
-        <Link
-          href={`/openings/${opening.id}`}
-          className="text-[13.5px] font-semibold text-text tracking-tight leading-snug group-hover:text-accent transition-colors min-w-0 flex-1 truncate"
-          title={opening.title}
-        >
-          {opening.title}
-        </Link>
-        <div className="flex items-center gap-1.5 shrink-0">
-          <span className="text-[11.5px] font-semibold text-text tabular-nums select-none">
-            {opening.experienceRange.min === opening.experienceRange.max
-              ? `${opening.experienceRange.min}y exp`
-              : `${opening.experienceRange.min}-${opening.experienceRange.max}y exp`}
-          </span>
-
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <button
-                type="button"
-                aria-label="Opening actions"
-                className="cursor-pointer text-text-subtle/60 hover:text-text transition-colors p-0.5 rounded-[4px] hover:bg-surface-2 focus:outline-none flex items-center justify-center shrink-0"
-              >
-                <MoreHorizontal className="h-3.5 w-3.5" />
-              </button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align="end" className="w-48">
-              <DropdownMenuItem asChild>
-                <Link href={`/openings/${opening.id}`} className="flex items-center gap-2">
-                  <Eye className="h-4 w-4" />
-                  <span>View Requisition</span>
-                </Link>
-              </DropdownMenuItem>
-              <DropdownMenuItem asChild>
-                <Link href={`/openings/${opening.id}/edit`} className="flex items-center gap-2">
-                  <Edit className="h-4 w-4" />
-                  <span>Edit Details</span>
-                </Link>
-              </DropdownMenuItem>
-              {allowedTransitions.length > 0 && (
-                <>
-                  <DropdownMenuSeparator />
-                  <DropdownMenuLabel className="text-text-subtle text-[11px]">
-                    Move Status
-                  </DropdownMenuLabel>
-                  {allowedTransitions.map((nextStatus) => (
-                    <DropdownMenuItem
-                      key={nextStatus}
-                      onClick={() => onStatusChange(opening.id, nextStatus, opening.title)}
-                      className="flex items-center gap-2"
-                    >
-                      <ArrowRightCircle className="text-accent h-3.5 w-3.5" />
-                      <span>Move to {nextStatus}</span>
-                    </DropdownMenuItem>
-                  ))}
-                </>
-              )}
-            </DropdownMenuContent>
-          </DropdownMenu>
-        </div>
-      </div>
-
-      {/* 2. Middle Body: Career Identity (Location & Headcount/Type) */}
-      <div className="space-y-1 my-0.5">
-        <div className="flex items-center gap-1.5 min-w-0 text-[12px] font-semibold text-text leading-tight">
-          <MapPin className="h-3 w-3 shrink-0 text-text-subtle stroke-[1.75]" />
-          <span className="truncate">{opening.location}</span>
-        </div>
-
-        <div className="flex items-center gap-1.5 min-w-0 text-[11.5px] font-normal text-text-muted leading-tight">
-          <Briefcase className="h-3 w-3 shrink-0 text-text-subtle/80 stroke-[1.75]" />
-          <span className="truncate">{opening.employmentType}</span>
-        </div>
-      </div>
-
-      {/* 3. Bottom Footer: Clean Borderless Budget + Status & Applicants */}
-      <div className="border-t border-border/60 mt-2.5 pt-2 flex items-center justify-between gap-2">
-        <span className="text-[11.5px] font-semibold text-text tabular-nums select-none">
-          {formatCtcRange(opening.budgetRange.min, opening.budgetRange.max)}
-        </span>
-
-        <div className="flex items-center gap-1.5 shrink-0">
-          <button
-            type="button"
-            onClick={(e) => {
-              e.stopPropagation();
-              onAiMatch?.(opening);
-            }}
-            className="border-accent/30 bg-accent/10 text-accent hover:bg-accent/20 inline-flex items-center gap-1 rounded-[4px] border px-1.5 py-0.5 text-[10px] font-semibold transition-colors cursor-pointer"
-            title="Scan & Match Candidates with AI"
-          >
-            <Sparkles className="h-2.5 w-2.5" />
-            <span>AI Match</span>
-          </button>
-
-          {opening.urgency === 'High' ? (
-            <span className="inline-flex items-center gap-1.5 text-[11px] font-semibold text-amber-600 dark:text-amber-400 select-none">
-              <span className="h-1.5 w-1.5 rounded-full bg-amber-500 animate-pulse" />
-              <span>Urgent</span>
-            </span>
-          ) : (
-            <span className="inline-flex items-center gap-1.5 text-[11px] font-medium text-text-muted select-none">
-              <span
-                className={cn(
-                  'h-1.5 w-1.5 rounded-full',
-                  opening.status === 'Open'
-                    ? 'bg-emerald-500'
-                    : opening.status === 'Closed' || opening.status === 'Filled'
-                      ? 'bg-text-subtle'
-                      : 'bg-accent'
-                )}
-              />
-              <span>{opening.status}</span>
-            </span>
-          )}
-        </div>
-      </div>
-    </div>
-  );
-}
+import { OpeningCard } from '@/components/hro/opening-card';
 
 const OPENINGS_PER_PAGE = 4;
 
@@ -317,15 +174,20 @@ export function OpeningColumnsView({
                       <p className="text-[11.5px] text-text-subtle">No roles</p>
                     </div>
                   ) : (
-                    visibleOpenings.map((opening) => (
-                      <MinimalOpeningCard
-                        key={opening.id}
-                        opening={opening}
-                        candidates={candidates}
-                        onStatusChange={onStatusChange}
-                        onAiMatch={onAiMatch}
-                      />
-                    ))
+                    visibleOpenings.map((opening) => {
+                      const openingCandidates = candidates.filter(
+                        (c) => c.openingId === opening.id
+                      );
+                      return (
+                        <OpeningCard
+                          key={opening.id}
+                          opening={opening}
+                          candidatesCount={openingCandidates.length}
+                          onStatusChange={onStatusChange}
+                          onAiMatch={onAiMatch}
+                        />
+                      );
+                    })
                   )}
                 </div>
               </div>
