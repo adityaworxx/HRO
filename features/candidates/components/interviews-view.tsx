@@ -1,4 +1,5 @@
 'use client';
+import { CompanyLogo } from '@/components/hro/company-logo';
 
 import * as React from 'react';
 import { useCandidates, useScheduleInterview, useRecordInterviewOutcome } from '../hooks';
@@ -435,50 +436,47 @@ export function InterviewsView() {
                       className="group relative flex flex-col justify-between rounded-[8px] border border-border/80 bg-surface-1 p-4 shadow-2xs transition-all duration-150 hover:border-border-strong hover:shadow-xs space-y-3.5"
                     >
                       <div className="space-y-3">
-                        {/* 1. Header: Avatar + Candidate Name & Role + Status Badge */}
+                        {/* 1. Header: Avatar + Candidate Name & Role + Status */}
                         <div className="flex items-start justify-between gap-3">
-                          <div className="flex items-center gap-2.5 min-w-0 flex-1">
-                            <Avatar className="h-10 w-10 shrink-0 border border-border/70 bg-surface-2 shadow-2xs">
-                              <AvatarFallback className="text-[12px] font-semibold text-text bg-surface-2 tracking-wide">
+                          <div className="flex items-start gap-3 min-w-0 flex-1">
+                            <Avatar className="h-9 w-9 shrink-0 border border-border/70 bg-surface-2 shadow-2xs mt-0.5">
+                              <AvatarFallback className="text-[11.5px] font-semibold text-text bg-surface-2 tracking-wide">
                                 {candidate.name.slice(0, 2).toUpperCase()}
                               </AvatarFallback>
                             </Avatar>
                             <div className="min-w-0 flex-1">
-                              <h4 className="text-[14px] font-semibold text-text tracking-tight leading-snug truncate">
+                              <h4 className="text-[13.5px] font-semibold text-text tracking-tight leading-snug truncate">
                                 {candidate.name}
                               </h4>
                               <p className="text-[12px] text-text-muted leading-tight truncate mt-0.5">
-                                <span className="font-medium text-text">{candidate.currentRole}</span>
+                                <span>{candidate.currentRole}</span>
                                 <span className="text-text-subtle/80 mx-1">at</span>
-                                <span className="font-medium text-text">{candidate.currentCompany}</span>
+                                <span className="inline-flex items-center gap-1 text-text font-medium"><CompanyLogo company={candidate.currentCompany} className="h-3.5 w-3.5 rounded-[3px] shrink-0 shadow-2xs" /><span>{candidate.currentCompany}</span></span>
                               </p>
                               {opening && (
-                                <p className="text-[11px] text-text-subtle truncate mt-0.5 flex items-center gap-1">
-                                  <Briefcase className="h-3 w-3 shrink-0" />
-                                  <span>Role:</span>
-                                  <span className="font-semibold text-text">{opening.title}</span>
-                                  <span>({opening.department})</span>
+                                <p className="text-[11.5px] text-text-subtle truncate mt-1 flex items-center gap-1.5">
+                                  <Briefcase className="h-3 w-3 shrink-0 text-text-subtle/80" />
+                                  <span className="font-medium text-text-muted">{opening.title}</span>
+                                  <span className="text-text-subtle/60">•</span>
+                                  <span>{opening.department}</span>
                                 </p>
                               )}
                             </div>
                           </div>
 
-                          {/* Outcome / Scheduling Badge */}
-                          <div className="shrink-0 flex items-center gap-1.5">
+                          {/* Status Text (Clean, unboxed) */}
+                          <div className="shrink-0 pt-0.5">
                             {candidate.interviewOutcome !== 'Pending' ? (
-                              <div className={cn('flex items-center gap-1.5 px-2 py-0.5 rounded-full border text-[11px] font-semibold', outcomeConfig.badgeBg)}>
-                                <span className={cn('h-1.5 w-1.5 rounded-full', outcomeConfig.dot)} />
-                                <span className={outcomeConfig.text}>{outcomeConfig.label}</span>
-                              </div>
+                              <span className={cn('text-[12px] font-medium select-none', outcomeConfig.text)}>
+                                {outcomeConfig.label}
+                              </span>
                             ) : !isScheduled ? (
-                              <span className="inline-flex items-center gap-1 rounded-full border border-warning/40 bg-warning/15 px-2 py-0.5 text-[10.5px] font-semibold text-warning">
-                                <Clock className="h-3 w-3" />
-                                <span>{isHr ? 'Needs HR Call' : 'HR Scheduling'}</span>
+                              <span className="text-[12px] font-medium text-warning select-none">
+                                {isHr ? 'Needs HR Call' : 'HR Scheduling'}
                               </span>
                             ) : (
-                              <span className="inline-flex items-center gap-1 rounded-full border border-success/40 bg-success/15 px-2 py-0.5 text-[10.5px] font-semibold text-success">
-                                <CheckCircle2 className="h-3 w-3" />
-                                <span>Slot Confirmed</span>
+                              <span className="text-[12px] font-medium text-success select-none">
+                                Slot Confirmed
                               </span>
                             )}
                           </div>

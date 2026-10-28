@@ -15,6 +15,7 @@ import type { Candidate } from '@/types/entities';
 import { rankCandidatesForOpening, type CandidateMatchResult } from '@/lib/ai-matcher';
 import { StatusBadge } from '@/components/hro/status-badge';
 import { SourceBadge } from '@/components/hro/source-badge';
+import { CompanyLogo } from '@/components/hro/company-logo';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -343,40 +344,28 @@ export function OpeningDetail({ id }: OpeningDetailProps) {
         </div>
       </div>
 
-      {/* AI HERO CALLOUT BANNER */}
-      <div className="border-accent/30 bg-accent/10 flex flex-col gap-3 rounded-[var(--radius-md)] border p-4 sm:flex-row sm:items-center sm:justify-between shadow-xs">
-        <div className="flex items-center gap-3">
-          <div className="bg-accent text-white flex h-10 w-10 shrink-0 items-center justify-center rounded-full shadow-xs">
-            <Sparkles className="h-5 w-5 fill-current" />
-          </div>
-          <div>
-            <div className="flex items-center gap-2 flex-wrap">
-              <span className="text-text text-[14px] font-bold">
-                Real-Time AI Candidate Screening
-              </span>
-              <span className="border-accent/40 bg-accent/20 text-accent rounded-full border px-2 py-0.2 font-mono text-[11px] font-bold">
-                {strongMatches.length} High-Fit Matches
-              </span>
+      {/* AI CALLOUT BANNER (Only shown when not on ai-matcher tab) */}
+      {activeTab !== 'ai-matcher' && strongMatches.length > 0 && (
+        <div className="border-border/70 bg-surface-1 flex flex-col gap-3 rounded-[8px] border p-3.5 sm:flex-row sm:items-center sm:justify-between shadow-2xs select-none">
+          <div className="flex items-center gap-2.5">
+            <span className="h-2 w-2 rounded-full bg-accent animate-pulse" />
+            <div className="text-[12.5px] text-text font-medium">
+              <span className="font-semibold">{strongMatches.length} strong candidate {strongMatches.length === 1 ? 'fit' : 'fits'}</span> screened by AI for {opening.title}
             </div>
-            <p className="text-text-muted mt-0.5 text-[12px]">
-              AI evaluated {allCandidates.length} candidate profiles in the database against{' '}
-              <span className="text-text font-medium">{opening.title}</span> screening criteria.
-            </p>
           </div>
-        </div>
 
-        <Button
-          type="button"
-          variant="primary"
-          size="sm"
-          onClick={() => setActiveTab('ai-matcher')}
-          className="h-8.5 shrink-0 gap-1.5 text-[12px] font-semibold"
-        >
-          <Sparkles className="h-3.5 w-3.5" />
-          <span>Review AI Fits ({strongMatches.length})</span>
-          <ArrowRight className="h-3.5 w-3.5" />
-        </Button>
-      </div>
+          <Button
+            type="button"
+            variant="outline"
+            size="sm"
+            onClick={() => setActiveTab('ai-matcher')}
+            className="h-7.5 px-3 shrink-0 gap-1.5 text-[11.5px] font-semibold border-border/80 hover:bg-surface-2 text-text"
+          >
+            <span>View Matches</span>
+            <ArrowRight className="h-3 w-3" />
+          </Button>
+        </div>
+      )}
 
       {/* Metric Stat Cards */}
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
@@ -442,18 +431,14 @@ export function OpeningDetail({ id }: OpeningDetailProps) {
                     <div>
                       <div className="flex items-center gap-2">
                         <CardTitle className="text-text text-[16px] font-semibold">
-                          AI Neural Talent Ranking
+                          AI Talent Match
                         </CardTitle>
-                        <Badge
-                          variant="default"
-                          className="border-accent/30 bg-accent/15 text-accent text-[10px] font-bold font-mono"
-                        >
-                          Real-Time Engine
-                        </Badge>
+                        <span className="text-[11px] font-mono text-text-subtle font-normal">
+                          ({allCandidates.length} evaluated)
+                        </span>
                       </div>
                       <p className="text-text-muted mt-0.5 text-[12px]">
-                        Evaluated {allCandidates.length} candidate profiles across required skills,
-                        experience, budget, and notice parameters.
+                        Ranked candidates matched against core skills, experience, and compensation requirements.
                       </p>
                     </div>
 
@@ -462,110 +447,106 @@ export function OpeningDetail({ id }: OpeningDetailProps) {
                       variant="outline"
                       size="sm"
                       onClick={handleBatchShortlistTop}
-                      className="border-accent/30 bg-accent/10 text-accent hover:bg-accent/20 h-8 gap-1.5 text-[11px] font-semibold shrink-0"
+                      className="border-border/80 hover:bg-surface-2 text-text h-7.5 px-3 text-[11.5px] font-semibold rounded-[6px] shrink-0 transition-colors shadow-2xs cursor-pointer"
                     >
-                      <Zap className="h-3.5 w-3.5 fill-current" />
-                      <span>Shortlist Top 3 Fits</span>
+                      Shortlist Top 3
                     </Button>
                   </div>
                 </CardHeader>
 
                 <CardContent className="space-y-4 pt-4">
                   {/* Search and Filters */}
-                  <div className="space-y-3">
+                  <div className="space-y-2.5">
                     <div className="relative">
-                      <Search className="text-text-subtle pointer-events-none absolute top-2.5 left-3 h-4 w-4" />
+                      <Search className="text-text-subtle pointer-events-none absolute top-2.5 left-3 h-4 w-4 stroke-[1.75]" />
                       <Input
                         value={searchQuery}
                         onChange={(e) => setSearchQuery(e.target.value)}
-                        placeholder="Search candidate by name, company, or screened skill..."
-                        className="bg-surface-2 h-9 pl-9 text-[13px]"
+                        placeholder="Search candidate by name, company, or skill..."
+                        className="bg-surface-2/40 border-border/60 hover:border-border focus:bg-surface-1 h-8.5 pl-9 pr-8 text-[12.5px] rounded-[7px] shadow-2xs transition-all w-full"
                       />
                       {searchQuery && (
                         <button
                           type="button"
                           onClick={() => setSearchQuery('')}
-                          className="text-text-subtle hover:text-text absolute top-2.5 right-3"
+                          className="text-text-subtle hover:text-text absolute top-2.5 right-3 cursor-pointer"
                         >
-                          <X className="h-4 w-4" />
+                          <X className="h-3.5 w-3.5" />
                         </button>
                       )}
                     </div>
 
                     <div className="flex flex-wrap items-center justify-between gap-2 text-[12px]">
-                      {/* Filter Pills */}
-                      <div className="flex flex-wrap items-center gap-1.5">
+                      {/* Apple-style Segmented Control */}
+                      <div className="inline-flex items-center gap-1 rounded-[7px] border border-border/60 bg-surface-2/50 p-0.5 select-none">
                         <button
                           type="button"
                           onClick={() => setSelectedTier('all')}
                           className={cn(
-                            'h-7.5 px-2.5 rounded-[6px] border text-[11.5px] font-medium transition-all cursor-pointer',
+                            'h-6.5 px-2.5 rounded-[5px] text-[11.5px] font-medium transition-all cursor-pointer',
                             selectedTier === 'all'
-                              ? 'border-accent/40 bg-accent/15 text-accent font-semibold shadow-2xs'
-                              : 'border-border/70 bg-surface-2/40 text-text-muted hover:text-text hover:bg-surface-2'
+                              ? 'bg-surface-1 text-text font-semibold shadow-2xs border border-border/60'
+                              : 'text-text-muted hover:text-text'
                           )}
                         >
-                          All Matches ({rankedMatches.length})
+                          All ({rankedMatches.length})
                         </button>
                         <button
                           type="button"
                           onClick={() => setSelectedTier('strong')}
                           className={cn(
-                            'h-7.5 px-2.5 rounded-[6px] border text-[11.5px] font-medium transition-all cursor-pointer inline-flex items-center gap-1.5',
+                            'h-6.5 px-2.5 rounded-[5px] text-[11.5px] font-medium transition-all cursor-pointer',
                             selectedTier === 'strong'
-                              ? 'border-accent/40 bg-accent/15 text-accent font-semibold shadow-2xs'
-                              : 'border-border/70 bg-surface-2/40 text-text-muted hover:text-text hover:bg-surface-2'
+                              ? 'bg-surface-1 text-accent font-semibold shadow-2xs border border-border/60'
+                              : 'text-text-muted hover:text-text'
                           )}
                         >
-                          <span className="h-1.5 w-1.5 rounded-full bg-accent animate-pulse" />
-                          <span>Strong Fits ({strongMatches.length})</span>
+                          Strong ({strongMatches.length})
                         </button>
                         <button
                           type="button"
                           onClick={() => setSelectedTier('good')}
                           className={cn(
-                            'h-7.5 px-2.5 rounded-[6px] border text-[11.5px] font-medium transition-all cursor-pointer inline-flex items-center gap-1.5',
+                            'h-6.5 px-2.5 rounded-[5px] text-[11.5px] font-medium transition-all cursor-pointer',
                             selectedTier === 'good'
-                              ? 'border-emerald-500/40 bg-emerald-500/15 text-emerald-600 dark:text-emerald-400 font-semibold shadow-2xs'
-                              : 'border-border/70 bg-surface-2/40 text-text-muted hover:text-text hover:bg-surface-2'
+                              ? 'bg-surface-1 text-emerald-600 dark:text-emerald-400 font-semibold shadow-2xs border border-border/60'
+                              : 'text-text-muted hover:text-text'
                           )}
                         >
-                          <span className="h-1.5 w-1.5 rounded-full bg-emerald-500" />
-                          <span>Good Matches ({goodMatches.length})</span>
+                          Good ({goodMatches.length})
                         </button>
                         <button
                           type="button"
                           onClick={() => setSelectedTier('fast')}
                           className={cn(
-                            'h-7.5 px-2.5 rounded-[6px] border text-[11.5px] font-medium transition-all cursor-pointer inline-flex items-center gap-1.5',
+                            'h-6.5 px-2.5 rounded-[5px] text-[11.5px] font-medium transition-all cursor-pointer',
                             selectedTier === 'fast'
-                              ? 'border-border-strong bg-surface-3 text-text font-semibold shadow-2xs'
-                              : 'border-border/70 bg-surface-2/40 text-text-muted hover:text-text hover:bg-surface-2'
+                              ? 'bg-surface-1 text-text font-semibold shadow-2xs border border-border/60'
+                              : 'text-text-muted hover:text-text'
                           )}
                         >
-                          <Clock className="h-3 w-3 text-text-subtle" />
-                          <span>Fast Joiners ({fastJoiners.length})</span>
+                          Fast Joiners ({fastJoiners.length})
                         </button>
                       </div>
 
-                      {/* Custom Sort Select */}
+                      {/* Compact Sort Select */}
                       <div className="flex items-center gap-1.5 shrink-0">
                         <Select value={sortBy} onValueChange={(val) => setSortBy(val as any)}>
-                          <SelectTrigger className="h-7.5 w-[165px] gap-1.5 border-border/70 bg-surface-2/40 hover:bg-surface-2 text-text px-2.5 text-[11.5px] font-medium rounded-[6px] shadow-2xs">
-                            <SelectValue placeholder="Sort candidate matches" />
+                          <SelectTrigger className="h-7 w-[125px] gap-1 border-border/60 bg-surface-1 hover:bg-surface-2 text-text px-2 text-[11.5px] font-medium rounded-[6px] shadow-2xs">
+                            <SelectValue placeholder="Sort" />
                           </SelectTrigger>
-                          <SelectContent align="end" className="min-w-[180px]">
-                            <SelectItem value="score" className="text-[12px] py-1.5 rounded-[5px]">
-                              AI Match Score (Highest)
+                          <SelectContent align="end" className="min-w-[150px]">
+                            <SelectItem value="score" className="text-[12px] py-1.5">
+                              Best Match
                             </SelectItem>
-                            <SelectItem value="experience" className="text-[12px] py-1.5 rounded-[5px]">
-                              Experience (Highest)
+                            <SelectItem value="experience" className="text-[12px] py-1.5">
+                              Experience
                             </SelectItem>
-                            <SelectItem value="notice" className="text-[12px] py-1.5 rounded-[5px]">
-                              Notice Period (Fastest)
+                            <SelectItem value="notice" className="text-[12px] py-1.5">
+                              Fastest Notice
                             </SelectItem>
-                            <SelectItem value="ctc" className="text-[12px] py-1.5 rounded-[5px]">
-                              Expected CTC (Lowest)
+                            <SelectItem value="ctc" className="text-[12px] py-1.5">
+                              Lowest CTC
                             </SelectItem>
                           </SelectContent>
                         </Select>
@@ -575,17 +556,17 @@ export function OpeningDetail({ id }: OpeningDetailProps) {
 
                   {/* Ranked Candidate List */}
                   {filteredMatches.length === 0 ? (
-                    <div className="border-border/60 bg-surface-2/30 flex flex-col items-center justify-center rounded-[8px] border border-dashed py-12 text-center select-none">
-                      <Filter className="text-text-subtle h-7 w-7" />
-                      <p className="text-text mt-2.5 text-[13px] font-semibold">
-                        No candidates match your current filter
+                    <div className="border-border/60 bg-surface-2/20 flex flex-col items-center justify-center rounded-[8px] border border-dashed py-12 text-center select-none">
+                      <Filter className="text-text-subtle h-6 w-6 stroke-[1.5]" />
+                      <p className="text-text mt-2 text-[13px] font-medium">
+                        No matching candidates
                       </p>
-                      <p className="text-text-muted mt-0.5 text-[12px]">
-                        Try switching to "All Matches" or adjusting your search keyword.
+                      <p className="text-text-muted mt-0.5 text-[11.5px]">
+                        Try adjusting your search keyword or relaxing the filters.
                       </p>
                     </div>
                   ) : (
-                    <div className="space-y-3.5">
+                    <div className="space-y-3">
                       {filteredMatches.map((match) => {
                         const { candidate, score, tier, summary, matchedMustSkills, missingMustSkills } =
                           match;
@@ -596,181 +577,114 @@ export function OpeningDetail({ id }: OpeningDetailProps) {
                         const isManagerApproved =
                           isAssigned && (candidate.managerDecision === 'Shortlisted' || candidate.stage === 'Interview');
                         const isQuestionsExpanded = Boolean(expandedQuestionsMap[candidate.id]);
+                        const isImmediate = candidate.noticePeriod.toLowerCase().includes('immediate');
 
                         return (
                           <div
                             key={candidate.id}
-                            className={cn(
-                              'group relative flex flex-col justify-between rounded-[10px] border border-border/80 bg-surface-1 p-4 shadow-2xs transition-all duration-150',
-                              'hover:border-border-strong hover:shadow-xs space-y-3.5 select-none',
-                              tier === 'Strong Fit' && 'border-accent/40 bg-gradient-to-b from-accent/[0.03] to-surface-1'
-                            )}
+                            className="group relative flex flex-col justify-between rounded-[12px] border border-border/70 bg-surface-1/95 p-3.5 backdrop-blur-md transition-all duration-200 ease-out shadow-[0_2px_8px_rgba(0,0,0,0.03),0_1px_2px_rgba(0,0,0,0.02)] dark:shadow-[0_2px_12px_rgba(0,0,0,0.35)] hover:-translate-y-0.5 hover:border-border-strong hover:shadow-[0_8px_20px_rgba(0,0,0,0.06)] dark:hover:shadow-[0_8px_24px_rgba(0,0,0,0.5)] select-none space-y-2.5"
                           >
-                            {/* Card Header: Avatar + Meta + Match Score */}
-                            <div className="flex items-start justify-between gap-3">
-                              <div className="flex items-center gap-3 min-w-0 flex-1">
-                                <Avatar className="h-10 w-10 shrink-0 border border-border/70 bg-surface-2 shadow-2xs">
-                                  <AvatarFallback className="bg-surface-2 text-text text-[12px] font-semibold tracking-wide">
+                            {/* Row 1: Header (Avatar, Name, Role/Company & Match Score) */}
+                            <div className="flex items-start justify-between gap-2.5">
+                              <div className="flex items-center gap-2.5 min-w-0 flex-1">
+                                <Avatar className="h-8.5 w-8.5 shrink-0 border border-border/70 bg-surface-2 shadow-2xs">
+                                  <AvatarFallback className="bg-surface-2 text-text text-[11.5px] font-semibold tracking-wide">
                                     {candidate.name.slice(0, 2).toUpperCase()}
                                   </AvatarFallback>
                                 </Avatar>
 
                                 <div className="min-w-0 flex-1">
-                                  <div className="flex items-center gap-2 flex-wrap">
+                                  <div className="flex items-center gap-1.5 flex-wrap">
                                     <button
                                       type="button"
                                       onClick={() => handleInspect(candidate)}
-                                      className="text-text hover:text-accent font-bold text-[14px] truncate cursor-pointer text-left transition-colors"
+                                      className="text-[13.5px] font-bold text-text tracking-tight hover:text-accent transition-colors truncate cursor-pointer text-left"
                                     >
                                       {candidate.name}
                                     </button>
-                                    <SourceBadge source={candidate.source} variant="badge" />
+                                    <SourceBadge source={candidate.source} variant="plain" />
                                   </div>
-                                  <p className="text-text-muted text-[12px] truncate mt-0.5">
-                                    <span className="font-semibold text-text">{candidate.currentRole}</span>
-                                    <span className="text-text-subtle/80 mx-1">at</span>
-                                    <span className="font-medium text-text">{candidate.currentCompany}</span>
+                                  <p className="text-[11.5px] text-text-muted truncate mt-0.5 font-normal flex items-center gap-1.5">
+                                    <span>{candidate.currentRole}</span>
+                                    <span className="text-text-subtle/50">·</span>
+                                    <span className="inline-flex items-center gap-1 text-text font-medium truncate">
+                                      <CompanyLogo company={candidate.currentCompany} className="h-3.5 w-3.5 rounded-[3px] shrink-0" />
+                                      <span className="truncate">{candidate.currentCompany}</span>
+                                    </span>
                                   </p>
                                 </div>
                               </div>
 
-                              {/* Match Score Badge & Status */}
-                              <div className="flex flex-col items-end gap-1.5 shrink-0 select-none">
-                                {tier === 'Strong Fit' ? (
-                                  <span className="inline-flex items-center gap-1.5 rounded-full border border-accent/40 bg-accent/15 px-2.5 py-0.5 text-[11px] font-mono font-bold text-accent shadow-2xs">
-                                    <Sparkles className="h-3 w-3 animate-pulse" />
-                                    <span>{score}% Match • Strong Fit</span>
+                              <div className="flex flex-col items-end gap-0.5 shrink-0 select-none">
+                                <span className="font-mono text-[11.5px] font-bold text-accent tabular-nums bg-accent/10 px-2 py-0.5 rounded-[5px]">
+                                  {score}% Fit
+                                </span>
+                                {isSharedWithManager ? (
+                                  <span className="text-[10.5px] font-medium text-accent">
+                                    • In Manager Queue
                                   </span>
-                                ) : tier === 'Good Match' ? (
-                                  <span className="inline-flex items-center gap-1.5 rounded-full border border-emerald-500/40 bg-emerald-500/15 px-2.5 py-0.5 text-[11px] font-mono font-bold text-emerald-600 dark:text-emerald-400 shadow-2xs">
-                                    <Check className="h-3 w-3 stroke-[2.5]" />
-                                    <span>{score}% Match • Good Match</span>
+                                ) : isManagerApproved ? (
+                                  <span className="text-[10.5px] font-semibold text-emerald-600 dark:text-emerald-400">
+                                    • Shortlisted
                                   </span>
-                                ) : (
-                                  <span className="inline-flex items-center gap-1.5 rounded-full border border-border bg-surface-2 px-2.5 py-0.5 text-[11px] font-mono font-medium text-text-muted">
-                                    <span>{score}% Match</span>
-                                  </span>
-                                )}
-
-                                <div>
-                                  {isSharedWithManager ? (
-                                    <span className="inline-flex items-center gap-1 text-[11px] font-medium text-accent">
-                                      <Clock className="h-3 w-3 animate-pulse" />
-                                      <span>In Manager Queue</span>
-                                    </span>
-                                  ) : isManagerApproved ? (
-                                    <span className="inline-flex items-center gap-1 text-[11px] font-semibold text-emerald-600 dark:text-emerald-400">
-                                      <CheckCircle2 className="h-3.5 w-3.5" />
-                                      <span>Shortlisted</span>
-                                    </span>
-                                  ) : (
-                                    <span className="inline-flex items-center gap-1 text-[10.5px] font-medium text-text-subtle">
-                                      <span className="h-1.5 w-1.5 rounded-full bg-text-subtle/60" />
-                                      <span>{candidate.stage}</span>
-                                    </span>
-                                  )}
-                                </div>
+                                ) : null}
                               </div>
                             </div>
 
-                            {/* Core Parameters Row (3 Cells) */}
-                            <div className="grid grid-cols-3 gap-2 bg-surface-2/40 border border-border/60 rounded-[8px] p-2.5 text-[11.5px]">
-                              <div>
-                                <div className="flex items-center gap-1 text-[10.5px] uppercase font-semibold text-text-subtle">
-                                  <Briefcase className="h-3 w-3 text-text-subtle" />
-                                  <span>Experience</span>
-                                </div>
-                                <div className="text-text font-bold font-mono text-[13px] mt-0.5">
-                                  {candidate.experienceYears} Years
-                                </div>
-                                <span className="text-[10px] text-emerald-600 dark:text-emerald-400 font-medium block truncate mt-0.5">
-                                  {match.experienceVerdict.status === 'optimal'
-                                    ? '✓ Fits Requisition'
-                                    : match.experienceVerdict.label}
+                            {/* Row 2: Signature Unboxed Spec Row (Experience, CTC, Notice) */}
+                            <div className="flex items-center justify-between text-[11.5px] pt-0.5 pb-0.5 text-text-muted">
+                              <div className="flex items-center gap-2 min-w-0 truncate">
+                                <span className="font-medium text-text tabular-nums">
+                                  {candidate.experienceYears}y exp
                                 </span>
-                              </div>
-
-                              <div>
-                                <div className="flex items-center gap-1 text-[10.5px] uppercase font-semibold text-text-subtle">
-                                  <IndianRupee className="h-3 w-3 text-text-subtle" />
-                                  <span>Expected CTC</span>
-                                </div>
-                                <div className="text-emerald-600 dark:text-emerald-400 font-bold font-mono text-[13px] mt-0.5">
+                                <span className="text-border-strong">•</span>
+                                <span className="font-mono font-semibold text-emerald-600 dark:text-emerald-400 tabular-nums">
                                   {formatCtc(candidate.expectedCtc)}
-                                </div>
-                                <span className="text-[10px] text-text-subtle font-medium block truncate mt-0.5">
-                                  {match.budgetVerdict.status === 'within'
-                                    ? '✓ Within Budget'
-                                    : match.budgetVerdict.label}
                                 </span>
-                              </div>
-
-                              <div>
-                                <div className="flex items-center gap-1 text-[10.5px] uppercase font-semibold text-text-subtle">
-                                  <Clock className="h-3 w-3 text-text-subtle" />
-                                  <span>Notice Period</span>
-                                </div>
-                                <div className="text-text font-bold text-[13px] mt-0.5">
+                                <span className="text-border-strong">•</span>
+                                <span
+                                  className={
+                                    isImmediate
+                                      ? 'font-semibold text-emerald-600 dark:text-emerald-400'
+                                      : 'text-text-muted'
+                                  }
+                                >
                                   {candidate.noticePeriod}
-                                </div>
-                                <span className="text-[10px] text-text-subtle font-medium block truncate mt-0.5">
-                                  {candidate.noticePeriod.toLowerCase().includes('immediate')
-                                    ? '⚡ Immediate Joining'
-                                    : 'Available soon'}
                                 </span>
                               </div>
+
+                              <span className="text-[10.5px] font-mono text-text-subtle shrink-0">
+                                {matchedMustSkills.length}/{matchedMustSkills.length + missingMustSkills.length} skills verified
+                              </span>
                             </div>
 
-                            {/* Screened Skills Chips */}
-                            <div className="space-y-1.5">
-                              <div className="flex items-center justify-between text-[11px] font-semibold uppercase tracking-wider text-text-subtle">
-                                <span>Screened Competencies</span>
-                                <span className="font-mono text-[10px] lowercase font-normal">
-                                  {matchedMustSkills.length} of {matchedMustSkills.length + missingMustSkills.length} verified
+                            {/* Row 3: Competencies (Clean Unboxed Tags) */}
+                            <div className="flex flex-wrap gap-1">
+                              {matchedMustSkills.map((s) => (
+                                <span
+                                  key={s}
+                                  className="text-[11px] font-medium text-text bg-surface-2 px-2 py-0.5 rounded-[4px] border border-border/60"
+                                >
+                                  {s}
                                 </span>
-                              </div>
-                              <div className="flex flex-wrap gap-1.5">
-                                {matchedMustSkills.map((s) => (
-                                  <span
-                                    key={s}
-                                    className="border-border/70 bg-surface-2 text-text inline-flex items-center gap-1 rounded-[5px] border px-2 py-0.5 text-[11px] font-medium"
-                                  >
-                                    <Check className="h-2.5 w-2.5 text-emerald-500 stroke-[3]" />
-                                    <span>{s}</span>
-                                  </span>
-                                ))}
-
-                                {missingMustSkills.map((s) => (
-                                  <span
-                                    key={s}
-                                    className="border-border/50 bg-surface-2/30 text-text-subtle inline-flex items-center gap-1 rounded-[5px] border border-dashed px-2 py-0.5 text-[11px] font-normal opacity-75"
-                                    title="Skill not explicitly verified in candidate profile"
-                                  >
-                                    <AlertTriangle className="h-2.5 w-2.5 text-amber-500/80" />
-                                    <span>{s}</span>
-                                  </span>
-                                ))}
-                              </div>
+                              ))}
+                              {missingMustSkills.map((s) => (
+                                <span
+                                  key={s}
+                                  className="text-[11px] font-normal text-text-subtle/60 px-1.5 py-0.5 rounded-[4px] border border-border/40 border-dashed"
+                                  title="Skill not listed in candidate profile"
+                                >
+                                  {s}
+                                </span>
+                              ))}
                             </div>
 
-                            {/* AI Reasoning Callout */}
-                            <div className="border-accent/25 bg-accent/5 rounded-[8px] border p-3 space-y-2">
-                              <div className="flex items-center justify-between gap-2">
-                                <div className="flex items-center gap-1.5 font-semibold text-text text-[11.5px]">
-                                  <Sparkles className="h-3.5 w-3.5 text-accent" />
-                                  <span>AI Fit Reasoning</span>
-                                </div>
-                                <span className="font-mono text-[10.5px] font-semibold text-accent">
-                                  {score}% Conviction
-                                </span>
-                              </div>
-                              <p className="text-text-muted text-[12px] leading-relaxed font-normal">
-                                {summary}
-                              </p>
+                            {/* Row 4: Apple Intelligence Fit Summary */}
+                            <div className="text-[11.5px] text-text-muted leading-relaxed pl-2.5 border-l-2 border-accent/40 space-y-1">
+                              <p>{summary}</p>
 
-                              {/* Probing Technical Questions (Collapsible) */}
                               {match.suggestedQuestions && match.suggestedQuestions.length > 0 && (
-                                <div className="pt-2 border-t border-accent/15">
+                                <div className="pt-0.5">
                                   <button
                                     type="button"
                                     onClick={() =>
@@ -779,21 +693,18 @@ export function OpeningDetail({ id }: OpeningDetailProps) {
                                         [candidate.id]: !prev[candidate.id],
                                       }))
                                     }
-                                    className="flex items-center justify-between w-full text-left text-[11px] font-medium text-text-muted hover:text-text cursor-pointer transition-colors"
+                                    className="text-[10.5px] font-medium text-accent hover:underline cursor-pointer inline-flex items-center gap-1"
                                   >
-                                    <span className="flex items-center gap-1">
-                                      <Lightbulb className="h-3 w-3 text-accent" />
-                                      <span>AI Probing Questions ({match.suggestedQuestions.length})</span>
-                                    </span>
+                                    <span>Suggested interview questions ({match.suggestedQuestions.length})</span>
                                     <ChevronDown
                                       className={cn(
-                                        'h-3.5 w-3.5 text-text-subtle transition-transform duration-150',
+                                        'h-3 w-3 text-text-subtle transition-transform duration-150',
                                         isQuestionsExpanded && 'rotate-180'
                                       )}
                                     />
                                   </button>
                                   {isQuestionsExpanded && (
-                                    <ul className="mt-2 space-y-1.5 pl-3 border-l-2 border-accent/30 text-[11.5px] text-text-muted">
+                                    <ul className="mt-1 space-y-1 text-[11px] text-text-muted list-disc pl-3">
                                       {match.suggestedQuestions.map((q, qIdx) => (
                                         <li key={qIdx} className="leading-snug">
                                           {q}
@@ -805,48 +716,35 @@ export function OpeningDetail({ id }: OpeningDetailProps) {
                               )}
                             </div>
 
-                            {/* Action Row */}
-                            <div className="flex items-center justify-between pt-2.5 border-t border-border/60">
+                            {/* Row 5: Action Footer */}
+                            <div className="border-t border-border/60 pt-2 flex items-center justify-between gap-2 text-[11px]">
                               <button
                                 type="button"
                                 onClick={() => handleInspect(candidate)}
-                                className="inline-flex items-center gap-1 text-[11.5px] font-medium text-text-muted hover:text-accent transition-colors cursor-pointer"
+                                className="inline-flex items-center gap-1 text-[11px] font-medium text-text-subtle hover:text-accent transition-colors cursor-pointer"
                               >
-                                <span>View Full Dossier</span>
+                                <span>View dossier</span>
                                 <ArrowRight className="h-3 w-3" />
                               </button>
 
                               <div className="flex items-center gap-2">
                                 {isManagerApproved ? (
-                                  <Button
-                                    type="button"
-                                    size="sm"
-                                    variant="outline"
-                                    disabled
-                                    className="h-8 gap-1.5 text-[11.5px] text-emerald-600 dark:text-emerald-400 border-emerald-500/30 bg-emerald-500/10 font-semibold cursor-default"
-                                  >
-                                    <CheckCircle2 className="h-3.5 w-3.5 text-emerald-500" />
+                                  <span className="inline-flex items-center gap-1 text-[11px] font-semibold text-emerald-600 dark:text-emerald-400">
+                                    <CheckCircle2 className="h-3.5 w-3.5" />
                                     <span>Manager Approved</span>
-                                  </Button>
+                                  </span>
                                 ) : isSharedWithManager ? (
-                                  <Button
-                                    type="button"
-                                    size="sm"
-                                    variant="outline"
-                                    disabled
-                                    className="h-8 gap-1.5 text-[11.5px] text-accent border-accent/30 bg-accent/10 font-semibold cursor-default"
-                                  >
-                                    <Clock className="h-3.5 w-3.5 animate-pulse" />
+                                  <span className="inline-flex items-center gap-1 text-[11px] font-medium text-accent">
+                                    <Clock className="h-3 w-3 animate-pulse" />
                                     <span>In Manager Queue</span>
-                                  </Button>
+                                  </span>
                                 ) : (
                                   <Button
                                     type="button"
                                     size="sm"
-                                    variant="primary"
                                     disabled={assignCandidate.isPending}
                                     onClick={() => handleShortlistCandidate(match)}
-                                    className="h-8 gap-1.5 text-[11.5px] font-semibold rounded-[6px] shadow-xs cursor-pointer"
+                                    className="h-7 px-3 text-[11px] font-semibold rounded-[6px] shadow-2xs cursor-pointer"
                                   >
                                     <UserCheck className="h-3.5 w-3.5" />
                                     <span>Send to Manager</span>
@@ -1051,35 +949,32 @@ export function OpeningDetail({ id }: OpeningDetailProps) {
         <div className="lg:col-span-4">
           <div className="sticky top-0 space-y-4">
             {/* AI Intelligence Summary Card */}
-            <Card className="border-accent/30 bg-surface-1 shadow-sm">
+            <Card className="border-border bg-surface-1 shadow-2xs">
               <CardHeader className="border-border/80 border-b pb-3">
                 <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-1.5">
-                    <Sparkles className="text-accent h-4 w-4" />
-                    <CardTitle className="text-text text-[14px] font-semibold">
-                      AI Talent Radar
-                    </CardTitle>
-                  </div>
-                  <Badge variant="default" className="text-accent bg-accent/15 border-accent/30 font-mono text-[10px]">
+                  <CardTitle className="text-text text-[13.5px] font-semibold">
+                    AI Talent Match
+                  </CardTitle>
+                  <span className="text-[11px] font-mono font-medium text-accent">
                     Active
-                  </Badge>
+                  </span>
                 </div>
               </CardHeader>
-              <CardContent className="space-y-3 pt-4 text-[12px]">
-                <div className="border-border bg-surface-2/60 space-y-2 rounded-[var(--radius-sm)] border p-3">
-                  <div className="flex justify-between items-center">
-                    <span className="text-text-muted">Top Match Fit</span>
-                    <span className="text-accent font-bold font-mono">
+              <CardContent className="space-y-3 pt-3.5 text-[12px]">
+                <div className="space-y-2 text-[12px]">
+                  <div className="flex justify-between items-center text-text-muted">
+                    <span>Top Match</span>
+                    <span className="text-accent font-semibold font-mono tabular-nums">
                       {strongMatches[0] ? `${strongMatches[0].score}% (${strongMatches[0].candidate.name})` : 'N/A'}
                     </span>
                   </div>
-                  <div className="flex justify-between items-center">
-                    <span className="text-text-muted">High-Fit Candidates</span>
-                    <span className="text-text font-bold font-mono">{strongMatches.length} available</span>
+                  <div className="flex justify-between items-center text-text-muted">
+                    <span>High-Fit Candidates</span>
+                    <span className="text-text font-semibold font-mono tabular-nums">{strongMatches.length} available</span>
                   </div>
-                  <div className="flex justify-between items-center">
-                    <span className="text-text-muted">Budget Feasibility</span>
-                    <span className="text-success font-bold font-mono">100% within band</span>
+                  <div className="flex justify-between items-center text-text-muted">
+                    <span>Budget Feasibility</span>
+                    <span className="text-emerald-600 dark:text-emerald-400 font-semibold font-mono">Within band</span>
                   </div>
                 </div>
 
@@ -1087,10 +982,9 @@ export function OpeningDetail({ id }: OpeningDetailProps) {
                   type="button"
                   variant="outline"
                   onClick={handleBatchShortlistTop}
-                  className="w-full h-8 text-[11px] gap-1.5 border-accent/30 text-accent hover:bg-accent/10"
+                  className="w-full h-7.5 text-[11.5px] font-semibold border-border/80 hover:bg-surface-2 text-text rounded-[6px]"
                 >
-                  <Zap className="h-3.5 w-3.5 fill-current" />
-                  <span>Shortlist Top 3 Fits</span>
+                  <span>Shortlist Top 3</span>
                 </Button>
               </CardContent>
             </Card>

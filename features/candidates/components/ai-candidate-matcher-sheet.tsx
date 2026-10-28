@@ -9,6 +9,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import { SourceBadge } from '@/components/hro/source-badge';
+import { CompanyLogo } from '@/components/hro/company-logo';
 import {
   Select,
   SelectTrigger,
@@ -278,21 +279,21 @@ export function AiCandidateMatcherSheet({
             {/* Compact Sort Select */}
             <div className="flex items-center gap-1.5 shrink-0">
               <Select value={sortBy} onValueChange={(val) => setSortBy(val as any)}>
-                <SelectTrigger className="h-7 w-[140px] gap-1 border-border/60 bg-surface-1 hover:bg-surface-2 text-text px-2 text-[11.5px] font-medium rounded-[6px] shadow-2xs">
+                <SelectTrigger className="h-7 w-[125px] gap-1 border-border/60 bg-surface-1 hover:bg-surface-2 text-text px-2 text-[11.5px] font-medium rounded-[6px] shadow-2xs">
                   <SelectValue placeholder="Sort" />
                 </SelectTrigger>
-                <SelectContent align="end" className="min-w-[160px]">
+                <SelectContent align="end" className="min-w-[150px]">
                   <SelectItem value="score" className="text-[12px] py-1.5">
-                    Fit Score (Highest)
+                    Best Match
                   </SelectItem>
                   <SelectItem value="experience" className="text-[12px] py-1.5">
-                    Experience (Highest)
+                    Experience
                   </SelectItem>
                   <SelectItem value="notice" className="text-[12px] py-1.5">
-                    Notice (Fastest)
+                    Fastest Notice
                   </SelectItem>
                   <SelectItem value="ctc" className="text-[12px] py-1.5">
-                    Expected CTC (Lowest)
+                    Lowest CTC
                   </SelectItem>
                 </SelectContent>
               </Select>
@@ -328,7 +329,7 @@ export function AiCandidateMatcherSheet({
               return (
                 <div
                   key={candidate.id}
-                  className="rounded-[10px] border border-border/70 bg-surface-1 p-3.5 shadow-2xs transition-all duration-150 hover:border-border-strong hover:shadow-xs space-y-2.5 select-none"
+                  className="group relative flex flex-col justify-between rounded-[12px] border border-border/70 bg-surface-1/95 p-3.5 backdrop-blur-md transition-all duration-200 ease-out shadow-[0_2px_8px_rgba(0,0,0,0.03),0_1px_2px_rgba(0,0,0,0.02)] dark:shadow-[0_2px_12px_rgba(0,0,0,0.35)] hover:-translate-y-0.5 hover:border-border-strong hover:shadow-[0_8px_20px_rgba(0,0,0,0.06)] dark:hover:shadow-[0_8px_24px_rgba(0,0,0,0.5)] select-none space-y-2.5"
                 >
                   {/* Row 1: Header (Avatar, Name, Role/Company & Match Score) */}
                   <div className="flex items-start justify-between gap-2.5">
@@ -349,7 +350,7 @@ export function AiCandidateMatcherSheet({
                         <p className="text-[11.5px] text-text-muted truncate mt-0.5 font-normal">
                           <span>{candidate.currentRole}</span>
                           <span className="text-text-subtle/50 mx-1">·</span>
-                          <span>{candidate.currentCompany}</span>
+                          <span className="inline-flex items-center gap-1"><CompanyLogo company={candidate.currentCompany} className="h-3.5 w-3.5 rounded-[3px] shrink-0 shadow-2xs" /><span>{candidate.currentCompany}</span></span>
                         </p>
                       </div>
                     </div>

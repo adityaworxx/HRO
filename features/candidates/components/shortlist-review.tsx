@@ -9,6 +9,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import { CandidateCard } from '@/components/hro/candidate-card';
 import { SourceBadge } from '@/components/hro/source-badge';
+import { CompanyLogo } from '@/components/hro/company-logo';
 import { EmptyState } from '@/components/hro/empty-state';
 import {
   Sheet,
@@ -503,7 +504,7 @@ export function ShortlistReview() {
                       <p className="text-[12.5px] text-text-muted mt-0.5 truncate">
                         <span className="font-semibold text-text">{selectedCandidate.currentRole}</span>
                         <span className="text-text-subtle/80 mx-1">at</span>
-                        <span className="font-medium text-text">{selectedCandidate.currentCompany}</span>
+                        <span className="inline-flex items-center gap-1 font-medium text-text"><CompanyLogo company={selectedCandidate.currentCompany} className="h-3.5 w-3.5 rounded-[3px] shrink-0 shadow-2xs" /><span>{selectedCandidate.currentCompany}</span></span>
                       </p>
                     </div>
                   </div>

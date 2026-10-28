@@ -70,19 +70,20 @@ export function OpeningCard({
   return (
     <div
       className={cn(
-        'group relative flex flex-col justify-between rounded-[10px] border border-border/80 bg-surface-1 p-3.5 shadow-2xs transition-all duration-150',
-        'hover:border-border-strong hover:shadow-xs select-none space-y-2.5',
+        'group relative flex flex-col justify-between rounded-[14px] border border-border/70 bg-surface-1/95 p-4 backdrop-blur-md transition-all duration-200 ease-out',
+        'shadow-[0_2px_8px_rgba(0,0,0,0.03),0_1px_2px_rgba(0,0,0,0.02)] dark:shadow-[0_2px_12px_rgba(0,0,0,0.35)]',
+        'hover:-translate-y-0.5 hover:border-border-strong hover:shadow-[0_8px_20px_rgba(0,0,0,0.06)] dark:hover:shadow-[0_8px_24px_rgba(0,0,0,0.5)] select-none space-y-3',
         className
       )}
     >
       {/* 1. Header: Department Avatar + Opening Title & Experience Pill */}
       <div className="flex items-start justify-between gap-2.5">
         <div className="flex items-center gap-2.5 min-w-0 flex-1">
-          <div className="flex h-8.5 w-8.5 shrink-0 items-center justify-center rounded-full border border-border/70 bg-surface-2 text-accent shadow-2xs">
+          <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full border border-border/70 bg-surface-2 text-accent shadow-2xs">
             <DeptIcon className="h-4 w-4" />
           </div>
           <div className="min-w-0 flex-1">
-            <h4 className="text-[13.5px] font-bold text-text tracking-tight group-hover:text-accent transition-colors truncate">
+            <h4 className="text-[14px] font-semibold text-text tracking-[-0.015em] group-hover:text-accent transition-colors truncate">
               <Link
                 href={`/openings/${opening.id}`}
                 title={opening.title}
@@ -90,7 +91,7 @@ export function OpeningCard({
                 {opening.title}
               </Link>
             </h4>
-            <div className="flex items-center gap-1 text-[11.5px] text-text-muted truncate mt-0.5 font-normal">
+            <div className="flex items-center gap-1 text-[12px] text-text-muted truncate mt-0.5 font-normal">
               <MapPin className="h-3 w-3 shrink-0 text-text-subtle stroke-[1.75]" />
               <span className="truncate">{opening.location}</span>
             </div>
@@ -147,8 +148,8 @@ export function OpeningCard({
       </div>
 
       {/* 2. Middle Body: Department */}
-      <div className="flex items-center gap-1.5 min-w-0 text-[12px] font-medium text-text-muted">
-        <Building2 className="h-3 w-3 shrink-0 text-text-subtle/80 stroke-[1.75]" />
+      <div className="flex items-center gap-2 min-w-0 text-[12.5px] font-medium text-text">
+        <Building2 className="h-4 w-4 shrink-0 text-text-subtle/80 stroke-[1.75]" />
         <span className="truncate">{opening.department}</span>
       </div>
 
@@ -164,7 +165,7 @@ export function OpeningCard({
       </div>
 
       {/* 4. Bottom Meta: AI Match & Opening Status Badge */}
-      <div className="border-t border-border/60 pt-2 flex items-center justify-between gap-2 text-[11px]">
+      <div className="border-t border-border/40 pt-2.5 flex items-center justify-between gap-2 text-[11px]">
         <div className="flex items-center gap-1.5 min-w-0">
           {onAiMatch ? (
             <button
@@ -222,10 +223,10 @@ export function OpeningCard({
       {/* 5. Footer: View Requisition with Arrow */}
       <Link
         href={`/openings/${opening.id}`}
-        className="pt-2 border-t border-border/50 flex items-center justify-between text-[11.5px] text-text-subtle group-hover:text-accent transition-colors cursor-pointer"
+        className="pt-2.5 border-t border-border/40 flex items-center justify-between text-[11.5px] text-text-subtle group-hover:text-accent transition-colors cursor-pointer"
       >
         <span className="font-medium">{actionText || 'View Requisition Details'}</span>
-        <ArrowRight className="h-3.5 w-3.5 group-hover:translate-x-0.5 transition-transform" />
+        <ArrowRight className="h-3.5 w-3.5 opacity-60 group-hover:opacity-100 group-hover:translate-x-0.5 transition-all" />
       </Link>
     </div>
   );

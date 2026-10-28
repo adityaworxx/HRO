@@ -7,6 +7,7 @@ import { useCandidates } from '@/features/candidates/hooks';
 import { StatCard } from '@/components/hro/stat-card';
 import { StatusBadge } from '@/components/hro/status-badge';
 import { MetaSeparator } from '@/components/hro/meta-separator';
+import { ActiveOpeningsCard } from '@/components/hro/active-openings-card';
 import { Skeleton } from '@/components/ui/skeleton';
 import type { Candidate, Opening } from '@/types/entities';
 import {
@@ -193,20 +194,10 @@ export function ManagerDashboard() {
           {/* A. Candidates Awaiting Review Telemetry (Info-First, No Inline Action Clutter) */}
           <div className="border border-border bg-surface-1 flex flex-col rounded-[12px] p-5 shadow-xs">
             {/* Header with Direct Redirect Button */}
-            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-4 border-b border-border/60">
-              <div>
-                <div className="flex items-center gap-2.5">
-                  <h2 className="text-text text-[16px] leading-[24px] font-semibold tracking-[-0.01em]">
-                    Candidates Awaiting Review
-                  </h2>
-                  <span className="font-mono text-[11px] font-semibold text-accent bg-accent/10 border border-accent/25 px-2.5 py-0.5 rounded-full select-none">
-                    {pendingReviewCandidates.length} Profiles
-                  </span>
-                </div>
-                <p className="text-text-muted text-[12.5px] mt-0.5">
-                  Forwarded by talent acquisition. Review dossiers and make shortlist decisions on the queue page.
-                </p>
-              </div>
+            <div className="flex items-center justify-between gap-3 pb-4 border-b border-border/60">
+              <h2 className="text-text text-[16px] leading-[24px] font-semibold tracking-[-0.01em]">
+                Candidates Awaiting Review
+              </h2>
 
               <Link
                 href="/shortlist"
@@ -626,104 +617,16 @@ export function ManagerDashboard() {
           </div>
         </div>
 
-        {/* BOTTOM ROW (12 cols full-width): Active Requisitions Overview (Clean Table Redirecting to /openings) */}
+        {/* BOTTOM ROW (12 cols full-width): Active Openings (Department Columns & Cards format) */}
         <div className="col-span-12 flex flex-col">
-          <div className="border border-border bg-surface-1 flex flex-col rounded-[12px] p-5 shadow-xs">
-            {/* Header */}
-            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-4 border-b border-border/60">
-              <div>
-                <div className="flex items-center gap-2.5">
-                  <h2 className="text-text text-[16px] leading-[24px] font-semibold tracking-[-0.01em]">
-                    Active Requisitions Overview
-                  </h2>
-                  <span className="font-mono text-[11px] font-semibold text-accent bg-accent/10 border border-accent/25 px-2.5 py-0.5 rounded-full select-none">
-                    {activeOpenings.length} Active Openings
-                  </span>
-                </div>
-                <p className="text-text-muted text-[12.5px] mt-0.5">
-                  Live recruitment openings across departments with budget targets and candidate pools.
-                </p>
-              </div>
-
-              <Link
-                href="/openings"
-                className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-[8px] bg-surface-2 border border-border/70 text-text hover:border-border-strong text-[12.5px] font-semibold transition-all group shrink-0"
-              >
-                <span>View All Openings</span>
-                <ArrowRight className="h-3.5 w-3.5 group-hover:translate-x-0.5 transition-transform" />
-              </Link>
-            </div>
-
-            {/* Clean Structured Requisitions List */}
-            <div className="overflow-x-auto pt-2">
-              <div className="min-w-[700px] divide-y divide-border/60">
-                {/* Table Header */}
-                <div className="grid grid-cols-[minmax(220px,2fr)_minmax(140px,1.2fr)_minmax(130px,1fr)_minmax(120px,1fr)_minmax(90px,0.8fr)] items-center gap-4 py-2.5 text-[11px] font-bold uppercase tracking-wider text-text-subtle select-none">
-                  <div>Requisition & Role</div>
-                  <div>Department</div>
-                  <div>Target Budget (CTC)</div>
-                  <div>Candidate Pool</div>
-                  <div className="text-right">Status</div>
-                </div>
-
-                {/* Rows */}
-                {activeOpenings.map((opening) => {
-                  const poolCount = candidates.filter((c) => c.openingId === opening.id).length;
-                  const inReviewCount = candidates.filter(
-                    (c) => c.openingId === opening.id && c.stage === 'Shared with Manager'
-                  ).length;
-
-                  return (
-                    <Link
-                      key={opening.id}
-                      href={`/openings/${opening.id}`}
-                      className="group hover:bg-surface-2/60 grid grid-cols-[minmax(220px,2fr)_minmax(140px,1.2fr)_minmax(130px,1fr)_minmax(120px,1fr)_minmax(90px,0.8fr)] items-center gap-4 py-3 px-1 transition-colors cursor-pointer"
-                    >
-                      {/* 1. Title & Details */}
-                      <div className="min-w-0">
-                        <div className="flex items-center gap-1.5">
-                          <span className="text-text font-semibold text-[13.5px] truncate group-hover:text-accent transition-colors">
-                            {opening.title}
-                          </span>
-                        </div>
-                        <p className="text-text-muted text-[11.5px] truncate mt-0.5">
-                          <span>{opening.experienceRange.min}-{opening.experienceRange.max} yrs exp</span>
-                          <span className="mx-1.5 text-text-subtle/80">&middot;</span>
-                          <span>{opening.location}</span>
-                        </p>
-                      </div>
-
-                      {/* 2. Department */}
-                      <div className="flex items-center gap-1.5 min-w-0 text-[12.5px] font-medium text-text-muted">
-                        <Building2 className="h-3.5 w-3.5 text-text-subtle shrink-0" />
-                        <span className="truncate">{opening.department}</span>
-                      </div>
-
-                      {/* 3. Budget */}
-                      <div className="font-mono text-emerald-600 dark:text-emerald-400 font-semibold text-[12px]">
-                        {formatCtcRange(opening.budgetRange.min, opening.budgetRange.max)}
-                      </div>
-
-                      {/* 4. Candidate Pool */}
-                      <div className="text-[12px] text-text-muted">
-                        <span className="font-semibold text-text">{poolCount}</span> candidates
-                        {inReviewCount > 0 && (
-                          <span className="text-accent font-semibold ml-1 text-[11px]">
-                            ({inReviewCount} in review)
-                          </span>
-                        )}
-                      </div>
-
-                      {/* 5. Status Badge */}
-                      <div className="flex justify-end">
-                        <StatusBadge status={opening.status} />
-                      </div>
-                    </Link>
-                  );
-                })}
-              </div>
-            </div>
-          </div>
+          <ActiveOpeningsCard
+            openings={activeOpenings}
+            candidates={candidates}
+            title="Active Openings"
+            subtitle={null}
+            viewAllHref="/openings"
+            isLoading={isInitialLoading}
+          />
         </div>
       </div>
     </div>

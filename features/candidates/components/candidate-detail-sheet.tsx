@@ -12,6 +12,7 @@ import {
 } from '@/components/ui/sheet';
 import { Badge } from '@/components/ui/badge';
 import { SourceBadge } from '@/components/hro/source-badge';
+import { CompanyLogo } from '@/components/hro/company-logo';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
@@ -209,7 +210,7 @@ export function CandidateDetailSheet({ candidate, open, onOpenChange }: Candidat
             <span className="text-text-subtle">•</span>
             <span>
               {candidate.currentRole} at{' '}
-              <strong className="text-text font-semibold">{candidate.currentCompany}</strong>
+              <span className="inline-flex items-center gap-1.5"><CompanyLogo company={candidate.currentCompany} className="h-4 w-4 rounded-[3px] shadow-2xs inline-block" /><strong className="text-text font-semibold">{candidate.currentCompany}</strong></span>
             </span>
           </p>
         </div>
@@ -319,7 +320,7 @@ export function CandidateDetailSheet({ candidate, open, onOpenChange }: Candidat
                 <span className="truncate">{candidate.currentRole}</span>
               </div>
               <div className="flex items-center gap-2 bg-surface-2/60 border border-border/80 rounded-[8px] px-3.5 py-2 text-[13px] text-text font-medium shadow-2xs truncate">
-                <Building2 className="h-3.5 w-3.5 text-text-subtle shrink-0" />
+                <CompanyLogo company={candidate.currentCompany} className="h-4 w-4 rounded-[3px] shrink-0 shadow-2xs" />
                 <span className="truncate">{candidate.currentCompany}</span>
               </div>
             </div>

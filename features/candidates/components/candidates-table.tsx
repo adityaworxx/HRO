@@ -20,6 +20,7 @@ import {
 import { CandidateDetailSheet } from './candidate-detail-sheet';
 import { CandidateColumnsView } from './candidate-columns-view';
 import { SourceBadge } from '@/components/hro/source-badge';
+import { CompanyLogo } from '@/components/hro/company-logo';
 import { formatCtc } from '@/lib/format';
 import { cn } from '@/lib/utils';
 import { Columns3, List, Search } from 'lucide-react';
@@ -113,8 +114,9 @@ export function CandidatesTable() {
               <span className="text-text font-medium text-[13px] block truncate">
                 {c.currentRole}
               </span>
-              <span className="text-text-muted text-[12px] font-medium block truncate">
-                {c.currentCompany}
+              <span className="text-text-muted text-[12px] font-medium flex items-center gap-1.5 truncate mt-0.5">
+                <CompanyLogo company={c.currentCompany} className="h-3.5 w-3.5 rounded-[3px] shrink-0 shadow-2xs" />
+                <span className="truncate">{c.currentCompany}</span>
               </span>
             </div>
           );
