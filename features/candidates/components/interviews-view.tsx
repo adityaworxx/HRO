@@ -220,43 +220,6 @@ export function InterviewsView() {
 
   return (
     <div className="space-y-6">
-      {/* Header with Role Persona Context */}
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 border-b border-border/60 pb-4">
-        <div>
-          <div className="flex items-center gap-2.5">
-            <h1 className="text-xl sm:text-2xl font-bold tracking-tight text-text">
-              {isHr ? 'Interview Coordination & Scheduling' : 'Technical Interviews'}
-            </h1>
-            <Badge
-              variant="default"
-              className={cn(
-                'text-[10px] font-mono uppercase font-bold px-2 py-0.5',
-                isHr
-                  ? 'bg-accent/20 border-accent/40 text-accent'
-                  : 'bg-surface-3 border-border text-text-muted'
-              )}
-            >
-              {isHr ? 'HR Workspace' : 'Manager Workspace'}
-            </Badge>
-          </div>
-          <p className="text-text-muted text-[13px] mt-1">
-            {isHr
-              ? 'Coordinate with candidates shortlisted by hiring managers, confirm their availability via phone/email, and book interview slots.'
-              : 'Review upcoming technical interviews scheduled by HR, conduct rounds, and record your evaluation verdicts.'}
-          </p>
-        </div>
-
-        {/* Quick status pill */}
-        {isHr && unscheduledCandidates.length > 0 && (
-          <div className="flex items-center gap-2 rounded-[8px] border border-warning/40 bg-warning/10 px-3 py-2 text-[12px] text-text font-medium self-start sm:self-auto">
-            <span className="flex h-2 w-2 rounded-full bg-warning animate-pulse" />
-            <span>
-              <strong className="text-text">{unscheduledCandidates.length} candidate(s)</strong> awaiting interview slot
-            </span>
-          </div>
-        )}
-      </div>
-
       {/* KPI Overview */}
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
         <div className="border-border bg-surface-1 rounded-lg border p-4">
