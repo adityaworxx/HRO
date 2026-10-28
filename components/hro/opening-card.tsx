@@ -9,14 +9,12 @@ import {
   BarChart3,
   Layers,
   Users,
-  Briefcase,
   MapPin,
   ArrowRight,
   MoreHorizontal,
   Eye,
   Edit,
   ArrowRightCircle,
-  Sparkles,
 } from 'lucide-react';
 import type { Opening, Candidate } from '@/types/entities';
 import type { OpeningStatus } from '@/lib/domain/status-transitions';
@@ -100,7 +98,7 @@ export function OpeningCard({
         </div>
 
         <div className="flex items-center gap-1.5 shrink-0">
-          <span className="font-mono text-[11px] font-semibold text-text tabular-nums bg-surface-2 border border-border/70 px-1.5 py-0.5 rounded-[5px] shrink-0 select-none">
+          <span className="text-[11.5px] font-medium text-text-muted shrink-0 tabular-nums select-none">
             {expText}
           </span>
 
@@ -154,18 +152,18 @@ export function OpeningCard({
         <span className="truncate">{opening.department}</span>
       </div>
 
-      {/* 3. Signature Inner Box: Employment Type & Compensation */}
-      <div className="bg-surface-2/40 border border-border/60 rounded-[6px] px-2.5 py-1.5 text-[11.5px] text-text-muted flex items-center justify-between gap-2">
-        <span className="font-semibold text-text truncate text-[11.5px] min-w-0">
+      {/* 3. Employment Type & Compensation (Clean unboxed row) */}
+      <div className="flex items-center justify-between gap-3 text-[12px] pt-0.5 pb-0.5">
+        <span className="font-medium text-text truncate min-w-0">
           {opening.employmentType}
           {opening.headcount ? ` · ${opening.headcount} ${opening.headcount === 1 ? 'opening' : 'openings'}` : ''}
         </span>
-        <span className="font-mono text-emerald-600 dark:text-emerald-400 font-bold shrink-0 text-[11.5px]">
+        <span className="font-semibold text-text-muted shrink-0 text-[12px] tabular-nums">
           {formatCtcRange(minBudget, maxBudget)}
         </span>
       </div>
 
-      {/* 4. Bottom Meta: Department / AI Match & Opening Status Badge */}
+      {/* 4. Bottom Meta: AI Match & Opening Status Badge */}
       <div className="border-t border-border/60 pt-2 flex items-center justify-between gap-2 text-[11px]">
         <div className="flex items-center gap-1.5 min-w-0">
           {onAiMatch ? (
@@ -176,11 +174,10 @@ export function OpeningCard({
                 e.stopPropagation();
                 onAiMatch(opening);
               }}
-              className="border-accent/30 bg-accent/10 text-accent hover:bg-accent/20 inline-flex items-center gap-1 rounded-[4px] border px-1.5 py-0.5 text-[10px] font-semibold transition-colors cursor-pointer shrink-0"
+              className="inline-flex items-center justify-center rounded-[6px] bg-accent/10 hover:bg-accent/20 text-accent px-2.5 py-1 text-[11px] font-semibold transition-all duration-150 cursor-pointer shadow-2xs hover:shadow-xs"
               title="Scan & Match Candidates with AI"
             >
-              <Sparkles className="h-2.5 w-2.5" />
-              <span>AI Match</span>
+              AI Match
             </button>
           ) : (
             <span className="text-text-subtle text-[11px] font-medium">Requisition</span>

@@ -338,7 +338,7 @@ export function PipelineBoard() {
         {/* Drag Overlay Preview */}
         <DragOverlay dropAnimation={{ duration: 150, easing: 'cubic-bezier(0.18, 0.67, 0.6, 1.22)' }}>
           {activeCandidate ? (
-            <div className="w-[296px] cursor-grabbing select-none pointer-events-none rounded-[8px] overflow-hidden shadow-2xl">
+            <div className="w-[356px] cursor-grabbing select-none pointer-events-none rounded-[8px] overflow-hidden shadow-2xl">
               <CandidateCard candidate={activeCandidate} isDragging />
             </div>
           ) : null}

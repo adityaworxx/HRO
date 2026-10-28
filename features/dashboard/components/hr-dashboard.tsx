@@ -10,7 +10,7 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Progress } from '@/components/ui/progress';
-import { Users, Clock, ChevronRight, ChevronLeft } from 'lucide-react';
+import { Users, Clock, ChevronRight, ChevronLeft, Calendar, Phone } from 'lucide-react';
 import { toast } from 'sonner';
 
 export function HrDashboard() {
@@ -26,6 +26,10 @@ export function HrDashboard() {
   const onHoldRequisitions = React.useMemo(
     () => openings.filter((o) => o.status === 'On Hold'),
     [openings]
+  );
+  const candidatesAwaitingScheduling = React.useMemo(
+    () => candidates.filter((c) => c.stage === 'Interview' && !c.interviewDate),
+    [candidates]
   );
   const hiredCandidates = React.useMemo(
     () =>
@@ -116,6 +120,39 @@ export function HrDashboard() {
           </>
         )}
       </div>
+
+      {/* Shortlisted Candidates Ready for Interview Scheduling Action Alert */}
+      {candidatesAwaitingScheduling.length > 0 && (
+        <div className="rounded-[12px] border border-warning/40 bg-warning/10 p-4 shadow-xs">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+            <div className="flex items-center gap-3">
+              <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-warning/20 text-warning">
+                <Calendar className="h-5 w-5" />
+              </div>
+              <div>
+                <div className="flex items-center gap-2">
+                  <h3 className="text-text font-semibold text-[14px]">
+                    {candidatesAwaitingScheduling.length} Shortlisted Candidate(s) Ready for Interview Scheduling
+                  </h3>
+                  <span className="flex h-2 w-2 rounded-full bg-warning animate-pulse" />
+                </div>
+                <p className="text-text-muted text-[12px] mt-0.5">
+                  Hiring managers have approved these candidates. Call candidates to coordinate availability and book interview slots.
+                </p>
+              </div>
+            </div>
+
+            <Link
+              href="/interviews"
+              className="inline-flex items-center gap-1.5 rounded-[8px] bg-accent px-3.5 py-2 text-[12px] font-semibold text-accent-contrast hover:bg-accent/90 transition-colors shrink-0 shadow-2xs"
+            >
+              <Phone className="h-3.5 w-3.5" />
+              <span>Call & Schedule ({candidatesAwaitingScheduling.length})</span>
+              <ChevronRight className="h-3.5 w-3.5" />
+            </Link>
+          </div>
+        </div>
+      )}
 
       {/* 3. Bottom Grid: Pipeline Throughput (8 cols) & Onboarding Readiness (4 cols) */}
       <div className="grid grid-cols-12 items-stretch gap-6">

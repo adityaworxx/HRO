@@ -96,3 +96,4 @@ describe('HR Interview Scheduling & Manager Interview Flow', () => {
     expect(finalOutcome.stage).toBe('Selected');
   });
 });
+

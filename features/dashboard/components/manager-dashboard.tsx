@@ -24,8 +24,6 @@ import {
   Layers,
   Users,
   TrendingUp,
-  Sparkles,
-  Zap,
 } from 'lucide-react';
 import { VideoCameraIcon } from '@/components/ui/icons';
 import { formatCtc, formatInterviewDateTime, formatCtcRange } from '@/lib/format';
@@ -292,20 +290,6 @@ export function ManagerDashboard() {
                       );
                     })}
                   </div>
-
-                  {/* Informational Guidance Footer */}
-                  <div className="flex items-center justify-between rounded-[8px] bg-surface-2/40 border border-border/60 px-3.5 py-2 text-[12px] text-text-muted select-none">
-                    <span className="flex items-center gap-1.5">
-                      <Sparkles className="h-3.5 w-3.5 text-accent shrink-0" />
-                      <span>Dossiers include AI-matched skills, compensation parity, and HR initial notes.</span>
-                    </span>
-                    <Link
-                      href="/shortlist"
-                      className="text-accent hover:underline font-semibold text-[11.5px] shrink-0 ml-2"
-                    >
-                      Open Queue &rarr;
-                    </Link>
-                  </div>
                 </div>
               )}
             </div>
@@ -485,23 +469,23 @@ export function ManagerDashboard() {
               {/* Header */}
               <div className="flex items-start justify-between gap-4 pb-4 border-b border-border/60">
                 <div>
-                  <h2 className="text-text text-[15px] font-semibold tracking-[-0.01em]">
+                  <h2 className="text-text text-[16px] leading-[24px] font-medium tracking-[-0.01em]">
                     Technical Interviews
                   </h2>
-                  <p className="text-text-muted text-[12.5px] mt-0.5">
+                  <p className="text-text-muted mt-[2px] text-[13px] leading-[20px]">
                     {interviewCandidates.length} scheduled evaluations
                   </p>
                 </div>
                 <Link
                   href="/interviews"
-                  className="inline-flex items-center gap-1 text-[12.5px] font-medium text-text-muted hover:text-text transition-colors shrink-0"
+                  className="inline-flex items-center gap-1 text-[13px] leading-[20px] font-medium text-text-muted hover:text-text transition-colors shrink-0"
                 >
                   <span>View all</span>
                   <ChevronRight className="h-3.5 w-3.5" />
                 </Link>
               </div>
 
-              {/* Interviews List: Sharp informative rows redirecting to /interviews */}
+              {/* Interviews List: Original clean typography redirecting to /interviews */}
               <div className="pt-3">
                 {isInitialLoading ? (
                   <div className="space-y-3">
@@ -511,8 +495,8 @@ export function ManagerDashboard() {
                 ) : interviewCandidates.length === 0 ? (
                   <div className="flex h-36 flex-col items-center justify-center text-center select-none">
                     <Clock className="h-6 w-6 text-text-subtle mb-1.5 opacity-60" />
-                    <p className="text-text text-[13px] font-medium">No Interviews Scheduled</p>
-                    <p className="text-text-subtle text-[11.5px] mt-0.5">
+                    <p className="text-text text-[14px] font-medium">No interviews scheduled</p>
+                    <p className="text-text-subtle text-[12px] mt-0.5">
                       Shortlist candidates to begin scheduling technical discussions.
                     </p>
                   </div>
@@ -526,22 +510,23 @@ export function ManagerDashboard() {
                         <Link
                           key={candidate.id}
                           href="/interviews"
-                          className="group -mx-2 flex flex-col justify-between gap-1 rounded-[8px] px-2.5 py-2.5 hover:bg-surface-2 transition-all cursor-pointer"
+                          className="group hover:bg-surface-2 -mx-2 flex flex-col justify-between gap-1.5 rounded-[8px] px-2 py-3 transition-colors cursor-pointer"
                         >
                           <div className="flex items-center justify-between gap-2">
-                            <span className="text-text font-medium text-[13.5px] truncate group-hover:text-accent transition-colors">
+                            <span className="text-text truncate text-[14px] leading-[20px] font-medium">
                               {candidate.name}
                             </span>
                             <span
                               className="text-text-subtle group-hover:text-text-muted transition-colors shrink-0 flex items-center"
                               title={`${mode} Interview`}
+                              aria-label={`${mode} Interview`}
                             >
-                              <ModeIcon className="h-3.5 w-3.5" />
+                              <ModeIcon className="h-4 w-4" />
                             </span>
                           </div>
 
-                          <div className="text-text-muted flex items-center text-[12px] min-w-0">
-                            <span className="truncate tabular-nums font-mono text-[11.5px]">
+                          <div className="text-text-muted flex items-center truncate text-[13px] leading-[20px]">
+                            <span className="truncate tabular-nums">
                               {candidate.interviewDate
                                 ? formatInterviewDateTime(candidate.interviewDate)
                                 : 'Pending slot'}
@@ -561,7 +546,7 @@ export function ManagerDashboard() {
             <div className="pt-3 border-t border-border/60 mt-2">
               <Link
                 href="/interviews"
-                className="flex items-center justify-between text-[12px] text-text-subtle hover:text-text font-medium transition-colors"
+                className="flex items-center justify-between text-[13px] leading-[20px] text-text-muted hover:text-text font-medium transition-colors"
               >
                 <span>Manage Interview Scorecards</span>
                 <ChevronRight className="h-3.5 w-3.5" />

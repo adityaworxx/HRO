@@ -74,16 +74,17 @@ export function CandidateCard({
           </div>
         </div>
 
-        <div className="flex items-center gap-1.5 shrink-0">
+        <div className="flex items-center gap-2 shrink-0">
           {candidate.hrNotes?.includes('[AI Match:') && (
             <span
-              className="inline-flex items-center gap-0.5 rounded-full border border-accent/40 bg-accent/15 px-1.5 py-0.5 text-[9.5px] font-mono font-bold text-accent shrink-0 select-none"
+              className="inline-flex items-center gap-1 text-[11px] font-semibold text-accent shrink-0 select-none"
               title="Screened & matched by AI Talent Scout"
             >
+              <span className="h-1.5 w-1.5 rounded-full bg-accent" />
               AI Fit
             </span>
           )}
-          <span className="font-mono text-[11px] font-semibold text-text tabular-nums bg-surface-2 border border-border/70 px-1.5 py-0.5 rounded-[5px] shrink-0 select-none">
+          <span className="text-[11.5px] font-medium text-text-muted shrink-0 tabular-nums select-none">
             {candidate.experienceYears}y exp
           </span>
           {showReorderIcon && <ReorderIcon isActive={isDragging} />}
@@ -96,13 +97,13 @@ export function CandidateCard({
         <span className="truncate">{candidate.currentCompany}</span>
       </div>
 
-      {/* 3. Signature Inner Box: Requisition & Expected CTC */}
+      {/* 3. Requisition & Expected CTC (Clean unboxed row) */}
       {targetOpeningTitle && (
-        <div className="bg-surface-2/40 border border-border/60 rounded-[6px] px-2.5 py-1.5 text-[11.5px] text-text-muted flex items-center justify-between gap-2">
-          <span className="font-semibold text-text truncate text-[11.5px] min-w-0">
+        <div className="flex items-center justify-between gap-3 text-[12px] pt-0.5 pb-0.5">
+          <span className="font-medium text-text truncate min-w-0">
             {targetOpeningTitle}
           </span>
-          <span className="font-mono text-emerald-600 dark:text-emerald-400 font-bold shrink-0 text-[11.5px]">
+          <span className="font-semibold text-text-muted shrink-0 text-[12px] tabular-nums">
             {formatCtc(candidate.expectedCtc)}
           </span>
         </div>

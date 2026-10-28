@@ -17,22 +17,14 @@ import {
   SelectItem,
 } from '@/components/ui/select';
 import {
-  Sparkles,
   Search,
-  Check,
   CheckCircle2,
-  AlertTriangle,
   Clock,
   ArrowRight,
   Filter,
   UserCheck,
-  Zap,
-  Briefcase,
-  IndianRupee,
-  Building2,
   X,
   ChevronDown,
-  Lightbulb,
 } from 'lucide-react';
 import { toast } from 'sonner';
 import { cn } from '@/lib/utils';
@@ -57,20 +49,8 @@ export function AiCandidateMatcherSheet({
   const [searchQuery, setSearchQuery] = React.useState('');
   const [selectedTier, setSelectedTier] = React.useState<'all' | 'strong' | 'good' | 'fast'>('all');
   const [sortBy, setSortBy] = React.useState<'score' | 'experience' | 'notice' | 'ctc'>('score');
-  const [isScanning, setIsScanning] = React.useState(false);
   const [shortlistedMap, setShortlistedMap] = React.useState<Record<string, boolean>>({});
   const [expandedQuestionsMap, setExpandedQuestionsMap] = React.useState<Record<string, boolean>>({});
-
-  // Simulate real-time scan when opening changes or sheet is opened
-  React.useEffect(() => {
-    if (open && opening) {
-      setIsScanning(true);
-      const timer = setTimeout(() => {
-        setIsScanning(false);
-      }, 350);
-      return () => clearTimeout(timer);
-    }
-  }, [open, opening?.id]);
 
   // Compute AI Match rankings
   const rankedResults = React.useMemo(() => {
@@ -121,7 +101,6 @@ export function AiCandidateMatcherSheet({
     } else if (sortBy === 'ctc') {
       list.sort((a, b) => a.candidate.expectedCtc - b.candidate.expectedCtc);
     } else {
-      // Default: best match score
       list.sort((a, b) => b.score - a.score);
     }
 
@@ -188,21 +167,25 @@ export function AiCandidateMatcherSheet({
         side="right"
         className="border-border bg-surface-1 flex w-full flex-col overflow-y-auto p-0 shadow-2xl sm:max-w-2xl"
       >
-        {/* TOP COVER BANNER WITH AMBIENT GLOW */}
-        <div className="border-border/70 bg-surface-1 relative shrink-0 border-b px-6 pt-5 pb-5 select-none">
-          {/* Subtle accent hairline */}
-          <div className="absolute top-0 inset-x-0 h-[2px] bg-gradient-to-r from-accent via-accent/50 to-transparent" />
-
-          {/* Utility row: AI pill & Evaluated count on left, Batch button on right (with mr-8 margin from Radix Close 'X') */}
-          <div className="flex items-center justify-between gap-3">
-            <div className="flex items-center gap-2 flex-wrap">
-              <span className="bg-accent/15 text-accent border-accent/30 inline-flex items-center gap-1.5 rounded-full border px-2.5 py-0.5 text-[11px] font-semibold shadow-2xs">
-                <Sparkles className="h-3 w-3 animate-pulse" />
-                <span>Real-Time AI Candidate Screening</span>
+        {/* REFINED APPLE-GRADE HEADER */}
+        <div className="border-border/60 bg-surface-1 shrink-0 border-b px-6 pt-5 pb-4 select-none">
+          <div className="flex items-start justify-between gap-3">
+            <div className="min-w-0 flex-1">
+              <span className="text-[11px] font-semibold text-accent uppercase tracking-wider font-mono">
+                AI Talent Match
               </span>
-              <span className="text-text-subtle font-mono text-[11px]">
-                • {allCandidates.length} evaluated
-              </span>
+              <h2 className="text-text text-[17px] font-bold tracking-tight truncate mt-0.5">
+                {opening.title}
+              </h2>
+              <p className="text-text-muted text-[12px] truncate mt-1">
+                <span>{opening.department}</span>
+                <span className="text-text-subtle/50 mx-1.5">•</span>
+                <span>{formatCtcRange(opening.budgetRange.min, opening.budgetRange.max)}</span>
+                <span className="text-text-subtle/50 mx-1.5">•</span>
+                <span>{opening.experienceRange.min}–{opening.experienceRange.max}y exp</span>
+                <span className="text-text-subtle/50 mx-1.5">•</span>
+                <span className="text-text-subtle">{allCandidates.length} evaluated</span>
+              </p>
             </div>
 
             <Button
@@ -210,87 +193,22 @@ export function AiCandidateMatcherSheet({
               variant="outline"
               size="sm"
               onClick={handleBatchShortlistTop}
-              className="border-accent/40 bg-accent/10 text-accent hover:bg-accent/20 h-7.5 shrink-0 gap-1.5 text-[11.5px] font-semibold rounded-[6px] mr-8 transition-colors shadow-2xs cursor-pointer"
+              className="border-border/80 hover:bg-surface-2 text-text h-7.5 shrink-0 px-3 text-[11.5px] font-semibold rounded-[6px] mr-8 transition-colors shadow-2xs cursor-pointer"
             >
-              <Zap className="h-3.5 w-3.5 fill-current" />
-              <span>Shortlist Top 3 Fits</span>
+              Shortlist Top 3
             </Button>
-          </div>
-
-          {/* Requisition Title & Parameters */}
-          <div className="mt-3.5 space-y-1.5">
-            <h2 className="text-text text-[17.5px] font-bold tracking-tight">
-              AI Match: {opening.title}
-            </h2>
-
-            <div className="flex items-center gap-2 flex-wrap text-[11.5px] text-text-muted">
-              <span className="inline-flex items-center gap-1 bg-surface-2 border border-border/70 px-2 py-0.5 rounded-[5px] text-text font-medium">
-                <Building2 className="h-3 w-3 text-text-subtle shrink-0" />
-                <span>{opening.department}</span>
-              </span>
-              <span className="inline-flex items-center gap-1 bg-surface-2 border border-border/70 px-2 py-0.5 rounded-[5px] text-text font-mono font-medium">
-                <IndianRupee className="h-3 w-3 text-text-subtle shrink-0" />
-                <span>{formatCtcRange(opening.budgetRange.min, opening.budgetRange.max)}</span>
-              </span>
-              <span className="inline-flex items-center gap-1 bg-surface-2 border border-border/70 px-2 py-0.5 rounded-[5px] text-text font-mono font-medium">
-                <Briefcase className="h-3 w-3 text-text-subtle shrink-0" />
-                <span>{opening.experienceRange.min}–{opening.experienceRange.max} yrs exp</span>
-              </span>
-            </div>
-          </div>
-
-          {/* Quick Metrics Strip */}
-          <div className="mt-4 grid grid-cols-3 gap-2.5">
-            <div className="border-border/70 bg-surface-2/40 rounded-[8px] border p-2.5 transition-colors hover:bg-surface-2/70">
-              <div className="flex items-center justify-between text-text-subtle text-[10.5px] uppercase font-semibold tracking-wider">
-                <span>Strong Fits</span>
-                <Sparkles className="h-3 w-3 text-accent" />
-              </div>
-              <span className="text-accent font-mono text-xl font-bold block mt-0.5 tabular-nums">
-                {strongCount}
-              </span>
-              <span className="text-text-subtle block text-[10.5px] font-medium truncate mt-0.5">
-                &ge; 82% Match
-              </span>
-            </div>
-
-            <div className="border-border/70 bg-surface-2/40 rounded-[8px] border p-2.5 transition-colors hover:bg-surface-2/70">
-              <div className="flex items-center justify-between text-text-subtle text-[10.5px] uppercase font-semibold tracking-wider">
-                <span>Good Matches</span>
-                <Check className="h-3 w-3 text-emerald-500 stroke-[2.5]" />
-              </div>
-              <span className="text-emerald-500 font-mono text-xl font-bold block mt-0.5 tabular-nums">
-                {goodCount}
-              </span>
-              <span className="text-text-subtle block text-[10.5px] font-medium truncate mt-0.5">
-                &ge; 68% Match
-              </span>
-            </div>
-
-            <div className="border-border/70 bg-surface-2/40 rounded-[8px] border p-2.5 transition-colors hover:bg-surface-2/70">
-              <div className="flex items-center justify-between text-text-subtle text-[10.5px] uppercase font-semibold tracking-wider">
-                <span>Fast Joiners</span>
-                <Clock className="h-3 w-3 text-text-subtle" />
-              </div>
-              <span className="text-text font-mono text-xl font-bold block mt-0.5 tabular-nums">
-                {fastJoinerCount}
-              </span>
-              <span className="text-text-subtle block text-[10.5px] font-medium truncate mt-0.5">
-                &le; 30 Days Notice
-              </span>
-            </div>
           </div>
         </div>
 
-        {/* SEARCH, FILTERS & SORT TOOLBAR */}
-        <div className="border-border/70 bg-surface-1/95 sticky top-0 z-20 space-y-2.5 border-b p-4 backdrop-blur-md select-none">
+        {/* SEARCH, SEGMENTED CONTROLS & SORT TOOLBAR */}
+        <div className="border-border/60 bg-surface-1/95 sticky top-0 z-20 space-y-2.5 border-b p-4 backdrop-blur-md select-none">
           <div className="relative">
-            <Search className="text-text-subtle pointer-events-none absolute top-2.5 left-3 h-4 w-4" />
+            <Search className="text-text-subtle pointer-events-none absolute top-2.5 left-3 h-4 w-4 stroke-[1.75]" />
             <Input
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              placeholder="Search candidate by name, company, or screened skill..."
-              className="bg-surface-2/40 border-border/70 hover:border-border focus:bg-surface-1 h-9 pl-9 pr-8 text-[13px] rounded-[8px] shadow-2xs transition-all w-full"
+              placeholder="Search candidate by name, company, or skill..."
+              className="bg-surface-2/40 border-border/60 hover:border-border focus:bg-surface-1 h-8.5 pl-9 pr-8 text-[12.5px] rounded-[7px] shadow-2xs transition-all w-full"
             />
             {searchQuery && (
               <button
@@ -299,84 +217,81 @@ export function AiCandidateMatcherSheet({
                 className="text-text-subtle hover:text-text absolute top-2.5 right-3 cursor-pointer"
                 title="Clear search"
               >
-                <X className="h-4 w-4" />
+                <X className="h-3.5 w-3.5" />
               </button>
             )}
           </div>
 
           <div className="flex flex-wrap items-center justify-between gap-2 text-[12px]">
-            {/* Filter Pills */}
-            <div className="flex flex-wrap items-center gap-1.5">
+            {/* Apple-style Segmented Control */}
+            <div className="inline-flex items-center gap-1 rounded-[7px] border border-border/60 bg-surface-2/50 p-0.5 select-none">
               <button
                 type="button"
                 onClick={() => setSelectedTier('all')}
                 className={cn(
-                  'h-7.5 px-2.5 rounded-[6px] border text-[11.5px] font-medium transition-all cursor-pointer',
+                  'h-6.5 px-2.5 rounded-[5px] text-[11.5px] font-medium transition-all cursor-pointer',
                   selectedTier === 'all'
-                    ? 'border-accent/40 bg-accent/15 text-accent font-semibold shadow-2xs'
-                    : 'border-border/70 bg-surface-2/40 text-text-muted hover:text-text hover:bg-surface-2'
+                    ? 'bg-surface-1 text-text font-semibold shadow-2xs border border-border/60'
+                    : 'text-text-muted hover:text-text'
                 )}
               >
-                All Fits ({rankedResults.length})
+                All ({rankedResults.length})
               </button>
               <button
                 type="button"
                 onClick={() => setSelectedTier('strong')}
                 className={cn(
-                  'h-7.5 px-2.5 rounded-[6px] border text-[11.5px] font-medium transition-all cursor-pointer inline-flex items-center gap-1.5',
+                  'h-6.5 px-2.5 rounded-[5px] text-[11.5px] font-medium transition-all cursor-pointer',
                   selectedTier === 'strong'
-                    ? 'border-accent/40 bg-accent/15 text-accent font-semibold shadow-2xs'
-                    : 'border-border/70 bg-surface-2/40 text-text-muted hover:text-text hover:bg-surface-2'
+                    ? 'bg-surface-1 text-accent font-semibold shadow-2xs border border-border/60'
+                    : 'text-text-muted hover:text-text'
                 )}
               >
-                <span className="h-1.5 w-1.5 rounded-full bg-accent animate-pulse" />
-                <span>Strong Fits ({strongCount})</span>
+                Strong ({strongCount})
               </button>
               <button
                 type="button"
                 onClick={() => setSelectedTier('good')}
                 className={cn(
-                  'h-7.5 px-2.5 rounded-[6px] border text-[11.5px] font-medium transition-all cursor-pointer inline-flex items-center gap-1.5',
+                  'h-6.5 px-2.5 rounded-[5px] text-[11.5px] font-medium transition-all cursor-pointer',
                   selectedTier === 'good'
-                    ? 'border-emerald-500/40 bg-emerald-500/15 text-emerald-600 dark:text-emerald-400 font-semibold shadow-2xs'
-                    : 'border-border/70 bg-surface-2/40 text-text-muted hover:text-text hover:bg-surface-2'
+                    ? 'bg-surface-1 text-emerald-600 dark:text-emerald-400 font-semibold shadow-2xs border border-border/60'
+                    : 'text-text-muted hover:text-text'
                 )}
               >
-                <span className="h-1.5 w-1.5 rounded-full bg-emerald-500" />
-                <span>Good Matches ({goodCount})</span>
+                Good ({goodCount})
               </button>
               <button
                 type="button"
                 onClick={() => setSelectedTier('fast')}
                 className={cn(
-                  'h-7.5 px-2.5 rounded-[6px] border text-[11.5px] font-medium transition-all cursor-pointer inline-flex items-center gap-1.5',
+                  'h-6.5 px-2.5 rounded-[5px] text-[11.5px] font-medium transition-all cursor-pointer',
                   selectedTier === 'fast'
-                    ? 'border-border-strong bg-surface-3 text-text font-semibold shadow-2xs'
-                    : 'border-border/70 bg-surface-2/40 text-text-muted hover:text-text hover:bg-surface-2'
+                    ? 'bg-surface-1 text-text font-semibold shadow-2xs border border-border/60'
+                    : 'text-text-muted hover:text-text'
                 )}
               >
-                <Clock className="h-3 w-3 text-text-subtle" />
-                <span>Fast Joiners ({fastJoinerCount})</span>
+                Fast Joiners ({fastJoinerCount})
               </button>
             </div>
 
-            {/* Custom Sort Select */}
+            {/* Compact Sort Select */}
             <div className="flex items-center gap-1.5 shrink-0">
               <Select value={sortBy} onValueChange={(val) => setSortBy(val as any)}>
-                <SelectTrigger className="h-7.5 w-[165px] gap-1.5 border-border/70 bg-surface-2/40 hover:bg-surface-2 text-text px-2.5 text-[11.5px] font-medium rounded-[6px] shadow-2xs">
-                  <SelectValue placeholder="Sort candidate matches" />
+                <SelectTrigger className="h-7 w-[140px] gap-1 border-border/60 bg-surface-1 hover:bg-surface-2 text-text px-2 text-[11.5px] font-medium rounded-[6px] shadow-2xs">
+                  <SelectValue placeholder="Sort" />
                 </SelectTrigger>
-                <SelectContent align="end" className="min-w-[180px]">
-                  <SelectItem value="score" className="text-[12px] py-1.5 rounded-[5px]">
-                    AI Fit Score (Highest)
+                <SelectContent align="end" className="min-w-[160px]">
+                  <SelectItem value="score" className="text-[12px] py-1.5">
+                    Fit Score (Highest)
                   </SelectItem>
-                  <SelectItem value="experience" className="text-[12px] py-1.5 rounded-[5px]">
+                  <SelectItem value="experience" className="text-[12px] py-1.5">
                     Experience (Highest)
                   </SelectItem>
-                  <SelectItem value="notice" className="text-[12px] py-1.5 rounded-[5px]">
-                    Notice Period (Fastest)
+                  <SelectItem value="notice" className="text-[12px] py-1.5">
+                    Notice (Fastest)
                   </SelectItem>
-                  <SelectItem value="ctc" className="text-[12px] py-1.5 rounded-[5px]">
+                  <SelectItem value="ctc" className="text-[12px] py-1.5">
                     Expected CTC (Lowest)
                   </SelectItem>
                 </SelectContent>
@@ -386,25 +301,15 @@ export function AiCandidateMatcherSheet({
         </div>
 
         {/* CANDIDATE RESULTS LIST */}
-        <div className="flex-1 space-y-3.5 p-4">
-          {isScanning ? (
-            <div className="border-border/60 bg-surface-2/40 flex flex-col items-center justify-center rounded-[8px] border border-dashed py-14 text-center select-none">
-              <Sparkles className="text-accent h-7 w-7 animate-spin" />
-              <p className="text-text mt-3 text-[13.5px] font-semibold">
-                Scanning Candidate Talent Pool...
+        <div className="flex-1 space-y-3 p-4">
+          {filteredResults.length === 0 ? (
+            <div className="border-border/60 bg-surface-2/20 flex flex-col items-center justify-center rounded-[8px] border border-dashed py-12 text-center select-none">
+              <Filter className="text-text-subtle h-6 w-6 stroke-[1.5]" />
+              <p className="text-text mt-2 text-[13px] font-medium">
+                No matching candidates
               </p>
-              <p className="text-text-muted mt-1 text-[12px] max-w-sm">
-                Matching skill vectors, experience ranges, and compensation parameters in real-time.
-              </p>
-            </div>
-          ) : filteredResults.length === 0 ? (
-            <div className="border-border/60 bg-surface-2/30 flex flex-col items-center justify-center rounded-[8px] border border-dashed py-12 text-center select-none">
-              <Filter className="text-text-subtle h-7 w-7" />
-              <p className="text-text mt-2.5 text-[13px] font-semibold">
-                No matching candidates found
-              </p>
-              <p className="text-text-muted mt-0.5 text-[12px]">
-                Try relaxing the filters or broadening your search criteria.
+              <p className="text-text-muted mt-0.5 text-[11.5px]">
+                Try adjusting your search keyword or relaxing the filters.
               </p>
             </div>
           ) : (
@@ -418,178 +323,107 @@ export function AiCandidateMatcherSheet({
               const isManagerApproved =
                 isAssigned && (candidate.managerDecision === 'Shortlisted' || candidate.stage === 'Interview');
               const isQuestionsExpanded = Boolean(expandedQuestionsMap[candidate.id]);
+              const isImmediate = candidate.noticePeriod.toLowerCase().includes('immediate');
 
               return (
                 <div
                   key={candidate.id}
-                  className={cn(
-                    'group relative flex flex-col justify-between rounded-[10px] border border-border/80 bg-surface-1 p-4 shadow-2xs transition-all duration-150',
-                    'hover:border-border-strong hover:shadow-xs space-y-3.5 select-none',
-                    tier === 'Strong Fit' && 'border-accent/40 bg-gradient-to-b from-accent/[0.03] to-surface-1'
-                  )}
+                  className="rounded-[10px] border border-border/70 bg-surface-1 p-3.5 shadow-2xs transition-all duration-150 hover:border-border-strong hover:shadow-xs space-y-2.5 select-none"
                 >
-                  {/* Card Header: Avatar + Meta + Match Score */}
-                  <div className="flex items-start justify-between gap-3">
-                    <div className="flex items-center gap-3 min-w-0 flex-1">
-                      <Avatar className="h-10 w-10 shrink-0 border border-border/70 bg-surface-2 shadow-2xs">
-                        <AvatarFallback className="bg-surface-2 text-text text-[12px] font-semibold tracking-wide">
+                  {/* Row 1: Header (Avatar, Name, Role/Company & Match Score) */}
+                  <div className="flex items-start justify-between gap-2.5">
+                    <div className="flex items-center gap-2.5 min-w-0 flex-1">
+                      <Avatar className="h-8.5 w-8.5 shrink-0 border border-border/70 bg-surface-2 shadow-2xs">
+                        <AvatarFallback className="bg-surface-2 text-text text-[11.5px] font-semibold tracking-wide">
                           {candidate.name.slice(0, 2).toUpperCase()}
                         </AvatarFallback>
                       </Avatar>
 
                       <div className="min-w-0 flex-1">
-                        <div className="flex items-center gap-2 flex-wrap">
-                          <h4 className="text-text font-bold text-[14px] tracking-tight group-hover:text-accent transition-colors truncate">
+                        <div className="flex items-center gap-1.5 flex-wrap">
+                          <h4 className="text-[13.5px] font-bold text-text tracking-tight group-hover:text-accent transition-colors truncate">
                             {candidate.name}
                           </h4>
-                          <SourceBadge source={candidate.source} variant="badge" />
+                          <SourceBadge source={candidate.source} variant="plain" />
                         </div>
-                        <p className="text-text-muted text-[12px] truncate mt-0.5">
-                          <span className="font-semibold text-text">{candidate.currentRole}</span>
-                          <span className="text-text-subtle/80 mx-1">at</span>
-                          <span className="font-medium text-text">{candidate.currentCompany}</span>
+                        <p className="text-[11.5px] text-text-muted truncate mt-0.5 font-normal">
+                          <span>{candidate.currentRole}</span>
+                          <span className="text-text-subtle/50 mx-1">·</span>
+                          <span>{candidate.currentCompany}</span>
                         </p>
                       </div>
                     </div>
 
-                    {/* Match Score Badge & Status */}
-                    <div className="flex flex-col items-end gap-1.5 shrink-0 select-none">
-                      {tier === 'Strong Fit' ? (
-                        <span className="inline-flex items-center gap-1.5 rounded-full border border-accent/40 bg-accent/15 px-2.5 py-0.5 text-[11px] font-mono font-bold text-accent shadow-2xs">
-                          <Sparkles className="h-3 w-3 animate-pulse" />
-                          <span>{score}% Match • Strong Fit</span>
+                    <div className="flex flex-col items-end gap-0.5 shrink-0 select-none">
+                      <span className="font-mono text-[11.5px] font-bold text-accent tabular-nums bg-accent/10 px-2 py-0.5 rounded-[5px]">
+                        {score}% Fit
+                      </span>
+                      {isSharedWithManager ? (
+                        <span className="text-[10.5px] font-medium text-accent">
+                          • In Manager Queue
                         </span>
-                      ) : tier === 'Good Match' ? (
-                        <span className="inline-flex items-center gap-1.5 rounded-full border border-emerald-500/40 bg-emerald-500/15 px-2.5 py-0.5 text-[11px] font-mono font-bold text-emerald-600 dark:text-emerald-400 shadow-2xs">
-                          <Check className="h-3 w-3 stroke-[2.5]" />
-                          <span>{score}% Match • Good Match</span>
+                      ) : isManagerApproved ? (
+                        <span className="text-[10.5px] font-semibold text-emerald-600 dark:text-emerald-400">
+                          • Shortlisted
                         </span>
-                      ) : (
-                        <span className="inline-flex items-center gap-1.5 rounded-full border border-border bg-surface-2 px-2.5 py-0.5 text-[11px] font-mono font-medium text-text-muted">
-                          <span>{score}% Match</span>
-                        </span>
-                      )}
-
-                      {/* Small Status Indicator */}
-                      <div>
-                        {isSharedWithManager ? (
-                          <span className="inline-flex items-center gap-1 text-[11px] font-medium text-accent">
-                            <Clock className="h-3 w-3 animate-pulse" />
-                            <span>In Manager Queue</span>
-                          </span>
-                        ) : isManagerApproved ? (
-                          <span className="inline-flex items-center gap-1 text-[11px] font-semibold text-emerald-600 dark:text-emerald-400">
-                            <CheckCircle2 className="h-3.5 w-3.5" />
-                            <span>Shortlisted</span>
-                          </span>
-                        ) : (
-                          <span className="inline-flex items-center gap-1 text-[10.5px] font-medium text-text-subtle">
-                            <span className="h-1.5 w-1.5 rounded-full bg-text-subtle/60" />
-                            <span>{candidate.stage}</span>
-                          </span>
-                        )}
-                      </div>
+                      ) : null}
                     </div>
                   </div>
 
-                  {/* Core Requisition Parameters (3 Cells) */}
-                  <div className="grid grid-cols-3 gap-2 bg-surface-2/40 border border-border/60 rounded-[8px] p-2.5 text-[11.5px]">
-                    <div>
-                      <div className="flex items-center gap-1 text-[10.5px] uppercase font-semibold text-text-subtle">
-                        <Briefcase className="h-3 w-3 text-text-subtle" />
-                        <span>Experience</span>
-                      </div>
-                      <div className="text-text font-bold font-mono text-[13px] mt-0.5">
-                        {candidate.experienceYears} Years
-                      </div>
-                      <span className="text-[10px] text-emerald-600 dark:text-emerald-400 font-medium block truncate mt-0.5">
-                        {match.experienceVerdict.status === 'optimal'
-                          ? '✓ Fits Requisition'
-                          : match.experienceVerdict.label}
+                  {/* Row 2: Signature Unboxed Spec Row (Experience, CTC, Notice) */}
+                  <div className="flex items-center justify-between text-[11.5px] pt-0.5 pb-0.5 text-text-muted">
+                    <div className="flex items-center gap-2 min-w-0 truncate">
+                      <span className="font-medium text-text tabular-nums">
+                        {candidate.experienceYears}y exp
                       </span>
-                    </div>
-
-                    <div>
-                      <div className="flex items-center gap-1 text-[10.5px] uppercase font-semibold text-text-subtle">
-                        <IndianRupee className="h-3 w-3 text-text-subtle" />
-                        <span>Expected CTC</span>
-                      </div>
-                      <div className="text-emerald-600 dark:text-emerald-400 font-bold font-mono text-[13px] mt-0.5">
+                      <span className="text-border-strong">•</span>
+                      <span className="font-mono font-semibold text-emerald-600 dark:text-emerald-400 tabular-nums">
                         {formatCtc(candidate.expectedCtc)}
-                      </div>
-                      <span className="text-[10px] text-text-subtle font-medium block truncate mt-0.5">
-                        {match.budgetVerdict.status === 'within'
-                          ? '✓ Within Budget'
-                          : match.budgetVerdict.label}
                       </span>
-                    </div>
-
-                    <div>
-                      <div className="flex items-center gap-1 text-[10.5px] uppercase font-semibold text-text-subtle">
-                        <Clock className="h-3 w-3 text-text-subtle" />
-                        <span>Notice Period</span>
-                      </div>
-                      <div className="text-text font-bold text-[13px] mt-0.5">
+                      <span className="text-border-strong">•</span>
+                      <span
+                        className={
+                          isImmediate
+                            ? 'font-semibold text-emerald-600 dark:text-emerald-400'
+                            : 'text-text-muted'
+                        }
+                      >
                         {candidate.noticePeriod}
-                      </div>
-                      <span className="text-[10px] text-text-subtle font-medium block truncate mt-0.5">
-                        {candidate.noticePeriod.toLowerCase().includes('immediate')
-                          ? '⚡ Immediate Joining'
-                          : 'Available soon'}
                       </span>
                     </div>
+
+                    <span className="text-[10.5px] font-mono text-text-subtle shrink-0">
+                      {matchedMustSkills.length}/{matchedMustSkills.length + missingMustSkills.length} skills verified
+                    </span>
                   </div>
 
-                  {/* Screened Core Skills */}
-                  <div className="space-y-1.5">
-                    <div className="flex items-center justify-between text-[11px] font-semibold uppercase tracking-wider text-text-subtle">
-                      <span>Screened Competencies</span>
-                      <span className="font-mono text-[10px] lowercase font-normal">
-                        {matchedMustSkills.length} of {matchedMustSkills.length + missingMustSkills.length} verified
+                  {/* Row 3: Competencies (Clean Unboxed Tags) */}
+                  <div className="flex flex-wrap gap-1">
+                    {matchedMustSkills.map((s) => (
+                      <span
+                        key={s}
+                        className="text-[11px] font-medium text-text bg-surface-2 px-2 py-0.5 rounded-[4px] border border-border/60"
+                      >
+                        {s}
                       </span>
-                    </div>
-                    <div className="flex flex-wrap gap-1.5">
-                      {matchedMustSkills.map((s) => (
-                        <span
-                          key={s}
-                          className="border-border/70 bg-surface-2 text-text inline-flex items-center gap-1 rounded-[5px] border px-2 py-0.5 text-[11px] font-medium"
-                        >
-                          <Check className="h-2.5 w-2.5 text-emerald-500 stroke-[3]" />
-                          <span>{s}</span>
-                        </span>
-                      ))}
-
-                      {missingMustSkills.map((s) => (
-                        <span
-                          key={s}
-                          className="border-border/50 bg-surface-2/30 text-text-subtle inline-flex items-center gap-1 rounded-[5px] border border-dashed px-2 py-0.5 text-[11px] font-normal opacity-75"
-                          title="Skill not explicitly verified in candidate profile"
-                        >
-                          <AlertTriangle className="h-2.5 w-2.5 text-amber-500/80" />
-                          <span>{s}</span>
-                        </span>
-                      ))}
-                    </div>
+                    ))}
+                    {missingMustSkills.map((s) => (
+                      <span
+                        key={s}
+                        className="text-[11px] font-normal text-text-subtle/60 px-1.5 py-0.5 rounded-[4px] border border-border/40 border-dashed"
+                        title="Skill not listed in candidate profile"
+                      >
+                        {s}
+                      </span>
+                    ))}
                   </div>
 
-                  {/* AI Fit Reasoning Box */}
-                  <div className="border-accent/25 bg-accent/5 rounded-[8px] border p-3 space-y-2">
-                    <div className="flex items-center justify-between gap-2">
-                      <div className="flex items-center gap-1.5 font-semibold text-text text-[11.5px]">
-                        <Sparkles className="h-3.5 w-3.5 text-accent" />
-                        <span>AI Fit Reasoning</span>
-                      </div>
-                      <span className="font-mono text-[10.5px] font-semibold text-accent">
-                        {score}% Conviction
-                      </span>
-                    </div>
-                    <p className="text-text-muted text-[12px] leading-relaxed font-normal">
-                      {summary}
-                    </p>
+                  {/* Row 4: Apple Intelligence Fit Summary */}
+                  <div className="text-[11.5px] text-text-muted leading-relaxed pl-2.5 border-l-2 border-accent/40 space-y-1">
+                    <p>{summary}</p>
 
-                    {/* Probing Technical Questions (Collapsible) */}
                     {match.suggestedQuestions && match.suggestedQuestions.length > 0 && (
-                      <div className="pt-2 border-t border-accent/15">
+                      <div className="pt-0.5">
                         <button
                           type="button"
                           onClick={() =>
@@ -598,21 +432,18 @@ export function AiCandidateMatcherSheet({
                               [candidate.id]: !prev[candidate.id],
                             }))
                           }
-                          className="flex items-center justify-between w-full text-left text-[11px] font-medium text-text-muted hover:text-text cursor-pointer transition-colors"
+                          className="text-[10.5px] font-medium text-accent hover:underline cursor-pointer inline-flex items-center gap-1"
                         >
-                          <span className="flex items-center gap-1">
-                            <Lightbulb className="h-3 w-3 text-accent" />
-                            <span>AI Probing Questions ({match.suggestedQuestions.length})</span>
-                          </span>
+                          <span>Suggested interview questions ({match.suggestedQuestions.length})</span>
                           <ChevronDown
                             className={cn(
-                              'h-3.5 w-3.5 text-text-subtle transition-transform duration-150',
+                              'h-3 w-3 text-text-subtle transition-transform duration-150',
                               isQuestionsExpanded && 'rotate-180'
                             )}
                           />
                         </button>
                         {isQuestionsExpanded && (
-                          <ul className="mt-2 space-y-1.5 pl-3 border-l-2 border-accent/30 text-[11.5px] text-text-muted">
+                          <ul className="mt-1 space-y-1 text-[11px] text-text-muted list-disc pl-3">
                             {match.suggestedQuestions.map((q, qIdx) => (
                               <li key={qIdx} className="leading-snug">
                                 {q}
@@ -624,15 +455,15 @@ export function AiCandidateMatcherSheet({
                     )}
                   </div>
 
-                  {/* Card Action Bar */}
-                  <div className="flex items-center justify-between pt-2.5 border-t border-border/60">
+                  {/* Row 5: Action Footer */}
+                  <div className="border-t border-border/60 pt-2 flex items-center justify-between gap-2 text-[11px]">
                     {onInspectCandidate ? (
                       <button
                         type="button"
                         onClick={() => onInspectCandidate(candidate)}
-                        className="inline-flex items-center gap-1 text-[11.5px] font-medium text-text-muted hover:text-accent transition-colors cursor-pointer"
+                        className="inline-flex items-center gap-1 text-[11px] font-medium text-text-subtle hover:text-accent transition-colors cursor-pointer"
                       >
-                        <span>View Full Dossier</span>
+                        <span>View dossier</span>
                         <ArrowRight className="h-3 w-3" />
                       </button>
                     ) : (
@@ -641,35 +472,22 @@ export function AiCandidateMatcherSheet({
 
                     <div className="flex items-center gap-2">
                       {isManagerApproved ? (
-                        <Button
-                          type="button"
-                          size="sm"
-                          variant="outline"
-                          disabled
-                          className="h-8 gap-1.5 text-[11.5px] text-emerald-600 dark:text-emerald-400 border-emerald-500/30 bg-emerald-500/10 font-semibold cursor-default"
-                        >
-                          <CheckCircle2 className="h-3.5 w-3.5 text-emerald-500" />
+                        <span className="inline-flex items-center gap-1 text-[11px] font-semibold text-emerald-600 dark:text-emerald-400">
+                          <CheckCircle2 className="h-3.5 w-3.5" />
                           <span>Manager Approved</span>
-                        </Button>
+                        </span>
                       ) : isSharedWithManager ? (
-                        <Button
-                          type="button"
-                          size="sm"
-                          variant="outline"
-                          disabled
-                          className="h-8 gap-1.5 text-[11.5px] text-accent border-accent/30 bg-accent/10 font-semibold cursor-default"
-                        >
-                          <Clock className="h-3.5 w-3.5 animate-pulse" />
+                        <span className="inline-flex items-center gap-1 text-[11px] font-medium text-accent">
+                          <Clock className="h-3 w-3 animate-pulse" />
                           <span>In Manager Queue</span>
-                        </Button>
+                        </span>
                       ) : (
                         <Button
                           type="button"
                           size="sm"
-                          variant="primary"
                           disabled={assignCandidate.isPending}
                           onClick={() => handleShortlistCandidate(match)}
-                          className="h-8 gap-1.5 text-[11.5px] font-semibold rounded-[6px] shadow-xs cursor-pointer"
+                          className="h-7 px-3 text-[11px] font-semibold rounded-[6px] shadow-2xs cursor-pointer"
                         >
                           <UserCheck className="h-3.5 w-3.5" />
                           <span>Send to Manager</span>
