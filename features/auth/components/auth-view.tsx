@@ -493,13 +493,13 @@ export function AuthView({ initialMode = 'login' }: AuthViewProps) {
                     </AvatarFallback>
                   </Avatar>
                   <div className="min-w-0">
-                    <p className="text-text text-[12px] font-semibold truncate group-hover:text-accent transition-colors">
+                    <p className="text-text text-[12px] font-semibold truncate transition-colors">
                       {managerUser?.name ?? 'Arjun Kapoor'}
                     </p>
                     <p className="text-text-subtle text-[10.5px] truncate">Hiring Manager</p>
                   </div>
                 </div>
-                <ArrowRight className="h-3 w-3 text-text-subtle group-hover:text-accent group-hover:translate-x-0.5 transition-all shrink-0 ml-1" />
+                <ArrowRight className="h-3 w-3 text-text-subtle group-hover:text-text group-hover:translate-x-0.5 transition-all shrink-0 ml-1" />
               </button>
 
               {/* Persona 2: HR */}
@@ -515,13 +515,13 @@ export function AuthView({ initialMode = 'login' }: AuthViewProps) {
                     </AvatarFallback>
                   </Avatar>
                   <div className="min-w-0">
-                    <p className="text-text text-[12px] font-semibold truncate group-hover:text-accent transition-colors">
+                    <p className="text-text text-[12px] font-semibold truncate transition-colors">
                       {hrUser?.name ?? 'Priya Sharma'}
                     </p>
                     <p className="text-text-subtle text-[10.5px] truncate">HR Specialist</p>
                   </div>
                 </div>
-                <ArrowRight className="h-3 w-3 text-text-subtle group-hover:text-accent group-hover:translate-x-0.5 transition-all shrink-0 ml-1" />
+                <ArrowRight className="h-3 w-3 text-text-subtle group-hover:text-text group-hover:translate-x-0.5 transition-all shrink-0 ml-1" />
               </button>
             </div>
           </div>

@@ -247,18 +247,29 @@ export function ManagerDashboard() {
             </div>
 
             {/* Department Filter Pills (Clean Text, No Border Boxes) */}
+            {/* Department Filter Pills (Proper Orange When Selected, Matching Openings) */}
             <div className="pt-3 pb-1 flex items-center gap-1.5 overflow-x-auto no-scrollbar">
               <button
                 type="button"
                 onClick={() => handleSelectReviewDept('all')}
                 className={cn(
-                  'px-2.5 py-1 text-[12.5px] font-medium rounded-[6px] transition-colors cursor-pointer shrink-0',
+                  'inline-flex items-center gap-1.5 px-2.5 py-1 text-[12.5px] font-medium rounded-[6px] transition-colors cursor-pointer shrink-0',
                   selectedReviewDept === 'all'
-                    ? 'bg-accent/10 text-accent font-semibold'
-                    : 'text-text-muted hover:text-text hover:bg-surface-2'
+                    ? 'bg-accent text-white font-semibold shadow-xs'
+                    : 'bg-surface-2 text-text-muted hover:bg-surface-3 hover:text-text'
                 )}
               >
-                All ({pendingReviewCandidates.length})
+                <span>All</span>
+                <span
+                  className={cn(
+                    'rounded-full px-1.5 font-mono text-[11px]',
+                    selectedReviewDept === 'all'
+                      ? 'bg-white/20 text-white font-semibold'
+                      : 'bg-surface-3 text-text-subtle'
+                  )}
+                >
+                  {pendingReviewCandidates.length}
+                </span>
               </button>
               {departmentGroups.map((group) => {
                 const GroupIcon = group.icon;
@@ -271,19 +282,21 @@ export function ManagerDashboard() {
                     className={cn(
                       'inline-flex items-center gap-1.5 px-2.5 py-1 text-[12.5px] font-medium rounded-[6px] transition-colors cursor-pointer shrink-0',
                       isSelected
-                        ? 'bg-accent/10 text-accent font-semibold'
-                        : 'text-text-muted hover:text-text hover:bg-surface-2'
+                        ? 'bg-accent text-white font-semibold shadow-xs'
+                        : 'bg-surface-2 text-text-muted hover:bg-surface-3 hover:text-text'
                     )}
                   >
                     <GroupIcon className="h-3.5 w-3.5 shrink-0" />
                     <span>{group.title}</span>
                     <span
                       className={cn(
-                        'font-mono text-[11px]',
-                        isSelected ? 'text-accent' : 'text-text-subtle'
+                        'rounded-full px-1.5 font-mono text-[11px]',
+                        isSelected
+                          ? 'bg-white/20 text-white font-semibold'
+                          : 'bg-surface-3 text-text-subtle'
                       )}
                     >
-                      ({group.candidates.length})
+                      {group.candidates.length}
                     </span>
                   </button>
                 );

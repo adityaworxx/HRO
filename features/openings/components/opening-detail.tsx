@@ -595,7 +595,7 @@ export function OpeningDetail({ id }: OpeningDetailProps) {
                                     <button
                                       type="button"
                                       onClick={() => handleInspect(candidate)}
-                                      className="text-[13.5px] font-bold text-text tracking-tight hover:text-accent transition-colors truncate cursor-pointer text-left"
+                                      className="text-[13.5px] font-bold text-text tracking-tight hover:text-text transition-colors truncate cursor-pointer text-left"
                                     >
                                       {candidate.name}
                                     </button>
@@ -718,7 +718,7 @@ export function OpeningDetail({ id }: OpeningDetailProps) {
                               <button
                                 type="button"
                                 onClick={() => handleInspect(candidate)}
-                                className="inline-flex items-center gap-1 text-[11px] font-medium text-text-subtle hover:text-accent transition-colors cursor-pointer"
+                                className="inline-flex items-center gap-1 text-[11px] font-medium text-text-muted hover:text-text transition-colors cursor-pointer"
                               >
                                 <span>View dossier</span>
                                 <ArrowRight className="h-3 w-3" />

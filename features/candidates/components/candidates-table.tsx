@@ -94,7 +94,7 @@ export function CandidatesTable() {
                 </AvatarFallback>
               </Avatar>
               <div className="min-w-0">
-                <span className="text-text hover:text-accent text-[13px] font-semibold tracking-tight transition-colors block truncate cursor-pointer">
+                <span className="text-text hover:text-text text-[13px] font-semibold tracking-tight transition-colors block truncate cursor-pointer">
                   {candidate.name}
                 </span>
                 <span className="text-text-muted text-[11px] block truncate font-normal">

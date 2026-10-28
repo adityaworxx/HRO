@@ -129,7 +129,7 @@ export function OpeningsTable() {
             <div className="space-y-0.5">
               <Link
                 href={`/openings/${opening.id}`}
-                className="text-text hover:text-accent text-[14px] font-semibold transition-colors"
+                className="text-text hover:text-text text-[14px] font-semibold transition-colors"
                 onClick={(e) => e.stopPropagation()}
               >
                 {opening.title}

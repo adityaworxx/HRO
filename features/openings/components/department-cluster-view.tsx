@@ -220,7 +220,7 @@ export function DepartmentClusterView({
                         <div className="flex flex-wrap items-center gap-2">
                           <Link
                             href={`/openings/${opening.id}`}
-                            className="text-[14.5px] font-semibold text-text hover:text-accent tracking-tight transition-colors"
+                            className="text-[14.5px] font-semibold text-text hover:text-text tracking-tight transition-colors"
                           >
                             {opening.title}
                           </Link>

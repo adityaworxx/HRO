@@ -416,7 +416,7 @@ export function InterviewsView() {
               {departments.length > 0 && (
                 <Select value={departmentFilter} onValueChange={setDepartmentFilter}>
                   <SelectTrigger className="h-8.5 w-auto min-w-[150px] gap-2 border-border/70 bg-surface-2/40 hover:bg-surface-2 text-text px-3 text-[12.5px] font-medium rounded-[6px] shadow-2xs">
-                    <Building2 className="h-3.5 w-3.5 text-accent shrink-0" />
+                    <Building2 className="h-3.5 w-3.5 text-text-muted shrink-0" />
                     <SelectValue placeholder="All Departments" />
                   </SelectTrigger>
                   <SelectContent align="start" className="min-w-[190px]">

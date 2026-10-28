@@ -339,7 +339,7 @@ export function AiCandidateMatcherSheet({
 
                       <div className="min-w-0 flex-1">
                         <div className="flex items-center gap-1.5 flex-wrap">
-                          <h4 className="text-[13.5px] font-bold text-text tracking-tight group-hover:text-accent transition-colors truncate">
+                          <h4 className="text-[13.5px] font-bold text-text tracking-tight transition-colors truncate">
                             {candidate.name}
                           </h4>
                           <SourceBadge source={candidate.source} variant="plain" />
@@ -459,7 +459,7 @@ export function AiCandidateMatcherSheet({
                       <button
                         type="button"
                         onClick={() => onInspectCandidate(candidate)}
-                        className="inline-flex items-center gap-1 text-[11px] font-medium text-text-subtle hover:text-accent transition-colors cursor-pointer"
+                        className="inline-flex items-center gap-1 text-[11px] font-medium text-text-muted hover:text-text transition-colors cursor-pointer"
                       >
                         <span>View dossier</span>
                         <ArrowRight className="h-3 w-3" />

@@ -63,7 +63,7 @@ export function OpeningRow({
     >
       {/* 1. Opening Cell */}
       <div className="min-w-0 flex flex-col justify-center">
-        <span className="inline-block max-w-full truncate text-[14px] leading-[20px] font-medium text-text hover:text-accent transition-colors">
+        <span className="inline-block max-w-full truncate text-[14px] leading-[20px] font-medium text-text group-hover:text-text transition-colors">
           {opening.title}
         </span>
 
@@ -102,7 +102,7 @@ export function OpeningRow({
                   e.stopPropagation();
                   onReactivate(opening.id, opening.title);
                 }}
-                className="opacity-0 group-hover:opacity-100 focus:opacity-100 transition-opacity text-[11px] text-accent hover:underline font-medium cursor-pointer"
+                className="opacity-0 group-hover:opacity-100 focus:opacity-100 transition-opacity text-[11px] text-text-muted hover:text-text hover:underline font-medium cursor-pointer"
               >
                 Reactivate
               </button>

@@ -539,7 +539,7 @@ export function HrDashboard() {
                           <div className="flex justify-end">
                             <Link
                               href={candidate.stage === 'Shared with Manager' ? '/shortlist' : '/pipeline'}
-                              className="inline-flex items-center gap-1 text-[11.5px] font-semibold text-text-muted hover:text-accent transition-colors"
+                              className="inline-flex items-center gap-1 text-[11.5px] font-semibold text-text-muted hover:text-text transition-colors"
                             >
                               <span>View Profile</span>
                               <ChevronRight className="h-3.5 w-3.5" />
