@@ -338,7 +338,7 @@ export function ManagerDashboard() {
                                 className="h-4 w-4 rounded-[3px] shrink-0 shadow-2xs"
                               />
                               <div className="min-w-0 truncate">
-                                <span className="text-text text-[13.5px] leading-[18px] font-medium group-hover:text-accent transition-colors block truncate">
+                                <span className="text-text text-[13.5px] leading-[18px] font-medium transition-colors block truncate">
                                   {candidate.name}
                                 </span>
                                 <span className="text-text-muted text-[11.5px] leading-[15px] block truncate">

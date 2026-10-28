@@ -544,7 +544,7 @@ export function InterviewsView() {
                           <div className="flex items-center gap-3 min-w-0 flex-1">
                             <CandidateAvatar name={candidate.name} size="md" />
                             <div className="min-w-0 flex-1">
-                              <h4 className="text-[14px] font-semibold text-text tracking-[-0.015em] group-hover:text-accent transition-colors truncate">
+                              <h4 className="text-[14px] font-semibold text-text tracking-[-0.015em] transition-colors truncate">
                                 {candidate.name}
                               </h4>
                               <p className="text-[12px] text-text-muted truncate mt-0.5 font-normal">

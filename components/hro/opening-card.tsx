@@ -91,10 +91,11 @@ export function OpeningCard({
             <DeptIcon className="h-4 w-4 text-white stroke-[2]" />
           </div>
           <div className="min-w-0 flex-1">
-            <h4 className="text-[14px] font-semibold text-text tracking-[-0.015em] group-hover:text-accent transition-colors truncate">
+            <h4 className="text-[14px] font-semibold text-text tracking-[-0.015em] transition-colors truncate">
               <Link
                 href={`/openings/${opening.id}`}
                 title={opening.title}
+                className="hover:text-text"
               >
                 {opening.title}
               </Link>
@@ -231,10 +232,10 @@ export function OpeningCard({
       {/* 5. Footer: View Requisition Details Action */}
       <Link
         href={`/openings/${opening.id}`}
-        className="pt-2.5 border-t border-border/40 flex items-center justify-between text-[11.5px] text-text-subtle group-hover:text-accent transition-colors"
+        className="pt-2.5 border-t border-border/40 flex items-center justify-between text-[11.5px] text-text-muted group-hover:text-text transition-colors"
       >
         <span className="font-medium">{actionText || 'View Requisition Details'}</span>
-        <ArrowRight className="h-3.5 w-3.5 opacity-60 group-hover:opacity-100 group-hover:translate-x-0.5 transition-all" />
+        <ArrowRight className="h-3.5 w-3.5 opacity-60 group-hover:opacity-100 group-hover:translate-x-0.5 transition-all text-text-muted group-hover:text-text" />
       </Link>
     </div>
   );
