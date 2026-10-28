@@ -63,7 +63,7 @@ export function RoleSwitcher({ isCollapsed = false }: { isCollapsed?: boolean })
               <span className="text-text truncate font-semibold">
                 {isManager ? 'Arjun Kapoor' : 'Priya Sharma'}
               </span>
-              <span className="text-accent bg-accent-subtle border-accent/20 rounded-[4px] border px-1.5 py-0.5 font-mono text-[10px] font-semibold uppercase">
+              <span className="text-text bg-surface-2 border-border/80 rounded-[4px] border px-1.5 py-0.5 font-sans text-[10px] font-semibold uppercase">
                 {isManager ? 'Mgr' : 'HR'}
               </span>
             </div>

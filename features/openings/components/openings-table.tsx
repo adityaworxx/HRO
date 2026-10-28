@@ -158,7 +158,7 @@ export function OpeningsTable() {
         accessorKey: 'headcount',
         header: 'Headcount',
         cell: ({ row }) => (
-          <span className="text-text font-mono text-[13px] font-medium">
+          <span className="text-text font-sans text-[13px] font-medium tabular-nums">
             {row.original.headcount} role{row.original.headcount > 1 ? 's' : ''}
           </span>
         ),
@@ -176,7 +176,7 @@ export function OpeningsTable() {
         id: 'budget',
         header: 'Budget Range',
         cell: ({ row }) => (
-          <span className="text-text font-mono text-[13px]">
+          <span className="text-text font-sans text-[13px] tabular-nums">
             {formatCtcRange(row.original.budgetRange.min, row.original.budgetRange.max)}
           </span>
         ),
@@ -313,14 +313,16 @@ export function OpeningsTable() {
                 onClick={() => setSelectedStatus(tab.id)}
                 className={`inline-flex items-center gap-1.5 rounded-[var(--radius-sm)] px-2.5 py-1 text-[13px] font-medium transition-colors ${
                   isSelected
-                    ? 'bg-accent text-white shadow-xs'
+                    ? 'bg-surface-3 text-text border-border-strong border font-semibold shadow-xs'
                     : 'bg-surface-2 text-text-muted hover:bg-surface-3 hover:text-text'
                 }`}
               >
                 <span>{tab.label}</span>
                 <span
-                  className={`rounded-full px-1.5 font-mono text-[11px] ${
-                    isSelected ? 'bg-white/20 text-white' : 'bg-surface-3 text-text-subtle'
+                  className={`rounded-full px-1.5 font-sans text-[11px] font-semibold tabular-nums ${
+                    isSelected
+                      ? 'bg-surface-1 text-text border-border/80 border'
+                      : 'bg-surface-3 text-text-subtle'
                   }`}
                 >
                   {tab.count}

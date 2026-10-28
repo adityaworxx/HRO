@@ -184,7 +184,7 @@ export function NotificationsPopover() {
                     >
                       {n.title}
                     </span>
-                    <span className="text-text-subtle shrink-0 font-mono text-[11px] tabular-nums">
+                    <span className="text-text-subtle shrink-0 font-sans text-[11px] tabular-nums">
                       {formatCompactTime(n.timestamp)}
                     </span>
                   </div>

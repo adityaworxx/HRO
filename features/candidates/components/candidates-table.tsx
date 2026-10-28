@@ -126,7 +126,7 @@ export function CandidatesTable() {
         accessorKey: 'experienceYears',
         header: 'Experience',
         cell: ({ row }) => (
-          <span className="text-text font-mono text-[13px] font-bold whitespace-nowrap tabular-nums">
+          <span className="text-text font-sans text-[13px] font-bold whitespace-nowrap tabular-nums">
             {row.original.experienceYears} yrs
           </span>
         ),
@@ -135,7 +135,7 @@ export function CandidatesTable() {
         accessorKey: 'expectedCtc',
         header: 'Expected CTC',
         cell: ({ row }) => (
-          <span className="text-text font-mono text-[13px] font-medium whitespace-nowrap tabular-nums">
+          <span className="text-text font-sans text-[13px] font-medium whitespace-nowrap tabular-nums">
             {formatCtc(row.original.expectedCtc)}
           </span>
         ),
@@ -217,14 +217,16 @@ export function CandidatesTable() {
                 onClick={() => setSelectedStage(tab.id)}
                 className={`inline-flex shrink-0 items-center gap-1.5 rounded-[var(--radius-sm)] px-2.5 py-1 text-[12px] font-medium whitespace-nowrap transition-colors ${
                   isSelected
-                    ? 'bg-accent text-white shadow-xs'
+                    ? 'bg-surface-3 text-text border-border-strong border font-semibold shadow-xs'
                     : 'bg-surface-2 text-text-muted hover:bg-surface-3 hover:text-text'
                 }`}
               >
                 <span>{tab.label}</span>
                 <span
-                  className={`rounded-full px-1.5 font-mono text-[10.5px] ${
-                    isSelected ? 'bg-white/20 text-white' : 'bg-surface-3 text-text-subtle'
+                  className={`rounded-full px-1.5 font-sans text-[11px] font-semibold tabular-nums ${
+                    isSelected
+                      ? 'bg-surface-1 text-text border-border/80 border'
+                      : 'bg-surface-3 text-text-subtle'
                   }`}
                 >
                   {count}

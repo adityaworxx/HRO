@@ -415,9 +415,7 @@ export function InterviewsView() {
           </p>
 
           <span className="text-text-muted mt-0.5 block text-[11px] font-medium">
-            {unscheduledCandidates.length > 0
-              ? '📞 Action required: Call candidate'
-              : 'All caught up'}
+            {unscheduledCandidates.length > 0 ? 'Action required: Call candidate' : 'All caught up'}
           </span>
         </div>
 
@@ -460,7 +458,7 @@ export function InterviewsView() {
                     'inline-flex h-8 cursor-pointer items-center gap-1.5 rounded-[6px] border px-3 text-[12px] font-medium transition-colors select-none',
 
                     statusTab === 'all'
-                      ? 'border-accent bg-accent font-semibold text-white shadow-xs'
+                      ? 'border-border-strong bg-surface-3 text-text font-semibold shadow-xs'
                       : 'border-border/70 bg-surface-1 text-text-muted hover:text-text hover:bg-surface-2'
                   )}
                 >
@@ -471,7 +469,7 @@ export function InterviewsView() {
                       'rounded-full px-1.5 py-0.5 font-sans text-[11px] font-semibold tabular-nums',
 
                       statusTab === 'all'
-                        ? 'bg-white/20 text-white'
+                        ? 'bg-surface-1 text-text border-border/80 border'
                         : 'bg-surface-2 text-text-subtle border-border/60 border'
                     )}
                   >
@@ -488,16 +486,11 @@ export function InterviewsView() {
                     'inline-flex h-8 cursor-pointer items-center gap-1.5 rounded-[6px] border px-3 text-[12px] font-medium transition-colors select-none',
 
                     statusTab === 'needs-scheduling'
-                      ? 'border-accent bg-accent font-semibold text-white shadow-xs'
+                      ? 'border-border-strong bg-surface-3 text-text font-semibold shadow-xs'
                       : 'border-border/70 bg-surface-1 text-text-muted hover:text-text hover:bg-surface-2'
                   )}
                 >
-                  <Phone
-                    className={cn(
-                      'h-3 w-3 shrink-0',
-                      statusTab === 'needs-scheduling' ? 'text-white' : 'text-text-subtle'
-                    )}
-                  />
+                  <Phone className={cn('h-3 w-3 shrink-0', 'text-text-subtle')} />
 
                   <span>Needs Call / Scheduling</span>
 
@@ -506,7 +499,7 @@ export function InterviewsView() {
                       'rounded-full px-1.5 py-0.5 font-sans text-[11px] font-semibold tabular-nums',
 
                       statusTab === 'needs-scheduling'
-                        ? 'bg-white/20 text-white'
+                        ? 'bg-surface-1 text-text border-border/80 border'
                         : 'bg-surface-2 text-text-subtle border-border/60 border'
                     )}
                   >
@@ -523,16 +516,11 @@ export function InterviewsView() {
                     'inline-flex h-8 cursor-pointer items-center gap-1.5 rounded-[6px] border px-3 text-[12px] font-medium transition-colors select-none',
 
                     statusTab === 'scheduled'
-                      ? 'border-accent bg-accent font-semibold text-white shadow-xs'
+                      ? 'border-border-strong bg-surface-3 text-text font-semibold shadow-xs'
                       : 'border-border/70 bg-surface-1 text-text-muted hover:text-text hover:bg-surface-2'
                   )}
                 >
-                  <CheckCircle2
-                    className={cn(
-                      'h-3 w-3 shrink-0',
-                      statusTab === 'scheduled' ? 'text-white' : 'text-text-subtle'
-                    )}
-                  />
+                  <CheckCircle2 className={cn('h-3 w-3 shrink-0', 'text-text-subtle')} />
 
                   <span>Confirmed Slots</span>
 
@@ -541,7 +529,7 @@ export function InterviewsView() {
                       'rounded-full px-1.5 py-0.5 font-sans text-[11px] font-semibold tabular-nums',
 
                       statusTab === 'scheduled'
-                        ? 'bg-white/20 text-white'
+                        ? 'bg-surface-1 text-text border-border/80 border'
                         : 'bg-surface-2 text-text-subtle border-border/60 border'
                     )}
                   >
@@ -561,7 +549,7 @@ export function InterviewsView() {
 
             <div className="flex flex-wrap items-center gap-2.5">
               <div className="relative min-w-[200px] flex-1 sm:max-w-xs">
-                <Search className="text-text-subtle pointer-events-none absolute top-2.5 left-3 h-3.5 w-3.5" />
+                <Search className="text-text-subtle pointer-events-none absolute top-1/2 left-2.5 h-3.5 w-3.5 -translate-y-1/2" />
 
                 <Input
                   value={searchQuery}
@@ -570,7 +558,7 @@ export function InterviewsView() {
 
                   placeholder="Search candidate, role, phone, or notes..."
 
-                  className="bg-surface-2/40 border-border/70 hover:border-border focus:bg-surface-1 h-8.5 w-full rounded-[6px] pl-9 text-[12.5px] shadow-2xs transition-all"
+                  className="bg-surface-2/40 border-border/70 hover:border-border focus:bg-surface-1 h-8 w-full rounded-[6px] pl-8.5 text-[12px] shadow-2xs transition-all"
                 />
               </div>
 
@@ -578,7 +566,7 @@ export function InterviewsView() {
 
               {departments.length > 0 && (
                 <Select value={departmentFilter} onValueChange={setDepartmentFilter}>
-                  <SelectTrigger className="border-border/70 bg-surface-2/40 hover:bg-surface-2 text-text h-8.5 w-auto min-w-[150px] gap-2 rounded-[6px] px-3 text-[12.5px] font-medium shadow-2xs">
+                  <SelectTrigger className="border-border/70 bg-surface-2/40 hover:bg-surface-2 text-text h-8 w-auto min-w-[150px] gap-2 rounded-[6px] px-3 text-[12px] font-medium shadow-2xs">
                     <Building2 className="text-text-muted h-3.5 w-3.5 shrink-0" />
 
                     <SelectValue placeholder="All Departments" />
@@ -614,7 +602,7 @@ export function InterviewsView() {
               {/* Outcome Filter */}
 
               <Select value={outcomeFilter} onValueChange={setOutcomeFilter}>
-                <SelectTrigger className="border-border/70 bg-surface-2/40 hover:bg-surface-2 text-text h-8.5 w-auto min-w-[130px] gap-2 rounded-[6px] px-3 text-[12.5px] font-medium shadow-2xs">
+                <SelectTrigger className="border-border/70 bg-surface-2/40 hover:bg-surface-2 text-text h-8 w-auto min-w-[130px] gap-2 rounded-[6px] px-3 text-[12px] font-medium shadow-2xs">
                   <SelectValue placeholder="All Outcomes" />
                 </SelectTrigger>
 
@@ -659,7 +647,7 @@ export function InterviewsView() {
               {/* Mode / Format Filter */}
 
               <Select value={modeFilter} onValueChange={setModeFilter}>
-                <SelectTrigger className="border-border/70 bg-surface-2/40 hover:bg-surface-2 text-text h-8.5 w-auto min-w-[125px] gap-2 rounded-[6px] px-3 text-[12.5px] font-medium shadow-2xs">
+                <SelectTrigger className="border-border/70 bg-surface-2/40 hover:bg-surface-2 text-text h-8 w-auto min-w-[125px] gap-2 rounded-[6px] px-3 text-[12px] font-medium shadow-2xs">
                   <SelectValue placeholder="All Formats" />
                 </SelectTrigger>
 
@@ -702,7 +690,7 @@ export function InterviewsView() {
 
                   onClick={handleResetFilters}
 
-                  className="text-accent flex h-8.5 cursor-pointer items-center gap-1 px-2 text-[12px] font-medium select-none hover:underline"
+                  className="text-text-muted hover:text-text flex h-8 cursor-pointer items-center gap-1 px-2 text-[12px] font-medium select-none"
                 >
                   <X className="h-3.5 w-3.5" />
 
@@ -723,7 +711,7 @@ export function InterviewsView() {
 
                 onClick={handleResetFilters}
 
-                className="text-accent mt-1.5 cursor-pointer text-[12px] hover:underline"
+                className="text-text hover:text-text-muted mt-1.5 cursor-pointer text-[12px] underline"
               >
                 Reset filters
               </button>
@@ -986,7 +974,7 @@ export function InterviewsView() {
 
               {totalPages > 1 && (
                 <div className="border-border/60 flex items-center justify-between border-t pt-3 text-[12px] select-none">
-                  <span className="text-text-subtle font-mono text-[11.5px]">
+                  <span className="text-text-subtle font-sans text-[11.5px] tabular-nums">
                     Showing {startIndex + 1}–
                     {Math.min(startIndex + PAGE_SIZE, filteredInterviews.length)} of{' '}
                     {filteredInterviews.length} interviews (Page {validPage} of {totalPages})
@@ -1073,7 +1061,7 @@ export function InterviewsView() {
 
                 <div className="text-text flex items-center gap-3 pt-1 font-medium">
                   <span className="flex items-center gap-1">
-                    <Phone className="text-accent h-3 w-3" />
+                    <Phone className="text-text-muted h-3 w-3" />
 
                     <a href={`tel:${selectedCandidate.phone}`} className="hover:underline">
                       {selectedCandidate.phone}

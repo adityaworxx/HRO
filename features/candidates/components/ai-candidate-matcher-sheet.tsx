@@ -179,7 +179,7 @@ export function AiCandidateMatcherSheet({
         <div className="border-border/60 bg-surface-1 shrink-0 border-b px-6 pt-5 pb-4 select-none">
           <div className="flex items-start justify-between gap-3">
             <div className="min-w-0 flex-1">
-              <span className="text-accent font-mono text-[11px] font-semibold tracking-wider uppercase">
+              <span className="text-text font-sans text-[11px] font-semibold tracking-wider uppercase">
                 AI Talent Match
               </span>
               <h2 className="text-text mt-0.5 truncate text-[17px] font-bold tracking-tight">

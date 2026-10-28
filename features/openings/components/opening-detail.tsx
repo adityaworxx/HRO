@@ -542,7 +542,7 @@ export function OpeningDetail({ id }: OpeningDetailProps) {
 
                 <span>AI Candidate Match</span>
 
-                <span className="bg-accent/20 text-accent py-0.2 rounded-full px-1.5 font-mono text-[10px] font-bold">
+                <span className="bg-surface-2 text-text border-border/80 py-0.2 rounded-full border px-1.5 font-sans text-[10px] font-bold tabular-nums">
                   {strongMatches.length}
                 </span>
               </TabsTrigger>
@@ -568,7 +568,7 @@ export function OpeningDetail({ id }: OpeningDetailProps) {
                           AI Talent Match
                         </CardTitle>
 
-                        <span className="text-text-subtle font-mono text-[11px] font-normal">
+                        <span className="text-text-subtle font-sans text-[11px] font-normal tabular-nums">
                           ({allCandidates.length} evaluated)
                         </span>
                       </div>
@@ -863,7 +863,7 @@ export function OpeningDetail({ id }: OpeningDetailProps) {
                                 </span>
                               </div>
 
-                              <span className="text-text-subtle shrink-0 font-mono text-[10.5px]">
+                              <span className="text-text-subtle shrink-0 font-sans text-[10.5px] tabular-nums">
                                 {matchedMustSkills.length}/
                                 {matchedMustSkills.length + missingMustSkills.length} skills
                                 verified
@@ -1141,7 +1141,7 @@ export function OpeningDetail({ id }: OpeningDetailProps) {
                           </div>
 
                           <div className="text-text-muted flex items-center gap-4 self-end text-[11px] sm:self-center">
-                            <span className="text-text font-mono font-medium">
+                            <span className="text-text font-sans font-medium tabular-nums">
                               Expected: {formatCtc(candidate.expectedCtc)}
                             </span>
 
@@ -1154,7 +1154,7 @@ export function OpeningDetail({ id }: OpeningDetailProps) {
 
                       {totalPipelinePages > 1 && (
                         <div className="border-border/60 flex items-center justify-between border-t pt-3 text-[12px] select-none">
-                          <span className="text-text-subtle font-mono text-[11.5px]">
+                          <span className="text-text-subtle font-sans text-[11.5px] tabular-nums">
                             Showing {(validPipelinePage - 1) * PIPELINE_PAGE_SIZE + 1}–
                             {Math.min(
                               validPipelinePage * PIPELINE_PAGE_SIZE,
@@ -1276,7 +1276,7 @@ export function OpeningDetail({ id }: OpeningDetailProps) {
                   <div className="text-text-muted flex items-center justify-between">
                     <span>High-Fit Candidates</span>
 
-                    <span className="text-text font-mono font-semibold tabular-nums">
+                    <span className="text-text font-sans font-semibold tabular-nums">
                       {strongMatches.length} available
                     </span>
                   </div>

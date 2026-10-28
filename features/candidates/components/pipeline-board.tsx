@@ -296,7 +296,7 @@ export function PipelineBoard() {
                     <ChevronLeft className="h-3.5 w-3.5" />
                   </button>
 
-                  <span className="text-text-subtle font-mono text-[11px]">
+                  <span className="text-text-subtle font-sans text-[11px] font-semibold tabular-nums">
                     {validStagePage} of {stageTotalPages}
                   </span>
 

@@ -183,12 +183,12 @@ export function HrDashboard() {
                     <span className="text-text-muted text-[12px] font-medium select-none">
                       1. Sourced
                     </span>
-                    <span className="text-text-subtle font-mono text-[11px] font-normal tabular-nums">
+                    <span className="text-text-subtle font-sans text-[11px] font-normal tabular-nums">
                       {Math.round((stagesCount.sourced / totalCandidates) * 100)}%
                     </span>
                   </div>
                   <div className="mt-2.5 flex items-baseline gap-1.5">
-                    <span className="text-text font-mono text-[24px] font-semibold tracking-tight tabular-nums">
+                    <span className="text-text font-sans text-[24px] font-semibold tracking-tight tabular-nums">
                       {stagesCount.sourced}
                     </span>
                     <span className="text-text-subtle text-[11px]">candidates</span>
@@ -209,12 +209,12 @@ export function HrDashboard() {
                     <span className="text-text-muted truncate text-[12px] font-medium select-none">
                       2. Mgr Review
                     </span>
-                    <span className="text-text-subtle font-mono text-[11px] font-normal tabular-nums">
+                    <span className="text-text-subtle font-sans text-[11px] font-normal tabular-nums">
                       {Math.round((stagesCount.shared / totalCandidates) * 100)}%
                     </span>
                   </div>
                   <div className="mt-2.5 flex items-baseline gap-1.5">
-                    <span className="text-text font-mono text-[24px] font-semibold tracking-tight tabular-nums">
+                    <span className="text-text font-sans text-[24px] font-semibold tracking-tight tabular-nums">
                       {stagesCount.shared}
                     </span>
                     <span className="text-text-subtle text-[11px]">in review</span>
@@ -235,12 +235,12 @@ export function HrDashboard() {
                     <span className="text-text-muted text-[12px] font-medium select-none">
                       3. Interview
                     </span>
-                    <span className="text-text-subtle font-mono text-[11px] font-normal tabular-nums">
+                    <span className="text-text-subtle font-sans text-[11px] font-normal tabular-nums">
                       {Math.round((stagesCount.interview / totalCandidates) * 100)}%
                     </span>
                   </div>
                   <div className="mt-2.5 flex items-baseline gap-1.5">
-                    <span className="text-text font-mono text-[24px] font-semibold tracking-tight tabular-nums">
+                    <span className="text-text font-sans text-[24px] font-semibold tracking-tight tabular-nums">
                       {stagesCount.interview}
                     </span>
                     <span className="text-text-subtle text-[11px]">rounds</span>
@@ -261,12 +261,12 @@ export function HrDashboard() {
                     <span className="text-text-muted text-[12px] font-medium select-none">
                       4. Offer
                     </span>
-                    <span className="text-text-subtle font-mono text-[11px] font-normal tabular-nums">
+                    <span className="text-text-subtle font-sans text-[11px] font-normal tabular-nums">
                       {Math.round((stagesCount.offer / totalCandidates) * 100)}%
                     </span>
                   </div>
                   <div className="mt-2.5 flex items-baseline gap-1.5">
-                    <span className="text-text font-mono text-[24px] font-semibold tracking-tight tabular-nums">
+                    <span className="text-text font-sans text-[24px] font-semibold tracking-tight tabular-nums">
                       {stagesCount.offer}
                     </span>
                     <span className="text-text-subtle text-[11px]">extended</span>
@@ -287,12 +287,12 @@ export function HrDashboard() {
                     <span className="text-accent text-[12px] font-medium select-none">
                       5. Joined
                     </span>
-                    <span className="text-accent font-mono text-[11px] font-normal tabular-nums">
+                    <span className="text-text-muted font-sans text-[11px] font-normal tabular-nums">
                       {Math.round((stagesCount.hired / totalCandidates) * 100)}%
                     </span>
                   </div>
                   <div className="mt-2.5 flex items-baseline gap-1.5">
-                    <span className="text-accent font-mono text-[24px] font-semibold tracking-tight tabular-nums">
+                    <span className="text-text font-sans text-[24px] font-semibold tracking-tight tabular-nums">
                       {stagesCount.hired}
                     </span>
                     <span className="text-accent/80 text-[11px]">hired</span>
@@ -371,7 +371,7 @@ export function HrDashboard() {
               <div className="space-y-2">
                 <div className="flex justify-between text-[12px]">
                   <span className="text-text-muted font-medium">Task Completion</span>
-                  <span className="text-text font-mono font-medium tabular-nums">
+                  <span className="text-text font-sans font-medium tabular-nums">
                     {completedTasks} / {totalTasks} tasks ({onboardingPercent}%)
                   </span>
                 </div>
@@ -432,7 +432,7 @@ export function HrDashboard() {
                   SLA Watchlist
                 </h2>
                 {allSlaAlertCandidates.length > 0 && (
-                  <span className="text-accent bg-accent/10 rounded-full px-2 py-0.5 font-mono text-[11px] font-semibold">
+                  <span className="text-text bg-surface-2 border-border/80 rounded-full border px-2 py-0.5 font-sans text-[11px] font-semibold tabular-nums">
                     {allSlaAlertCandidates.length}
                   </span>
                 )}
@@ -441,7 +441,7 @@ export function HrDashboard() {
               <div className="flex items-center gap-3">
                 {totalSlaPages > 1 && (
                   <div className="flex items-center gap-1.5 text-[11.5px] select-none">
-                    <span className="text-text-subtle font-mono text-[11px]">
+                    <span className="text-text-subtle font-sans text-[11px] tabular-nums">
                       {validSlaPage} of {totalSlaPages}
                     </span>
                     <div className="flex items-center gap-1">
@@ -547,7 +547,7 @@ export function HrDashboard() {
                           </div>
 
                           {/* 4. Notice Period */}
-                          <div className="text-text font-mono text-[12px] font-bold tabular-nums">
+                          <div className="text-text font-sans text-[12px] font-bold tabular-nums">
                             {candidate.noticePeriod}
                           </div>
 

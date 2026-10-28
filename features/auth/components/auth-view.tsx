@@ -134,7 +134,7 @@ export function AuthView({ initialMode = 'login' }: AuthViewProps) {
                   Active Pipeline Velocity
                 </span>
               </div>
-              <span className="text-accent font-mono text-[11px] font-semibold tracking-wider uppercase">
+              <span className="text-text font-sans text-[11px] font-semibold tracking-wider uppercase">
                 Live Overview
               </span>
             </div>
@@ -142,26 +142,26 @@ export function AuthView({ initialMode = 'login' }: AuthViewProps) {
             {/* Stage Progress Columns */}
             <div className="grid grid-cols-4 gap-2">
               <div className="border-border/70 bg-surface-2/40 rounded-[6px] border p-2 text-center">
-                <p className="text-text font-mono text-[15px] font-bold tabular-nums">14</p>
+                <p className="text-text font-sans text-[15px] font-bold tabular-nums">14</p>
                 <p className="text-text-subtle mt-0.5 truncate text-[10.5px] font-medium">
                   Sourced
                 </p>
               </div>
 
               <div className="border-accent/40 bg-accent-subtle/25 rounded-[6px] border p-2 text-center">
-                <p className="text-accent font-mono text-[15px] font-bold tabular-nums">3</p>
+                <p className="text-text font-sans text-[15px] font-bold tabular-nums">3</p>
                 <p className="text-accent mt-0.5 truncate text-[10.5px] font-semibold">Review</p>
               </div>
 
               <div className="border-border/70 bg-surface-2/40 rounded-[6px] border p-2 text-center">
-                <p className="text-text font-mono text-[15px] font-bold tabular-nums">5</p>
+                <p className="text-text font-sans text-[15px] font-bold tabular-nums">5</p>
                 <p className="text-text-subtle mt-0.5 truncate text-[10.5px] font-medium">
                   Interview
                 </p>
               </div>
 
               <div className="border-border/70 bg-surface-2/40 rounded-[6px] border p-2 text-center">
-                <p className="text-text font-mono text-[15px] font-bold tabular-nums">2</p>
+                <p className="text-text font-sans text-[15px] font-bold tabular-nums">2</p>
                 <p className="text-text-subtle mt-0.5 truncate text-[10.5px] font-medium">
                   Offered
                 </p>
@@ -172,11 +172,11 @@ export function AuthView({ initialMode = 'login' }: AuthViewProps) {
             <div className="border-border/60 grid grid-cols-2 gap-3 border-t pt-2.5 text-[11.5px]">
               <div className="flex items-center justify-between">
                 <span className="text-text-subtle font-medium">Avg. Time-to-Hire</span>
-                <span className="text-text font-mono font-bold">18 Days</span>
+                <span className="text-text font-sans font-bold">18 Days</span>
               </div>
               <div className="flex items-center justify-between">
                 <span className="text-text-subtle font-medium">Offer Acceptance</span>
-                <span className="text-text font-mono font-bold">94.2%</span>
+                <span className="text-text font-sans font-bold">94.2%</span>
               </div>
             </div>
           </div>

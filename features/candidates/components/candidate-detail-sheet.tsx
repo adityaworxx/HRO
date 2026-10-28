@@ -147,7 +147,7 @@ export function CandidateDetailSheet({ candidate, open, onOpenChange }: Candidat
           <div className="bg-surface-3/30 pointer-events-none absolute -bottom-8 -left-8 h-32 w-32 rounded-full blur-xl" />
 
           {/* Pill tag in banner */}
-          <div className="bg-surface-1/70 border-border/60 text-text-subtle absolute top-4 left-6 flex items-center gap-1.5 rounded-full border px-2.5 py-0.5 font-mono text-[10px] font-semibold tracking-wider uppercase shadow-xs backdrop-blur-md">
+          <div className="bg-surface-1/70 border-border/60 text-text-subtle absolute top-4 left-6 flex items-center gap-1.5 rounded-full border px-2.5 py-0.5 font-sans text-[11px] font-semibold tracking-wider uppercase shadow-xs backdrop-blur-md">
             <span>Candidate Dossier</span>
           </div>
         </div>
@@ -210,13 +210,13 @@ export function CandidateDetailSheet({ candidate, open, onOpenChange }: Candidat
             </span>
             <Badge
               variant="default"
-              className="bg-surface-2 text-text-muted border-border/70 ml-auto shrink-0 px-2 py-0.5 font-mono text-[10px] uppercase"
+              className="bg-surface-2 text-text-muted border-border/70 ml-auto shrink-0 px-2 py-0.5 font-sans text-[11px] font-medium uppercase"
             >
               {candidate.stage}
             </Badge>
           </div>
           <p className="text-text-muted flex flex-wrap items-center gap-1.5 text-[13px] font-medium">
-            <span className="text-text-subtle font-mono text-[12px]">
+            <span className="text-text-subtle font-sans text-[12px] tabular-nums">
               @{candidate.name.toLowerCase().replace(/[^a-z0-9]/g, '')}
             </span>
             <span className="text-text-subtle">•</span>
@@ -234,7 +234,7 @@ export function CandidateDetailSheet({ candidate, open, onOpenChange }: Candidat
         </div>
 
         {/* Avatar Color Accent Picker (Matches user design reference) */}
-        <div className="mx-6 mt-3 pt-3 border-t border-border/40">
+        <div className="border-border/40 mx-6 mt-3 border-t pt-3">
           <AvatarColorPicker
             value={
               typeof customColors[candidate.id] === 'number'
@@ -332,12 +332,12 @@ export function CandidateDetailSheet({ candidate, open, onOpenChange }: Candidat
               <span className="text-accent">*</span>
             </label>
             <div className="border-border/80 bg-surface-2/60 flex overflow-hidden rounded-[8px] border shadow-2xs">
-              <div className="bg-surface-3/50 border-border/80 text-text-muted flex items-center border-r px-3 py-2 font-mono text-[12px] select-none">
+              <div className="bg-surface-3/50 border-border/80 text-text-muted flex items-center border-r px-3 py-2 font-sans text-[12px] select-none">
                 <span>hro.internal/@</span>
               </div>
-              <div className="text-text flex flex-1 items-center justify-between px-3 py-2 font-mono text-[13px] font-medium">
+              <div className="text-text flex flex-1 items-center justify-between px-3 py-2 font-sans text-[13px] font-medium tabular-nums">
                 <span>{candidate.name.toLowerCase().replace(/[^a-z0-9]/g, '')}</span>
-                <CheckCircle2 className="h-4 w-4 shrink-0 text-emerald-500" />
+                <CheckCircle2 className="text-text-muted h-4 w-4 shrink-0" />
               </div>
             </div>
           </div>

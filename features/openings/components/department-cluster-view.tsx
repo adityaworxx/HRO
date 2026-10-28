@@ -183,12 +183,16 @@ export function DepartmentClusterView({
               {/* Department Aggregated Telemetry */}
               <div className="text-text-muted flex items-center gap-3 text-[12px] font-medium select-none">
                 <span className="hidden items-center gap-1.5 sm:inline-flex">
-                  <span className="text-text font-mono font-semibold">{totalHeadcount}</span>{' '}
+                  <span className="text-text font-sans font-semibold tabular-nums">
+                    {totalHeadcount}
+                  </span>{' '}
                   headcount target
                 </span>
                 <span className="text-text-subtle hidden sm:inline">·</span>
                 <span className="inline-flex items-center gap-1.5">
-                  <span className="text-text font-mono font-semibold">{deptCandidates.length}</span>{' '}
+                  <span className="text-text font-sans font-semibold tabular-nums">
+                    {deptCandidates.length}
+                  </span>{' '}
                   active candidates
                 </span>
                 {deptInOffer > 0 && (
@@ -228,13 +232,13 @@ export function DepartmentClusterView({
                           </Link>
 
                           {isUrgent && (
-                            <span className="inline-flex items-center gap-1 rounded-[4px] border border-orange-500/20 bg-orange-500/10 px-1.5 py-0.5 text-[10.5px] font-medium text-orange-600 select-none dark:bg-orange-950/40 dark:text-orange-400">
+                            <span className="border-border/80 bg-surface-2 text-text inline-flex items-center gap-1 rounded-[4px] border px-1.5 py-0.5 text-[10.5px] font-medium select-none">
                               <Flame className="h-3 w-3" />
                               <span>Urgent</span>
                             </span>
                           )}
 
-                          <span className="text-text-muted bg-surface-2 border-border/60 rounded-[4px] border px-1.5 py-0.5 font-mono text-[11px] select-none">
+                          <span className="text-text-muted bg-surface-2 border-border/60 rounded-[4px] border px-1.5 py-0.5 font-sans text-[11px] font-medium tabular-nums select-none">
                             {opening.headcount} {opening.headcount > 1 ? 'positions' : 'position'}
                           </span>
                         </div>
@@ -248,7 +252,7 @@ export function DepartmentClusterView({
                           <span className="text-text-subtle">·</span>
                           <span>{opening.employmentType}</span>
                           <span className="text-text-subtle">·</span>
-                          <span className="text-text font-mono">
+                          <span className="text-text font-sans tabular-nums">
                             {formatCtcRange(opening.budgetRange.min, opening.budgetRange.max)}
                           </span>
                           <span className="text-text-subtle">·</span>
@@ -282,7 +286,7 @@ export function DepartmentClusterView({
                         <div className="flex items-center justify-between text-[11.5px]">
                           <span className="text-text-muted flex items-center gap-1.5 font-medium">
                             <span>Pipeline Pulse</span>
-                            <span className="text-text font-mono font-semibold">
+                            <span className="text-text font-sans font-semibold tabular-nums">
                               ({pipeline.total})
                             </span>
                           </span>
@@ -347,7 +351,7 @@ export function DepartmentClusterView({
                         </div>
 
                         {/* Stage Breakdown Counters */}
-                        <div className="text-text-subtle grid grid-cols-4 pt-0.5 text-center font-mono text-[10px] select-none">
+                        <div className="text-text-subtle grid grid-cols-4 pt-0.5 text-center font-sans text-[10px] tabular-nums select-none">
                           <span title="Sourced candidates">{pipeline.sourced} src</span>
                           <span title="Under manager review">{pipeline.review} rev</span>
                           <span title="In active interviews">{pipeline.interview} int</span>

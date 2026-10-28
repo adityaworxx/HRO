@@ -76,7 +76,7 @@ export function OpeningRow({
           <span className="hidden truncate sm:inline lg:hidden">
             {opening.department} <span className="text-text-subtle">·</span> {opening.location}{' '}
             <span className="text-text-subtle">·</span>{' '}
-            <span className="font-mono tabular-nums">{budgetText}</span>
+            <span className="font-sans font-semibold tabular-nums">{budgetText}</span>
           </span>
 
           {/* Mobile subline (<640px): Status label · Location */}
@@ -122,7 +122,7 @@ export function OpeningRow({
       </div>
 
       {/* 4. Budget Cell (Desktop >=1024px only) */}
-      <div className="text-text-muted hidden min-w-0 truncate font-mono text-[13px] leading-[20px] tabular-nums lg:block">
+      <div className="text-text-muted hidden min-w-0 truncate font-sans text-[13px] leading-[20px] font-medium tabular-nums lg:block">
         {budgetText}
       </div>
 

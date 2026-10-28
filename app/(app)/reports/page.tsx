@@ -155,7 +155,7 @@ export default function ReportsPage() {
                     Candidate volume drop-off and progression across key hiring milestones.
                   </CardDescription>
                 </div>
-                <span className="text-text-subtle bg-surface-2 border-border rounded-[6px] border px-2 py-0.5 font-mono text-[11px] font-medium select-none">
+                <span className="text-text-subtle bg-surface-2 border-border rounded-[6px] border px-2 py-0.5 font-sans text-[11px] font-medium tabular-nums select-none">
                   5 Stages
                 </span>
               </div>
@@ -166,12 +166,12 @@ export default function ReportsPage() {
                 <div key={stage.num} className="space-y-1.5">
                   <div className="flex items-center justify-between text-[13px]">
                     <div className="flex items-center gap-2">
-                      <span className="bg-surface-3 text-text-subtle border-border/60 flex h-5 w-5 items-center justify-center rounded-[4px] border font-mono text-[11px] font-medium">
+                      <span className="bg-surface-3 text-text-subtle border-border/60 flex h-5 w-5 items-center justify-center rounded-[4px] border font-sans text-[11px] font-medium tabular-nums">
                         {stage.num}
                       </span>
                       <span className="text-text text-[13px] font-medium">{stage.label}</span>
                     </div>
-                    <div className="flex items-center gap-2 font-mono">
+                    <div className="flex items-center gap-2 font-sans tabular-nums">
                       <span className="text-text text-[13px] font-semibold">{stage.count}</span>
                       <span className="text-text-subtle text-[11px]">({stage.pct}%)</span>
                     </div>
@@ -193,14 +193,18 @@ export default function ReportsPage() {
           {/* Footer Summary Strip */}
           <div className="border-border/50 bg-surface-2/30 flex flex-wrap items-center justify-between gap-2 rounded-b-[12px] border-t px-4 py-2.5 text-[11px] select-none sm:px-6 sm:py-3">
             <span className="text-text-subtle">
-              Net Yield: <strong className="text-accent font-mono font-semibold">27%</strong>
+              Net Yield:{' '}
+              <strong className="text-text font-sans font-semibold tabular-nums">27%</strong>
             </span>
             <span className="text-text-subtle">
-              Avg Cycle: <strong className="text-text font-mono font-semibold">18.4 Days</strong>
+              Avg Cycle:{' '}
+              <strong className="text-text font-sans font-semibold tabular-nums">18.4 Days</strong>
             </span>
             <span className="text-text-subtle">
               Active Pipeline:{' '}
-              <strong className="text-text font-mono font-semibold">26 Candidates</strong>
+              <strong className="text-text font-sans font-semibold tabular-nums">
+                26 Candidates
+              </strong>
             </span>
           </div>
         </Card>
@@ -300,13 +304,13 @@ export default function ReportsPage() {
                 return (
                   <div className="relative flex h-[210px] w-full items-end justify-between gap-3 px-2 pt-6 pb-2 sm:gap-4">
                     {/* Horizontal Background Grid Reference Lines */}
-                    <div className="border-border/40 text-text-subtle absolute inset-x-0 top-6 flex items-center justify-end border-b pr-1 font-mono text-[10px] select-none">
+                    <div className="border-border/40 text-text-subtle absolute inset-x-0 top-6 flex items-center justify-end border-b pr-1 font-sans text-[10px] tabular-nums select-none">
                       {maxVal}
                     </div>
-                    <div className="border-border/40 text-text-subtle absolute inset-x-0 top-[50%] flex items-center justify-end border-b pr-1 font-mono text-[10px] select-none">
+                    <div className="border-border/40 text-text-subtle absolute inset-x-0 top-[50%] flex items-center justify-end border-b pr-1 font-sans text-[10px] tabular-nums select-none">
                       {midVal}
                     </div>
-                    <div className="border-border text-text-subtle absolute inset-x-0 bottom-6 flex items-center justify-end border-b pr-1 font-mono text-[10px] select-none">
+                    <div className="border-border text-text-subtle absolute inset-x-0 bottom-6 flex items-center justify-end border-b pr-1 font-sans text-[10px] tabular-nums select-none">
                       0
                     </div>
 
@@ -320,7 +324,7 @@ export default function ReportsPage() {
                           className="group relative z-10 flex h-full flex-1 flex-col items-center justify-end"
                         >
                           {/* Tooltip on hover */}
-                          <div className="bg-surface-3 border-border text-text pointer-events-none absolute -top-7 z-20 rounded-[var(--radius-sm)] border px-2 py-0.5 font-mono text-[10px] whitespace-nowrap tabular-nums opacity-0 shadow-sm transition-opacity group-hover:opacity-100">
+                          <div className="bg-surface-3 border-border text-text pointer-events-none absolute -top-7 z-20 rounded-[var(--radius-sm)] border px-2 py-0.5 font-sans text-[10px] whitespace-nowrap tabular-nums opacity-0 shadow-sm transition-opacity group-hover:opacity-100">
                             {d.barA} {d.tipA} · {d.barB} {d.tipB}
                           </div>
 
@@ -341,7 +345,7 @@ export default function ReportsPage() {
                           </div>
 
                           {/* Category Label */}
-                          <span className="text-text-subtle group-hover:text-text absolute bottom-0 max-w-full truncate text-center font-mono text-[11px] font-medium transition-colors select-none">
+                          <span className="text-text-subtle group-hover:text-text absolute bottom-0 max-w-full truncate text-center font-sans text-[11px] font-medium tabular-nums transition-colors select-none">
                             {d.label}
                           </span>
                         </div>
@@ -388,43 +392,54 @@ export default function ReportsPage() {
             {graphMode === 'velocity' ? (
               <>
                 <span className="text-text-subtle">
-                  Total Hires: <strong className="text-text font-mono font-semibold">31</strong>
+                  Total Hires:{' '}
+                  <strong className="text-text font-sans font-semibold tabular-nums">31</strong>
                 </span>
                 <span className="text-text-subtle">
                   Avg Velocity:{' '}
-                  <strong className="text-text font-mono font-semibold">5.2/mo</strong>
+                  <strong className="text-text font-sans font-semibold tabular-nums">5.2/mo</strong>
                 </span>
                 <span className="text-text-subtle">
                   Offer Conversion:{' '}
-                  <strong className="text-accent font-mono font-semibold">82%</strong>
+                  <strong className="text-text font-sans font-semibold tabular-nums">82%</strong>
                 </span>
               </>
             ) : graphMode === 'sources' ? (
               <>
                 <span className="text-text-subtle">
-                  Total Sourced: <strong className="text-text font-mono font-semibold">30</strong>
+                  Total Sourced:{' '}
+                  <strong className="text-text font-sans font-semibold tabular-nums">30</strong>
                 </span>
                 <span className="text-text-subtle">
                   Shared with Mgr:{' '}
-                  <strong className="text-accent font-mono font-semibold">24 (80%)</strong>
+                  <strong className="text-text font-sans font-semibold tabular-nums">
+                    24 (80%)
+                  </strong>
                 </span>
                 <span className="text-text-subtle">
                   Top Yield:{' '}
-                  <strong className="text-text font-mono font-semibold">Referrals (86%)</strong>
+                  <strong className="text-text font-sans font-semibold tabular-nums">
+                    Referrals (86%)
+                  </strong>
                 </span>
               </>
             ) : (
               <>
                 <span className="text-text-subtle">
-                  Net Sourced: <strong className="text-text font-mono font-semibold">142</strong>
+                  Net Sourced:{' '}
+                  <strong className="text-text font-sans font-semibold tabular-nums">142</strong>
                 </span>
                 <span className="text-text-subtle">
                   Shared with Mgr:{' '}
-                  <strong className="text-accent font-mono font-semibold">117 (82%)</strong>
+                  <strong className="text-text font-sans font-semibold tabular-nums">
+                    117 (82%)
+                  </strong>
                 </span>
                 <span className="text-text-subtle">
                   Review SLA:{' '}
-                  <strong className="text-text font-mono font-semibold">2.1 Days</strong>
+                  <strong className="text-text font-sans font-semibold tabular-nums">
+                    2.1 Days
+                  </strong>
                 </span>
               </>
             )}
@@ -447,7 +462,7 @@ export default function ReportsPage() {
                     Open requisitions and approved headcount capacity by business unit.
                   </CardDescription>
                 </div>
-                <span className="text-text-subtle bg-surface-2 border-border rounded-[6px] border px-2 py-0.5 font-mono text-[11px] font-medium select-none">
+                <span className="text-text-subtle bg-surface-2 border-border rounded-[6px] border px-2 py-0.5 font-sans text-[11px] font-medium tabular-nums select-none">
                   {departmentStats.length} Depts
                 </span>
               </div>
@@ -462,21 +477,21 @@ export default function ReportsPage() {
                   <div className="min-w-0 flex-1 pr-4">
                     <div className="mb-1 flex items-center justify-between text-[13px]">
                       <span className="text-text text-[13px] font-medium">{item.department}</span>
-                      <span className="text-text-subtle font-mono text-[11px]">
+                      <span className="text-text-subtle font-sans text-[11px] tabular-nums">
                         {item.openings} active {item.openings > 1 ? 'roles' : 'role'}
                       </span>
                     </div>
                     {/* Allocation Proportion Bar */}
                     <div className="flex items-center gap-2">
                       <Progress value={item.sharePct} className="h-1.5 flex-1" />
-                      <span className="text-text-subtle w-8 shrink-0 text-right font-mono text-[11px]">
+                      <span className="text-text-subtle w-8 shrink-0 text-right font-sans text-[11px] tabular-nums">
                         {item.sharePct}%
                       </span>
                     </div>
                   </div>
 
                   <div className="border-border/40 min-w-[70px] shrink-0 border-l pl-3 text-right">
-                    <span className="text-text font-mono text-[15px] font-semibold">
+                    <span className="text-text font-sans text-[15px] font-semibold tabular-nums">
                       {item.headcount}
                     </span>
                     <span className="text-text-subtle block text-[11px]">headcount</span>
@@ -490,14 +505,19 @@ export default function ReportsPage() {
           <div className="border-border/50 bg-surface-2/30 flex flex-wrap items-center justify-between gap-2 rounded-b-[12px] border-t px-4 py-2.5 text-[11px] select-none sm:px-6 sm:py-3">
             <span className="text-text-subtle">
               Total Quota:{' '}
-              <strong className="text-text font-mono font-semibold">{totalHeadcount}</strong>
+              <strong className="text-text font-sans font-semibold tabular-nums">
+                {totalHeadcount}
+              </strong>
             </span>
             <span className="text-text-subtle">
               Open Positions:{' '}
-              <strong className="text-text font-mono font-semibold">{activeOpenings}</strong>
+              <strong className="text-text font-sans font-semibold tabular-nums">
+                {activeOpenings}
+              </strong>
             </span>
             <span className="text-text-subtle">
-              Allocation Cap: <strong className="text-accent font-mono font-semibold">100%</strong>
+              Allocation Cap:{' '}
+              <strong className="text-text font-sans font-semibold tabular-nums">100%</strong>
             </span>
           </div>
         </Card>
@@ -515,7 +535,7 @@ export default function ReportsPage() {
                     Candidate acquisition volume, channel share, and offer conversion yield.
                   </CardDescription>
                 </div>
-                <span className="text-text-subtle bg-surface-2 border-border rounded-[6px] border px-2 py-0.5 font-mono text-[11px] font-medium select-none">
+                <span className="text-text-subtle bg-surface-2 border-border rounded-[6px] border px-2 py-0.5 font-sans text-[11px] font-medium tabular-nums select-none">
                   {totalCandidates} Sourced
                 </span>
               </div>
@@ -543,14 +563,14 @@ export default function ReportsPage() {
                     {/* Progress Bar */}
                     <div className="flex items-center gap-2">
                       <Progress value={item.pct} className="h-1.5 flex-1" />
-                      <span className="text-text-subtle w-8 shrink-0 text-right font-mono text-[11px]">
+                      <span className="text-text-subtle w-8 shrink-0 text-right font-sans text-[11px] tabular-nums">
                         {item.pct}%
                       </span>
                     </div>
                   </div>
 
                   <div className="border-border/40 min-w-[70px] shrink-0 border-l pl-3 text-right">
-                    <span className="text-text font-mono text-[15px] font-semibold">
+                    <span className="text-text font-sans text-[15px] font-semibold tabular-nums">
                       {item.count}
                     </span>
                     <span className="text-text-subtle block text-[11px]">candidates</span>
@@ -564,14 +584,19 @@ export default function ReportsPage() {
           <div className="border-border/50 bg-surface-2/30 flex flex-wrap items-center justify-between gap-2 rounded-b-[12px] border-t px-4 py-2.5 text-[11px] select-none sm:px-6 sm:py-3">
             <span className="text-text-subtle">
               Primary Source:{' '}
-              <strong className="text-text font-mono font-semibold">LinkedIn (33%)</strong>
+              <strong className="text-text font-sans font-semibold tabular-nums">
+                LinkedIn (33%)
+              </strong>
             </span>
             <span className="text-text-subtle">
               Highest Yield:{' '}
-              <strong className="text-accent font-mono font-semibold">Referrals (57%)</strong>
+              <strong className="text-text font-sans font-semibold tabular-nums">
+                Referrals (57%)
+              </strong>
             </span>
             <span className="text-text-subtle">
-              Channels: <strong className="text-text font-mono font-semibold">5 Active</strong>
+              Channels:{' '}
+              <strong className="text-text font-sans font-semibold tabular-nums">5 Active</strong>
             </span>
           </div>
         </Card>

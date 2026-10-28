@@ -52,6 +52,7 @@ import {
   Calendar,
   ChevronLeft,
   ChevronRight,
+  X,
 } from 'lucide-react';
 import { toast } from 'sonner';
 
@@ -266,6 +267,88 @@ export function OnboardingDashboard() {
     const start = (validTasksPage - 1) * TASKS_PAGE_SIZE;
     return filteredItems.slice(start, start + TASKS_PAGE_SIZE);
   }, [filteredItems, validTasksPage]);
+
+  // Upcoming Hires Awaiting Onboarding Roadmap: Search, Filters, and Pagination (6 per page)
+  const [awaitingSearchQuery, setAwaitingSearchQuery] = React.useState('');
+  const [awaitingDepartment, setAwaitingDepartment] = React.useState<string>('all');
+  const [awaitingStage, setAwaitingStage] = React.useState<string>('all');
+  const [awaitingPage, setAwaitingPage] = React.useState(1);
+  const AWAITING_PAGE_SIZE = 6;
+
+  // Department counts for awaiting candidates
+  const awaitingDepartmentsList = React.useMemo(() => {
+    const counts = new Map<string, number>();
+    for (const c of candidatesAwaitingChecklists) {
+      const opening = openings.find((o) => o.id === c.openingId);
+      const dept = opening?.department || 'General';
+      counts.set(dept, (counts.get(dept) || 0) + 1);
+    }
+    return Array.from(counts.entries())
+      .map(([name, count]) => ({ name, count }))
+      .sort((a, b) => a.name.localeCompare(b.name));
+  }, [candidatesAwaitingChecklists, openings]);
+
+  // Filtered awaiting candidates
+  const filteredAwaitingCandidates = React.useMemo(() => {
+    return candidatesAwaitingChecklists.filter((candidate) => {
+      // Department filter
+      if (awaitingDepartment !== 'all') {
+        const opening = openings.find((o) => o.id === candidate.openingId);
+        const dept = opening?.department || 'General';
+        if (dept !== awaitingDepartment) return false;
+      }
+
+      // Stage filter
+      if (awaitingStage !== 'all' && candidate.stage !== awaitingStage) {
+        return false;
+      }
+
+      // Search query filter
+      if (awaitingSearchQuery.trim()) {
+        const q = awaitingSearchQuery.trim().toLowerCase();
+        const name = candidate.name.toLowerCase();
+        const role = candidate.currentRole.toLowerCase();
+        const company = candidate.currentCompany.toLowerCase();
+        const opening = openings.find((o) => o.id === candidate.openingId);
+        const openingTitle = opening?.title.toLowerCase() ?? '';
+        const dept = opening?.department.toLowerCase() ?? '';
+
+        if (
+          !name.includes(q) &&
+          !role.includes(q) &&
+          !company.includes(q) &&
+          !openingTitle.includes(q) &&
+          !dept.includes(q)
+        ) {
+          return false;
+        }
+      }
+
+      return true;
+    });
+  }, [
+    candidatesAwaitingChecklists,
+    awaitingDepartment,
+    awaitingStage,
+    awaitingSearchQuery,
+    openings,
+  ]);
+
+  // Pagination for awaiting candidates (6 items per page)
+  const totalAwaitingPages = Math.max(
+    1,
+    Math.ceil(filteredAwaitingCandidates.length / AWAITING_PAGE_SIZE)
+  );
+  const validAwaitingPage = Math.min(Math.max(1, awaitingPage), totalAwaitingPages);
+  const visibleAwaitingCandidates = React.useMemo(() => {
+    const start = (validAwaitingPage - 1) * AWAITING_PAGE_SIZE;
+    return filteredAwaitingCandidates.slice(start, start + AWAITING_PAGE_SIZE);
+  }, [filteredAwaitingCandidates, validAwaitingPage]);
+
+  // Reset awaiting pagination when search or filter change
+  React.useEffect(() => {
+    setAwaitingPage(1);
+  }, [awaitingSearchQuery, awaitingDepartment, awaitingStage]);
 
   // Reset pagination when search or filters change
   React.useEffect(() => {
@@ -494,15 +577,88 @@ export function OnboardingDashboard() {
           {/* 1. TOP: Clean Table for Upcoming Hires Ready to Initialize Checklist */}
           {candidatesAwaitingChecklists.length > 0 && (
             <Card className="border-border bg-surface-1 overflow-hidden">
-              <div className="border-border bg-surface-2/30 flex items-center justify-between border-b px-4 py-3 sm:px-5">
-                <div className="flex items-center gap-2">
-                  <span className="text-text text-[13px] font-semibold">
+              <div className="border-border bg-surface-2/30 flex flex-col justify-between gap-3 border-b px-4 py-3 sm:flex-row sm:items-center sm:px-5">
+                <div className="flex items-center gap-2.5">
+                  <span className="text-text text-[13.5px] font-semibold">
                     Upcoming Hires Awaiting Onboarding Roadmap
                   </span>
+                  <span className="text-text-muted bg-surface-2 border-border/70 rounded-full border px-2 py-0.5 text-[11px] font-semibold tabular-nums">
+                    {filteredAwaitingCandidates.length}
+                  </span>
                 </div>
-                <span className="text-text-subtle hidden text-[11px] sm:inline">
-                  Initialize standard checklist or add custom tasks
-                </span>
+
+                {/* Search & Filter Controls */}
+                <div className="flex flex-wrap items-center gap-2">
+                  {/* Search Input */}
+                  <div className="relative w-full sm:w-[210px]">
+                    <Search className="text-text-muted pointer-events-none absolute top-1/2 left-2.5 h-3.5 w-3.5 -translate-y-1/2" />
+                    <Input
+                      type="text"
+                      placeholder="Search candidates, roles..."
+                      value={awaitingSearchQuery}
+                      onChange={(e) => {
+                        setAwaitingSearchQuery(e.target.value);
+                        setAwaitingPage(1);
+                      }}
+                      className="bg-surface-2/70 border-border/80 focus:border-border-strong h-8 w-full pr-7 pl-8 text-[12px]"
+                      aria-label="Search upcoming hires"
+                    />
+                    {awaitingSearchQuery && (
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setAwaitingSearchQuery('');
+                          setAwaitingPage(1);
+                        }}
+                        className="text-text-muted hover:text-text absolute top-1/2 right-2 -translate-y-1/2 cursor-pointer p-0.5"
+                        aria-label="Clear search"
+                      >
+                        <X className="h-3 w-3" />
+                      </button>
+                    )}
+                  </div>
+
+                  {/* Department Filter */}
+                  <Select
+                    value={awaitingDepartment}
+                    onValueChange={(val) => {
+                      setAwaitingDepartment(val);
+                      setAwaitingPage(1);
+                    }}
+                  >
+                    <SelectTrigger className="bg-surface-2/70 border-border/80 h-8 w-full text-[12px] sm:w-[155px]">
+                      <SelectValue placeholder="All Departments" />
+                    </SelectTrigger>
+                    <SelectContent align="end">
+                      <SelectItem value="all">
+                        All Departments ({candidatesAwaitingChecklists.length})
+                      </SelectItem>
+                      {awaitingDepartmentsList.map((dept) => (
+                        <SelectItem key={dept.name} value={dept.name}>
+                          {dept.name} ({dept.count})
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+
+                  {/* Stage Filter */}
+                  <Select
+                    value={awaitingStage}
+                    onValueChange={(val) => {
+                      setAwaitingStage(val);
+                      setAwaitingPage(1);
+                    }}
+                  >
+                    <SelectTrigger className="bg-surface-2/70 border-border/80 h-8 w-full text-[12px] sm:w-[115px]">
+                      <SelectValue placeholder="All Stages" />
+                    </SelectTrigger>
+                    <SelectContent align="end">
+                      <SelectItem value="all">All Stages</SelectItem>
+                      <SelectItem value="Joined">Joined</SelectItem>
+                      <SelectItem value="Offer Sent">Offer Sent</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
               </div>
 
               <div className="-mx-px overflow-x-auto">
@@ -524,78 +680,163 @@ export function OnboardingDashboard() {
                     </tr>
                   </thead>
                   <tbody className="divide-border divide-y text-[12px]">
-                    {candidatesAwaitingChecklists.map((candidate) => {
-                      const joiningDate = getCandidateJoiningDate(candidate);
+                    {visibleAwaitingCandidates.length === 0 ? (
+                      <tr>
+                        <td colSpan={5} className="py-10 text-center">
+                          <p className="text-text text-[13px] font-medium">
+                            No upcoming hires match your criteria
+                          </p>
+                          <p className="text-text-muted mt-0.5 text-[11.5px]">
+                            Try adjusting your search terms or clearing filters.
+                          </p>
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            onClick={() => {
+                              setAwaitingSearchQuery('');
+                              setAwaitingDepartment('all');
+                              setAwaitingStage('all');
+                              setAwaitingPage(1);
+                            }}
+                            className="mt-3 h-7 cursor-pointer text-[11.5px]"
+                          >
+                            Reset Filters
+                          </Button>
+                        </td>
+                      </tr>
+                    ) : (
+                      visibleAwaitingCandidates.map((candidate) => {
+                        const joiningDate = getCandidateJoiningDate(candidate);
 
-                      return (
-                        <tr key={candidate.id} className="hover:bg-surface-2/30 transition-colors">
-                          <td className="px-4 py-2.5 whitespace-nowrap sm:px-5">
-                            <div className="flex items-center gap-2">
-                              <CandidateAvatar
-                                name={candidate.name}
-                                candidateId={candidate.id}
-                                size="xs"
-                              />
-                              <span className="text-text font-medium">{candidate.name}</span>
-                            </div>
-                          </td>
-                          <td className="text-text-muted truncate px-3 py-2.5 whitespace-nowrap sm:px-4">
-                            <span className="inline-flex items-center gap-1.5">
-                              <span>{candidate.currentRole}</span>
-                              <span className="text-text-subtle">•</span>
-                              <CompanyLogo
-                                company={candidate.currentCompany}
-                                className="h-3.5 w-3.5 shrink-0 rounded-[3px] shadow-2xs"
-                              />
-                              <span>{candidate.currentCompany}</span>
-                            </span>
-                          </td>
-                          <td className="px-3 py-2.5 whitespace-nowrap sm:px-4">
-                            <Badge
-                              variant="default"
-                              className="text-text-muted bg-surface-2 text-[11px] font-normal"
-                            >
-                              {candidate.stage}
-                            </Badge>
-                          </td>
-                          <td className="px-3 py-2.5 whitespace-nowrap sm:px-4">
-                            <span className="text-text flex items-center gap-1.5 text-[12px] font-medium tabular-nums">
-                              <Calendar className="text-accent h-3.5 w-3.5 stroke-[1.75]" />
-                              {joiningDate}
-                            </span>
-                          </td>
-                          <td className="px-4 py-2.5 text-right whitespace-nowrap sm:px-5">
-                            <div className="inline-flex items-center justify-end gap-1.5 sm:gap-2">
-                              <Button
-                                variant="outline"
-                                size="sm"
-                                onClick={() =>
-                                  handleInitializeStandardChecklist(candidate.id, candidate.name)
-                                }
-                                loading={initializingCandidateId === candidate.id}
-                                disabled={initializingCandidateId !== null}
-                                className="border-border hover:bg-surface-2 h-7 cursor-pointer gap-1 px-2 text-[11px] sm:px-2.5"
+                        return (
+                          <tr
+                            key={candidate.id}
+                            className="hover:bg-surface-2/30 transition-colors"
+                          >
+                            <td className="px-4 py-2.5 whitespace-nowrap sm:px-5">
+                              <div className="flex items-center gap-2">
+                                <CandidateAvatar
+                                  name={candidate.name}
+                                  candidateId={candidate.id}
+                                  size="xs"
+                                />
+                                <span className="text-text font-medium">{candidate.name}</span>
+                              </div>
+                            </td>
+                            <td className="text-text-muted truncate px-3 py-2.5 whitespace-nowrap sm:px-4">
+                              <span className="inline-flex items-center gap-1.5">
+                                <span>{candidate.currentRole}</span>
+                                <span className="text-text-subtle">•</span>
+                                <CompanyLogo
+                                  company={candidate.currentCompany}
+                                  className="h-3.5 w-3.5 shrink-0 rounded-[3px] shadow-2xs"
+                                />
+                                <span>{candidate.currentCompany}</span>
+                              </span>
+                            </td>
+                            <td className="px-3 py-2.5 whitespace-nowrap sm:px-4">
+                              <Badge
+                                variant="default"
+                                className="text-text-muted bg-surface-2 text-[11px] font-normal"
                               >
-                                <ListChecks className="h-3 w-3" />
-                                <span>Setup Standard Checklist</span>
-                              </Button>
-                              <Button
-                                variant="ghost"
-                                size="sm"
-                                onClick={() => handleOpenCreateModal(candidate.id)}
-                                disabled={initializingCandidateId !== null}
-                                className="text-text-muted hover:text-text h-7 cursor-pointer gap-1 px-2 text-[11px]"
-                              >
-                                <Plus className="h-3 w-3" />
-                                <span>Custom Task</span>
-                              </Button>
-                            </div>
-                          </td>
-                        </tr>
-                      );
-                    })}
+                                {candidate.stage}
+                              </Badge>
+                            </td>
+                            <td className="px-3 py-2.5 whitespace-nowrap sm:px-4">
+                              <span className="text-text flex items-center gap-1.5 text-[12px] font-medium tabular-nums">
+                                <Calendar className="text-accent h-3.5 w-3.5 stroke-[1.75]" />
+                                {joiningDate}
+                              </span>
+                            </td>
+                            <td className="px-4 py-2.5 text-right whitespace-nowrap sm:px-5">
+                              <div className="inline-flex items-center justify-end gap-1.5 sm:gap-2">
+                                <Button
+                                  variant="outline"
+                                  size="sm"
+                                  onClick={() =>
+                                    handleInitializeStandardChecklist(candidate.id, candidate.name)
+                                  }
+                                  loading={initializingCandidateId === candidate.id}
+                                  disabled={initializingCandidateId !== null}
+                                  className="border-border hover:bg-surface-2 h-7 cursor-pointer gap-1 px-2 text-[11px] sm:px-2.5"
+                                >
+                                  <ListChecks className="h-3 w-3" />
+                                  <span>Setup Standard Checklist</span>
+                                </Button>
+                                <Button
+                                  variant="ghost"
+                                  size="sm"
+                                  onClick={() => handleOpenCreateModal(candidate.id)}
+                                  disabled={initializingCandidateId !== null}
+                                  className="text-text-muted hover:text-text h-7 cursor-pointer gap-1 px-2 text-[11px]"
+                                >
+                                  <Plus className="h-3 w-3" />
+                                  <span>Custom Task</span>
+                                </Button>
+                              </div>
+                            </td>
+                          </tr>
+                        );
+                      })
+                    )}
                   </tbody>
                 </table>
+              </div>
+
+              {/* Pagination Footer */}
+              <div className="border-border/60 bg-surface-1 flex flex-col items-center justify-between gap-2 border-t px-4 py-2.5 select-none sm:flex-row sm:px-5">
+                <span className="text-text-muted text-[11.5px] font-medium">
+                  {filteredAwaitingCandidates.length > 0 ? (
+                    <>
+                      Showing{' '}
+                      <span className="text-text font-semibold">
+                        {(validAwaitingPage - 1) * AWAITING_PAGE_SIZE + 1}–
+                        {Math.min(
+                          validAwaitingPage * AWAITING_PAGE_SIZE,
+                          filteredAwaitingCandidates.length
+                        )}
+                      </span>{' '}
+                      of{' '}
+                      <span className="text-text font-semibold">
+                        {filteredAwaitingCandidates.length}
+                      </span>{' '}
+                      upcoming hires
+                    </>
+                  ) : (
+                    '0 upcoming hires'
+                  )}
+                </span>
+
+                {totalAwaitingPages > 1 && (
+                  <div className="flex items-center gap-2">
+                    <button
+                      type="button"
+                      onClick={() => setAwaitingPage((p) => Math.max(1, p - 1))}
+                      disabled={validAwaitingPage === 1}
+                      className="border-border/70 bg-surface-1 text-text-muted hover:text-text hover:bg-surface-2 inline-flex h-7 w-7 cursor-pointer items-center justify-center rounded-[5px] border shadow-2xs transition-colors disabled:cursor-not-allowed disabled:opacity-30"
+                      aria-label="Previous page"
+                      title="Previous page"
+                    >
+                      <ChevronLeft className="h-3.5 w-3.5" />
+                    </button>
+
+                    <span className="text-text-muted text-[11px] font-medium">
+                      Page <span className="text-text font-semibold">{validAwaitingPage}</span> of{' '}
+                      {totalAwaitingPages}
+                    </span>
+
+                    <button
+                      type="button"
+                      onClick={() => setAwaitingPage((p) => Math.min(totalAwaitingPages, p + 1))}
+                      disabled={validAwaitingPage === totalAwaitingPages}
+                      className="border-border/70 bg-surface-1 text-text-muted hover:text-text hover:bg-surface-2 inline-flex h-7 w-7 cursor-pointer items-center justify-center rounded-[5px] border shadow-2xs transition-colors disabled:cursor-not-allowed disabled:opacity-30"
+                      aria-label="Next page"
+                      title="Next page"
+                    >
+                      <ChevronRight className="h-3.5 w-3.5" />
+                    </button>
+                  </div>
+                )}
               </div>
             </Card>
           )}
@@ -638,7 +879,7 @@ export function OnboardingDashboard() {
                             <span className="text-text truncate text-[14px] font-semibold">
                               {candidate.name}
                             </span>
-                            <span className="text-text-muted bg-surface-2/60 border-border flex items-center gap-1 rounded-[4px] border px-2 py-0.5 font-mono text-[11px] tabular-nums">
+                            <span className="text-text-muted bg-surface-2/60 border-border flex items-center gap-1 rounded-[4px] border px-2 py-0.5 font-sans text-[11px] tabular-nums">
                               <Calendar className="text-accent h-3 w-3 shrink-0" />
                               <span>Joining: {joiningDate}</span>
                             </span>
@@ -659,7 +900,7 @@ export function OnboardingDashboard() {
                         {/* Progress Indicator */}
                         <div className="flex items-center gap-2">
                           <div className="shrink-0 text-right">
-                            <span className="text-text font-mono text-[12px] font-semibold">
+                            <span className="text-text font-sans text-[12px] font-semibold tabular-nums">
                               {completed}/{total}
                             </span>
                             <span className="text-text-muted ml-1 text-[11px]">tasks</span>
@@ -667,7 +908,7 @@ export function OnboardingDashboard() {
                           <Progress value={percent} className="h-2 w-20 sm:w-28" />
                           <Badge
                             variant={percent === 100 ? 'success' : 'default'}
-                            className="shrink-0 font-mono text-[11px]"
+                            className="shrink-0 font-sans text-[11px] tabular-nums"
                           >
                             {percent}%
                           </Badge>
@@ -718,9 +959,9 @@ export function OnboardingDashboard() {
                                   </div>
                                   <span
                                     className={cn(
-                                      'py-0.2 shrink-0 rounded-full px-1.5 font-mono text-[10.5px] font-semibold',
+                                      'py-0.2 shrink-0 rounded-full px-1.5 font-sans text-[10.5px] font-semibold tabular-nums',
                                       phaseCompleted === phaseTasks.length && phaseTasks.length > 0
-                                        ? 'bg-emerald-500/15 text-emerald-400'
+                                        ? 'bg-surface-2 text-text border-border/80 border'
                                         : 'bg-surface-3 text-text-subtle'
                                     )}
                                   >
@@ -794,7 +1035,7 @@ export function OnboardingDashboard() {
                                             {task.owner}
                                           </Badge>
 
-                                          <span className="text-text-subtle font-mono text-[10.5px] tabular-nums">
+                                          <span className="text-text-subtle font-sans text-[10.5px] tabular-nums">
                                             {formatDate(task.dueDate, 'dd MMM')}
                                           </span>
                                         </div>
@@ -820,7 +1061,7 @@ export function OnboardingDashboard() {
 
               {totalHiresPages > 1 && (
                 <div className="border-border/60 flex items-center justify-between border-t pt-3 text-[12px] select-none">
-                  <span className="text-text-subtle font-mono text-[11.5px]">
+                  <span className="text-text-subtle font-sans text-[11.5px] tabular-nums">
                     Showing {(validHiresPage - 1) * HIRES_PAGE_SIZE + 1}–
                     {Math.min(
                       validHiresPage * HIRES_PAGE_SIZE,
@@ -891,7 +1132,7 @@ export function OnboardingDashboard() {
                             variant={
                               phasePct === 100 && phaseItems.length > 0 ? 'success' : 'default'
                             }
-                            className="font-mono text-[11px]"
+                            className="font-sans text-[11px] tabular-nums"
                           >
                             {phaseCompleted}/{phaseItems.length} Done
                           </Badge>
@@ -901,7 +1142,9 @@ export function OnboardingDashboard() {
 
                     <div className="flex items-center gap-2.5">
                       <Progress value={phasePct} className="h-2 w-24 sm:w-28" />
-                      <span className="text-text-muted font-mono text-[12px]">{phasePct}%</span>
+                      <span className="text-text-muted font-sans text-[12px] tabular-nums">
+                        {phasePct}%
+                      </span>
                     </div>
                   </div>
                 </CardHeader>
@@ -971,7 +1214,7 @@ export function OnboardingDashboard() {
                               >
                                 {item.owner}
                               </Badge>
-                              <span className="text-text-subtle flex items-center gap-1 font-mono text-[11px]">
+                              <span className="text-text-subtle flex items-center gap-1 font-sans text-[11px] tabular-nums">
                                 <Clock className="h-3 w-3" />
                                 {formatDate(item.dueDate, 'dd MMM')}
                               </span>
@@ -1113,7 +1356,7 @@ export function OnboardingDashboard() {
 
                         {/* Due Date */}
                         <td className="px-3 py-3 align-middle whitespace-nowrap">
-                          <span className="text-text-subtle flex items-center gap-1.5 font-mono text-[12px]">
+                          <span className="text-text-subtle flex items-center gap-1.5 font-sans text-[12px] tabular-nums">
                             <Calendar className="text-text-subtle/70 h-3.5 w-3.5 shrink-0" />
                             <span>{formatDate(item.dueDate, 'dd MMM')}</span>
                           </span>
@@ -1143,7 +1386,7 @@ export function OnboardingDashboard() {
 
           {totalTasksPages > 1 && (
             <div className="border-border/80 bg-surface-2/20 flex items-center justify-between border-t px-4 py-2.5 text-[12px] select-none sm:px-5">
-              <span className="text-text-subtle font-mono text-[11.5px]">
+              <span className="text-text-subtle font-sans text-[11.5px] tabular-nums">
                 Showing {(validTasksPage - 1) * TASKS_PAGE_SIZE + 1}–
                 {Math.min(validTasksPage * TASKS_PAGE_SIZE, filteredItems.length)} of{' '}
                 {filteredItems.length} tasks (Page {validTasksPage} of {totalTasksPages})

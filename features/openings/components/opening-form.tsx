@@ -398,7 +398,7 @@ export function OpeningForm({ initialData, isEditing = false }: OpeningFormProps
                   min="1"
                   value={headcount}
                   onChange={(e) => setHeadcount(e.target.value)}
-                  className="h-9 font-mono text-[13px]"
+                  className="h-9 font-sans text-[13px] tabular-nums"
                 />
               </FormField>
             </div>
@@ -464,7 +464,7 @@ export function OpeningForm({ initialData, isEditing = false }: OpeningFormProps
                   <span className="text-text text-[13px] font-semibold">
                     Experience Expectation
                   </span>
-                  <Badge variant="default" className="font-mono text-[11px]">
+                  <Badge variant="default" className="font-sans text-[11px] tabular-nums">
                     {expMin}-{expMax} yrs
                   </Badge>
                 </div>
@@ -476,7 +476,7 @@ export function OpeningForm({ initialData, isEditing = false }: OpeningFormProps
                         min="0"
                         value={expMin}
                         onChange={(e) => setExpMin(e.target.value)}
-                        className="h-9 pr-8 font-mono text-[13px]"
+                        className="h-9 pr-8 font-sans text-[13px] tabular-nums"
                       />
                       <span className="text-text-subtle pointer-events-none absolute top-2 right-2.5 text-[11px]">
                         yrs
@@ -490,7 +490,7 @@ export function OpeningForm({ initialData, isEditing = false }: OpeningFormProps
                         min="0"
                         value={expMax}
                         onChange={(e) => setExpMax(e.target.value)}
-                        className="h-9 pr-8 font-mono text-[13px]"
+                        className="h-9 pr-8 font-sans text-[13px] tabular-nums"
                       />
                       <span className="text-text-subtle pointer-events-none absolute top-2 right-2.5 text-[11px]">
                         yrs
@@ -506,7 +506,7 @@ export function OpeningForm({ initialData, isEditing = false }: OpeningFormProps
                   <span className="text-text text-[13px] font-semibold">Annual CTC Budget</span>
                   <Badge
                     variant="default"
-                    className="border-success/30 bg-success/15 text-success font-mono text-[11px] font-semibold"
+                    className="border-success/30 bg-success/15 text-success font-sans text-[11px] font-semibold tabular-nums"
                   >
                     {formatCtcRange(parseFloat(budgetMin) || 0, parseFloat(budgetMax) || 0)}
                   </Badge>
@@ -519,7 +519,7 @@ export function OpeningForm({ initialData, isEditing = false }: OpeningFormProps
                         min="0"
                         value={budgetMin}
                         onChange={(e) => setBudgetMin(e.target.value)}
-                        className="h-9 pr-10 font-mono text-[13px]"
+                        className="h-9 pr-10 font-sans text-[13px] tabular-nums"
                       />
                       <span className="text-text-subtle pointer-events-none absolute top-2 right-2 text-[11px]">
                         LPA
@@ -533,7 +533,7 @@ export function OpeningForm({ initialData, isEditing = false }: OpeningFormProps
                         min="0"
                         value={budgetMax}
                         onChange={(e) => setBudgetMax(e.target.value)}
-                        className="h-9 pr-10 font-mono text-[13px]"
+                        className="h-9 pr-10 font-sans text-[13px] tabular-nums"
                       />
                       <span className="text-text-subtle pointer-events-none absolute top-2 right-2 text-[11px]">
                         LPA
@@ -580,7 +580,7 @@ export function OpeningForm({ initialData, isEditing = false }: OpeningFormProps
                     <span>Must-Have Skills</span>
                     <span className="text-danger">*</span>
                     {mustSkills.length > 0 && (
-                      <span className="text-text-subtle font-mono text-[11px] font-normal">
+                      <span className="text-text-subtle font-sans text-[11px] font-normal tabular-nums">
                         ({mustSkills.length})
                       </span>
                     )}
@@ -697,7 +697,7 @@ export function OpeningForm({ initialData, isEditing = false }: OpeningFormProps
                     <span>Nice-to-Have Skills</span>
                     <span className="text-text-subtle text-[11.5px] font-normal">(Optional)</span>
                     {niceSkills.length > 0 && (
-                      <span className="text-text-subtle font-mono text-[11px] font-normal">
+                      <span className="text-text-subtle font-sans text-[11px] font-normal tabular-nums">
                         ({niceSkills.length})
                       </span>
                     )}
@@ -856,7 +856,7 @@ export function OpeningForm({ initialData, isEditing = false }: OpeningFormProps
                 <CardTitle className="text-text text-[14px] font-semibold">
                   Directory Live Preview
                 </CardTitle>
-                <Badge variant="default" className="font-mono text-[10px] uppercase">
+                <Badge variant="default" className="font-sans text-[10px] uppercase tabular-nums">
                   Live
                 </Badge>
               </div>
@@ -889,7 +889,7 @@ export function OpeningForm({ initialData, isEditing = false }: OpeningFormProps
                   <p className="text-text-muted mt-1 flex items-center gap-1.5 text-[12px]">
                     <span>{location || 'Location'}</span>
                     <span>•</span>
-                    <span className="font-mono">
+                    <span className="font-sans tabular-nums">
                       {headcount} role{parseInt(headcount, 10) > 1 ? 's' : ''}
                     </span>
                   </p>
@@ -897,7 +897,7 @@ export function OpeningForm({ initialData, isEditing = false }: OpeningFormProps
 
                 <div className="border-border bg-surface-3/80 flex items-center justify-between rounded-[var(--radius-sm)] border p-2.5">
                   <span className="text-text-muted text-[11px]">Budget Band</span>
-                  <span className="text-success font-mono text-[12px] font-bold">
+                  <span className="text-text font-sans text-[12px] font-bold tabular-nums">
                     {formatCtcRange(parseFloat(budgetMin) || 0, parseFloat(budgetMax) || 0)}
                   </span>
                 </div>
@@ -930,7 +930,7 @@ export function OpeningForm({ initialData, isEditing = false }: OpeningFormProps
                 <CardTitle className="text-text text-[14px] font-semibold">
                   Readiness Score
                 </CardTitle>
-                <span className="text-accent font-mono text-[12px] font-bold">
+                <span className="text-text font-sans text-[12px] font-bold tabular-nums">
                   {readinessPercent}%
                 </span>
               </div>
@@ -996,7 +996,7 @@ export function OpeningForm({ initialData, isEditing = false }: OpeningFormProps
                 </div>
                 <div className="flex justify-between">
                   <span>Auto-Routing:</span>
-                  <span className="text-success font-medium">Active</span>
+                  <span className="text-text font-medium">Active</span>
                 </div>
               </div>
             </CardContent>

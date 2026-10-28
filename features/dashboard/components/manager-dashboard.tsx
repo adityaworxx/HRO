@@ -266,7 +266,7 @@ export function ManagerDashboard() {
                 <span>All</span>
                 <span
                   className={cn(
-                    'rounded-full px-1.5 font-mono text-[11px]',
+                    'rounded-full px-1.5 font-sans text-[11px] font-semibold tabular-nums',
                     selectedReviewDept === 'all'
                       ? 'bg-white/20 font-semibold text-white'
                       : 'bg-surface-3 text-text-subtle'
@@ -294,7 +294,7 @@ export function ManagerDashboard() {
                     <span>{group.title}</span>
                     <span
                       className={cn(
-                        'rounded-full px-1.5 font-mono text-[11px]',
+                        'rounded-full px-1.5 font-sans text-[11px] font-semibold tabular-nums',
                         isSelected
                           ? 'bg-white/20 font-semibold text-white'
                           : 'bg-surface-3 text-text-subtle'
@@ -317,7 +317,7 @@ export function ManagerDashboard() {
                 </div>
               ) : filteredReviewCandidates.length === 0 ? (
                 <div className="flex h-36 flex-col items-center justify-center text-center select-none">
-                  <CheckCircle2 className="mb-1.5 h-6 w-6 text-emerald-500/70" />
+                  <CheckCircle2 className="text-text-muted mb-1.5 h-6 w-6" />
                   <p className="text-text text-[14px] font-medium">
                     No candidates in this department
                   </p>
@@ -380,7 +380,7 @@ export function ManagerDashboard() {
 
                             {/* 3. Experience */}
                             <div className="min-w-0 pr-2">
-                              <span className="text-text block font-mono text-[12px] font-medium tabular-nums">
+                              <span className="text-text block font-sans text-[12px] font-medium tabular-nums">
                                 {candidate.experienceYears}y exp
                               </span>
                             </div>
@@ -423,7 +423,7 @@ export function ManagerDashboard() {
               </Link>
               {totalReviewPages > 1 && (
                 <div className="flex items-center gap-1.5">
-                  <span className="text-text-muted mr-1 font-mono text-[12px]">
+                  <span className="text-text-muted mr-1 font-sans text-[12px]">
                     Page {reviewPage} of {totalReviewPages}
                   </span>
                   <button
