@@ -1,6 +1,7 @@
 'use client';
 
 import * as React from 'react';
+import { cn } from '@/lib/utils';
 import type { Candidate } from '@/types/entities';
 import type { CandidateStage } from '@/lib/domain/status-transitions';
 import { getNextAllowedCandidateStages } from '@/lib/domain/status-transitions';
@@ -358,10 +359,21 @@ export function CandidateDetailSheet({ candidate, open, onOpenChange }: Candidat
               <div className="border-t border-dashed border-border/80" />
               <div className="border-border bg-surface-2/30 space-y-3 rounded-lg border p-3.5">
                 <div className="flex items-center justify-between">
-                  <h4 className="text-text flex items-center gap-1.5 text-[13px] font-semibold">
-                    <Calendar className="text-accent h-4 w-4" />
-                    <span>Interview Schedule</span>
-                  </h4>
+                  <div className="flex items-center gap-2">
+                    <h4 className="text-text flex items-center gap-1.5 text-[13px] font-semibold">
+                      <Calendar className="text-accent h-4 w-4" />
+                      <span>Interview Schedule</span>
+                    </h4>
+                    {candidate.interviewDate ? (
+                      <span className="text-[11.5px] font-medium text-success select-none">
+                        Slot Confirmed
+                      </span>
+                    ) : (
+                      <span className="text-[11.5px] font-medium text-warning select-none">
+                        {isHr ? 'Needs HR Call' : 'HR Scheduling'}
+                      </span>
+                    )}
+                  </div>
                   {isHr ? (
                     <Button
                       variant="outline"
@@ -400,10 +412,19 @@ export function CandidateDetailSheet({ candidate, open, onOpenChange }: Candidat
                       {candidate.interviewMode ?? 'Video'}
                     </p>
                     <div className="flex items-center gap-1.5 pt-0.5">
-                      <strong className="text-text">Outcome:</strong>
-                      <Badge variant="default" className="text-[11px] font-medium">
+                      <strong className="text-text font-medium">Outcome:</strong>
+                      <span
+                        className={cn(
+                          'text-[12px] font-medium select-none',
+                          candidate.interviewOutcome === 'Selected'
+                            ? 'text-success'
+                            : candidate.interviewOutcome === 'Rejected'
+                              ? 'text-danger'
+                              : 'text-text-muted'
+                        )}
+                      >
                         {candidate.interviewOutcome}
-                      </Badge>
+                      </span>
                     </div>
                   </div>
                 ) : (
