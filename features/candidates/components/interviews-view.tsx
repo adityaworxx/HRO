@@ -329,12 +329,19 @@ export function InterviewsView() {
                   className={cn(
                     'h-8 px-3 rounded-[6px] border text-[12px] font-medium transition-colors cursor-pointer inline-flex items-center gap-1.5 select-none',
                     statusTab === 'all'
-                      ? 'border-accent/70 bg-accent/15 text-accent font-semibold shadow-2xs'
-                      : 'border-border/70 bg-surface-2/40 text-text-muted hover:text-text hover:bg-surface-2'
+                      ? 'border-accent bg-accent text-white font-semibold shadow-xs'
+                      : 'border-border/70 bg-surface-1 text-text-muted hover:text-text hover:bg-surface-2'
                   )}
                 >
                   <span>All</span>
-                  <span className="font-mono text-[11px] font-semibold tabular-nums px-1.5 py-0.2 rounded-full bg-surface-1 border border-border/70">
+                  <span
+                    className={cn(
+                      'font-mono text-[11px] font-semibold tabular-nums px-1.5 py-0.5 rounded-full',
+                      statusTab === 'all'
+                        ? 'bg-white/20 text-white'
+                        : 'bg-surface-2 text-text-subtle border border-border/60'
+                    )}
+                  >
                     {interviewCandidates.length}
                   </span>
                 </button>
@@ -345,13 +352,20 @@ export function InterviewsView() {
                   className={cn(
                     'h-8 px-3 rounded-[6px] border text-[12px] font-medium transition-colors cursor-pointer inline-flex items-center gap-1.5 select-none',
                     statusTab === 'needs-scheduling'
-                      ? 'border-warning/70 bg-warning/15 text-warning font-semibold shadow-2xs'
-                      : 'border-border/70 bg-surface-2/40 text-text-muted hover:text-text hover:bg-surface-2'
+                      ? 'border-accent bg-accent text-white font-semibold shadow-xs'
+                      : 'border-border/70 bg-surface-1 text-text-muted hover:text-text hover:bg-surface-2'
                   )}
                 >
-                  <Phone className="h-3 w-3 text-warning shrink-0" />
+                  <Phone className={cn('h-3 w-3 shrink-0', statusTab === 'needs-scheduling' ? 'text-white' : 'text-text-subtle')} />
                   <span>Needs Call / Scheduling</span>
-                  <span className="font-mono text-[11px] font-semibold tabular-nums px-1.5 py-0.2 rounded-full bg-surface-1 border border-border/70">
+                  <span
+                    className={cn(
+                      'font-mono text-[11px] font-semibold tabular-nums px-1.5 py-0.5 rounded-full',
+                      statusTab === 'needs-scheduling'
+                        ? 'bg-white/20 text-white'
+                        : 'bg-surface-2 text-text-subtle border border-border/60'
+                    )}
+                  >
                     {unscheduledCandidates.length}
                   </span>
                 </button>
@@ -362,13 +376,20 @@ export function InterviewsView() {
                   className={cn(
                     'h-8 px-3 rounded-[6px] border text-[12px] font-medium transition-colors cursor-pointer inline-flex items-center gap-1.5 select-none',
                     statusTab === 'scheduled'
-                      ? 'border-success/70 bg-success/15 text-success font-semibold shadow-2xs'
-                      : 'border-border/70 bg-surface-2/40 text-text-muted hover:text-text hover:bg-surface-2'
+                      ? 'border-accent bg-accent text-white font-semibold shadow-xs'
+                      : 'border-border/70 bg-surface-1 text-text-muted hover:text-text hover:bg-surface-2'
                   )}
                 >
-                  <CheckCircle2 className="h-3 w-3 text-success shrink-0" />
+                  <CheckCircle2 className={cn('h-3 w-3 shrink-0', statusTab === 'scheduled' ? 'text-white' : 'text-text-subtle')} />
                   <span>Confirmed Slots</span>
-                  <span className="font-mono text-[11px] font-semibold tabular-nums px-1.5 py-0.2 rounded-full bg-surface-1 border border-border/70">
+                  <span
+                    className={cn(
+                      'font-mono text-[11px] font-semibold tabular-nums px-1.5 py-0.5 rounded-full',
+                      statusTab === 'scheduled'
+                        ? 'bg-white/20 text-white'
+                        : 'bg-surface-2 text-text-subtle border border-border/60'
+                    )}
+                  >
                     {scheduledCandidates.length}
                   </span>
                 </button>
@@ -558,9 +579,8 @@ export function InterviewsView() {
                             </div>
                           </div>
 
-                          {/* Status Dot & Label (Clean unboxed, matches reference image) */}
-                          <div className="shrink-0 flex items-center gap-1.5 pt-0.5 select-none">
-                            <span className={cn('h-2 w-2 rounded-full shrink-0', outcomeConfig.dot)} />
+                          {/* Status Label (Clean unboxed, without dot) */}
+                          <div className="shrink-0 pt-0.5 select-none">
                             <span className={cn('text-[12px] font-medium', outcomeConfig.text)}>
                               {outcomeConfig.label}
                             </span>
@@ -591,7 +611,7 @@ export function InterviewsView() {
                             {isScheduled ? (
                               <>
                                 <div className="inline-flex items-center gap-1.5 text-[12px] font-semibold text-text">
-                                  <ModeIcon className="h-3.5 w-3.5 text-accent stroke-[1.75]" />
+                                  <ModeIcon className="h-3.5 w-3.5 text-text-muted stroke-[1.75]" />
                                   <span>{candidate.interviewMode ?? 'Video'} Interview</span>
                                 </div>
                                 <div className="flex items-center justify-end gap-1 text-[11.5px] font-medium text-text-muted">

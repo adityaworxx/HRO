@@ -175,9 +175,8 @@ export function OpeningCard({
       <div className="border-t border-border/40 pt-2.5 flex items-center justify-between gap-2 text-[11px]">
         {opening.status === 'On Hold' ? (
           <div className="flex items-center gap-1.5">
-            <span className="inline-flex items-center gap-1.5 text-[11px] font-medium text-amber-600 dark:text-amber-400 select-none">
-              <span className="h-1.5 w-1.5 rounded-full bg-amber-500" />
-              <span>On Hold</span>
+            <span className="text-[11px] font-medium text-amber-600 dark:text-amber-400 select-none">
+              On Hold
             </span>
             {onReactivate && (
               <button
@@ -194,14 +193,12 @@ export function OpeningCard({
             )}
           </div>
         ) : opening.status === 'Open' ? (
-          <span className="inline-flex items-center gap-1.5 text-[11px] font-medium text-emerald-600 dark:text-emerald-400 select-none">
-            <span className="h-1.5 w-1.5 rounded-full bg-emerald-500" />
-            <span>Open</span>
+          <span className="text-[11px] font-medium text-emerald-600 dark:text-emerald-400 select-none">
+            Open
           </span>
         ) : (
-          <span className="inline-flex items-center gap-1.5 text-[11px] font-medium text-accent select-none">
-            <span className="h-1.5 w-1.5 rounded-full bg-accent" />
-            <span>{opening.status}</span>
+          <span className="text-[11px] font-medium text-accent select-none">
+            {opening.status}
           </span>
         )}
 
