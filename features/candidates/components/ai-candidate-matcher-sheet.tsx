@@ -56,11 +56,20 @@ export function AiCandidateMatcherSheet({
     {}
   );
 
-  // Compute AI Match rankings
-  const rankedResults = React.useMemo(() => {
+  // Filter: ONLY Sourced candidates belonging to THIS opening
+  // (strictly excluding 'Shared with Manager', 'Interview', 'Selected', 'Offer Sent', 'Joined', 'Rejected')
+  const unscreenedSourcedCandidates = React.useMemo(() => {
     if (!opening || allCandidates.length === 0) return [];
-    return rankCandidatesForOpening(allCandidates, opening);
+    return allCandidates.filter(
+      (c) => c.openingId === opening.id && c.stage === 'Sourced'
+    );
   }, [opening, allCandidates]);
+
+  // Compute AI Match rankings on Sourced candidates for this opening
+  const rankedResults = React.useMemo(() => {
+    if (!opening || unscreenedSourcedCandidates.length === 0) return [];
+    return rankCandidatesForOpening(unscreenedSourcedCandidates, opening);
+  }, [opening, unscreenedSourcedCandidates]);
 
   // Filter & sort results
   const filteredResults = React.useMemo(() => {
@@ -194,16 +203,15 @@ export function AiCandidateMatcherSheet({
                   {opening.experienceRange.min}–{opening.experienceRange.max}y exp
                 </span>
                 <span className="text-text-subtle/50 mx-1.5">•</span>
-                <span className="text-text-subtle">{allCandidates.length} evaluated</span>
+                <span className="text-text-subtle">{unscreenedSourcedCandidates.length} sourced candidates</span>
               </p>
             </div>
 
             <Button
               type="button"
-              variant="outline"
               size="sm"
               onClick={handleBatchShortlistTop}
-              className="border-border/80 hover:bg-surface-2 text-text mr-8 h-7.5 shrink-0 cursor-pointer rounded-[6px] px-3 text-[11.5px] font-semibold shadow-2xs transition-colors"
+              className="border-0 bg-blue-600 hover:bg-blue-700 active:bg-blue-800 text-white mr-8 h-7.5 shrink-0 cursor-pointer rounded-[5px] px-3 text-[11.5px] font-semibold shadow-2xs transition-colors select-none"
             >
               Shortlist Top 3
             </Button>
@@ -233,15 +241,15 @@ export function AiCandidateMatcherSheet({
           </div>
 
           <div className="flex flex-wrap items-center justify-between gap-2 text-[12px]">
-            {/* Apple-style Segmented Control */}
-            <div className="border-border/60 bg-surface-2/50 inline-flex items-center gap-1 rounded-[7px] border p-0.5 select-none">
+            {/* Segmented Filter Control */}
+            <div className="border-border/60 bg-surface-2/60 inline-flex items-center gap-1 rounded-[7px] border p-0.5 select-none">
               <button
                 type="button"
                 onClick={() => setSelectedTier('all')}
                 className={cn(
-                  'h-6.5 cursor-pointer rounded-[5px] px-2.5 text-[11.5px] font-medium transition-all',
+                  'h-6.5 cursor-pointer rounded-[5px] px-2.5 text-[11.5px] font-medium transition-all select-none',
                   selectedTier === 'all'
-                    ? 'bg-surface-1 text-text border-border/60 border font-semibold shadow-2xs'
+                    ? 'bg-accent text-white font-semibold shadow-xs'
                     : 'text-text-muted hover:text-text'
                 )}
               >
@@ -251,9 +259,9 @@ export function AiCandidateMatcherSheet({
                 type="button"
                 onClick={() => setSelectedTier('strong')}
                 className={cn(
-                  'h-6.5 cursor-pointer rounded-[5px] px-2.5 text-[11.5px] font-medium transition-all',
+                  'h-6.5 cursor-pointer rounded-[5px] px-2.5 text-[11.5px] font-medium transition-all select-none',
                   selectedTier === 'strong'
-                    ? 'bg-surface-1 text-text border-border/60 border font-semibold shadow-2xs'
+                    ? 'bg-accent text-white font-semibold shadow-xs'
                     : 'text-text-muted hover:text-text'
                 )}
               >
@@ -263,9 +271,9 @@ export function AiCandidateMatcherSheet({
                 type="button"
                 onClick={() => setSelectedTier('good')}
                 className={cn(
-                  'h-6.5 cursor-pointer rounded-[5px] px-2.5 text-[11.5px] font-medium transition-all',
+                  'h-6.5 cursor-pointer rounded-[5px] px-2.5 text-[11.5px] font-medium transition-all select-none',
                   selectedTier === 'good'
-                    ? 'bg-surface-1 text-text border-border/60 border font-semibold shadow-2xs'
+                    ? 'bg-accent text-white font-semibold shadow-xs'
                     : 'text-text-muted hover:text-text'
                 )}
               >
@@ -275,9 +283,9 @@ export function AiCandidateMatcherSheet({
                 type="button"
                 onClick={() => setSelectedTier('fast')}
                 className={cn(
-                  'h-6.5 cursor-pointer rounded-[5px] px-2.5 text-[11.5px] font-medium transition-all',
+                  'h-6.5 cursor-pointer rounded-[5px] px-2.5 text-[11.5px] font-medium transition-all select-none',
                   selectedTier === 'fast'
-                    ? 'bg-surface-1 text-text border-border/60 border font-semibold shadow-2xs'
+                    ? 'bg-accent text-white font-semibold shadow-xs'
                     : 'text-text-muted hover:text-text'
                 )}
               >
@@ -315,9 +323,9 @@ export function AiCandidateMatcherSheet({
           {filteredResults.length === 0 ? (
             <div className="border-border/60 bg-surface-2/20 flex flex-col items-center justify-center rounded-[8px] border border-dashed py-12 text-center select-none">
               <Filter className="text-text-subtle h-6 w-6 stroke-[1.5]" />
-              <p className="text-text mt-2 text-[13px] font-medium">No matching candidates</p>
-              <p className="text-text-muted mt-0.5 text-[11.5px]">
-                Try adjusting your search keyword or relaxing the filters.
+              <p className="text-text mt-2 text-[13px] font-medium">No unscreened sourced candidates</p>
+              <p className="text-text-muted mt-0.5 text-[11.5px] max-w-sm">
+                All candidates for this opening have already been screened or moved to downstream pipeline stages (Shared with Manager, Interview, Joined).
               </p>
             </div>
           ) : (
@@ -339,7 +347,7 @@ export function AiCandidateMatcherSheet({
               return (
                 <div
                   key={candidate.id}
-                  className="group border-border/70 bg-surface-1/95 hover:border-border-strong relative flex flex-col justify-between space-y-2.5 rounded-[12px] border p-3.5 shadow-[0_2px_8px_rgba(0,0,0,0.03),0_1px_2px_rgba(0,0,0,0.02)] backdrop-blur-md transition-all duration-200 ease-out select-none hover:-translate-y-0.5 hover:shadow-[0_8px_20px_rgba(0,0,0,0.06)] dark:shadow-[0_2px_12px_rgba(0,0,0,0.35)] dark:hover:shadow-[0_8px_24px_rgba(0,0,0,0.5)]"
+                  className="group border-border/70 bg-surface-1 hover:border-border-strong relative flex flex-col justify-between space-y-2.5 rounded-[10px] border p-3.5 transition-colors select-none"
                 >
                   {/* Row 1: Header (Avatar, Name, Role/Company & Match Score) */}
                   <div className="flex items-start justify-between gap-2.5">
@@ -368,7 +376,7 @@ export function AiCandidateMatcherSheet({
                     </div>
 
                     <div className="flex shrink-0 flex-col items-end gap-0.5 select-none">
-                      <span className="text-text bg-surface-2 border-border/70 rounded-[5px] border px-2 py-0.5 font-sans text-[11.5px] font-medium tabular-nums">
+                      <span className="text-success font-sans text-[12px] font-semibold tabular-nums select-none">
                         {score}% Fit
                       </span>
                       {isSharedWithManager ? (

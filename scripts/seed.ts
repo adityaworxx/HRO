@@ -28,6 +28,18 @@ const INDIAN_COMPANIES = [
   'Urban Company',
   'Nykaa',
   'BrowserStack',
+  'Zepto',
+  'Blinkit',
+  'Postman',
+  'Freshworks',
+  'Zoho',
+  'Infosys',
+  'TCS',
+  'Wipro',
+  'Lenskart',
+  'Dream11',
+  'Dunzo',
+  'Jio',
 ];
 
 interface RoleTemplate {
@@ -682,7 +694,7 @@ export function generateSeedData(): {
   // Joined: 42
   // Rejected: 40
   const stageTargets: Array<{ stage: CandidateStage; count: number }> = [
-    { stage: 'Sourced', count: 45 },
+    { stage: 'Sourced', count: 100 }, // Exactly 100 Sourced candidates with company logos
     { stage: 'Shared with Manager', count: 45 },
     { stage: 'Interview', count: 48 },
     { stage: 'Selected', count: 42 },

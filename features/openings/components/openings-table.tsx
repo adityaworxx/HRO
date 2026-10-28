@@ -313,7 +313,7 @@ export function OpeningsTable() {
                 onClick={() => setSelectedStatus(tab.id)}
                 className={`inline-flex cursor-pointer items-center gap-1.5 rounded-[var(--radius-sm)] px-2.5 py-1 text-[13px] font-medium transition-colors select-none ${
                   isSelected
-                    ? 'border-border-strong bg-surface-3 text-text border font-semibold shadow-xs'
+                    ? 'bg-accent font-semibold text-white shadow-xs'
                     : 'bg-surface-2 text-text-muted hover:bg-surface-3 hover:text-text'
                 }`}
               >
@@ -321,7 +321,7 @@ export function OpeningsTable() {
                 <span
                   className={`rounded-full px-1.5 font-sans text-[11px] font-semibold tabular-nums ${
                     isSelected
-                      ? 'border-border/80 bg-surface-1 text-text border'
+                      ? 'bg-white/20 text-white'
                       : 'bg-surface-3 text-text-subtle'
                   }`}
                 >

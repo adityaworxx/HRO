@@ -458,7 +458,7 @@ export function InterviewsView() {
                     'inline-flex h-8 cursor-pointer items-center gap-1.5 rounded-[6px] border px-3 text-[12px] font-medium transition-colors select-none',
 
                     statusTab === 'all'
-                      ? 'border-border-strong bg-surface-3 text-text font-semibold shadow-xs'
+                      ? 'border-accent bg-accent font-semibold text-white shadow-xs'
                       : 'border-border/70 bg-surface-1 text-text-muted hover:text-text hover:bg-surface-2'
                   )}
                 >
@@ -469,7 +469,7 @@ export function InterviewsView() {
                       'rounded-full px-1.5 py-0.5 font-sans text-[11px] font-semibold tabular-nums',
 
                       statusTab === 'all'
-                        ? 'bg-surface-1 text-text border-border/80 border'
+                        ? 'bg-white/20 text-white'
                         : 'bg-surface-2 text-text-subtle border-border/60 border'
                     )}
                   >
@@ -486,11 +486,11 @@ export function InterviewsView() {
                     'inline-flex h-8 cursor-pointer items-center gap-1.5 rounded-[6px] border px-3 text-[12px] font-medium transition-colors select-none',
 
                     statusTab === 'needs-scheduling'
-                      ? 'border-border-strong bg-surface-3 text-text font-semibold shadow-xs'
+                      ? 'border-accent bg-accent font-semibold text-white shadow-xs'
                       : 'border-border/70 bg-surface-1 text-text-muted hover:text-text hover:bg-surface-2'
                   )}
                 >
-                  <Phone className={cn('h-3 w-3 shrink-0', 'text-text-subtle')} />
+                  <Phone className={cn('h-3 w-3 shrink-0', statusTab === 'needs-scheduling' ? 'text-white' : 'text-text-subtle')} />
 
                   <span>Needs Call / Scheduling</span>
 
@@ -499,7 +499,7 @@ export function InterviewsView() {
                       'rounded-full px-1.5 py-0.5 font-sans text-[11px] font-semibold tabular-nums',
 
                       statusTab === 'needs-scheduling'
-                        ? 'bg-surface-1 text-text border-border/80 border'
+                        ? 'bg-white/20 text-white'
                         : 'bg-surface-2 text-text-subtle border-border/60 border'
                     )}
                   >
@@ -516,11 +516,11 @@ export function InterviewsView() {
                     'inline-flex h-8 cursor-pointer items-center gap-1.5 rounded-[6px] border px-3 text-[12px] font-medium transition-colors select-none',
 
                     statusTab === 'scheduled'
-                      ? 'border-border-strong bg-surface-3 text-text font-semibold shadow-xs'
+                      ? 'border-accent bg-accent font-semibold text-white shadow-xs'
                       : 'border-border/70 bg-surface-1 text-text-muted hover:text-text hover:bg-surface-2'
                   )}
                 >
-                  <CheckCircle2 className={cn('h-3 w-3 shrink-0', 'text-text-subtle')} />
+                  <CheckCircle2 className={cn('h-3 w-3 shrink-0', statusTab === 'scheduled' ? 'text-white' : 'text-text-subtle')} />
 
                   <span>Confirmed Slots</span>
 
@@ -529,7 +529,7 @@ export function InterviewsView() {
                       'rounded-full px-1.5 py-0.5 font-sans text-[11px] font-semibold tabular-nums',
 
                       statusTab === 'scheduled'
-                        ? 'bg-surface-1 text-text border-border/80 border'
+                        ? 'bg-white/20 text-white'
                         : 'bg-surface-2 text-text-subtle border-border/60 border'
                     )}
                   >
