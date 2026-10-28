@@ -50,6 +50,7 @@ export interface ActiveOpeningsCardProps {
   isLoading?: boolean;
   className?: string;
   onReactivate?: (id: string, title: string) => void;
+  onAiMatch?: (opening: Opening) => void;
   pageSize?: number;
 }
 
@@ -64,6 +65,7 @@ export function ActiveOpeningsCard({
   isLoading = false,
   className,
   onReactivate,
+  onAiMatch,
   pageSize = DEFAULT_CARDS_PER_COLUMN,
 }: ActiveOpeningsCardProps) {
   const [searchQuery, setSearchQuery] = React.useState<string>('');
@@ -218,20 +220,20 @@ export function ActiveOpeningsCard({
               return (
                 <div
                   key={group.id}
-                  className="flex-1 min-w-[340px] sm:min-w-[370px] max-w-[430px] shrink-0 flex flex-col justify-between rounded-[12px] bg-surface-2/30 border border-border/70 border-t-2 border-t-accent p-3.5 space-y-2.5"
+                  className="flex-1 min-w-[340px] sm:min-w-[370px] max-w-[430px] shrink-0 flex flex-col justify-between rounded-[14px] bg-surface-2/60 dark:bg-surface-2/30 border border-border/70 dark:border-border/50 p-3.5 space-y-2.5"
                 >
                   <div className="space-y-2.5">
                     {/* Column Header */}
                     <div className="flex items-center justify-between pb-2 border-b border-border/60">
                       <div className="flex items-center gap-2 min-w-0">
-                        <div className="flex h-5 w-5 items-center justify-center rounded-[4px] bg-accent/15 text-accent shrink-0">
+                        <div className="flex h-6 w-6 items-center justify-center rounded-[6px] bg-surface-3/80 text-text-muted border border-border/60 shrink-0">
                           <GroupIcon className="h-3.5 w-3.5" />
                         </div>
                         <h3 className="text-[13px] font-semibold text-text truncate">
                           {group.title}
                         </h3>
                       </div>
-                      <span className="font-mono text-[11px] font-semibold text-accent bg-accent/10 px-2 py-0.5 rounded-full shrink-0">
+                      <span className="font-mono text-[11px] font-semibold text-text-muted bg-surface-3/90 border border-border/60 px-2 py-0.5 rounded-full shrink-0 tabular-nums">
                         {totalInDept}
                       </span>
                     </div>
@@ -248,6 +250,7 @@ export function ActiveOpeningsCard({
                             opening={opening}
                             candidatesCount={openingCandidates.length}
                             onReactivate={onReactivate}
+                            onAiMatch={onAiMatch}
                           />
                         );
                       })}
@@ -256,7 +259,7 @@ export function ActiveOpeningsCard({
 
                   {/* Per-Column Pagination Footer when more than pageSize openings */}
                   {deptTotalPages > 1 && (
-                    <div className="flex items-center justify-between pt-2 border-t border-border/60 text-[11.5px] select-none">
+                    <div className="flex items-center justify-between pt-2.5 mt-1 border-t border-border/50 text-[11.5px] select-none">
                       <button
                         type="button"
                         disabled={validDeptPage <= 1}
@@ -266,14 +269,14 @@ export function ActiveOpeningsCard({
                             [group.id]: Math.max(1, validDeptPage - 1),
                           }))
                         }
-                        className="h-6 w-6 inline-flex items-center justify-center rounded-[5px] border border-border/70 bg-surface-1 text-text-muted hover:text-text hover:bg-surface-2 disabled:opacity-25 disabled:cursor-not-allowed transition-colors cursor-pointer"
+                        className="h-6 w-6 inline-flex items-center justify-center rounded-[5px] border border-border/70 bg-surface-1 text-text-muted hover:text-text hover:bg-surface-2 disabled:opacity-25 disabled:cursor-not-allowed transition-colors cursor-pointer shadow-2xs"
                         title="Previous page"
                         aria-label="Previous page"
                       >
                         <ChevronLeft className="h-3.5 w-3.5" />
                       </button>
 
-                      <span className="font-mono text-text-subtle text-[11px]">
+                      <span className="font-mono text-text-muted text-[11px] font-medium">
                         {validDeptPage} of {deptTotalPages}
                       </span>
 
@@ -286,7 +289,7 @@ export function ActiveOpeningsCard({
                             [group.id]: Math.min(deptTotalPages, validDeptPage + 1),
                           }))
                         }
-                        className="h-6 w-6 inline-flex items-center justify-center rounded-[5px] border border-border/70 bg-surface-1 text-text-muted hover:text-text hover:bg-surface-2 disabled:opacity-25 disabled:cursor-not-allowed transition-colors cursor-pointer"
+                        className="h-6 w-6 inline-flex items-center justify-center rounded-[5px] border border-border/70 bg-surface-1 text-text-muted hover:text-text hover:bg-surface-2 disabled:opacity-25 disabled:cursor-not-allowed transition-colors cursor-pointer shadow-2xs"
                         title="Next page"
                         aria-label="Next page"
                       >

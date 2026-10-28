@@ -9,6 +9,7 @@ import { StatusBadge } from '@/components/hro/status-badge';
 import { MetaSeparator } from '@/components/hro/meta-separator';
 import { ActiveOpeningsCard } from '@/components/hro/active-openings-card';
 import { CompanyLogo } from '@/components/hro/company-logo';
+import { AiCandidateMatcherSheet, CandidateDetailSheet } from '@/features/candidates';
 import { Skeleton } from '@/components/ui/skeleton';
 import type { Candidate, Opening } from '@/types/entities';
 import {
@@ -17,6 +18,7 @@ import {
   Clock,
   Phone,
   MapPin,
+  ChevronLeft,
   ChevronRight,
   Briefcase,
   CheckCircle2,
@@ -26,9 +28,12 @@ import {
   Layers,
   Users,
   TrendingUp,
+  Sparkles,
 } from 'lucide-react';
 import { VideoCameraIcon } from '@/components/ui/icons';
 import { formatCtc, formatInterviewDateTime, formatCtcRange } from '@/lib/format';
+import { cn } from '@/lib/utils';
+import { matchCandidateToOpening } from '@/lib/ai-matcher';
 
 // Department Icon Map matching Openings & Candidates view
 const DEPARTMENT_ICONS: Record<string, React.ElementType> = {
@@ -43,6 +48,10 @@ const DEPARTMENT_ICONS: Record<string, React.ElementType> = {
 export function ManagerDashboard() {
   const { data: openings = [], isLoading: loadingOpenings } = useOpenings();
   const { data: candidates = [], isLoading: loadingCandidates } = useCandidates();
+
+  const [aiMatchOpening, setAiMatchOpening] = React.useState<Opening | null>(null);
+  const [inspectedCandidate, setInspectedCandidate] = React.useState<Candidate | null>(null);
+  const [isCandidateSheetOpen, setIsCandidateSheetOpen] = React.useState(false);
 
   // Map openingId to Opening for O(1) lookups
   const openingsMap = React.useMemo(() => {
@@ -140,6 +149,30 @@ export function ManagerDashboard() {
     });
   }, [pendingReviewCandidates, openingsMap]);
 
+  // Review candidates department filter & pagination state
+  const [selectedReviewDept, setSelectedReviewDept] = React.useState<string>('all');
+  const [reviewPage, setReviewPage] = React.useState<number>(1);
+  const REVIEWS_PER_PAGE = 4;
+
+  const filteredReviewCandidates = React.useMemo(() => {
+    if (selectedReviewDept === 'all') return pendingReviewCandidates;
+    return pendingReviewCandidates.filter((c) => {
+      const opening = openingsMap.get(c.openingId);
+      return (opening?.department || 'General') === selectedReviewDept;
+    });
+  }, [pendingReviewCandidates, selectedReviewDept, openingsMap]);
+
+  const totalReviewPages = Math.ceil(filteredReviewCandidates.length / REVIEWS_PER_PAGE);
+  const paginatedReviewCandidates = React.useMemo(() => {
+    const start = (reviewPage - 1) * REVIEWS_PER_PAGE;
+    return filteredReviewCandidates.slice(start, start + REVIEWS_PER_PAGE);
+  }, [filteredReviewCandidates, reviewPage]);
+
+  const handleSelectReviewDept = (dept: string) => {
+    setSelectedReviewDept(dept);
+    setReviewPage(1);
+  };
+
   const isInitialLoading = loadingOpenings || loadingCandidates;
 
   return (
@@ -192,97 +225,221 @@ export function ManagerDashboard() {
       <div className="grid grid-cols-12 items-stretch gap-6">
         {/* LEFT COLUMN (8 cols): Shortlist Review Telemetry & Pipeline Velocity */}
         <div className="col-span-12 flex flex-col space-y-6 lg:col-span-8">
-          {/* A. Candidates Awaiting Review Telemetry (Info-First, No Inline Action Clutter) */}
-          <div className="border border-border bg-surface-1 flex flex-col rounded-[12px] p-5 shadow-xs">
-            {/* Header with Direct Redirect Button */}
-            <div className="flex items-center justify-between gap-3 pb-4 border-b border-border/60">
-              <h2 className="text-text text-[16px] leading-[24px] font-semibold tracking-[-0.01em]">
-                Candidates Awaiting Review
-              </h2>
+          {/* A. Candidates Awaiting Review Telemetry (Styled matching Technical Interviews) */}
+          <div className="border border-border bg-surface-1 flex flex-col justify-between rounded-[12px] p-5 shadow-xs">
+            {/* Header matching Technical Interviews typography */}
+            <div className="flex items-start justify-between gap-4 pb-4 border-b border-border/60">
+              <div>
+                <h2 className="text-text text-[16px] leading-[24px] font-medium tracking-[-0.01em]">
+                  Candidates Awaiting Review
+                </h2>
+                <p className="text-text-muted mt-[2px] text-[13px] leading-[20px]">
+                  {pendingReviewCandidates.length} candidate profiles awaiting hiring manager evaluation
+                </p>
+              </div>
 
               <Link
                 href="/shortlist"
-                className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-[8px] bg-accent/10 border border-accent/25 text-accent hover:bg-accent/20 text-[12.5px] font-semibold transition-all group shrink-0"
+                className="inline-flex items-center gap-1 text-[13px] leading-[20px] font-medium text-text-muted hover:text-text transition-colors shrink-0"
               >
-                <span>Open Review Queue</span>
-                <ArrowRight className="h-3.5 w-3.5 group-hover:translate-x-0.5 transition-transform" />
+                <span>View all</span>
+                <ChevronRight className="h-3.5 w-3.5" />
               </Link>
             </div>
 
-            {/* Content: Department Breakdown Matrix (Each Tile Links to /shortlist) */}
-            <div className="pt-4 flex-1">
+            {/* Department Filter Pills */}
+            <div className="pt-3.5 pb-2 flex items-center gap-1.5 overflow-x-auto no-scrollbar">
+              <button
+                type="button"
+                onClick={() => handleSelectReviewDept('all')}
+                className={cn(
+                  'px-2.5 py-1 text-[12px] font-medium rounded-[6px] transition-colors cursor-pointer shrink-0',
+                  selectedReviewDept === 'all'
+                    ? 'bg-accent/10 text-accent border border-accent/25 font-semibold'
+                    : 'bg-surface-2/60 text-text-muted hover:text-text hover:bg-surface-2 border border-border/50'
+                )}
+              >
+                All ({pendingReviewCandidates.length})
+              </button>
+              {departmentGroups.map((group) => {
+                const GroupIcon = group.icon;
+                const isSelected = selectedReviewDept === group.id;
+                return (
+                  <button
+                    key={group.id}
+                    type="button"
+                    onClick={() => handleSelectReviewDept(group.id)}
+                    className={cn(
+                      'inline-flex items-center gap-1.5 px-2.5 py-1 text-[12px] font-medium rounded-[6px] transition-colors cursor-pointer shrink-0',
+                      isSelected
+                        ? 'bg-accent/10 text-accent border border-accent/25 font-semibold'
+                        : 'bg-surface-2/60 text-text-muted hover:text-text hover:bg-surface-2 border border-border/50'
+                    )}
+                  >
+                    <GroupIcon className="h-3 w-3 shrink-0" />
+                    <span>{group.title}</span>
+                    <span
+                      className={cn(
+                        'font-mono text-[10.5px]',
+                        isSelected ? 'text-accent' : 'text-text-subtle'
+                      )}
+                    >
+                      ({group.candidates.length})
+                    </span>
+                  </button>
+                );
+              })}
+            </div>
+
+            {/* Content: Structured Table View (Clean & Highly Organized) */}
+            <div className="pt-2 flex-1">
               {isInitialLoading ? (
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                  <Skeleton className="h-[100px] rounded-[10px]" />
-                  <Skeleton className="h-[100px] rounded-[10px]" />
+                <div className="space-y-3 py-2">
+                  <Skeleton className="h-[48px] rounded-[8px]" />
+                  <Skeleton className="h-[48px] rounded-[8px]" />
+                  <Skeleton className="h-[48px] rounded-[8px]" />
                 </div>
-              ) : pendingReviewCandidates.length === 0 ? (
+              ) : filteredReviewCandidates.length === 0 ? (
                 <div className="flex h-36 flex-col items-center justify-center text-center select-none">
-                  <CheckCircle2 className="h-8 w-8 text-emerald-500/70 mb-2" />
-                  <p className="text-text text-[13.5px] font-medium">Review Queue Clear</p>
+                  <CheckCircle2 className="h-6 w-6 text-emerald-500/70 mb-1.5" />
+                  <p className="text-text text-[14px] font-medium">No candidates in this department</p>
                   <p className="text-text-subtle text-[12px] mt-0.5">
-                    No candidate profiles are currently awaiting hiring manager evaluation.
+                    Select another department or view all pending candidates.
                   </p>
                 </div>
               ) : (
-                <div className="space-y-3.5">
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                    {departmentGroups.map((group) => {
-                      const GroupIcon = group.icon;
+                <div className="border border-border/70 rounded-[10px] overflow-hidden bg-surface-1 shadow-2xs">
+                  <div className="overflow-x-auto no-scrollbar">
+                    {/* Table Header */}
+                    <div className="grid grid-cols-[minmax(180px,2fr)_minmax(140px,1.5fr)_minmax(90px,1fr)_minmax(95px,1fr)_minmax(90px,1fr)] items-center gap-3 px-3.5 py-2 bg-surface-2/40 border-b border-border/60 text-[11px] font-semibold uppercase tracking-wider text-text-subtle select-none">
+                      <div>Candidate</div>
+                      <div>Target Requisition</div>
+                      <div>Exp & Notice</div>
+                      <div>AI Match</div>
+                      <div className="text-right">Expected CTC</div>
+                    </div>
 
-                      return (
-                        <Link
-                          key={group.id}
-                          href="/shortlist"
-                          className="group flex flex-col justify-between rounded-[10px] border border-border/70 bg-surface-2/30 p-3.5 hover:border-border-strong hover:bg-surface-2/60 transition-all cursor-pointer"
-                        >
-                          <div>
-                            {/* Department Title & Count */}
-                            <div className="flex items-center justify-between gap-2 pb-2 border-b border-border/50">
-                              <div className="flex items-center gap-2 min-w-0">
-                                <div className="flex h-6 w-6 items-center justify-center rounded-[5px] bg-accent/15 text-accent shrink-0">
-                                  <GroupIcon className="h-3.5 w-3.5" />
-                                </div>
-                                <span className="text-[13px] font-semibold text-text truncate group-hover:text-accent transition-colors">
-                                  {group.title}
+                    {/* Table Rows */}
+                    <div className="divide-y divide-border/50">
+                      {paginatedReviewCandidates.map((candidate) => {
+                        const opening = openingsMap.get(candidate.openingId);
+                        const dept = opening?.department || 'General';
+                        const aiMatch = opening ? matchCandidateToOpening(candidate, opening) : null;
+
+                        return (
+                          <Link
+                            key={candidate.id}
+                            href="/shortlist"
+                            className="grid grid-cols-[minmax(180px,2fr)_minmax(140px,1.5fr)_minmax(90px,1fr)_minmax(95px,1fr)_minmax(90px,1fr)] items-center gap-3 px-3.5 py-2.5 hover:bg-surface-2/60 transition-colors group cursor-pointer"
+                          >
+                            {/* 1. Candidate Info */}
+                            <div className="flex items-center gap-2.5 min-w-0 pr-2">
+                              <CompanyLogo
+                                company={candidate.currentCompany}
+                                className="h-4 w-4 rounded-[3px] shrink-0 shadow-2xs"
+                              />
+                              <div className="min-w-0 truncate">
+                                <span className="text-text text-[13.5px] leading-[18px] font-medium group-hover:text-accent transition-colors block truncate">
+                                  {candidate.name}
+                                </span>
+                                <span className="text-text-muted text-[11.5px] leading-[15px] block truncate">
+                                  {candidate.currentRole}
                                 </span>
                               </div>
-                              <span className="font-mono text-[11px] font-semibold text-accent bg-accent/10 px-2 py-0.5 rounded-full shrink-0">
-                                {group.candidates.length} {group.candidates.length === 1 ? 'profile' : 'profiles'}
+                            </div>
+
+                            {/* 2. Target Requisition */}
+                            <div className="min-w-0 pr-2">
+                              <span className="text-text text-[13px] leading-[18px] font-medium block truncate">
+                                {opening?.title ?? 'Requisition'}
+                              </span>
+                              <span className="inline-block font-mono text-[10px] font-semibold text-accent bg-accent/10 border border-accent/25 px-2 py-0.5 rounded-full mt-0.5 truncate">
+                                {dept}
                               </span>
                             </div>
 
-                            {/* Top Profiles Overview (Sharp Read-only Info) */}
-                            <div className="mt-2.5 space-y-1.5">
-                              {group.candidates.slice(0, 2).map((c) => (
-                                <div key={c.id} className="flex items-center justify-between text-[11.5px] min-w-0">
-                                  <div className="flex items-center gap-1.5 min-w-0">
-                                    <CompanyLogo company={c.currentCompany} className="h-3.5 w-3.5 rounded-[3px] shrink-0 shadow-2xs" />
-                                    <span className="text-text font-medium truncate">{c.name}</span>
-                                    <span className="text-text-subtle text-[10.5px]">({c.experienceYears}y exp)</span>
-                                  </div>
-                                  <span className="font-mono text-text font-semibold text-[11px] shrink-0">
-                                    {formatCtc(c.expectedCtc)}
+                            {/* 3. Exp & Notice */}
+                            <div className="min-w-0 pr-2">
+                              <span className="font-mono text-[12px] font-medium text-text block tabular-nums">
+                                {candidate.experienceYears}y exp
+                              </span>
+                              <span className="text-text-subtle text-[11px] block truncate">
+                                {candidate.noticePeriod}
+                              </span>
+                            </div>
+
+                            {/* 4. AI Match */}
+                            <div className="min-w-0 pr-2">
+                              {aiMatch ? (
+                                <div className="space-y-0.5">
+                                  <span className="inline-flex items-center gap-1 font-mono text-[10.5px] font-semibold text-accent bg-accent/10 border border-accent/25 px-1.5 py-0.5 rounded-[4px]">
+                                    <Sparkles className="h-2.5 w-2.5 text-accent shrink-0" />
+                                    <span>{aiMatch.score}% Fit</span>
+                                  </span>
+                                  <span className="text-text-subtle text-[10.5px] block truncate">
+                                    {aiMatch.tier}
                                   </span>
                                 </div>
-                              ))}
-                              {group.candidates.length > 2 && (
-                                <p className="text-[10.5px] text-text-subtle pt-0.5">
-                                  +{group.candidates.length - 2} more awaiting review
-                                </p>
+                              ) : (
+                                <span className="text-text-subtle text-[11.5px]">—</span>
                               )}
                             </div>
-                          </div>
 
-                          {/* Action Hint Redirect */}
-                          <div className="mt-3 pt-2 border-t border-border/40 flex items-center justify-between text-[11px] text-text-subtle group-hover:text-accent transition-colors">
-                            <span className="font-medium">Review Department Queue</span>
-                            <ChevronRight className="h-3.5 w-3.5 group-hover:translate-x-0.5 transition-transform" />
-                          </div>
-                        </Link>
-                      );
-                    })}
+                            {/* 5. Expected CTC & Chevron */}
+                            <div className="flex items-center justify-end gap-1.5 text-right shrink-0">
+                              <div className="text-right">
+                                <span className="font-mono text-text text-[13px] font-semibold tabular-nums block whitespace-nowrap">
+                                  {formatCtc(candidate.expectedCtc)}
+                                </span>
+                                <span className="text-text-subtle text-[10px] block">
+                                  In budget
+                                </span>
+                              </div>
+                              <ChevronRight className="h-3.5 w-3.5 text-text-subtle group-hover:text-text group-hover:translate-x-0.5 transition-all shrink-0 ml-1" />
+                            </div>
+                          </Link>
+                        );
+                      })}
+                    </div>
                   </div>
+                </div>
+              )}
+            </div>
+
+            {/* Footer Direct Redirect Link & Pagination */}
+            <div className="pt-3 border-t border-border/60 mt-2 flex items-center justify-between">
+              <Link
+                href="/shortlist"
+                className="inline-flex items-center gap-1.5 text-[13px] leading-[20px] text-text-muted hover:text-text font-medium transition-colors"
+              >
+                <span>Manage Review Queue ({pendingReviewCandidates.length} Pending)</span>
+                <ChevronRight className="h-3.5 w-3.5" />
+              </Link>
+              {totalReviewPages > 1 && (
+                <div className="flex items-center gap-1.5">
+                  <span className="text-[12px] text-text-muted font-mono mr-1">
+                    Page {reviewPage} of {totalReviewPages}
+                  </span>
+                  <button
+                    type="button"
+                    onClick={() => setReviewPage((p) => Math.max(1, p - 1))}
+                    disabled={reviewPage <= 1}
+                    className="h-6 w-6 inline-flex items-center justify-center rounded-[4px] border border-border/70 hover:bg-surface-2 disabled:opacity-30 disabled:cursor-not-allowed text-text-muted hover:text-text cursor-pointer transition-colors"
+                    title="Previous page"
+                    aria-label="Previous page"
+                  >
+                    <ChevronLeft className="h-3 w-3" />
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setReviewPage((p) => Math.min(totalReviewPages, p + 1))}
+                    disabled={reviewPage >= totalReviewPages}
+                    className="h-6 w-6 inline-flex items-center justify-center rounded-[4px] border border-border/70 hover:bg-surface-2 disabled:opacity-30 disabled:cursor-not-allowed text-text-muted hover:text-text cursor-pointer transition-colors"
+                    title="Next page"
+                    aria-label="Next page"
+                  >
+                    <ChevronRight className="h-3 w-3" />
+                  </button>
                 </div>
               )}
             </div>
@@ -291,19 +448,19 @@ export function ManagerDashboard() {
           {/* B. Talent Pipeline Velocity & Throughput Tracker (Redirects to /pipeline) */}
           <div className="border border-border bg-surface-1 flex flex-col rounded-[12px] p-5 shadow-xs">
             {/* Header */}
-            <div className="flex items-center justify-between gap-4 pb-4 border-b border-border/60">
+            <div className="flex items-start justify-between gap-4 pb-4 border-b border-border/60">
               <div>
-                <h2 className="text-text text-[15px] font-semibold tracking-[-0.01em]">
+                <h2 className="text-text text-[16px] leading-[24px] font-medium tracking-[-0.01em]">
                   Talent Pipeline Velocity
                 </h2>
-                <p className="text-text-muted text-[12.5px] mt-0.5">
+                <p className="text-text-muted mt-[2px] text-[13px] leading-[20px]">
                   {candidates.length} candidates progressing across evaluation stages
                 </p>
               </div>
 
               <Link
                 href="/pipeline"
-                className="inline-flex items-center gap-1 text-[12.5px] font-medium text-text-muted hover:text-text transition-colors shrink-0"
+                className="inline-flex items-center gap-1 text-[13px] leading-[20px] font-medium text-text-muted hover:text-text transition-colors shrink-0"
               >
                 <span>Open Pipeline Board</span>
                 <ChevronRight className="h-3.5 w-3.5" />
@@ -631,9 +788,30 @@ export function ManagerDashboard() {
             subtitle={null}
             viewAllHref="/openings"
             isLoading={isInitialLoading}
+            onAiMatch={setAiMatchOpening}
           />
         </div>
       </div>
+
+      {/* AI Candidate Matcher Drawer */}
+      <AiCandidateMatcherSheet
+        opening={aiMatchOpening}
+        open={Boolean(aiMatchOpening)}
+        onOpenChange={(isOpen) => {
+          if (!isOpen) setAiMatchOpening(null);
+        }}
+        onInspectCandidate={(c) => {
+          setInspectedCandidate(c);
+          setIsCandidateSheetOpen(true);
+        }}
+      />
+
+      {/* Candidate Dossier Sheet */}
+      <CandidateDetailSheet
+        candidate={inspectedCandidate}
+        open={isCandidateSheetOpen}
+        onOpenChange={setIsCandidateSheetOpen}
+      />
     </div>
   );
 }

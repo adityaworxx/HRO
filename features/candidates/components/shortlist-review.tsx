@@ -384,13 +384,13 @@ export function ShortlistReview() {
             return (
               <div
                 key={group.id}
-                className="w-[340px] xs:w-[360px] sm:w-[380px] max-w-[calc(100vw-2.5rem)] shrink-0 flex flex-col justify-between rounded-[12px] bg-surface-2/30 border border-border/70 border-t-2 border-t-accent p-3.5 space-y-2.5"
+                className="w-[340px] xs:w-[360px] sm:w-[380px] max-w-[calc(100vw-2.5rem)] shrink-0 flex flex-col justify-between rounded-[14px] bg-surface-2/60 dark:bg-surface-2/30 border border-border/70 dark:border-border/50 p-3.5 space-y-2.5"
               >
                 <div className="space-y-2.5">
                   {/* Column Header */}
                   <div className="flex items-center justify-between pb-2 border-b border-border/60">
                     <div className="flex items-center gap-2 min-w-0">
-                      <div className="flex h-5 w-5 items-center justify-center rounded-[4px] bg-accent/15 text-accent shrink-0">
+                      <div className="flex h-5 w-5 items-center justify-center rounded-[6px] bg-surface-3/80 text-text-muted border border-border/60 shrink-0">
                         <ColIcon className="h-3.5 w-3.5" />
                       </div>
                       <h3 className="text-[13.5px] font-semibold text-text truncate">
@@ -398,7 +398,7 @@ export function ShortlistReview() {
                       </h3>
                     </div>
 
-                    <span className="font-mono text-[11px] font-semibold text-accent bg-accent/10 px-2 py-0.5 rounded-full shrink-0">
+                    <span className="font-mono text-[11px] font-semibold text-text-muted bg-surface-3/90 border border-border/60 px-2 py-0.5 rounded-full shrink-0 tabular-nums">
                       {totalCandidates}
                     </span>
                   </div>
@@ -429,7 +429,7 @@ export function ShortlistReview() {
 
                 {/* Per-Column Pagination Footer when more than 4 candidates */}
                 {totalPages > 1 && (
-                  <div className="flex items-center justify-between pt-2 border-t border-border/60 text-[11.5px] select-none">
+                  <div className="flex items-center justify-between pt-2.5 mt-1 border-t border-border/50 text-[11.5px] select-none">
                     <button
                       type="button"
                       disabled={validPage <= 1}
@@ -446,7 +446,7 @@ export function ShortlistReview() {
                       <ChevronLeft className="h-3.5 w-3.5" />
                     </button>
 
-                    <span className="font-mono text-text-subtle text-[11px]">
+                    <span className="font-mono text-text-muted text-[11px] font-medium">
                       {startIndex + 1}–{Math.min(startIndex + CANDIDATES_PER_PAGE, totalCandidates)} of {totalCandidates}
                     </span>
 

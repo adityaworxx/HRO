@@ -50,9 +50,9 @@ export function CandidateCard({
         }
       }}
       className={cn(
-        'group relative flex flex-col justify-between rounded-[14px] border border-border/70 bg-surface-1/95 p-4 backdrop-blur-md transition-all duration-200 ease-out',
-        'shadow-[0_2px_8px_rgba(0,0,0,0.03),0_1px_2px_rgba(0,0,0,0.02)] dark:shadow-[0_2px_12px_rgba(0,0,0,0.35)]',
-        'hover:-translate-y-0.5 hover:border-border-strong hover:shadow-[0_8px_20px_rgba(0,0,0,0.06)] dark:hover:shadow-[0_8px_24px_rgba(0,0,0,0.5)] select-none focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-accent space-y-3',
+        'group relative flex flex-col justify-between rounded-[14px] border border-border/80 dark:border-border/60 bg-surface-1 p-4 transition-all duration-200 ease-out',
+        'shadow-[0_1px_3px_rgba(0,0,0,0.04),0_6px_16px_rgba(0,0,0,0.04)] dark:shadow-[0_4px_16px_rgba(0,0,0,0.35)]',
+        'hover:-translate-y-0.5 hover:border-border-strong hover:shadow-[0_2px_6px_rgba(0,0,0,0.06),0_10px_24px_rgba(0,0,0,0.08)] dark:hover:shadow-[0_8px_24px_rgba(0,0,0,0.5)] select-none focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-accent space-y-3',
         showReorderIcon ? 'cursor-grab active:cursor-grabbing' : 'cursor-pointer',
         isDragging && 'border-border-strong shadow-2xl ring-1 ring-border-strong bg-surface-1 scale-[1.02] z-50',
         className
@@ -86,7 +86,7 @@ export function CandidateCard({
               AI Fit
             </span>
           )}
-          <span className="text-[11.5px] font-medium text-text-muted shrink-0 tabular-nums select-none">
+          <span className="text-[11px] font-medium text-text-muted shrink-0 tabular-nums select-none bg-surface-2/80 border border-border/60 px-2 py-0.5 rounded-[5px]">
             {candidate.experienceYears}y exp
           </span>
           {showReorderIcon && <ReorderIcon isActive={isDragging} />}
@@ -105,7 +105,7 @@ export function CandidateCard({
           <span className="font-medium text-text truncate min-w-0">
             {targetOpeningTitle}
           </span>
-          <span className="font-semibold text-text-muted shrink-0 text-[12px] tabular-nums">
+          <span className="font-semibold text-text shrink-0 text-[12px] tabular-nums font-mono">
             {formatCtc(candidate.expectedCtc)}
           </span>
         </div>

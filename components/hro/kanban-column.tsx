@@ -55,7 +55,7 @@ export function KanbanColumn({
     <div
       ref={setNodeRef}
       className={cn(
-        'bg-surface-2/30 flex h-full min-h-[560px] w-[340px] xs:w-[360px] sm:w-[380px] max-w-[calc(100vw-2.5rem)] shrink-0 flex-col rounded-[12px] border border-border/70 border-t-2 border-t-accent p-3.5 transition-colors duration-150',
+        'bg-surface-2/60 dark:bg-surface-2/30 flex h-full min-h-[560px] w-[340px] xs:w-[360px] sm:w-[380px] max-w-[calc(100vw-2.5rem)] shrink-0 flex-col rounded-[14px] border border-border/70 dark:border-border/50 p-3.5 transition-colors duration-150',
         isOver
           ? 'border-border-strong bg-surface-2/70 ring-1 ring-border-strong'
           : 'border-border/70',
@@ -65,7 +65,7 @@ export function KanbanColumn({
       <div className="mb-2.5 flex items-center justify-between px-1 pb-2 border-b border-border/60 select-none">
         <div className="flex items-center gap-2 min-w-0">
           {StageIcon ? (
-            <div className="flex h-5 w-5 items-center justify-center rounded-[4px] bg-accent/15 text-accent shrink-0">
+            <div className="flex h-5 w-5 items-center justify-center rounded-[6px] bg-surface-3/80 text-text-muted border border-border/60 shrink-0">
               <StageIcon className="h-3.5 w-3.5" />
             </div>
           ) : (
@@ -75,7 +75,7 @@ export function KanbanColumn({
         </div>
 
         <div className="flex items-center gap-1.5 shrink-0">
-          <span className="font-mono text-[11px] font-semibold text-accent bg-accent/10 px-2 py-0.5 rounded-full flex items-center justify-center">
+          <span className="font-mono text-[11px] font-semibold text-text-muted bg-surface-3/90 border border-border/60 px-2 py-0.5 rounded-full flex items-center justify-center tabular-nums">
             {count}
           </span>
 
