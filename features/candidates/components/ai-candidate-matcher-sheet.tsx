@@ -10,6 +10,7 @@ import { Input } from '@/components/ui/input';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import { SourceBadge } from '@/components/hro/source-badge';
 import { CompanyLogo } from '@/components/hro/company-logo';
+import { CandidateAvatar } from '@/components/hro/candidate-avatar';
 import {
   Select,
   SelectTrigger,
@@ -334,11 +335,7 @@ export function AiCandidateMatcherSheet({
                   {/* Row 1: Header (Avatar, Name, Role/Company & Match Score) */}
                   <div className="flex items-start justify-between gap-2.5">
                     <div className="flex items-center gap-2.5 min-w-0 flex-1">
-                      <Avatar className="h-8.5 w-8.5 shrink-0 border border-border/70 bg-surface-2 shadow-2xs">
-                        <AvatarFallback className="bg-surface-2 text-text text-[11.5px] font-semibold tracking-wide">
-                          {candidate.name.slice(0, 2).toUpperCase()}
-                        </AvatarFallback>
-                      </Avatar>
+                      <CandidateAvatar name={candidate.name} size="md" />
 
                       <div className="min-w-0 flex-1">
                         <div className="flex items-center gap-1.5 flex-wrap">

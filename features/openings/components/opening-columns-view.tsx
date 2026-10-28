@@ -144,7 +144,7 @@ export function OpeningColumnsView({
           return (
             <div
               key={column.id}
-              className="w-[340px] xs:w-[360px] sm:w-[380px] max-w-[calc(100vw-2.5rem)] shrink-0 flex flex-col justify-between rounded-[14px] bg-surface-2/60 dark:bg-surface-2/30 border border-border/70 dark:border-border/50 p-3.5 space-y-2.5"
+              className="w-[340px] xs:w-[360px] sm:w-[380px] max-w-[calc(100vw-2.5rem)] shrink-0 flex flex-col justify-between rounded-[12px] bg-surface-2/30 border border-border/70 p-3.5 space-y-2.5"
             >
               <div className="space-y-2.5">
                 {/* Column Header */}

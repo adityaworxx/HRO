@@ -39,24 +39,6 @@ const DEPARTMENT_ICONS: Record<string, React.ElementType> = {
   Operations: Building2,
 };
 
-function getRoleMonogram(title: string): string {
-  const t = title.toLowerCase();
-  if (t.includes('qa') || t.includes('quality') || t.includes('test')) return 'QA';
-  if (t.includes('devops') || t.includes('platform') || t.includes('sre') || t.includes('infra')) return 'DO';
-  if (t.includes('frontend') || t.includes('ui/ux') || t.includes('web lead')) return 'FE';
-  if (t.includes('backend') || t.includes('api') || t.includes('server')) return 'BE';
-  if (t.includes('full') || t.includes('stack')) return 'FS';
-  if (t.includes('product manager') || t.includes('pm')) return 'PM';
-  if (t.includes('designer') || t.includes('design')) return 'PD';
-  if (t.includes('data') || t.includes('analyst') || t.includes('analytics')) return 'DA';
-  if (t.includes('hr') || t.includes('talent') || t.includes('recruit')) return 'HR';
-  const words = title.trim().split(/\s+/);
-  const firstChar = words[0]?.[0] ?? '';
-  const secondChar = words[1]?.[0] ?? '';
-  if (firstChar && secondChar) return (firstChar + secondChar).toUpperCase();
-  return title.slice(0, 2).toUpperCase();
-}
-
 export interface OpeningCardProps {
   opening: Opening;
   candidatesCount?: number;
@@ -88,20 +70,17 @@ export function OpeningCard({
   return (
     <div
       className={cn(
-        'group relative flex flex-col justify-between rounded-[14px] border border-border/80 dark:border-border/60 bg-surface-1 p-4 transition-all duration-200 ease-out',
-        'shadow-[0_1px_3px_rgba(0,0,0,0.04),0_6px_16px_rgba(0,0,0,0.04)] dark:shadow-[0_4px_16px_rgba(0,0,0,0.35)]',
-        'hover:-translate-y-0.5 hover:border-border-strong hover:shadow-[0_2px_6px_rgba(0,0,0,0.06),0_10px_24px_rgba(0,0,0,0.08)] dark:hover:shadow-[0_8px_24px_rgba(0,0,0,0.5)] select-none space-y-3',
+        'group relative flex flex-col justify-between rounded-[14px] border border-border/70 bg-surface-1/95 p-4 backdrop-blur-md transition-all duration-200 ease-out',
+        'shadow-[0_2px_8px_rgba(0,0,0,0.03),0_1px_2px_rgba(0,0,0,0.02)] dark:shadow-[0_2px_12px_rgba(0,0,0,0.35)]',
+        'hover:-translate-y-0.5 hover:border-border-strong hover:shadow-[0_8px_20px_rgba(0,0,0,0.06)] dark:hover:shadow-[0_8px_24px_rgba(0,0,0,0.5)] select-none space-y-3',
         className
       )}
     >
-      {/* 1. Header: Role Monogram Avatar + Opening Title & Experience Pill */}
+      {/* 1. Header: Department Avatar + Opening Title & Experience Pill */}
       <div className="flex items-start justify-between gap-2.5">
         <div className="flex items-center gap-2.5 min-w-0 flex-1">
-          <div
-            className="flex h-9 w-9 shrink-0 items-center justify-center rounded-[10px] border border-border/70 bg-surface-2 text-text font-mono text-[11.5px] font-bold tracking-tight shadow-2xs select-none"
-            title={`${opening.department} · ${opening.title}`}
-          >
-            {getRoleMonogram(opening.title)}
+          <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full border border-border/70 bg-surface-2 text-accent shadow-2xs">
+            <DeptIcon className="h-4 w-4" />
           </div>
           <div className="min-w-0 flex-1">
             <h4 className="text-[14px] font-semibold text-text tracking-[-0.015em] group-hover:text-accent transition-colors truncate">
@@ -120,7 +99,7 @@ export function OpeningCard({
         </div>
 
         <div className="flex items-center gap-1.5 shrink-0">
-          <span className="text-[11px] font-medium text-text-muted shrink-0 tabular-nums select-none bg-surface-2/80 border border-border/60 px-2 py-0.5 rounded-[5px]">
+          <span className="text-[11.5px] font-medium text-text-muted shrink-0 tabular-nums select-none">
             {expText}
           </span>
 

@@ -8,6 +8,7 @@ import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import { ReorderIcon } from './reorder-icon';
 import { SourceBadge } from './source-badge';
 import { CompanyLogo } from './company-logo';
+import { CandidateAvatar } from './candidate-avatar';
 import { useOpenings } from '@/features/openings/hooks';
 import { formatCtc } from '@/lib/format';
 
@@ -50,9 +51,9 @@ export function CandidateCard({
         }
       }}
       className={cn(
-        'group relative flex flex-col justify-between rounded-[14px] border border-border/80 dark:border-border/60 bg-surface-1 p-4 transition-all duration-200 ease-out',
-        'shadow-[0_1px_3px_rgba(0,0,0,0.04),0_6px_16px_rgba(0,0,0,0.04)] dark:shadow-[0_4px_16px_rgba(0,0,0,0.35)]',
-        'hover:-translate-y-0.5 hover:border-border-strong hover:shadow-[0_2px_6px_rgba(0,0,0,0.06),0_10px_24px_rgba(0,0,0,0.08)] dark:hover:shadow-[0_8px_24px_rgba(0,0,0,0.5)] select-none focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-accent space-y-3',
+        'group relative flex flex-col justify-between rounded-[14px] border border-border/70 bg-surface-1/95 p-4 backdrop-blur-md transition-all duration-200 ease-out',
+        'shadow-[0_2px_8px_rgba(0,0,0,0.03),0_1px_2px_rgba(0,0,0,0.02)] dark:shadow-[0_2px_12px_rgba(0,0,0,0.35)]',
+        'hover:-translate-y-0.5 hover:border-border-strong hover:shadow-[0_8px_20px_rgba(0,0,0,0.06)] dark:hover:shadow-[0_8px_24px_rgba(0,0,0,0.5)] select-none focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-accent space-y-3',
         showReorderIcon ? 'cursor-grab active:cursor-grabbing' : 'cursor-pointer',
         isDragging && 'border-border-strong shadow-2xl ring-1 ring-border-strong bg-surface-1 scale-[1.02] z-50',
         className
@@ -61,11 +62,7 @@ export function CandidateCard({
       {/* 1. Top Header: Avatar + Candidate Name & AI Tag + Experience Pill (+ optional drag handle) */}
       <div className="flex items-start justify-between gap-2.5">
         <div className="flex items-center gap-2.5 min-w-0 flex-1">
-          <Avatar className="h-9 w-9 shrink-0 border border-border/70 bg-surface-2 shadow-2xs">
-            <AvatarFallback className="text-[12px] font-semibold text-text bg-surface-2 tracking-wide">
-              {candidate.name.slice(0, 2).toUpperCase()}
-            </AvatarFallback>
-          </Avatar>
+          <CandidateAvatar name={candidate.name} size="md" />
           <div className="min-w-0 flex-1">
             <h4 className="text-[14px] font-semibold text-text tracking-[-0.015em] group-hover:text-accent transition-colors truncate">
               {candidate.name}
@@ -86,7 +83,7 @@ export function CandidateCard({
               AI Fit
             </span>
           )}
-          <span className="text-[11px] font-medium text-text-muted shrink-0 tabular-nums select-none bg-surface-2/80 border border-border/60 px-2 py-0.5 rounded-[5px]">
+          <span className="text-[11.5px] font-medium text-text-muted shrink-0 tabular-nums select-none">
             {candidate.experienceYears}y exp
           </span>
           {showReorderIcon && <ReorderIcon isActive={isDragging} />}

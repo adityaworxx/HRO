@@ -247,16 +247,16 @@ export function ManagerDashboard() {
               </Link>
             </div>
 
-            {/* Department Filter Pills */}
-            <div className="pt-3.5 pb-2 flex items-center gap-1.5 overflow-x-auto no-scrollbar">
+            {/* Department Filter Pills (Clean Text, No Border Boxes) */}
+            <div className="pt-3 pb-1 flex items-center gap-1.5 overflow-x-auto no-scrollbar">
               <button
                 type="button"
                 onClick={() => handleSelectReviewDept('all')}
                 className={cn(
-                  'px-2.5 py-1 text-[12px] font-medium rounded-[6px] transition-colors cursor-pointer shrink-0',
+                  'px-2.5 py-1 text-[12.5px] font-medium rounded-[6px] transition-colors cursor-pointer shrink-0',
                   selectedReviewDept === 'all'
-                    ? 'bg-accent/10 text-accent border border-accent/25 font-semibold'
-                    : 'bg-surface-2/60 text-text-muted hover:text-text hover:bg-surface-2 border border-border/50'
+                    ? 'bg-accent/10 text-accent font-semibold'
+                    : 'text-text-muted hover:text-text hover:bg-surface-2'
                 )}
               >
                 All ({pendingReviewCandidates.length})
@@ -270,17 +270,17 @@ export function ManagerDashboard() {
                     type="button"
                     onClick={() => handleSelectReviewDept(group.id)}
                     className={cn(
-                      'inline-flex items-center gap-1.5 px-2.5 py-1 text-[12px] font-medium rounded-[6px] transition-colors cursor-pointer shrink-0',
+                      'inline-flex items-center gap-1.5 px-2.5 py-1 text-[12.5px] font-medium rounded-[6px] transition-colors cursor-pointer shrink-0',
                       isSelected
-                        ? 'bg-accent/10 text-accent border border-accent/25 font-semibold'
-                        : 'bg-surface-2/60 text-text-muted hover:text-text hover:bg-surface-2 border border-border/50'
+                        ? 'bg-accent/10 text-accent font-semibold'
+                        : 'text-text-muted hover:text-text hover:bg-surface-2'
                     )}
                   >
-                    <GroupIcon className="h-3 w-3 shrink-0" />
+                    <GroupIcon className="h-3.5 w-3.5 shrink-0" />
                     <span>{group.title}</span>
                     <span
                       className={cn(
-                        'font-mono text-[10.5px]',
+                        'font-mono text-[11px]',
                         isSelected ? 'text-accent' : 'text-text-subtle'
                       )}
                     >
@@ -291,7 +291,7 @@ export function ManagerDashboard() {
               })}
             </div>
 
-            {/* Content: Structured Table View (Clean & Highly Organized) */}
+            {/* Content: Clean Open List (Zero Boxes, Matching Technical Interviews Typography) */}
             <div className="pt-2 flex-1">
               {isInitialLoading ? (
                 <div className="space-y-3 py-2">
@@ -308,100 +308,68 @@ export function ManagerDashboard() {
                   </p>
                 </div>
               ) : (
-                <div className="border border-border/70 rounded-[10px] overflow-hidden bg-surface-1 shadow-2xs">
-                  <div className="overflow-x-auto no-scrollbar">
-                    {/* Table Header */}
-                    <div className="grid grid-cols-[minmax(180px,2fr)_minmax(140px,1.5fr)_minmax(90px,1fr)_minmax(95px,1fr)_minmax(90px,1fr)] items-center gap-3 px-3.5 py-2 bg-surface-2/40 border-b border-border/60 text-[11px] font-semibold uppercase tracking-wider text-text-subtle select-none">
-                      <div>Candidate</div>
-                      <div>Target Requisition</div>
-                      <div>Exp & Notice</div>
-                      <div>AI Match</div>
-                      <div className="text-right">Expected CTC</div>
-                    </div>
+                <div className="divide-y divide-border/60">
+                  {paginatedReviewCandidates.map((candidate) => {
+                    const opening = openingsMap.get(candidate.openingId);
+                    const dept = opening?.department || 'General';
+                    const aiMatch = opening ? matchCandidateToOpening(candidate, opening) : null;
 
-                    {/* Table Rows */}
-                    <div className="divide-y divide-border/50">
-                      {paginatedReviewCandidates.map((candidate) => {
-                        const opening = openingsMap.get(candidate.openingId);
-                        const dept = opening?.department || 'General';
-                        const aiMatch = opening ? matchCandidateToOpening(candidate, opening) : null;
-
-                        return (
-                          <Link
-                            key={candidate.id}
-                            href="/shortlist"
-                            className="grid grid-cols-[minmax(180px,2fr)_minmax(140px,1.5fr)_minmax(90px,1fr)_minmax(95px,1fr)_minmax(90px,1fr)] items-center gap-3 px-3.5 py-2.5 hover:bg-surface-2/60 transition-colors group cursor-pointer"
-                          >
-                            {/* 1. Candidate Info */}
-                            <div className="flex items-center gap-2.5 min-w-0 pr-2">
-                              <CompanyLogo
-                                company={candidate.currentCompany}
-                                className="h-4 w-4 rounded-[3px] shrink-0 shadow-2xs"
-                              />
-                              <div className="min-w-0 truncate">
-                                <span className="text-text text-[13.5px] leading-[18px] font-medium group-hover:text-accent transition-colors block truncate">
-                                  {candidate.name}
+                    return (
+                      <Link
+                        key={candidate.id}
+                        href="/shortlist"
+                        className="group hover:bg-surface-2 -mx-2 flex flex-col justify-between gap-1.5 rounded-[8px] px-2 py-3 transition-colors cursor-pointer"
+                      >
+                        {/* Line 1: Logo + Name · Department · AI Match on left; Monospace CTC + Chevron on right */}
+                        <div className="flex items-center justify-between gap-3">
+                          <div className="flex items-center gap-2 min-w-0">
+                            <CompanyLogo
+                              company={candidate.currentCompany}
+                              className="h-4 w-4 rounded-[3px] shrink-0 shadow-2xs"
+                            />
+                            <span className="text-text truncate text-[14px] leading-[20px] font-medium group-hover:text-accent transition-colors">
+                              {candidate.name}
+                            </span>
+                            <span className="text-text-subtle text-[12px]">·</span>
+                            <span className="text-text-muted text-[13px] leading-[20px] truncate">
+                              {dept}
+                            </span>
+                            {aiMatch && (
+                              <>
+                                <span className="text-text-subtle text-[12px] hidden sm:inline">·</span>
+                                <span className="text-accent text-[12.5px] leading-[20px] font-medium hidden sm:inline-flex items-center gap-1">
+                                  <Sparkles className="h-3 w-3 text-accent" />
+                                  <span>{aiMatch.score}% Match</span>
                                 </span>
-                                <span className="text-text-muted text-[11.5px] leading-[15px] block truncate">
-                                  {candidate.currentRole}
-                                </span>
-                              </div>
-                            </div>
+                              </>
+                            )}
+                          </div>
 
-                            {/* 2. Target Requisition */}
-                            <div className="min-w-0 pr-2">
-                              <span className="text-text text-[13px] leading-[18px] font-medium block truncate">
-                                {opening?.title ?? 'Requisition'}
-                              </span>
-                              <span className="inline-block font-mono text-[10px] font-semibold text-accent bg-accent/10 border border-accent/25 px-2 py-0.5 rounded-full mt-0.5 truncate">
-                                {dept}
-                              </span>
-                            </div>
+                          <div className="flex items-center gap-2 shrink-0">
+                            <span className="font-mono text-emerald-600 dark:text-emerald-400 text-[13px] leading-[20px] font-semibold tabular-nums">
+                              {formatCtc(candidate.expectedCtc)}
+                            </span>
+                            <ChevronRight className="h-3.5 w-3.5 text-text-subtle group-hover:text-text transition-colors" />
+                          </div>
+                        </div>
 
-                            {/* 3. Exp & Notice */}
-                            <div className="min-w-0 pr-2">
-                              <span className="font-mono text-[12px] font-medium text-text block tabular-nums">
-                                {candidate.experienceYears}y exp
-                              </span>
-                              <span className="text-text-subtle text-[11px] block truncate">
-                                {candidate.noticePeriod}
-                              </span>
-                            </div>
-
-                            {/* 4. AI Match */}
-                            <div className="min-w-0 pr-2">
-                              {aiMatch ? (
-                                <div className="space-y-0.5">
-                                  <span className="inline-flex items-center gap-1 font-mono text-[10.5px] font-semibold text-accent bg-accent/10 border border-accent/25 px-1.5 py-0.5 rounded-[4px]">
-                                    <Sparkles className="h-2.5 w-2.5 text-accent shrink-0" />
-                                    <span>{aiMatch.score}% Fit</span>
-                                  </span>
-                                  <span className="text-text-subtle text-[10.5px] block truncate">
-                                    {aiMatch.tier}
-                                  </span>
-                                </div>
-                              ) : (
-                                <span className="text-text-subtle text-[11.5px]">—</span>
-                              )}
-                            </div>
-
-                            {/* 5. Expected CTC & Chevron */}
-                            <div className="flex items-center justify-end gap-1.5 text-right shrink-0">
-                              <div className="text-right">
-                                <span className="font-mono text-text text-[13px] font-semibold tabular-nums block whitespace-nowrap">
-                                  {formatCtc(candidate.expectedCtc)}
-                                </span>
-                                <span className="text-text-subtle text-[10px] block">
-                                  In budget
-                                </span>
-                              </div>
-                              <ChevronRight className="h-3.5 w-3.5 text-text-subtle group-hover:text-text group-hover:translate-x-0.5 transition-all shrink-0 ml-1" />
-                            </div>
-                          </Link>
-                        );
-                      })}
-                    </div>
-                  </div>
+                        {/* Line 2: Role at Company · Target Requisition · Experience · Notice */}
+                        <div className="text-text-muted flex items-center truncate text-[13px] leading-[20px]">
+                          <span className="truncate">
+                            {candidate.currentRole} at {candidate.currentCompany}
+                          </span>
+                          <MetaSeparator />
+                          <span className="truncate text-text/80">
+                            Target: {opening?.title ?? 'Requisition'}
+                          </span>
+                          <MetaSeparator />
+                          <span className="truncate shrink-0">{candidate.experienceYears}y exp</span>
+                          <MetaSeparator />
+                          <span className="truncate shrink-0">{candidate.noticePeriod}</span>
+                        </div>
+                      </Link>
+                    );
+                  })}
                 </div>
               )}
             </div>
@@ -467,16 +435,16 @@ export function ManagerDashboard() {
               </Link>
             </div>
 
-            {/* Progression Track: Each Step Links to /pipeline */}
-            <div className="pt-4 space-y-4">
-              <div className="border border-border/80 bg-surface-2/30 grid grid-cols-2 sm:grid-cols-5 divide-y sm:divide-y-0 sm:divide-x divide-border/60 rounded-[10px] overflow-hidden">
+            {/* Progression Track: Clean Open Stages without Box Borders */}
+            <div className="pt-3 space-y-3.5">
+              <div className="grid grid-cols-2 sm:grid-cols-5 gap-2">
                 {/* 1. Sourced */}
                 <Link
                   href="/pipeline"
-                  className="p-3.5 flex flex-col justify-between hover:bg-surface-2/60 transition-colors group cursor-pointer"
+                  className="p-3 rounded-[8px] hover:bg-surface-2 transition-colors group cursor-pointer flex flex-col justify-between"
                 >
                   <div className="flex items-center justify-between">
-                    <span className="text-text-muted text-[12px] font-medium group-hover:text-text">
+                    <span className="text-text-muted text-[12.5px] font-medium group-hover:text-text">
                       1. Sourced
                     </span>
                     <span className="text-text-subtle font-mono text-[11px] tabular-nums">
@@ -494,10 +462,10 @@ export function ManagerDashboard() {
                 {/* 2. Manager Review */}
                 <Link
                   href="/shortlist"
-                  className="p-3.5 flex flex-col justify-between hover:bg-surface-2/60 transition-colors group cursor-pointer"
+                  className="p-3 rounded-[8px] hover:bg-surface-2 transition-colors group cursor-pointer flex flex-col justify-between"
                 >
                   <div className="flex items-center justify-between">
-                    <span className="text-text-muted text-[12px] font-medium group-hover:text-text">
+                    <span className="text-text-muted text-[12.5px] font-medium group-hover:text-text">
                       2. Review
                     </span>
                     <span className="text-accent font-mono text-[11px] font-semibold tabular-nums">
@@ -515,10 +483,10 @@ export function ManagerDashboard() {
                 {/* 3. Technical Interview */}
                 <Link
                   href="/interviews"
-                  className="p-3.5 flex flex-col justify-between hover:bg-surface-2/60 transition-colors group cursor-pointer"
+                  className="p-3 rounded-[8px] hover:bg-surface-2 transition-colors group cursor-pointer flex flex-col justify-between"
                 >
                   <div className="flex items-center justify-between">
-                    <span className="text-text-muted text-[12px] font-medium group-hover:text-text">
+                    <span className="text-text-muted text-[12.5px] font-medium group-hover:text-text">
                       3. Interview
                     </span>
                     <span className="text-text-subtle font-mono text-[11px] tabular-nums">
@@ -536,10 +504,10 @@ export function ManagerDashboard() {
                 {/* 4. Offer Stage */}
                 <Link
                   href="/pipeline"
-                  className="p-3.5 flex flex-col justify-between hover:bg-surface-2/60 transition-colors group cursor-pointer"
+                  className="p-3 rounded-[8px] hover:bg-surface-2 transition-colors group cursor-pointer flex flex-col justify-between"
                 >
                   <div className="flex items-center justify-between">
-                    <span className="text-text-muted text-[12px] font-medium group-hover:text-text">
+                    <span className="text-text-muted text-[12.5px] font-medium group-hover:text-text">
                       4. Offer
                     </span>
                     <span className="text-text-subtle font-mono text-[11px] tabular-nums">
@@ -557,10 +525,10 @@ export function ManagerDashboard() {
                 {/* 5. Joined */}
                 <Link
                   href="/pipeline"
-                  className="p-3.5 col-span-2 sm:col-span-1 flex flex-col justify-between bg-accent/5 hover:bg-accent/10 transition-colors group cursor-pointer"
+                  className="p-3 col-span-2 sm:col-span-1 rounded-[8px] hover:bg-accent/10 transition-colors group cursor-pointer flex flex-col justify-between"
                 >
                   <div className="flex items-center justify-between">
-                    <span className="text-accent text-[12px] font-semibold">
+                    <span className="text-accent text-[12.5px] font-semibold">
                       5. Joined
                     </span>
                     <span className="text-accent font-mono text-[11px] font-bold tabular-nums">
@@ -722,45 +690,45 @@ export function ManagerDashboard() {
                 </span>
               </div>
 
-              <div className="grid grid-cols-2 gap-2.5 pt-3.5">
-                <div className="p-3 rounded-[8px] bg-surface-2/40 border border-border/60">
-                  <span className="text-text-subtle text-[10.5px] uppercase font-semibold tracking-wider block">
+              <div className="grid grid-cols-2 gap-4 pt-3.5">
+                <div className="py-1">
+                  <span className="text-text-subtle text-[11px] font-medium uppercase tracking-wider block">
                     Avg. Time-to-Hire
                   </span>
-                  <p className="text-text font-bold font-mono text-[16px] mt-1">18 Days</p>
-                  <span className="text-emerald-600 dark:text-emerald-400 text-[10.5px] font-medium block mt-0.5">
+                  <p className="text-text font-bold font-mono text-[18px] mt-1">18 Days</p>
+                  <span className="text-emerald-600 dark:text-emerald-400 text-[11px] font-medium block mt-0.5">
                     Top 10% benchmark
                   </span>
                 </div>
 
-                <div className="p-3 rounded-[8px] bg-surface-2/40 border border-border/60">
-                  <span className="text-text-subtle text-[10.5px] uppercase font-semibold tracking-wider block">
+                <div className="py-1">
+                  <span className="text-text-subtle text-[11px] font-medium uppercase tracking-wider block">
                     Offer Acceptance
                   </span>
-                  <p className="text-emerald-600 dark:text-emerald-400 font-bold font-mono text-[16px] mt-1">
+                  <p className="text-emerald-600 dark:text-emerald-400 font-bold font-mono text-[18px] mt-1">
                     94.2%
                   </p>
-                  <span className="text-text-subtle text-[10.5px] font-medium block mt-0.5">
+                  <span className="text-text-subtle text-[11px] font-medium block mt-0.5">
                     vs 82% industry avg
                   </span>
                 </div>
 
-                <div className="p-3 rounded-[8px] bg-surface-2/40 border border-border/60">
-                  <span className="text-text-subtle text-[10.5px] uppercase font-semibold tracking-wider block">
+                <div className="py-1">
+                  <span className="text-text-subtle text-[11px] font-medium uppercase tracking-wider block">
                     AI Match Conviction
                   </span>
-                  <p className="text-accent font-bold font-mono text-[16px] mt-1">88%</p>
-                  <span className="text-text-subtle text-[10.5px] font-medium block mt-0.5">
+                  <p className="text-accent font-bold font-mono text-[18px] mt-1">88%</p>
+                  <span className="text-text-subtle text-[11px] font-medium block mt-0.5">
                     Verified competencies
                   </span>
                 </div>
 
-                <div className="p-3 rounded-[8px] bg-surface-2/40 border border-border/60">
-                  <span className="text-text-subtle text-[10.5px] uppercase font-semibold tracking-wider block">
+                <div className="py-1">
+                  <span className="text-text-subtle text-[11px] font-medium uppercase tracking-wider block">
                     Review SLA
                   </span>
-                  <p className="text-text font-bold font-mono text-[16px] mt-1">&lt; 24h</p>
-                  <span className="text-text-subtle text-[10.5px] font-medium block mt-0.5">
+                  <p className="text-text font-bold font-mono text-[18px] mt-1">&lt; 24h</p>
+                  <span className="text-text-subtle text-[11px] font-medium block mt-0.5">
                     Target: 48h turnaround
                   </span>
                 </div>

@@ -55,7 +55,7 @@ export function KanbanColumn({
     <div
       ref={setNodeRef}
       className={cn(
-        'bg-surface-2/60 dark:bg-surface-2/30 flex h-full min-h-[560px] w-[340px] xs:w-[360px] sm:w-[380px] max-w-[calc(100vw-2.5rem)] shrink-0 flex-col rounded-[14px] border border-border/70 dark:border-border/50 p-3.5 transition-colors duration-150',
+        'bg-surface-2/30 flex h-full min-h-[560px] w-[340px] xs:w-[360px] sm:w-[380px] max-w-[calc(100vw-2.5rem)] shrink-0 flex-col rounded-[12px] border border-border/70 p-3.5 transition-colors duration-150',
         isOver
           ? 'border-border-strong bg-surface-2/70 ring-1 ring-border-strong'
           : 'border-border/70',

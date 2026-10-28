@@ -35,4 +35,4 @@ export const ONBOARDING_PHASES = ['Before joining', 'Day 1', 'First 30 days'] as
 
 export const ONBOARDING_STATUSES = ['Pending', 'Done', 'Blocked'] as const;
 
-export const LOCAL_STORAGE_KEY = 'hro:v2';
+export const LOCAL_STORAGE_KEY = 'hro:v3';

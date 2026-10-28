@@ -16,6 +16,7 @@ import { rankCandidatesForOpening, type CandidateMatchResult } from '@/lib/ai-ma
 import { StatusBadge } from '@/components/hro/status-badge';
 import { SourceBadge } from '@/components/hro/source-badge';
 import { CompanyLogo } from '@/components/hro/company-logo';
+import { CandidateAvatar } from '@/components/hro/candidate-avatar';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -587,11 +588,7 @@ export function OpeningDetail({ id }: OpeningDetailProps) {
                             {/* Row 1: Header (Avatar, Name, Role/Company & Match Score) */}
                             <div className="flex items-start justify-between gap-2.5">
                               <div className="flex items-center gap-2.5 min-w-0 flex-1">
-                                <Avatar className="h-8.5 w-8.5 shrink-0 border border-border/70 bg-surface-2 shadow-2xs">
-                                  <AvatarFallback className="bg-surface-2 text-text text-[11.5px] font-semibold tracking-wide">
-                                    {candidate.name.slice(0, 2).toUpperCase()}
-                                  </AvatarFallback>
-                                </Avatar>
+                                <CandidateAvatar name={candidate.name} size="md" />
 
                                 <div className="min-w-0 flex-1">
                                   <div className="flex items-center gap-1.5 flex-wrap">
@@ -849,11 +846,7 @@ export function OpeningDetail({ id }: OpeningDetailProps) {
                           className="border-border bg-surface-2/40 hover:bg-surface-2 flex flex-col justify-between gap-3 rounded-[var(--radius-md)] border p-3.5 transition-colors sm:flex-row sm:items-center"
                         >
                           <div className="flex items-center gap-3">
-                            <Avatar className="h-8 w-8">
-                              <AvatarFallback className="bg-accent/20 text-accent text-[11px] font-semibold">
-                                {candidate.name.slice(0, 2).toUpperCase()}
-                              </AvatarFallback>
-                            </Avatar>
+                            <CandidateAvatar name={candidate.name} size="sm" />
                             <div>
                               <div className="flex items-center gap-2">
                                 <span className="text-text text-[13px] font-semibold">

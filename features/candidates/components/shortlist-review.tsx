@@ -10,6 +10,7 @@ import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import { CandidateCard } from '@/components/hro/candidate-card';
 import { SourceBadge } from '@/components/hro/source-badge';
 import { CompanyLogo } from '@/components/hro/company-logo';
+import { CandidateAvatar } from '@/components/hro/candidate-avatar';
 import { EmptyState } from '@/components/hro/empty-state';
 import {
   Sheet,
@@ -384,7 +385,7 @@ export function ShortlistReview() {
             return (
               <div
                 key={group.id}
-                className="w-[340px] xs:w-[360px] sm:w-[380px] max-w-[calc(100vw-2.5rem)] shrink-0 flex flex-col justify-between rounded-[14px] bg-surface-2/60 dark:bg-surface-2/30 border border-border/70 dark:border-border/50 p-3.5 space-y-2.5"
+                className="w-[340px] xs:w-[360px] sm:w-[380px] max-w-[calc(100vw-2.5rem)] shrink-0 flex flex-col justify-between rounded-[12px] bg-surface-2/30 border border-border/70 p-3.5 space-y-2.5"
               >
                 <div className="space-y-2.5">
                   {/* Column Header */}
@@ -488,11 +489,7 @@ export function ShortlistReview() {
 
                 <div className="flex items-start justify-between gap-3 mr-8">
                   <div className="flex items-center gap-3 min-w-0 flex-1">
-                    <Avatar className="h-12 w-12 shrink-0 border border-border/70 bg-surface-2 shadow-2xs">
-                      <AvatarFallback className="text-[14px] font-bold text-text bg-surface-2 tracking-wide">
-                        {selectedCandidate.name.slice(0, 2).toUpperCase()}
-                      </AvatarFallback>
-                    </Avatar>
+                    <CandidateAvatar name={selectedCandidate.name} className="h-12 w-12 text-[15px]" />
 
                     <div className="min-w-0 flex-1">
                       <div className="flex items-center gap-2 flex-wrap">

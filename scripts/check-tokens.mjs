@@ -6,6 +6,7 @@ const ALLOWED_FILES = new Set([
   path.normalize(path.join(ROOT_DIR, 'styles', 'tokens.css')),
   path.normalize(path.join(ROOT_DIR, 'scripts', 'check-tokens.mjs')),
   path.normalize(path.join(ROOT_DIR, 'components', 'hro', 'company-logo.tsx')),
+  path.normalize(path.join(ROOT_DIR, 'components', 'hro', 'candidate-avatar.tsx')),
 ]);
 
 const SCAN_DIRS = ['app', 'components', 'features', 'lib', 'styles'];

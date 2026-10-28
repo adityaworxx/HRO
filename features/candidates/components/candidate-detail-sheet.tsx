@@ -17,6 +17,7 @@ import { CompanyLogo } from '@/components/hro/company-logo';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
+import { CandidateAvatar } from '@/components/hro/candidate-avatar';
 import {
   Mail,
   Phone,
@@ -145,11 +146,7 @@ export function CandidateDetailSheet({ candidate, open, onOpenChange }: Candidat
         {/* 2. OVERLAPPING AVATAR & QUICK ACTION ROW */}
         <div className="px-6 flex items-end justify-between -mt-10 sm:-mt-12 relative z-10">
           <div className="relative">
-            <Avatar className="h-20 w-20 sm:h-22 sm:w-22 rounded-full border-4 border-surface-1 shadow-xl bg-surface-2 select-none ring-1 ring-border/50">
-              <AvatarFallback className="bg-gradient-to-br from-surface-3 via-surface-2 to-surface-1 text-text text-[22px] font-bold tracking-tight">
-                {candidate.name.slice(0, 2).toUpperCase()}
-              </AvatarFallback>
-            </Avatar>
+            <CandidateAvatar name={candidate.name} className="h-20 w-20 sm:h-22 sm:w-22 rounded-full border-4 border-surface-1 shadow-xl ring-1 ring-border/50" fallbackClassName="text-[24px]" />
             {/* Active status indicator dot */}
             <span
               className="absolute bottom-1 right-1 h-4 w-4 rounded-full bg-emerald-500 border-[2.5px] border-surface-1 shadow-xs"
