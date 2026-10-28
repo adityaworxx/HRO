@@ -99,12 +99,6 @@ export function SourceBadge({
 
   return (
     <span className={baseBadgeClass}>
-      {showIcon && (
-        <span
-          aria-hidden="true"
-          className="h-1.5 w-1.5 rounded-full bg-text-subtle shrink-0"
-        />
-      )}
       <span>{source}</span>
     </span>
   );

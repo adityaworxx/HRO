@@ -75,10 +75,9 @@ export function CandidateCard({
         <div className="flex items-center gap-2 shrink-0">
           {candidate.hrNotes?.includes('[AI Match:') && (
             <span
-              className="inline-flex items-center gap-1 text-[11px] font-semibold text-accent shrink-0 select-none"
+              className="text-[11px] font-semibold text-accent shrink-0 select-none"
               title="Screened & matched by AI Talent Scout"
             >
-              <span className="h-1.5 w-1.5 rounded-full bg-accent" />
               AI Fit
             </span>
           )}
@@ -113,9 +112,8 @@ export function CandidateCard({
 
         <div className="flex items-center shrink-0">
           {isImmediate ? (
-            <span className="inline-flex items-center gap-1.5 text-[11px] font-semibold text-emerald-600 dark:text-emerald-400 select-none">
-              <span className="h-1.5 w-1.5 rounded-full bg-emerald-500 animate-pulse" />
-              <span>Immediate</span>
+            <span className="text-[11px] font-semibold text-emerald-600 dark:text-emerald-400 select-none">
+              Immediate
             </span>
           ) : (
             <span className="inline-flex items-center gap-1.5 text-[11px] font-medium text-text-muted select-none">
