@@ -147,10 +147,17 @@ export function OpeningCard({
         </div>
       </div>
 
-      {/* 2. Middle Body: Department */}
+      {/* 2. Middle Body: Key Must-Have Skills / Tech Stack (No redundant department name) */}
       <div className="flex items-center gap-2 min-w-0 text-[12.5px] font-medium text-text">
-        <Building2 className="h-4 w-4 shrink-0 text-text-subtle/80 stroke-[1.75]" />
-        <span className="truncate">{opening.department}</span>
+        <Layers className="h-4 w-4 shrink-0 text-text-subtle/80 stroke-[1.75]" />
+        <span
+          className="truncate"
+          title={opening.mustHaveSkills && opening.mustHaveSkills.length > 0 ? opening.mustHaveSkills.join(' · ') : opening.employmentType}
+        >
+          {opening.mustHaveSkills && opening.mustHaveSkills.length > 0
+            ? opening.mustHaveSkills.slice(0, 3).join(' · ')
+            : opening.employmentType}
+        </span>
       </div>
 
       {/* 3. Employment Type & Compensation (Clean unboxed row) */}

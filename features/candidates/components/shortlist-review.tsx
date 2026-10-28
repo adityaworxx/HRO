@@ -542,7 +542,7 @@ export function ShortlistReview() {
                     <span className="text-text-subtle text-[10.5px] uppercase font-semibold tracking-wider block">
                       Expected CTC
                     </span>
-                    <p className="text-emerald-600 dark:text-emerald-400 font-bold font-mono text-[13px] mt-0.5">
+                    <p className="text-text font-bold font-mono text-[13px] mt-0.5">
                       {formatCtc(selectedCandidate.expectedCtc)}
                     </p>
                   </div>

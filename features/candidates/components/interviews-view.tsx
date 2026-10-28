@@ -482,8 +482,8 @@ export function InterviewsView() {
                           </div>
                         </div>
 
-                        {/* 2. Direct Candidate Contact Card (Essential for HR Call & Coordination) */}
-                        <div className="rounded-[6px] border border-border/70 bg-surface-2/40 p-2.5 text-[12px] space-y-1.5">
+                        {/* 2. Direct Candidate Contact (Clean, unboxed) */}
+                        <div className="border-t border-border/50 pt-2.5 space-y-1.5 text-[12px]">
                           <div className="flex flex-wrap items-center justify-between gap-2 text-text font-medium">
                             <div className="flex items-center gap-1.5">
                               <Phone className="h-3.5 w-3.5 text-accent shrink-0" />
@@ -508,15 +508,15 @@ export function InterviewsView() {
                             </div>
                           </div>
 
-                          <div className="flex items-center justify-between gap-2 text-[11px] text-text-subtle pt-1 border-t border-border/50">
-                            <span>Notice: <strong className="text-text font-normal">{candidate.noticePeriod}</strong></span>
-                            <span>Exp: <strong className="text-text font-normal">{candidate.experienceYears} yrs</strong></span>
-                            <span>Expected CTC: <strong className="text-text font-normal">{formatCtc(candidate.expectedCtc)}</strong></span>
+                          <div className="flex items-center justify-between gap-2 text-[11.5px] text-text-subtle pt-1 border-t border-border/40">
+                            <span>Notice: <span className="text-text font-medium">{candidate.noticePeriod}</span></span>
+                            <span>Exp: <span className="text-text font-medium">{candidate.experienceYears} yrs</span></span>
+                            <span>Expected CTC: <span className="text-text font-medium">{formatCtc(candidate.expectedCtc)}</span></span>
                           </div>
                         </div>
 
-                        {/* 3. Interview Slot & Coordination Information */}
-                        <div className="rounded-[6px] border border-border/60 p-2.5 text-[12px] space-y-1.5 bg-surface-1">
+                        {/* 3. Interview Slot & Coordination Information (Clean, unboxed) */}
+                        <div className="border-t border-border/50 pt-2.5 text-[12px] space-y-1.5">
                           {isScheduled ? (
                             <div className="space-y-1">
                               <div className="flex items-center justify-between text-[12px]">
@@ -546,7 +546,7 @@ export function InterviewsView() {
                               )}
                             </div>
                           ) : (
-                            <div className="text-[11.5px] text-text-muted py-0.5 flex items-center gap-1.5">
+                            <div className="text-[11.5px] text-warning py-0.5 flex items-center gap-1.5">
                               <AlertCircle className="h-3.5 w-3.5 text-warning shrink-0" />
                               <span>
                                 {isHr
@@ -558,7 +558,7 @@ export function InterviewsView() {
 
                           {/* Manager Shortlist Comment (if any) */}
                           {candidate.managerComment && (
-                            <div className="pt-1 text-[11px] text-text-subtle border-t border-border/50">
+                            <div className="pt-1 text-[11px] text-text-subtle border-t border-border/40">
                               <strong className="text-text font-medium">Manager Shortlist Remark: </strong>
                               {candidate.managerComment}
                             </div>

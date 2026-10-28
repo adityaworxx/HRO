@@ -8,6 +8,7 @@ import { StatCard } from '@/components/hro/stat-card';
 import { StatusBadge } from '@/components/hro/status-badge';
 import { MetaSeparator } from '@/components/hro/meta-separator';
 import { ActiveOpeningsCard } from '@/components/hro/active-openings-card';
+import { CompanyLogo } from '@/components/hro/company-logo';
 import { Skeleton } from '@/components/ui/skeleton';
 import type { Candidate, Opening } from '@/types/entities';
 import {
@@ -256,10 +257,11 @@ export function ManagerDashboard() {
                               {group.candidates.slice(0, 2).map((c) => (
                                 <div key={c.id} className="flex items-center justify-between text-[11.5px] min-w-0">
                                   <div className="flex items-center gap-1.5 min-w-0">
+                                    <CompanyLogo company={c.currentCompany} className="h-3.5 w-3.5 rounded-[3px] shrink-0 shadow-2xs" />
                                     <span className="text-text font-medium truncate">{c.name}</span>
                                     <span className="text-text-subtle text-[10.5px]">({c.experienceYears}y exp)</span>
                                   </div>
-                                  <span className="font-mono text-emerald-600 dark:text-emerald-400 text-[11px] font-semibold shrink-0">
+                                  <span className="font-mono text-text font-semibold text-[11px] shrink-0">
                                     {formatCtc(c.expectedCtc)}
                                   </span>
                                 </div>
@@ -504,9 +506,12 @@ export function ManagerDashboard() {
                           className="group hover:bg-surface-2 -mx-2 flex flex-col justify-between gap-1.5 rounded-[8px] px-2 py-3 transition-colors cursor-pointer"
                         >
                           <div className="flex items-center justify-between gap-2">
-                            <span className="text-text truncate text-[14px] leading-[20px] font-medium">
-                              {candidate.name}
-                            </span>
+                            <div className="flex items-center gap-2 min-w-0">
+                              <CompanyLogo company={candidate.currentCompany} className="h-4 w-4 rounded-[3px] shrink-0 shadow-2xs" />
+                              <span className="text-text truncate text-[14px] leading-[20px] font-medium">
+                                {candidate.name}
+                              </span>
+                            </div>
                             <span
                               className="text-text-subtle group-hover:text-text-muted transition-colors shrink-0 flex items-center"
                               title={`${mode} Interview`}
