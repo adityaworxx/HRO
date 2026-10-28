@@ -763,8 +763,6 @@ export function ShortlistReview() {
                   <div className="border-border/70 bg-surface-2/40 space-y-2 rounded-[8px] border p-3.5">
                     <div className="flex flex-wrap items-center justify-between gap-2">
                       <div className="text-text flex items-center gap-1.5 text-[12.5px] font-semibold">
-                        <Sparkles className="text-text-muted h-3.5 w-3.5" />
-
                         <span>AI Candidate Assessment</span>
 
                         {selectedOpening && (

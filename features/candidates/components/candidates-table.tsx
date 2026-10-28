@@ -215,9 +215,9 @@ export function CandidatesTable() {
               <button
                 key={tab.id}
                 onClick={() => setSelectedStage(tab.id)}
-                className={`inline-flex shrink-0 items-center gap-1.5 rounded-[var(--radius-sm)] px-2.5 py-1 text-[12px] font-medium whitespace-nowrap transition-colors ${
+                className={`inline-flex shrink-0 cursor-pointer items-center gap-1.5 rounded-[var(--radius-sm)] px-2.5 py-1 text-[12px] font-medium whitespace-nowrap transition-colors select-none ${
                   isSelected
-                    ? 'bg-surface-3 text-text border-border-strong border font-semibold shadow-xs'
+                    ? 'border-border-strong bg-surface-3 text-text border font-semibold shadow-xs'
                     : 'bg-surface-2 text-text-muted hover:bg-surface-3 hover:text-text'
                 }`}
               >
@@ -225,7 +225,7 @@ export function CandidatesTable() {
                 <span
                   className={`rounded-full px-1.5 font-sans text-[11px] font-semibold tabular-nums ${
                     isSelected
-                      ? 'bg-surface-1 text-text border-border/80 border'
+                      ? 'border-border/80 bg-surface-1 text-text border'
                       : 'bg-surface-3 text-text-subtle'
                   }`}
                 >

@@ -67,7 +67,6 @@ import {
   ArrowRightCircle,
   CheckCircle2,
   AlertCircle,
-  Sparkles,
   Zap,
   Search,
   Check,
@@ -460,7 +459,7 @@ export function OpeningDetail({ id }: OpeningDetailProps) {
       {activeTab !== 'ai-matcher' && strongMatches.length > 0 && (
         <div className="border-border/70 bg-surface-1 flex flex-col gap-3 rounded-[8px] border p-3.5 shadow-2xs select-none sm:flex-row sm:items-center sm:justify-between">
           <div className="flex items-center gap-2.5">
-            <span className="bg-accent h-2 w-2 animate-pulse rounded-full" />
+            <span className="h-2 w-2 rounded-full bg-blue-600" />
 
             <div className="text-text text-[12.5px] font-medium">
               <span className="font-semibold">
@@ -538,8 +537,6 @@ export function OpeningDetail({ id }: OpeningDetailProps) {
           <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
             <TabsList className="w-full justify-start sm:w-auto">
               <TabsTrigger value="ai-matcher" className="gap-1.5 font-semibold">
-                <Sparkles className="text-accent h-3.5 w-3.5" />
-
                 <span>AI Candidate Match</span>
 
                 <span className="bg-surface-2 text-text border-border/80 py-0.2 rounded-full border px-1.5 font-sans text-[10px] font-bold tabular-nums">

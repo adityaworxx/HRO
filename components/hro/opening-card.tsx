@@ -20,7 +20,7 @@ import {
 import type { Opening } from '@/types/entities';
 import type { OpeningStatus } from '@/lib/domain/status-transitions';
 import { getNextAllowedOpeningStatuses } from '@/lib/domain/status-transitions';
-import { formatCtcRange, formatRoleTitle } from '@/lib/format';
+import { formatCtcRange } from '@/lib/format';
 import { cn } from '@/lib/utils';
 import { getAvatarColor } from './candidate-avatar';
 import {
@@ -93,10 +93,10 @@ export function OpeningCard({
             <h4 className="text-text truncate text-[14px] font-semibold tracking-[-0.015em] transition-colors">
               <Link
                 href={`/openings/${opening.id}`}
-                title={formatRoleTitle(opening.title)}
+                title={opening.title}
                 className="hover:text-text"
               >
-                {formatRoleTitle(opening.title)}
+                {opening.title}
               </Link>
             </h4>
             <p className="text-text-muted mt-0.5 truncate text-[12px] font-normal">
@@ -204,7 +204,7 @@ export function OpeningCard({
                 e.stopPropagation();
                 onAiMatch(opening);
               }}
-              className="inline-flex cursor-pointer items-center justify-center rounded-[5px] bg-blue-600 px-2.5 py-1 text-[11px] font-semibold text-white shadow-2xs transition-colors select-none hover:bg-blue-700 active:scale-95 active:bg-blue-800"
+              className="inline-flex cursor-pointer items-center justify-center rounded-[5px] border-0 bg-blue-600 px-2.5 py-1 text-[11px] font-semibold text-white shadow-2xs transition-colors select-none hover:bg-blue-700 active:scale-95 active:bg-blue-800"
               title="Scan & Match Candidates with AI"
             >
               <span>AI Match</span>

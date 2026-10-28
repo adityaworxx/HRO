@@ -259,7 +259,7 @@ export function ManagerDashboard() {
                 className={cn(
                   'inline-flex shrink-0 cursor-pointer items-center gap-1.5 rounded-[6px] px-2.5 py-1 text-[12.5px] font-medium transition-colors',
                   selectedReviewDept === 'all'
-                    ? 'bg-accent font-semibold text-white shadow-xs'
+                    ? 'border-border-strong bg-surface-3 text-text border font-semibold shadow-xs'
                     : 'bg-surface-2 text-text-muted hover:bg-surface-3 hover:text-text'
                 )}
               >
@@ -268,7 +268,7 @@ export function ManagerDashboard() {
                   className={cn(
                     'rounded-full px-1.5 font-sans text-[11px] font-semibold tabular-nums',
                     selectedReviewDept === 'all'
-                      ? 'bg-white/20 font-semibold text-white'
+                      ? 'border-border/80 bg-surface-1 text-text border'
                       : 'bg-surface-3 text-text-subtle'
                   )}
                 >
@@ -286,7 +286,7 @@ export function ManagerDashboard() {
                     className={cn(
                       'inline-flex shrink-0 cursor-pointer items-center gap-1.5 rounded-[6px] px-2.5 py-1 text-[12.5px] font-medium transition-colors',
                       isSelected
-                        ? 'bg-accent font-semibold text-white shadow-xs'
+                        ? 'border-border-strong bg-surface-3 text-text border font-semibold shadow-xs'
                         : 'bg-surface-2 text-text-muted hover:bg-surface-3 hover:text-text'
                     )}
                   >
@@ -296,7 +296,7 @@ export function ManagerDashboard() {
                       className={cn(
                         'rounded-full px-1.5 font-sans text-[11px] font-semibold tabular-nums',
                         isSelected
-                          ? 'bg-white/20 font-semibold text-white'
+                          ? 'border-border/80 bg-surface-1 text-text border'
                           : 'bg-surface-3 text-text-subtle'
                       )}
                     >
