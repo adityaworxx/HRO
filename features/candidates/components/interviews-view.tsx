@@ -38,6 +38,7 @@ import {
   AlertCircle,
   FileText,
   ExternalLink,
+  X,
 } from 'lucide-react';
 import { VideoCameraIcon } from '@/components/ui/icons';
 import {
@@ -94,16 +95,27 @@ export function InterviewsView() {
   // Filters & State
   const [searchQuery, setSearchQuery] = React.useState<string>('');
   const [statusTab, setStatusTab] = React.useState<'all' | 'needs-scheduling' | 'scheduled'>('all');
+  const [departmentFilter, setDepartmentFilter] = React.useState<string>('all');
   const [outcomeFilter, setOutcomeFilter] = React.useState<string>('all');
   const [modeFilter, setModeFilter] = React.useState<string>('all');
   const [currentPage, setCurrentPage] = React.useState<number>(1);
 
   const PAGE_SIZE = 6;
 
+  // Extract all unique departments present across interview candidates
+  const departments = React.useMemo(() => {
+    const set = new Set<string>();
+    interviewCandidates.forEach((c) => {
+      const op = openingsMap.get(c.openingId);
+      if (op?.department) set.add(op.department);
+    });
+    return Array.from(set).sort();
+  }, [interviewCandidates, openingsMap]);
+
   // Reset pagination when search or filters change
   React.useEffect(() => {
     setCurrentPage(1);
-  }, [searchQuery, statusTab, outcomeFilter, modeFilter, interviewCandidates.length]);
+  }, [searchQuery, statusTab, departmentFilter, outcomeFilter, modeFilter, interviewCandidates.length]);
 
   // Filtered interviews
   const filteredInterviews = React.useMemo(() => {
@@ -113,8 +125,14 @@ export function InterviewsView() {
       if (statusTab === 'needs-scheduling' && c.interviewDate) return false;
       if (statusTab === 'scheduled' && !c.interviewDate) return false;
 
-      // Text search
       const opening = openingsMap.get(c.openingId);
+
+      // Department filter
+      if (departmentFilter !== 'all' && opening?.department !== departmentFilter) {
+        return false;
+      }
+
+      // Text search
       const matchesSearch =
         !q ||
         c.name.toLowerCase().includes(q) ||
@@ -123,6 +141,7 @@ export function InterviewsView() {
         c.phone.toLowerCase().includes(q) ||
         c.email.toLowerCase().includes(q) ||
         (opening && opening.title.toLowerCase().includes(q)) ||
+        (opening && opening.department.toLowerCase().includes(q)) ||
         (c.interviewNote && c.interviewNote.toLowerCase().includes(q));
 
       const matchesOutcome =
@@ -135,7 +154,22 @@ export function InterviewsView() {
 
       return matchesSearch && matchesOutcome && matchesMode;
     });
-  }, [interviewCandidates, statusTab, searchQuery, outcomeFilter, modeFilter, openingsMap]);
+  }, [interviewCandidates, statusTab, departmentFilter, searchQuery, outcomeFilter, modeFilter, openingsMap]);
+
+  const hasActiveFilters =
+    Boolean(searchQuery.trim()) ||
+    statusTab !== 'all' ||
+    departmentFilter !== 'all' ||
+    outcomeFilter !== 'all' ||
+    modeFilter !== 'all';
+
+  const handleResetFilters = () => {
+    setSearchQuery('');
+    setStatusTab('all');
+    setDepartmentFilter('all');
+    setOutcomeFilter('all');
+    setModeFilter('all');
+  };
 
   const totalPages = Math.ceil(filteredInterviews.length / PAGE_SIZE);
   const validPage = Math.min(Math.max(1, currentPage), Math.max(1, totalPages));
@@ -257,117 +291,159 @@ export function InterviewsView() {
       ) : (
         <div className="space-y-4">
           {/* Status Tabs + Search & Filters */}
-          <div className="flex flex-col gap-3">
-            {/* Filter Tabs */}
-            <div className="flex flex-wrap items-center gap-1.5 border-b border-border/60 pb-2">
-              <button
-                type="button"
-                onClick={() => setStatusTab('all')}
-                className={cn(
-                  'rounded-[var(--radius-sm)] border px-3 py-1 text-[12px] font-medium transition-colors cursor-pointer',
-                  statusTab === 'all'
-                    ? 'border-accent bg-accent/15 text-accent font-semibold'
-                    : 'border-border bg-surface-2 text-text-muted hover:text-text'
-                )}
-              >
-                All ({interviewCandidates.length})
-              </button>
-              <button
-                type="button"
-                onClick={() => setStatusTab('needs-scheduling')}
-                className={cn(
-                  'rounded-[var(--radius-sm)] border px-3 py-1 text-[12px] font-medium transition-colors cursor-pointer flex items-center gap-1.5',
-                  statusTab === 'needs-scheduling'
-                    ? 'border-warning/60 bg-warning/15 text-warning font-semibold'
-                    : 'border-border bg-surface-2 text-text-muted hover:text-text'
-                )}
-              >
-                <span>📞 Needs Call / Scheduling</span>
-                <span className="font-mono text-[10px] px-1.5 py-0.2 rounded-full bg-surface-1 border border-border">
-                  {unscheduledCandidates.length}
-                </span>
-              </button>
-              <button
-                type="button"
-                onClick={() => setStatusTab('scheduled')}
-                className={cn(
-                  'rounded-[var(--radius-sm)] border px-3 py-1 text-[12px] font-medium transition-colors cursor-pointer flex items-center gap-1.5',
-                  statusTab === 'scheduled'
-                    ? 'border-success/60 bg-success/15 text-success font-semibold'
-                    : 'border-border bg-surface-2 text-text-muted hover:text-text'
-                )}
-              >
-                <span>✓ Confirmed Slots</span>
-                <span className="font-mono text-[10px] px-1.5 py-0.2 rounded-full bg-surface-1 border border-border">
-                  {scheduledCandidates.length}
-                </span>
-              </button>
+          <div className="space-y-3">
+            {/* Row 1: Status Filter Tabs (Left) + Showing Count (Right) */}
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-border/60 pb-2.5">
+              <div className="flex flex-wrap items-center gap-2">
+                <button
+                  type="button"
+                  onClick={() => setStatusTab('all')}
+                  className={cn(
+                    'h-8 px-3 rounded-[6px] border text-[12px] font-medium transition-colors cursor-pointer inline-flex items-center gap-1.5 select-none',
+                    statusTab === 'all'
+                      ? 'border-accent/70 bg-accent/15 text-accent font-semibold shadow-2xs'
+                      : 'border-border/70 bg-surface-2/40 text-text-muted hover:text-text hover:bg-surface-2'
+                  )}
+                >
+                  <span>All</span>
+                  <span className="font-mono text-[11px] font-semibold tabular-nums px-1.5 py-0.2 rounded-full bg-surface-1 border border-border/70">
+                    {interviewCandidates.length}
+                  </span>
+                </button>
+
+                <button
+                  type="button"
+                  onClick={() => setStatusTab('needs-scheduling')}
+                  className={cn(
+                    'h-8 px-3 rounded-[6px] border text-[12px] font-medium transition-colors cursor-pointer inline-flex items-center gap-1.5 select-none',
+                    statusTab === 'needs-scheduling'
+                      ? 'border-warning/70 bg-warning/15 text-warning font-semibold shadow-2xs'
+                      : 'border-border/70 bg-surface-2/40 text-text-muted hover:text-text hover:bg-surface-2'
+                  )}
+                >
+                  <Phone className="h-3 w-3 text-warning shrink-0" />
+                  <span>Needs Call / Scheduling</span>
+                  <span className="font-mono text-[11px] font-semibold tabular-nums px-1.5 py-0.2 rounded-full bg-surface-1 border border-border/70">
+                    {unscheduledCandidates.length}
+                  </span>
+                </button>
+
+                <button
+                  type="button"
+                  onClick={() => setStatusTab('scheduled')}
+                  className={cn(
+                    'h-8 px-3 rounded-[6px] border text-[12px] font-medium transition-colors cursor-pointer inline-flex items-center gap-1.5 select-none',
+                    statusTab === 'scheduled'
+                      ? 'border-success/70 bg-success/15 text-success font-semibold shadow-2xs'
+                      : 'border-border/70 bg-surface-2/40 text-text-muted hover:text-text hover:bg-surface-2'
+                  )}
+                >
+                  <CheckCircle2 className="h-3 w-3 text-success shrink-0" />
+                  <span>Confirmed Slots</span>
+                  <span className="font-mono text-[11px] font-semibold tabular-nums px-1.5 py-0.2 rounded-full bg-surface-1 border border-border/70">
+                    {scheduledCandidates.length}
+                  </span>
+                </button>
+              </div>
+
+              <div className="text-text-muted text-[12px] font-medium shrink-0 flex items-center">
+                Showing <span className="text-text font-semibold mx-1">{filteredInterviews.length}</span> of {interviewCandidates.length} candidates
+              </div>
             </div>
 
-            {/* Toolbar */}
-            <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-              <div className="flex flex-col sm:flex-row flex-1 items-stretch sm:items-center gap-2.5 sm:gap-3">
-                <div className="relative w-full sm:max-w-xs">
-                  <Search className="text-text-subtle absolute top-2.5 left-3 h-4 w-4 pointer-events-none" />
-                  <Input
-                    value={searchQuery}
-                    onChange={(e) => setSearchQuery(e.target.value)}
-                    placeholder="Search candidate, role, phone, or notes..."
-                    className="h-9 pl-9 text-[13px] bg-surface-2/40 border-border/70 hover:border-border focus:bg-surface-1 rounded-[8px] transition-all shadow-2xs w-full"
-                  />
-                </div>
-
-                <div className="flex items-center gap-2">
-                  {/* Outcome Filter */}
-                  <Select value={outcomeFilter} onValueChange={setOutcomeFilter}>
-                    <SelectTrigger className="h-9 w-full sm:w-auto min-w-0 sm:min-w-[130px] gap-2 border-border/70 bg-surface-2/40 hover:bg-surface-2 text-text px-3 text-[13px] font-medium rounded-[8px] shadow-2xs">
-                      <SelectValue placeholder="All Outcomes" />
-                    </SelectTrigger>
-                    <SelectContent align="start" className="min-w-[150px]">
-                      <SelectItem value="all" className="text-[13px] py-1.5 min-h-[32px] rounded-[6px]">
-                        All Outcomes
-                      </SelectItem>
-                      <SelectItem value="Pending" className="text-[13px] py-1.5 min-h-[32px] rounded-[6px]">
-                        Pending
-                      </SelectItem>
-                      <SelectItem value="Selected" className="text-[13px] py-1.5 min-h-[32px] rounded-[6px]">
-                        Selected
-                      </SelectItem>
-                      <SelectItem value="Rejected" className="text-[13px] py-1.5 min-h-[32px] rounded-[6px]">
-                        Rejected
-                      </SelectItem>
-                      <SelectItem value="On Hold" className="text-[13px] py-1.5 min-h-[32px] rounded-[6px]">
-                        On Hold
-                      </SelectItem>
-                    </SelectContent>
-                  </Select>
-
-                  {/* Mode Filter */}
-                  <Select value={modeFilter} onValueChange={setModeFilter}>
-                    <SelectTrigger className="h-9 w-full sm:w-auto min-w-0 sm:min-w-[120px] gap-2 border-border/70 bg-surface-2/40 hover:bg-surface-2 text-text px-3 text-[13px] font-medium rounded-[8px] shadow-2xs">
-                      <SelectValue placeholder="All Modes" />
-                    </SelectTrigger>
-                    <SelectContent align="start" className="min-w-[140px]">
-                      <SelectItem value="all" className="text-[13px] py-1.5 min-h-[32px] rounded-[6px]">
-                        All Formats
-                      </SelectItem>
-                      <SelectItem value="Video" className="text-[13px] py-1.5 min-h-[32px] rounded-[6px]">
-                        Video Call
-                      </SelectItem>
-                      <SelectItem value="Phone" className="text-[13px] py-1.5 min-h-[32px] rounded-[6px]">
-                        Phone
-                      </SelectItem>
-                      <SelectItem value="Onsite" className="text-[13px] py-1.5 min-h-[32px] rounded-[6px]">
-                        Onsite
-                      </SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
+            {/* Row 2: Search + Department Filter + Outcome Filter + Format Filter + Reset */}
+            <div className="flex flex-wrap items-center gap-2.5">
+              <div className="relative flex-1 min-w-[200px] sm:max-w-xs">
+                <Search className="text-text-subtle absolute top-2.5 left-3 h-3.5 w-3.5 pointer-events-none" />
+                <Input
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  placeholder="Search candidate, role, phone, or notes..."
+                  className="h-8.5 pl-9 text-[12.5px] bg-surface-2/40 border-border/70 hover:border-border focus:bg-surface-1 rounded-[6px] transition-all shadow-2xs w-full"
+                />
               </div>
 
-              <div className="text-text-muted text-[12px] font-medium">
-                Showing <span className="text-text font-semibold">{filteredInterviews.length}</span> of {interviewCandidates.length}
-              </div>
+              {/* Department Filter */}
+              {departments.length > 0 && (
+                <Select value={departmentFilter} onValueChange={setDepartmentFilter}>
+                  <SelectTrigger className="h-8.5 w-auto min-w-[150px] gap-2 border-border/70 bg-surface-2/40 hover:bg-surface-2 text-text px-3 text-[12.5px] font-medium rounded-[6px] shadow-2xs">
+                    <Building2 className="h-3.5 w-3.5 text-accent shrink-0" />
+                    <SelectValue placeholder="All Departments" />
+                  </SelectTrigger>
+                  <SelectContent align="start" className="min-w-[190px]">
+                    <SelectItem value="all" className="text-[12.5px] py-1.5 min-h-[32px] rounded-[6px]">
+                      All Departments ({interviewCandidates.length})
+                    </SelectItem>
+                    {departments.map((dept) => {
+                      const count = interviewCandidates.filter(
+                        (c) => openingsMap.get(c.openingId)?.department === dept
+                      ).length;
+                      return (
+                        <SelectItem key={dept} value={dept} className="text-[12.5px] py-1.5 min-h-[32px] rounded-[6px]">
+                          {dept} ({count})
+                        </SelectItem>
+                      );
+                    })}
+                  </SelectContent>
+                </Select>
+              )}
+
+              {/* Outcome Filter */}
+              <Select value={outcomeFilter} onValueChange={setOutcomeFilter}>
+                <SelectTrigger className="h-8.5 w-auto min-w-[130px] gap-2 border-border/70 bg-surface-2/40 hover:bg-surface-2 text-text px-3 text-[12.5px] font-medium rounded-[6px] shadow-2xs">
+                  <SelectValue placeholder="All Outcomes" />
+                </SelectTrigger>
+                <SelectContent align="start" className="min-w-[150px]">
+                  <SelectItem value="all" className="text-[12.5px] py-1.5 min-h-[32px] rounded-[6px]">
+                    All Outcomes
+                  </SelectItem>
+                  <SelectItem value="Pending" className="text-[12.5px] py-1.5 min-h-[32px] rounded-[6px]">
+                    Pending
+                  </SelectItem>
+                  <SelectItem value="Selected" className="text-[12.5px] py-1.5 min-h-[32px] rounded-[6px]">
+                    Selected
+                  </SelectItem>
+                  <SelectItem value="Rejected" className="text-[12.5px] py-1.5 min-h-[32px] rounded-[6px]">
+                    Rejected
+                  </SelectItem>
+                  <SelectItem value="On Hold" className="text-[12.5px] py-1.5 min-h-[32px] rounded-[6px]">
+                    On Hold
+                  </SelectItem>
+                </SelectContent>
+              </Select>
+
+              {/* Mode / Format Filter */}
+              <Select value={modeFilter} onValueChange={setModeFilter}>
+                <SelectTrigger className="h-8.5 w-auto min-w-[125px] gap-2 border-border/70 bg-surface-2/40 hover:bg-surface-2 text-text px-3 text-[12.5px] font-medium rounded-[6px] shadow-2xs">
+                  <SelectValue placeholder="All Formats" />
+                </SelectTrigger>
+                <SelectContent align="start" className="min-w-[140px]">
+                  <SelectItem value="all" className="text-[12.5px] py-1.5 min-h-[32px] rounded-[6px]">
+                    All Formats
+                  </SelectItem>
+                  <SelectItem value="Video" className="text-[12.5px] py-1.5 min-h-[32px] rounded-[6px]">
+                    Video Call
+                  </SelectItem>
+                  <SelectItem value="Phone" className="text-[12.5px] py-1.5 min-h-[32px] rounded-[6px]">
+                    Phone
+                  </SelectItem>
+                  <SelectItem value="Onsite" className="text-[12.5px] py-1.5 min-h-[32px] rounded-[6px]">
+                    Onsite
+                  </SelectItem>
+                </SelectContent>
+              </Select>
+
+              {/* Clear filters button if any filter is active */}
+              {hasActiveFilters && (
+                <button
+                  type="button"
+                  onClick={handleResetFilters}
+                  className="h-8.5 px-2 text-[12px] text-accent hover:underline cursor-pointer flex items-center gap-1 font-medium select-none"
+                >
+                  <X className="h-3.5 w-3.5" />
+                  <span>Reset</span>
+                </button>
+              )}
             </div>
           </div>
 
@@ -376,12 +452,7 @@ export function InterviewsView() {
               <p className="text-[13px] text-text-muted">No interviews match your filter criteria</p>
               <button
                 type="button"
-                onClick={() => {
-                  setSearchQuery('');
-                  setStatusTab('all');
-                  setOutcomeFilter('all');
-                  setModeFilter('all');
-                }}
+                onClick={handleResetFilters}
                 className="text-[12px] text-accent hover:underline mt-1.5 cursor-pointer"
               >
                 Reset filters
