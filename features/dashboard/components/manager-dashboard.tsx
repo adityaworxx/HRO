@@ -28,7 +28,6 @@ import {
   Layers,
   Users,
   TrendingUp,
-  Sparkles,
 } from 'lucide-react';
 import { VideoCameraIcon } from '@/components/ui/icons';
 import { formatCtc, formatInterviewDateTime, formatCtcRange } from '@/lib/format';
@@ -368,14 +367,13 @@ export function ManagerDashboard() {
                               </span>
                             </div>
 
-                            {/* 4. AI Match (Without Box: Clean text with Sparkles icon) */}
+                            {/* 4. AI Match (Clean text without box or icon) */}
                             <div className="min-w-0 pr-2">
                               {aiMatch ? (
                                 <div className="space-y-0.5">
-                                  <div className="inline-flex items-center gap-1 font-mono text-[11.5px] font-semibold text-accent">
-                                    <Sparkles className="h-3 w-3 text-accent shrink-0" />
-                                    <span>{aiMatch.score}% Match</span>
-                                  </div>
+                                  <span className="font-mono text-[11.5px] font-semibold text-accent block tabular-nums">
+                                    {aiMatch.score}% Match
+                                  </span>
                                   <span className="text-text-subtle text-[10.5px] block truncate">
                                     {aiMatch.tier}
                                   </span>

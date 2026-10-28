@@ -52,7 +52,7 @@ export function CandidateCard({
       }}
       className={cn(
         'group relative flex flex-col justify-between rounded-[12px] border border-border/70 bg-surface-1 p-3.5 transition-colors duration-150',
-        'hover:border-border-strong select-none focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-accent space-y-2.5',
+        'hover:border-border-strong select-none focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-border-strong space-y-2.5',
         showReorderIcon ? 'cursor-grab active:cursor-grabbing' : 'cursor-pointer',
         isDragging && 'border-border-strong ring-1 ring-border-strong bg-surface-2 scale-[1.01] z-50',
         className
@@ -63,7 +63,7 @@ export function CandidateCard({
         <div className="flex items-center gap-2.5 min-w-0 flex-1">
           <CandidateAvatar name={candidate.name} size="md" />
           <div className="min-w-0 flex-1">
-            <h4 className="text-[14px] font-semibold text-text tracking-[-0.015em] group-hover:text-accent transition-colors truncate">
+            <h4 className="text-[14px] font-semibold text-text tracking-[-0.015em] transition-colors truncate">
               {candidate.name}
             </h4>
             <p className="text-[12px] text-text-muted truncate mt-0.5 font-normal">
@@ -135,9 +135,9 @@ export function CandidateCard({
           {actions}
         </div>
       ) : (
-        <div className="pt-2.5 border-t border-border/40 flex items-center justify-between text-[11.5px] text-text-subtle group-hover:text-accent transition-colors">
+        <div className="pt-2.5 border-t border-border/40 flex items-center justify-between text-[11.5px] text-text-muted group-hover:text-text transition-colors">
           <span className="font-medium">{actionText || 'Review Dossier & Decide'}</span>
-          <ArrowRight className="h-3.5 w-3.5 opacity-60 group-hover:opacity-100 group-hover:translate-x-0.5 transition-all" />
+          <ArrowRight className="h-3.5 w-3.5 opacity-60 group-hover:opacity-100 group-hover:translate-x-0.5 transition-all text-text-muted group-hover:text-text" />
         </div>
       )}
     </div>

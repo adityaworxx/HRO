@@ -12,6 +12,7 @@ import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import { CandidateAvatar } from '@/components/hro/candidate-avatar';
+import { CandidateDetailSheet } from './candidate-detail-sheet';
 import {
   Dialog,
   DialogContent,
@@ -62,6 +63,23 @@ function getCurrentLocalDateTime(): string {
   const hours = String(now.getHours()).padStart(2, '0');
   const minutes = String(now.getMinutes()).padStart(2, '0');
   return `${year}-${month}-${day}T${hours}:${minutes}`;
+}
+
+function formatInterviewDateTime(isoString: string): string {
+  try {
+    const d = new Date(isoString);
+    if (isNaN(d.getTime())) return isoString;
+    return d.toLocaleString(undefined, {
+      weekday: 'short',
+      month: 'short',
+      day: 'numeric',
+      year: 'numeric',
+      hour: 'numeric',
+      minute: '2-digit',
+    });
+  } catch {
+    return isoString;
+  }
 }
 
 export function InterviewsView() {
@@ -187,6 +205,15 @@ export function InterviewsView() {
   const [interviewMode, setInterviewMode] = React.useState<'Video' | 'Phone' | 'Onsite'>('Video');
   const [scheduleNote, setScheduleNote] = React.useState('');
   const [outcomeNote, setOutcomeNote] = React.useState('');
+
+  // Candidate Profile Drawer state
+  const [detailCandidate, setDetailCandidate] = React.useState<Candidate | null>(null);
+  const [sheetOpen, setSheetOpen] = React.useState(false);
+
+  const handleOpenDetail = (candidate: Candidate) => {
+    setDetailCandidate(candidate);
+    setSheetOpen(true);
+  };
 
   const handleOpenSchedule = (candidate: Candidate) => {
     setSelectedCandidate(candidate);
@@ -468,33 +495,28 @@ export function InterviewsView() {
 
                   const outcomeConfig = {
                     Pending: {
-                      dot: 'bg-warning',
-                      text: 'text-warning',
-                      badgeBg: 'bg-warning/15 border-warning/30',
-                      label: 'Pending Outcome',
+                      dot: isScheduled ? 'bg-emerald-500' : 'bg-amber-500',
+                      text: isScheduled ? 'text-emerald-600 dark:text-emerald-400' : 'text-amber-600 dark:text-amber-400',
+                      label: isScheduled ? 'Slot Confirmed' : (isHr ? 'Needs HR Call' : 'Pending'),
                     },
                     Selected: {
-                      dot: 'bg-success',
-                      text: 'text-success',
-                      badgeBg: 'bg-success/15 border-success/30',
+                      dot: 'bg-emerald-500',
+                      text: 'text-emerald-600 dark:text-emerald-400',
                       label: 'Selected',
                     },
                     Rejected: {
-                      dot: 'bg-danger',
-                      text: 'text-danger',
-                      badgeBg: 'bg-danger/15 border-danger/30',
+                      dot: 'bg-rose-500',
+                      text: 'text-rose-600 dark:text-rose-400',
                       label: 'Rejected',
                     },
                     'On Hold': {
                       dot: 'bg-text-subtle',
                       text: 'text-text-muted',
-                      badgeBg: 'bg-surface-2 border-border',
                       label: 'On Hold',
                     },
                   }[candidate.interviewOutcome ?? 'Pending'] ?? {
-                    dot: 'bg-warning',
-                    text: 'text-warning',
-                    badgeBg: 'bg-warning/15 border-warning/30',
+                    dot: 'bg-amber-500',
+                    text: 'text-amber-600 dark:text-amber-400',
                     label: candidate.interviewOutcome,
                   };
 
@@ -505,171 +527,156 @@ export function InterviewsView() {
                   return (
                     <div
                       key={candidate.id}
-                      className="group relative flex flex-col justify-between rounded-[8px] border border-border/80 bg-surface-1 p-4 shadow-2xs transition-all duration-150 hover:border-border-strong hover:shadow-xs space-y-3.5"
+                      role="button"
+                      tabIndex={0}
+                      onClick={() => handleOpenDetail(candidate)}
+                      onKeyDown={(e) => {
+                        if (e.key === 'Enter' || e.key === ' ') {
+                          e.preventDefault();
+                          handleOpenDetail(candidate);
+                        }
+                      }}
+                      className="group relative flex flex-col justify-between rounded-[12px] border border-border/70 bg-surface-1 p-4 transition-colors duration-150 hover:border-border-strong cursor-pointer select-none space-y-3.5"
                     >
                       <div className="space-y-3">
-                        {/* 1. Header: Avatar + Candidate Name & Role + Status */}
+                        {/* 1. Header: Colored Avatar + Name & Role at Company + Status Dot */}
                         <div className="flex items-start justify-between gap-3">
-                          <div className="flex items-start gap-3 min-w-0 flex-1">
-                            <Avatar className="h-9 w-9 shrink-0 border border-border/70 bg-surface-2 shadow-2xs mt-0.5">
-                              <AvatarFallback className="text-[11.5px] font-semibold text-text bg-surface-2 tracking-wide">
-                                {candidate.name.slice(0, 2).toUpperCase()}
-                              </AvatarFallback>
-                            </Avatar>
+                          <div className="flex items-center gap-3 min-w-0 flex-1">
+                            <CandidateAvatar name={candidate.name} size="md" />
                             <div className="min-w-0 flex-1">
-                              <h4 className="text-[13.5px] font-semibold text-text tracking-tight leading-snug truncate">
+                              <h4 className="text-[14px] font-semibold text-text tracking-[-0.015em] group-hover:text-accent transition-colors truncate">
                                 {candidate.name}
                               </h4>
-                              <p className="text-[12px] text-text-muted leading-tight truncate mt-0.5">
+                              <p className="text-[12px] text-text-muted truncate mt-0.5 font-normal">
                                 <span>{candidate.currentRole}</span>
                                 <span className="text-text-subtle/80 mx-1">at</span>
-                                <span className="inline-flex items-center gap-1 text-text font-medium"><CompanyLogo company={candidate.currentCompany} className="h-3.5 w-3.5 rounded-[3px] shrink-0 shadow-2xs" /><span>{candidate.currentCompany}</span></span>
+                                <span className="inline-flex items-center gap-1 font-medium text-text">
+                                  <CompanyLogo company={candidate.currentCompany} className="h-3.5 w-3.5 rounded-[3px] shadow-2xs" />
+                                  <span>{candidate.currentCompany}</span>
+                                </span>
                               </p>
-                              {opening && (
-                                <p className="text-[11.5px] text-text-subtle truncate mt-1 flex items-center gap-1.5">
-                                  <Briefcase className="h-3 w-3 shrink-0 text-text-subtle/80" />
-                                  <span className="font-medium text-text-muted">{opening.title}</span>
-                                  <span className="text-text-subtle/60">•</span>
-                                  <span>{opening.department}</span>
-                                </p>
+                            </div>
+                          </div>
+
+                          {/* Status Dot & Label (Clean unboxed, matches reference image) */}
+                          <div className="shrink-0 flex items-center gap-1.5 pt-0.5 select-none">
+                            <span className={cn('h-2 w-2 rounded-full shrink-0', outcomeConfig.dot)} />
+                            <span className={cn('text-[12px] font-medium', outcomeConfig.text)}>
+                              {outcomeConfig.label}
+                            </span>
+                          </div>
+                        </div>
+
+                        {/* 2. Middle Body: Interview Details (Notes / Role on left, Mode & Date/Time on right) */}
+                        <div className="border-t border-border/50 pt-2.5 flex items-start justify-between gap-3 text-[12px]">
+                          {/* Left: Notes or Target Role */}
+                          <div className="space-y-1 min-w-0 flex-1 pr-2">
+                            <span className="text-[10px] font-semibold uppercase tracking-wider text-text-subtle block">
+                              {candidate.interviewNote ? 'Notes' : 'Target Role'}
+                            </span>
+                            <p className="text-[12px] text-text font-medium leading-snug line-clamp-2" title={candidate.interviewNote || opening?.title}>
+                              {candidate.interviewNote || (
+                                <span>
+                                  {opening?.title ?? 'Requisition'}
+                                  {opening?.department ? (
+                                    <span className="text-text-subtle font-normal"> · {opening.department}</span>
+                                  ) : null}
+                                </span>
                               )}
-                            </div>
+                            </p>
                           </div>
 
-                          {/* Status Text (Clean, unboxed) */}
-                          <div className="shrink-0 pt-0.5">
-                            {candidate.interviewOutcome !== 'Pending' ? (
-                              <span className={cn('text-[12px] font-medium select-none', outcomeConfig.text)}>
-                                {outcomeConfig.label}
-                              </span>
-                            ) : !isScheduled ? (
-                              <span className="text-[12px] font-medium text-warning select-none">
-                                {isHr ? 'Needs HR Call' : 'HR Scheduling'}
-                              </span>
-                            ) : (
-                              <span className="text-[12px] font-medium text-success select-none">
-                                Slot Confirmed
-                              </span>
-                            )}
-                          </div>
-                        </div>
-
-                        {/* 2. Direct Candidate Contact (Clean, unboxed) */}
-                        <div className="border-t border-border/50 pt-2.5 space-y-1.5 text-[12px]">
-                          <div className="flex flex-wrap items-center justify-between gap-2 text-text font-medium">
-                            <div className="flex items-center gap-1.5">
-                              <Phone className="h-3.5 w-3.5 text-accent shrink-0" />
-                              <a
-                                href={`tel:${candidate.phone}`}
-                                className="text-text hover:text-accent font-semibold font-mono underline-offset-2 hover:underline"
-                                title="Click to call candidate"
-                              >
-                                {candidate.phone}
-                              </a>
-                            </div>
-
-                            <div className="flex items-center gap-1.5 text-text-muted">
-                              <Mail className="h-3.5 w-3.5 text-text-subtle shrink-0" />
-                              <a
-                                href={`mailto:${candidate.email}`}
-                                className="hover:text-text truncate max-w-[170px]"
-                                title={candidate.email}
-                              >
-                                {candidate.email}
-                              </a>
-                            </div>
-                          </div>
-
-                          <div className="flex items-center justify-between gap-2 text-[11.5px] text-text-subtle pt-1 border-t border-border/40">
-                            <span>Notice: <span className="text-text font-medium">{candidate.noticePeriod}</span></span>
-                            <span>Exp: <span className="text-text font-medium">{candidate.experienceYears} yrs</span></span>
-                            <span>Expected CTC: <span className="text-text font-medium">{formatCtc(candidate.expectedCtc)}</span></span>
-                          </div>
-                        </div>
-
-                        {/* 3. Interview Slot & Coordination Information (Clean, unboxed) */}
-                        <div className="border-t border-border/50 pt-2.5 text-[12px] space-y-1.5">
-                          {isScheduled ? (
-                            <div className="space-y-1">
-                              <div className="flex items-center justify-between text-[12px]">
-                                <div className="flex items-center gap-1.5 font-semibold text-text">
+                          {/* Right: Mode & Scheduled Date/Time or Status Prompt */}
+                          <div className="text-right shrink-0 space-y-1">
+                            {isScheduled ? (
+                              <>
+                                <div className="inline-flex items-center gap-1.5 text-[12px] font-semibold text-text">
                                   <ModeIcon className="h-3.5 w-3.5 text-accent stroke-[1.75]" />
                                   <span>{candidate.interviewMode ?? 'Video'} Interview</span>
                                 </div>
-                                <span className="font-mono text-text font-semibold text-[11.5px]">
-                                  {new Date(candidate.interviewDate!).toLocaleString(undefined, {
-                                    weekday: 'short',
-                                    month: 'short',
-                                    day: 'numeric',
-                                    hour: 'numeric',
-                                    minute: '2-digit',
-                                  })}
-                                </span>
-                              </div>
-
-                              {candidate.interviewNote && (
-                                <div className="pt-1 text-[11.5px] text-text-muted flex items-start gap-1.5">
-                                  <FileText className="h-3 w-3 text-text-subtle shrink-0 mt-0.5" />
-                                  <span>
-                                    <strong className="text-text font-medium">HR Note: </strong>
-                                    {candidate.interviewNote}
-                                  </span>
+                                <div className="flex items-center justify-end gap-1 text-[11.5px] font-medium text-text-muted">
+                                  <Clock className="h-3 w-3 text-text-subtle shrink-0" />
+                                  <span>{formatInterviewDateTime(candidate.interviewDate!)}</span>
                                 </div>
-                              )}
-                            </div>
-                          ) : (
-                            <div className="text-[11.5px] text-warning py-0.5 flex items-center gap-1.5">
-                              <AlertCircle className="h-3.5 w-3.5 text-warning shrink-0" />
-                              <span>
-                                {isHr
-                                  ? 'Call candidate to discuss preferred availability and schedule the technical round.'
-                                  : 'Candidate shortlisted. HR is coordinating availability with the candidate.'}
-                              </span>
-                            </div>
-                          )}
-
-                          {/* Manager Shortlist Comment (if any) */}
-                          {candidate.managerComment && (
-                            <div className="pt-1 text-[11px] text-text-subtle border-t border-border/40">
-                              <strong className="text-text font-medium">Manager Shortlist Remark: </strong>
-                              {candidate.managerComment}
-                            </div>
-                          )}
+                              </>
+                            ) : (
+                              <>
+                                <div className="inline-flex items-center gap-1.5 text-[12px] font-semibold text-warning">
+                                  <AlertCircle className="h-3.5 w-3.5 text-warning stroke-[1.75]" />
+                                  <span>Slot Unscheduled</span>
+                                </div>
+                                <div className="text-[11.5px] text-text-subtle">
+                                  {isHr ? 'Call candidate to book' : 'Awaiting HR booking'}
+                                </div>
+                              </>
+                            )}
+                          </div>
                         </div>
                       </div>
 
-                      {/* 4. Action Buttons Tailored by Persona */}
-                      <div className="flex items-center gap-2 pt-2 border-t border-border/60">
+                      {/* 3. Footer Action Buttons */}
+                      <div className="pt-2.5 border-t border-border/50">
                         {isHr ? (
-                          <>
+                          !isScheduled ? (
                             <Button
-                              variant={!isScheduled ? 'primary' : 'outline'}
+                              variant="primary"
                               size="sm"
-                              onClick={() => handleOpenSchedule(candidate)}
-                              className="h-8 flex-1 gap-1.5 text-[12px] font-semibold rounded-[6px] cursor-pointer"
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                handleOpenSchedule(candidate);
+                              }}
+                              className="h-8 w-full gap-1.5 text-[12px] font-semibold rounded-[6px] cursor-pointer"
                             >
-                              <Calendar className="h-3.5 w-3.5 shrink-0" />
-                              <span>{!isScheduled ? '📞 Call & Schedule Slot' : 'Reschedule Slot'}</span>
+                              <Phone className="h-3.5 w-3.5" />
+                              <span>Call & Schedule Slot</span>
                             </Button>
-                          </>
-                        ) : (
-                          <>
-                            {isScheduled ? (
+                          ) : (
+                            <div className="flex items-center gap-2 w-full">
+                              <Button
+                                variant="outline"
+                                size="sm"
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  handleOpenSchedule(candidate);
+                                }}
+                                className="h-8 flex-1 gap-1.5 text-[12px] font-medium rounded-[6px] cursor-pointer"
+                              >
+                                <Calendar className="h-3.5 w-3.5" />
+                                <span>Reschedule</span>
+                              </Button>
                               <Button
                                 variant="primary"
                                 size="sm"
-                                onClick={() => handleOpenOutcome(candidate)}
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  handleOpenOutcome(candidate);
+                                }}
                                 className="h-8 flex-1 gap-1.5 text-[12px] font-semibold rounded-[6px] cursor-pointer"
                               >
-                                <CheckCircle2 className="h-3.5 w-3.5 shrink-0" />
-                                <span>Conduct & Record Outcome</span>
+                                <CheckCircle2 className="h-3.5 w-3.5" />
+                                <span>Record Outcome</span>
                               </Button>
-                            ) : (
-                              <div className="flex-1 py-1 text-center text-[11.5px] text-text-subtle bg-surface-2/40 rounded-[6px] border border-border/60">
-                                ⏳ Waiting for HR to confirm interview slot
-                              </div>
-                            )}
-                          </>
+                            </div>
+                          )
+                        ) : (
+                          isScheduled ? (
+                            <Button
+                              variant="primary"
+                              size="sm"
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                handleOpenOutcome(candidate);
+                              }}
+                              className="h-8 w-full gap-1.5 text-[12px] font-semibold rounded-[6px] cursor-pointer"
+                            >
+                              <CheckCircle2 className="h-3.5 w-3.5" />
+                              <span>Conduct & Record Outcome</span>
+                            </Button>
+                          ) : (
+                            <div className="w-full py-1.5 text-center text-[11.5px] text-text-subtle bg-surface-2/40 rounded-[6px] border border-border/60 select-none">
+                              ⏳ Waiting for HR to confirm interview slot
+                            </div>
+                          )
                         )}
                       </div>
                     </div>
@@ -851,6 +858,13 @@ export function InterviewsView() {
           </div>
         </DialogContent>
       </Dialog>
+
+      {/* Candidate Profile Drawer (opens on card click) */}
+      <CandidateDetailSheet
+        candidate={detailCandidate}
+        open={sheetOpen}
+        onOpenChange={setSheetOpen}
+      />
     </div>
   );
 }
