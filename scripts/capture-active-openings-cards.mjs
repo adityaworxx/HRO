@@ -1,16 +1,17 @@
 import { chromium } from '@playwright/test';
 import path from 'node:path';
 
-const artifactDir = 'C:\\Users\\adity\\.gemini\\antigravity\\brain\\fc37d0ad-3708-4d7f-8488-7ab9c4414fa2';
+const artifactDir =
+  'C:\\Users\\adity\\.gemini\\antigravity\\brain\\fc37d0ad-3708-4d7f-8488-7ab9c4414fa2';
 
 async function capture() {
   const browser = await chromium.launch({
     headless: true,
-    executablePath: 'C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe'
+    executablePath: 'C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe',
   });
 
   const context = await browser.newContext({
-    viewport: { width: 1440, height: 1000 }
+    viewport: { width: 1440, height: 1000 },
   });
   const page = await context.newPage();
 
@@ -59,4 +60,3 @@ capture().catch((err) => {
   console.error(err);
   process.exit(1);
 });
-

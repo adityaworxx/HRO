@@ -10,7 +10,12 @@ async function check() {
     for (const sheet of document.styleSheets) {
       try {
         for (const rule of sheet.cssRules) {
-          if (rule.selectorText && (rule.selectorText.includes('html') || rule.selectorText.includes('popper') || rule.selectorText.includes('zoom'))) {
+          if (
+            rule.selectorText &&
+            (rule.selectorText.includes('html') ||
+              rule.selectorText.includes('popper') ||
+              rule.selectorText.includes('zoom'))
+          ) {
             rules.push({ selector: rule.selectorText, cssText: rule.cssText });
           }
         }
@@ -30,4 +35,3 @@ async function check() {
 }
 
 check();
-

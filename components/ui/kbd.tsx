@@ -11,7 +11,7 @@ export const Kbd = React.forwardRef<HTMLElement, KbdProps>(
       <kbd
         ref={ref}
         className={cn(
-          'inline-flex h-5 select-none items-center justify-center rounded-[4px] border border-border bg-surface-2 px-1.5 font-mono text-[11px] leading-none font-medium text-text-subtle',
+          'border-border bg-surface-2 text-text-subtle inline-flex h-5 items-center justify-center rounded-[4px] border px-1.5 font-mono text-[11px] leading-none font-medium select-none',
           className
         )}
         {...props}
@@ -22,4 +22,3 @@ export const Kbd = React.forwardRef<HTMLElement, KbdProps>(
   }
 );
 Kbd.displayName = 'Kbd';
-

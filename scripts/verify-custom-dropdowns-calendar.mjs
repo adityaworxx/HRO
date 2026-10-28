@@ -1,7 +1,8 @@
 import { chromium } from '@playwright/test';
 import path from 'node:path';
 
-const screenshotDir = 'C:/Users/adity/.gemini/antigravity/brain/4445bf77-ea56-4237-9627-e3f6a9dd188c/screenshots';
+const screenshotDir =
+  'C:/Users/adity/.gemini/antigravity/brain/4445bf77-ea56-4237-9627-e3f6a9dd188c/screenshots';
 
 async function verify() {
   const browser = await chromium.launch({ channel: 'chrome' });
@@ -62,7 +63,9 @@ async function verify() {
 
   // 3. Open Target Start Date DatePicker
   console.log('Testing Custom DatePicker Calendar...');
-  const dateTrigger = page.locator('button:has-text("01-11-2026"), button:has-text("Select target start date")').first();
+  const dateTrigger = page
+    .locator('button:has-text("01-11-2026"), button:has-text("Select target start date")')
+    .first();
   await dateTrigger.click();
   await page.waitForTimeout(400);
   await page.screenshot({ path: path.join(screenshotDir, 'custom-date-picker.png') });
@@ -80,4 +83,3 @@ verify().catch((err) => {
   console.error(err);
   process.exit(1);
 });
-

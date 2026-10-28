@@ -103,7 +103,9 @@ async function verifyAllWorkflows() {
     console.log(`✓ Created onboarding task: "${task.title}"`);
 
     const toggledTask = await supabaseApi.onboarding.toggleTask(task.id, true);
-    console.log(`✓ Toggled onboarding task status: ${toggledTask.status} (Done: ${toggledTask.done})`);
+    console.log(
+      `✓ Toggled onboarding task status: ${toggledTask.status} (Done: ${toggledTask.done})`
+    );
 
     // 8. Test Workflow: Activity Logging Verification
     console.log('\n8️⃣ Testing Real Workflow: Live Activity Logs...');

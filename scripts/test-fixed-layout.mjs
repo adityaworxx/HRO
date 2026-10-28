@@ -3,7 +3,8 @@ import path from 'node:path';
 import fs from 'node:fs';
 
 const outDir = path.resolve('screenshots');
-const artifactDir = 'C:\\Users\\adity\\.gemini\\antigravity\\brain\\4445bf77-ea56-4237-9627-e3f6a9dd188c\\screenshots';
+const artifactDir =
+  'C:\\Users\\adity\\.gemini\\antigravity\\brain\\4445bf77-ea56-4237-9627-e3f6a9dd188c\\screenshots';
 
 fs.mkdirSync(outDir, { recursive: true });
 fs.mkdirSync(artifactDir, { recursive: true });
@@ -32,7 +33,9 @@ async function main() {
   console.log('Topbar box before scroll:', topbarBoxBefore);
 
   // Deep scroll main container
-  await main1.evaluate((el) => { el.scrollTop = 1200; });
+  await main1.evaluate((el) => {
+    el.scrollTop = 1200;
+  });
   await page1.waitForTimeout(400);
 
   const sidebarBoxAfter = await sidebar1.boundingBox();
@@ -66,7 +69,9 @@ async function main() {
   });
   await page2.goto('http://localhost:3000/', { waitUntil: 'networkidle' });
   // Set zoom to 1.0
-  await page2.evaluate(() => { document.documentElement.style.zoom = '1.0'; });
+  await page2.evaluate(() => {
+    document.documentElement.style.zoom = '1.0';
+  });
   await page2.waitForTimeout(400);
 
   const sidebar2 = page2.locator('aside.lg\\:flex');
@@ -76,7 +81,9 @@ async function main() {
   const sBoxBefore100 = await sidebar2.boundingBox();
   const tBoxBefore100 = await topbar2.boundingBox();
 
-  await main2.evaluate((el) => { el.scrollTop = 1200; });
+  await main2.evaluate((el) => {
+    el.scrollTop = 1200;
+  });
   await page2.waitForTimeout(400);
 
   const sBoxAfter100 = await sidebar2.boundingBox();
@@ -108,7 +115,9 @@ async function main() {
   const mobileTopbarBefore = await mobileTopbar.boundingBox();
 
   // Scroll mobile main
-  await page3.locator('main#main-content').evaluate((el) => { el.scrollTop = 800; });
+  await page3.locator('main#main-content').evaluate((el) => {
+    el.scrollTop = 800;
+  });
   await page3.waitForTimeout(300);
 
   const mobileTopbarAfter = await mobileTopbar.boundingBox();
@@ -143,7 +152,9 @@ async function main() {
   await page4.goto('http://localhost:3000/', { waitUntil: 'networkidle' });
   await page4.waitForTimeout(500);
 
-  await page4.locator('main#main-content').evaluate((el) => { el.scrollTop = 1000; });
+  await page4.locator('main#main-content').evaluate((el) => {
+    el.scrollTop = 1000;
+  });
   await page4.waitForTimeout(300);
 
   const tabletLocal = path.join(outDir, 'fixed-layout-tablet-landscape.png');
@@ -161,4 +172,3 @@ main().catch((err) => {
   console.error(err);
   process.exit(1);
 });
-

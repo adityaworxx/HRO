@@ -3,6 +3,7 @@
 > **Welcome!** HRO ek modern, high-performance Recruitment & Onboarding Operations Platform hai jisme **Next.js 16 (App Router)** frontend aur **Supabase (PostgreSQL Database)** backend live connected hai.
 >
 > Is document me aap seekhenge ki:
+>
 > 1. Complete hiring workflow kaise chalta hai aur use browser me kaise check/test karna hai.
 > 2. Automated test scripts se backend workflows kaise verify karne hain.
 > 3. Is codebase par naye features, APIs ya UI components kaise add karne hain.
@@ -10,6 +11,7 @@
 ---
 
 ## 📑 Table of Contents
+
 1. [Architecture & Backend Overview](#-architecture--backend-overview)
 2. [Quick Start (Local Setup)](#-quick-start-local-setup)
 3. [Complete End-to-End Hiring Workflow](#-complete-end-to-end-hiring-workflow)
@@ -47,21 +49,24 @@ flowchart TD
     SupabaseClient --> DB
 ```
 
-* **Frontend**: Next.js 16.4 (Turbopack), Tailwind CSS v4, Radix UI primitives, Lucide Icons, Sonner toasts.
-* **State Management**: TanStack React Query v5 (server data cache & optimistic mutations) + Zustand v5 (UI state: current persona role, theme, mobile sidebar drawer).
-* **Backend**: Supabase Cloud PostgreSQL with real-time query support.
-* **Security & Auth**: Dual-persona role switcher (`HR Lead: Priya Sharma` vs `Hiring Manager: Arjun Kapoor`) with role-scoped navigation and actions.
+- **Frontend**: Next.js 16.4 (Turbopack), Tailwind CSS v4, Radix UI primitives, Lucide Icons, Sonner toasts.
+- **State Management**: TanStack React Query v5 (server data cache & optimistic mutations) + Zustand v5 (UI state: current persona role, theme, mobile sidebar drawer).
+- **Backend**: Supabase Cloud PostgreSQL with real-time query support.
+- **Security & Auth**: Dual-persona role switcher (`HR Lead: Priya Sharma` vs `Hiring Manager: Arjun Kapoor`) with role-scoped navigation and actions.
 
 ---
 
 ## ⚡ Quick Start (Local Setup)
 
 ### 1. Prerequisites
+
 - **Node.js**: v20 or higher
 - **Package Manager**: `pnpm` (v9 or v10)
 
 ### 2. Environment Configuration
+
 Project ke root me `.env.local` file already configured hai:
+
 ```env
 NEXT_PUBLIC_DATA_SOURCE=supabase
 NEXT_PUBLIC_SUPABASE_URL=https://ijcesduxnbgxjcteejbk.supabase.co
@@ -70,10 +75,13 @@ NEXT_PUBLIC_API_URL=http://localhost:3000/api
 ```
 
 ### 3. Run Development Server
+
 Terminal me command run karein:
+
 ```bash
 pnpm dev
 ```
+
 Browser me open karein: **[http://localhost:3000](http://localhost:3000)**
 
 ---
@@ -110,6 +118,7 @@ HRO ka complete recruitment funnel 7 seamless stages me divide kiya gaya hai:
 ```
 
 ### Stage Details:
+
 1. **Requisition / Opening**:
    - HR ya Manager `/openings/new` par jaakar nayi vacancy create karta hai (Title, Department, Headcount, Budget ₹ LPA, Experience, Skills).
    - Opening live status `Open` ya `Sourcing` me chali jaati hai.
@@ -145,51 +154,58 @@ HRO ka complete recruitment funnel 7 seamless stages me divide kiya gaya hai:
 Browser me **http://localhost:3000** open karke step-by-step test karein:
 
 #### Step 1: Persona Switch Karein (HR vs Manager)
-* Bottom-left sidebar me **"Demo Role"** button (ya topbar profile dropdown) par click karein.
-* **HR View**: Aapko complete pipeline, candidates directory, onboarding dashboard, aur reports dikhenge.
-* **Manager View**: Requisitions, review queue (`Awaiting Your Review`), scheduled technical interviews aur scorecards dikhenge.
+
+- Bottom-left sidebar me **"Demo Role"** button (ya topbar profile dropdown) par click karein.
+- **HR View**: Aapko complete pipeline, candidates directory, onboarding dashboard, aur reports dikhenge.
+- **Manager View**: Requisitions, review queue (`Awaiting Your Review`), scheduled technical interviews aur scorecards dikhenge.
 
 #### Step 2: Nayi Job Opening Create Karein
+
 1. Left sidebar se **All Openings** (`/openings`) par jayein.
 2. Top-right me **"+ New Opening"** button click karein.
 3. Form fill karein:
-   - Position Title: *Senior Fullstack Architect*
-   - Department: *Engineering*
-   - Location: *Bengaluru, India*
-   - Headcount: *2*
-   - Budget: *₹30 - 45 LPA*
+   - Position Title: _Senior Fullstack Architect_
+   - Department: _Engineering_
+   - Location: _Bengaluru, India_
+   - Headcount: _2_
+   - Budget: _₹30 - 45 LPA_
 4. **"Create Requisition"** submit karein. Toast notification aayegi aur Supabase me record create ho jayega.
 
 #### Step 3: Candidates Directory & Profile Sheet Check Karein
+
 1. Sidebar se **Candidates** (`/candidates`) open karein.
 2. Quick stage filter tabs (`All Applicants`, `Sourced`, `Interview`, `Joined`) click karein.
 3. Kisi bhi row me **"Review"** button click karein — right side se **Candidate Detail Drawer** khul jayega.
 4. Drawer me candidate ka email, phone, notice period, HR screening notes aur available next stages dikhenge.
 
 #### Step 4: Kanban Pipeline Board Drag & Drop Test Karein
+
 1. Sidebar se **Pipeline** (`/pipeline`) open karein.
 2. Candidate card ko pakad kar drag karein:
-   - *Example*: `Sourced` column se utha kar `Shared with Manager` me drop karein.
+   - _Example_: `Sourced` column se utha kar `Shared with Manager` me drop karein.
    - Status live Supabase me update ho jayega aur confirmation toast appear hoga.
-   - *(Note: Workflow rules ke anusar direct invalid stage transition allowed nahi hoti, e.g., Sourced se direct Joined nahi ja sakta).*
+   - _(Note: Workflow rules ke anusar direct invalid stage transition allowed nahi hoti, e.g., Sourced se direct Joined nahi ja sakta)._
 
 #### Step 5: Technical Interview Schedule & Outcome
+
 1. Sidebar se **Interviews** (`/interviews`) open karein (Manager persona me).
 2. Candidate card par **"Set Slot"** click karein.
-3. Date & Time pick karein, format (*Google Meet / Video*) select karein aur Save karein.
+3. Date & Time pick karein, format (_Google Meet / Video_) select karein aur Save karein.
 4. Interview complete hone par **"Record Outcome"** click karein, evaluation notes daalein aur **"Select & Advance"** dabayein.
 
 #### Step 6: Onboarding Checklist Check Karein
+
 1. Sidebar se **Onboarding** (`/onboarding`) open karein.
 2. View tabs switch karein:
    - **By New Hire**: Candidate-wise card view with progress bars.
-   - **By Phase**: *Before joining*, *Day 1*, aur *First 30 days* timeline cards.
+   - **By Phase**: _Before joining_, _Day 1_, aur _First 30 days_ timeline cards.
    - **All Tasks**: Filterable checklist table.
 3. Naye hire ke row me **"Setup Standard Checklist"** click karein.
 4. Kisi bhi task ke checkbox par click karein — wo turant line-through hokar complete mark hoga aur progress bar 0% se 100% update hogi.
 5. Top bar me **"+ Add Checklist Item"** click karke custom task bhi add kar sakte hain.
 
 #### Step 7: Analytics Reports & Live Notifications
+
 1. Sidebar se **Reports** (`/reports`) open karein. Conversion funnel, monthly velocity graph aur department allocation check karein.
 2. Topbar me **Bell icon** click karke live notifications check karein.
 
@@ -204,6 +220,7 @@ npx tsx scripts/verify-supabase-workflows.ts
 ```
 
 Yeh script automated tarike se:
+
 1. Supabase ke table records fetch karta hai.
 2. Ek real Job Opening create karta hai.
 3. Ek naya Candidate link karta hai.
@@ -218,6 +235,7 @@ Yeh script automated tarike se:
 ## 🛠️ Developer Guide: How to Work on This Codebase
 
 ### Project Structure
+
 ```
 hro/
 ├── app/                          # Next.js 16 App Router
@@ -286,21 +304,23 @@ Jab bhi aap koi UI component banate ya update karte hain, data flow is pattern k
 Aap project ko bina internet ya bina database ke offline mode me bhi run kar sakte hain:
 
 File: `.env.local`
-* **Real Supabase Database (Default)**:
+
+- **Real Supabase Database (Default)**:
   ```env
   NEXT_PUBLIC_DATA_SOURCE=supabase
   ```
-* **Offline Mock Store (In-Memory)**:
+- **Offline Mock Store (In-Memory)**:
   ```env
   NEXT_PUBLIC_DATA_SOURCE=mock
   ```
+
 Kisi bhi waqt toggle karke dev server restart karein (`pnpm dev`).
 
 ---
 
 ### Adding a New Feature / Mutation
 
-Agar aapko koi naya action add karna ho (jaise: *Candidate ko offer letter email send karna*):
+Agar aapko koi naya action add karna ho (jaise: _Candidate ko offer letter email send karna_):
 
 1. **Step 1: Interface Update** (`services/api/index.ts`)
    `HroApiClient['candidates']` me naya method declare karein:
@@ -351,14 +371,14 @@ Agar aapko koi naya action add karna ho (jaise: *Candidate ko offer letter email
 
 Supabase PostgreSQL me following core tables hain:
 
-| Table Name | Primary Key | Key Columns | Purpose |
-| :--- | :--- | :--- | :--- |
-| `openings` | `id` (UUID) | `title`, `department`, `location`, `headcount`, `budget_min`, `budget_max`, `status`, `manager_id` | Job requisitions |
-| `candidates` | `id` (UUID) | `opening_id`, `name`, `email`, `phone`, `current_role`, `experience_years`, `expected_ctc`, `stage`, `manager_decision`, `interview_date`, `interview_outcome` | Applicants & interview pipeline |
-| `onboarding_tasks` | `id` (UUID) | `candidate_id`, `title`, `owner` (HR/Manager), `phase`, `due_date`, `done`, `status` | Onboarding roadmaps |
-| `activity_logs` | `id` (UUID) | `entity_type`, `entity_id`, `actor`, `message`, `timestamp` | Audit trails & activity timeline |
-| `notifications` | `id` (UUID) | `recipient_role`, `title`, `message`, `read`, `link`, `timestamp` | User alerts & notifications |
-| `users` | `id` (UUID) | `name`, `role`, `department`, `avatar_initials` | System personas |
+| Table Name         | Primary Key | Key Columns                                                                                                                                                    | Purpose                          |
+| :----------------- | :---------- | :------------------------------------------------------------------------------------------------------------------------------------------------------------- | :------------------------------- |
+| `openings`         | `id` (UUID) | `title`, `department`, `location`, `headcount`, `budget_min`, `budget_max`, `status`, `manager_id`                                                             | Job requisitions                 |
+| `candidates`       | `id` (UUID) | `opening_id`, `name`, `email`, `phone`, `current_role`, `experience_years`, `expected_ctc`, `stage`, `manager_decision`, `interview_date`, `interview_outcome` | Applicants & interview pipeline  |
+| `onboarding_tasks` | `id` (UUID) | `candidate_id`, `title`, `owner` (HR/Manager), `phase`, `due_date`, `done`, `status`                                                                           | Onboarding roadmaps              |
+| `activity_logs`    | `id` (UUID) | `entity_type`, `entity_id`, `actor`, `message`, `timestamp`                                                                                                    | Audit trails & activity timeline |
+| `notifications`    | `id` (UUID) | `recipient_role`, `title`, `message`, `read`, `link`, `timestamp`                                                                                              | User alerts & notifications      |
+| `users`            | `id` (UUID) | `name`, `role`, `department`, `avatar_initials`                                                                                                                | System personas                  |
 
 > Complete schema and seed generation script: [`scripts/export-supabase-sql.ts`](file:///c:/Users/adity/OneDrive/Desktop/hro/scripts/export-supabase-sql.ts).
 
@@ -366,16 +386,16 @@ Supabase PostgreSQL me following core tables hain:
 
 ## 🚀 Commands Cheat Sheet
 
-| Command | Description |
-| :--- | :--- |
-| `pnpm dev` | Start Next.js development server at `http://localhost:3000` |
-| `npx tsx scripts/verify-supabase-workflows.ts` | Run automated end-to-end backend workflow test on live Supabase |
-| `pnpm test` | Run Vitest unit tests (domain rules, SLA calculations) |
-| `pnpm build` | Production compile & static page generation |
-| `pnpm typecheck` | Run TypeScript strict compiler check (`tsc --noEmit`) |
-| `pnpm lint` | Run Next.js ESLint rules |
-| `pnpm verify` | Full verification pipeline (format + lint + typecheck + test + build) |
+| Command                                        | Description                                                           |
+| :--------------------------------------------- | :-------------------------------------------------------------------- |
+| `pnpm dev`                                     | Start Next.js development server at `http://localhost:3000`           |
+| `npx tsx scripts/verify-supabase-workflows.ts` | Run automated end-to-end backend workflow test on live Supabase       |
+| `pnpm test`                                    | Run Vitest unit tests (domain rules, SLA calculations)                |
+| `pnpm build`                                   | Production compile & static page generation                           |
+| `pnpm typecheck`                               | Run TypeScript strict compiler check (`tsc --noEmit`)                 |
+| `pnpm lint`                                    | Run Next.js ESLint rules                                              |
+| `pnpm verify`                                  | Full verification pipeline (format + lint + typecheck + test + build) |
 
 ---
-*Documented with ❤️ for HRO Engineering Team.*
 
+_Documented with ❤️ for HRO Engineering Team._

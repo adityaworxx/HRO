@@ -16,14 +16,9 @@ export const PopoverContent = React.forwardRef<
       ref={ref}
       align={align}
       sideOffset={sideOffset}
-      className={cn(
-        OVERLAY_PANEL_CLASS,
-        'z-50 w-72 p-2 outline-none',
-        className
-      )}
+      className={cn(OVERLAY_PANEL_CLASS, 'z-50 w-72 p-2 outline-none', className)}
       {...props}
     />
   </PopoverPrimitive.Portal>
 ));
 PopoverContent.displayName = PopoverPrimitive.Content.displayName;
-

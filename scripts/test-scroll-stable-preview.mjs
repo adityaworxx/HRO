@@ -1,7 +1,8 @@
 import { chromium } from '@playwright/test';
 import path from 'node:path';
 
-const screenshotDir = 'C:/Users/adity/.gemini/antigravity/brain/4445bf77-ea56-4237-9627-e3f6a9dd188c/screenshots';
+const screenshotDir =
+  'C:/Users/adity/.gemini/antigravity/brain/4445bf77-ea56-4237-9627-e3f6a9dd188c/screenshots';
 
 async function testScrollStable() {
   const browser = await chromium.launch({ channel: 'chrome' });
@@ -31,7 +32,10 @@ async function testScrollStable() {
   await page.waitForTimeout(400);
 
   // Get preview bounding box after scroll
-  const previewBoxAfterScroll = await page.locator('text=Directory Live Preview').first().boundingBox();
+  const previewBoxAfterScroll = await page
+    .locator('text=Directory Live Preview')
+    .first()
+    .boundingBox();
   console.log('Preview Box After Scroll:', previewBoxAfterScroll);
 
   const diffY = Math.abs((previewBoxAfterScroll?.y || 0) - (previewBoxInitial?.y || 0));
@@ -53,4 +57,3 @@ testScrollStable().catch((err) => {
   console.error(err);
   process.exit(1);
 });
-

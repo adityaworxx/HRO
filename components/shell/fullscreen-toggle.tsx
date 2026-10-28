@@ -23,9 +23,9 @@ function getFullscreenSnapshot(): boolean {
 
   return Boolean(
     document.fullscreenElement ||
-      doc.webkitFullscreenElement ||
-      doc.mozFullScreenElement ||
-      doc.msFullscreenElement
+    doc.webkitFullscreenElement ||
+    doc.mozFullScreenElement ||
+    doc.msFullscreenElement
   );
 }
 
@@ -65,9 +65,9 @@ export function FullscreenToggle({ className }: { className?: string }) {
 
       const isCurrentlyFullscreen = Boolean(
         document.fullscreenElement ||
-          doc.webkitFullscreenElement ||
-          doc.mozFullScreenElement ||
-          doc.msFullscreenElement
+        doc.webkitFullscreenElement ||
+        doc.mozFullScreenElement ||
+        doc.msFullscreenElement
       );
 
       if (!isCurrentlyFullscreen) {
@@ -126,10 +126,7 @@ export function FullscreenToggle({ className }: { className?: string }) {
       ) : (
         <Maximize className="h-4 w-4 stroke-[1.75]" />
       )}
-      <span className="sr-only">
-        {isFullscreen ? 'Exit full screen' : 'Enter full screen'}
-      </span>
+      <span className="sr-only">{isFullscreen ? 'Exit full screen' : 'Enter full screen'}</span>
     </Button>
   );
 }
-

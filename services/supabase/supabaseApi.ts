@@ -397,7 +397,11 @@ export const supabaseApi: HroApiClient = {
       if (error) throw error;
       const created = mapCandidate(data as CandidateRow);
 
-      await recordActivity('candidate', created.id, `Candidate "${created.name}" added to pipeline`);
+      await recordActivity(
+        'candidate',
+        created.id,
+        `Candidate "${created.name}" added to pipeline`
+      );
       return created;
     },
 
@@ -444,7 +448,9 @@ export const supabaseApi: HroApiClient = {
         const names = updated.map((c) => c.name).join(', ');
         await createNotification(
           'manager',
-          updated.length === 1 ? 'Candidate Shared for Review' : `${updated.length} Candidates Shared for Review`,
+          updated.length === 1
+            ? 'Candidate Shared for Review'
+            : `${updated.length} Candidates Shared for Review`,
           `HR shared ${names} for technical evaluation.`,
           '/shortlist'
         );
@@ -501,7 +507,11 @@ export const supabaseApi: HroApiClient = {
 
       if (error) throw error;
       const updated = mapCandidate(data as CandidateRow);
-      await recordActivity('candidate', id, `Interview scheduled for ${new Date(date).toLocaleDateString()} (${mode})`);
+      await recordActivity(
+        'candidate',
+        id,
+        `Interview scheduled for ${new Date(date).toLocaleDateString()} (${mode})`
+      );
 
       await createNotification(
         'manager',
@@ -545,9 +555,7 @@ export const supabaseApi: HroApiClient = {
           .eq('id', id)
           .maybeSingle();
 
-        combinedNotes = existing?.hr_notes
-          ? `${notes}\n\n${existing.hr_notes}`
-          : notes;
+        combinedNotes = existing?.hr_notes ? `${notes}\n\n${existing.hr_notes}` : notes;
       }
 
       const updatePayload: Record<string, unknown> = {
@@ -568,7 +576,11 @@ export const supabaseApi: HroApiClient = {
 
       if (error) throw error;
       const updated = mapCandidate(data as CandidateRow);
-      await recordActivity('candidate', id, `Candidate assigned to opening and moved to "${stage}"`);
+      await recordActivity(
+        'candidate',
+        id,
+        `Candidate assigned to opening and moved to "${stage}"`
+      );
 
       if (stage === 'Shared with Manager') {
         await createNotification(
@@ -636,7 +648,11 @@ export const supabaseApi: HroApiClient = {
       const { data, error } = await supabase.from('onboarding_items').insert(row).select().single();
       if (error) throw error;
       const created = mapOnboarding(data as OnboardingRow);
-      await recordActivity('onboarding', created.candidateId, `Created onboarding task "${created.title}"`);
+      await recordActivity(
+        'onboarding',
+        created.candidateId,
+        `Created onboarding task "${created.title}"`
+      );
       return created;
     },
   },
@@ -742,4 +758,3 @@ export const supabaseApi: HroApiClient = {
     },
   },
 };
-

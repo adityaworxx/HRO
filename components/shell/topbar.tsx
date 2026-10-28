@@ -31,7 +31,7 @@ export function Topbar() {
         </Button>
 
         {/* Mobile Logo Brand */}
-        <Link href="/" className="flex items-center gap-2 lg:hidden shrink-0">
+        <Link href="/" className="flex shrink-0 items-center gap-2 lg:hidden">
           <div className="bg-accent flex h-7 w-7 items-center justify-center rounded-[var(--radius-sm)] text-xs font-bold text-white shadow-xs">
             H
           </div>
@@ -39,7 +39,7 @@ export function Topbar() {
         </Link>
 
         {/* Left-Aligned Page Title across dashboards & pages (Desktop only, avoiding mixing with HRO on mobile) */}
-        <div className="hidden lg:flex min-w-0 items-center">
+        <div className="hidden min-w-0 items-center lg:flex">
           <React.Suspense fallback={null}>
             <Breadcrumbs />
           </React.Suspense>

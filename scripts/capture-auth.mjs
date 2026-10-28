@@ -1,7 +1,8 @@
 import { chromium } from '@playwright/test';
 import path from 'node:path';
 
-const artifactDir = 'C:\\Users\\adity\\.gemini\\antigravity\\brain\\abccb2a8-a80b-4f8d-b383-071a2318056f';
+const artifactDir =
+  'C:\\Users\\adity\\.gemini\\antigravity\\brain\\abccb2a8-a80b-4f8d-b383-071a2318056f';
 
 async function main() {
   const browser = await chromium.launch({ channel: 'msedge' });
@@ -12,22 +13,28 @@ async function main() {
         viewport: { width: 1440, height: 900 },
       });
 
-      await page.addInitScript(({ currentTheme }) => {
-        localStorage.setItem('theme', currentTheme);
-      }, { currentTheme: theme });
+      await page.addInitScript(
+        ({ currentTheme }) => {
+          localStorage.setItem('theme', currentTheme);
+        },
+        { currentTheme: theme }
+      );
 
       await page.goto(`http://localhost:3000/${pageType}`, { waitUntil: 'networkidle' });
 
-      await page.evaluate(({ currentTheme }) => {
-        document.documentElement.setAttribute('data-theme', currentTheme);
-        if (currentTheme === 'dark') {
-          document.documentElement.classList.add('dark');
-          document.documentElement.classList.remove('light');
-        } else {
-          document.documentElement.classList.add('light');
-          document.documentElement.classList.remove('dark');
-        }
-      }, { currentTheme: theme });
+      await page.evaluate(
+        ({ currentTheme }) => {
+          document.documentElement.setAttribute('data-theme', currentTheme);
+          if (currentTheme === 'dark') {
+            document.documentElement.classList.add('dark');
+            document.documentElement.classList.remove('light');
+          } else {
+            document.documentElement.classList.add('light');
+            document.documentElement.classList.remove('dark');
+          }
+        },
+        { currentTheme: theme }
+      );
 
       await page.waitForTimeout(800);
 
@@ -46,4 +53,3 @@ main().catch((err) => {
   console.error(err);
   process.exit(1);
 });
-

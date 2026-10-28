@@ -56,11 +56,11 @@ export function CandidatesTable() {
         c.currentRole.toLowerCase().includes(query) ||
         c.currentCompany.toLowerCase().includes(query) ||
         (c.noticePeriod && c.noticePeriod.toLowerCase().includes(query)) ||
-        (opening && (
-          opening.title.toLowerCase().includes(query) ||
-          opening.department.toLowerCase().includes(query) ||
-          (opening.mustHaveSkills && opening.mustHaveSkills.some((s) => s.toLowerCase().includes(query)))
-        ));
+        (opening &&
+          (opening.title.toLowerCase().includes(query) ||
+            opening.department.toLowerCase().includes(query) ||
+            (opening.mustHaveSkills &&
+              opening.mustHaveSkills.some((s) => s.toLowerCase().includes(query)))));
 
       return matchesStage && matchesSource && matchesDept && matchesSearch;
     });
@@ -87,17 +87,13 @@ export function CandidatesTable() {
         cell: ({ row }) => {
           const candidate = row.original;
           return (
-            <div className="flex items-center gap-2.5 min-w-[160px] max-w-[210px]">
-              <Avatar className="h-7 w-7 shrink-0 border border-border/80 bg-surface-3 shadow-2xs">
-                <AvatarFallback className="text-[10px] font-semibold text-text bg-surface-3 tracking-wide">
-                  {candidate.name.slice(0, 2).toUpperCase()}
-                </AvatarFallback>
-              </Avatar>
+            <div className="flex max-w-[210px] min-w-[160px] items-center gap-2.5">
+              <CandidateAvatar name={candidate.name} candidateId={candidate.id} size="sm" />
               <div className="min-w-0">
-                <span className="text-text hover:text-text text-[13px] font-semibold tracking-tight transition-colors block truncate cursor-pointer">
+                <span className="text-text hover:text-text block cursor-pointer truncate text-[13px] font-semibold tracking-tight transition-colors">
                   {candidate.name}
                 </span>
-                <span className="text-text-muted text-[11px] block truncate font-normal">
+                <span className="text-text-muted block truncate text-[11px] font-normal">
                   {candidate.email}
                 </span>
               </div>
@@ -111,12 +107,15 @@ export function CandidatesTable() {
         cell: ({ row }) => {
           const c = row.original;
           return (
-            <div className="space-y-0.5 min-w-[170px] max-w-[220px]">
-              <span className="text-text font-medium text-[13px] block truncate">
+            <div className="max-w-[220px] min-w-[170px] space-y-0.5">
+              <span className="text-text block truncate text-[13px] font-medium">
                 {c.currentRole}
               </span>
-              <span className="text-text-muted text-[12px] font-medium flex items-center gap-1.5 truncate mt-0.5">
-                <CompanyLogo company={c.currentCompany} className="h-3.5 w-3.5 rounded-[3px] shrink-0 shadow-2xs" />
+              <span className="text-text-muted mt-0.5 flex items-center gap-1.5 truncate text-[12px] font-medium">
+                <CompanyLogo
+                  company={c.currentCompany}
+                  className="h-3.5 w-3.5 shrink-0 rounded-[3px] shadow-2xs"
+                />
                 <span className="truncate">{c.currentCompany}</span>
               </span>
             </div>
@@ -127,7 +126,7 @@ export function CandidatesTable() {
         accessorKey: 'experienceYears',
         header: 'Experience',
         cell: ({ row }) => (
-          <span className="text-text font-mono text-[13px] font-bold tabular-nums whitespace-nowrap">
+          <span className="text-text font-mono text-[13px] font-bold whitespace-nowrap tabular-nums">
             {row.original.experienceYears} yrs
           </span>
         ),
@@ -136,7 +135,7 @@ export function CandidatesTable() {
         accessorKey: 'expectedCtc',
         header: 'Expected CTC',
         cell: ({ row }) => (
-          <span className="text-text font-mono font-medium text-[13px] tabular-nums whitespace-nowrap">
+          <span className="text-text font-mono text-[13px] font-medium whitespace-nowrap tabular-nums">
             {formatCtc(row.original.expectedCtc)}
           </span>
         ),
@@ -166,7 +165,7 @@ export function CandidatesTable() {
       },
       {
         id: 'actions',
-        header: () => <div className="text-right whitespace-nowrap pr-2">Action</div>,
+        header: () => <div className="pr-2 text-right whitespace-nowrap">Action</div>,
         cell: ({ row }) => {
           const candidate = row.original;
 
@@ -179,7 +178,7 @@ export function CandidatesTable() {
                   setActiveCandidate(candidate);
                   setSheetOpen(true);
                 }}
-                className="h-7 px-2.5 text-[12px] font-medium text-accent hover:text-accent hover:bg-accent/10 rounded-[6px] transition-colors whitespace-nowrap"
+                className="text-accent hover:text-accent hover:bg-accent/10 h-7 rounded-[6px] px-2.5 text-[12px] font-medium whitespace-nowrap transition-colors"
               >
                 <span>Review</span>
               </Button>
@@ -192,11 +191,11 @@ export function CandidatesTable() {
   );
 
   return (
-    <div className="space-y-3.5 -mt-1">
+    <div className="-mt-1 space-y-3.5">
       {/* 1. Header Toolbar: All in ONE Single Line like Openings */}
       <div className="flex items-center justify-between gap-2">
         {/* Left: Quick Stage Tabs */}
-        <div className="flex items-center gap-1 overflow-x-auto no-scrollbar min-w-0">
+        <div className="no-scrollbar flex min-w-0 items-center gap-1 overflow-x-auto">
           {[
             { id: 'all', label: 'All Applicants' },
             { id: 'Sourced', label: 'Sourced' },
@@ -216,7 +215,7 @@ export function CandidatesTable() {
               <button
                 key={tab.id}
                 onClick={() => setSelectedStage(tab.id)}
-                className={`inline-flex items-center gap-1.5 rounded-[var(--radius-sm)] px-2.5 py-1 text-[12px] font-medium whitespace-nowrap transition-colors shrink-0 ${
+                className={`inline-flex shrink-0 items-center gap-1.5 rounded-[var(--radius-sm)] px-2.5 py-1 text-[12px] font-medium whitespace-nowrap transition-colors ${
                   isSelected
                     ? 'bg-accent text-white shadow-xs'
                     : 'bg-surface-2 text-text-muted hover:bg-surface-3 hover:text-text'
@@ -236,7 +235,7 @@ export function CandidatesTable() {
         </div>
 
         {/* Right Controls: Search + Department + Source + View Mode Toggle */}
-        <div className="flex items-center gap-1.5 sm:gap-2 shrink-0">
+        <div className="flex shrink-0 items-center gap-1.5 sm:gap-2">
           <div className="relative w-[130px] sm:w-[150px] lg:w-[170px]">
             <Search className="text-text-subtle pointer-events-none absolute top-1/2 left-2.5 h-3.5 w-3.5 -translate-y-1/2" />
             <Input
@@ -245,17 +244,14 @@ export function CandidatesTable() {
               onChange={(e) => setSearchQuery(e.target.value)}
               placeholder="Search..."
               aria-label="Search candidates"
-              className="bg-surface-1 border-border/80 focus:border-border-strong h-8 w-full pl-8 pr-2 text-[12px]"
+              className="bg-surface-1 border-border/80 focus:border-border-strong h-8 w-full pr-2 pl-8 text-[12px]"
             />
           </div>
 
           {/* Department Filter */}
           {departments.length > 0 && (
-            <Select
-              value={selectedDepartment}
-              onValueChange={(val) => setSelectedDepartment(val)}
-            >
-              <SelectTrigger className="border-border/80 bg-surface-1 hover:bg-surface-2 text-text h-8 w-auto min-w-[105px] sm:min-w-[120px] gap-1 rounded-[var(--radius-sm)] px-2 text-[11.5px] font-medium">
+            <Select value={selectedDepartment} onValueChange={(val) => setSelectedDepartment(val)}>
+              <SelectTrigger className="border-border/80 bg-surface-1 hover:bg-surface-2 text-text h-8 w-auto min-w-[105px] gap-1 rounded-[var(--radius-sm)] px-2 text-[11.5px] font-medium sm:min-w-[120px]">
                 <SelectValue placeholder="All Departments" />
               </SelectTrigger>
               <SelectContent align="end" className="min-w-[160px]">
@@ -278,7 +274,7 @@ export function CandidatesTable() {
           {/* Source Filter */}
           {sources.length > 0 && (
             <Select value={selectedSource} onValueChange={(val) => setSelectedSource(val)}>
-              <SelectTrigger className="border-border/80 bg-surface-1 hover:bg-surface-2 text-text h-8 w-auto min-w-[95px] sm:min-w-[105px] gap-1 rounded-[var(--radius-sm)] px-2 text-[11.5px] font-medium">
+              <SelectTrigger className="border-border/80 bg-surface-1 hover:bg-surface-2 text-text h-8 w-auto min-w-[95px] gap-1 rounded-[var(--radius-sm)] px-2 text-[11.5px] font-medium sm:min-w-[105px]">
                 <SelectValue placeholder="All Sources" />
               </SelectTrigger>
               <SelectContent align="end" className="min-w-[150px]">
@@ -299,12 +295,12 @@ export function CandidatesTable() {
           )}
 
           {/* View Mode Toggle: Cards vs Table */}
-          <div className="flex items-center rounded-[var(--radius-sm)] border border-border/80 bg-surface-1 p-0.5 shrink-0">
+          <div className="border-border/80 bg-surface-1 flex shrink-0 items-center rounded-[var(--radius-sm)] border p-0.5">
             <button
               type="button"
               onClick={() => setViewMode('columns')}
               className={cn(
-                'flex items-center gap-1 px-2 py-1 text-[11.5px] font-medium rounded-[4px] transition-colors cursor-pointer',
+                'flex cursor-pointer items-center gap-1 rounded-[4px] px-2 py-1 text-[11.5px] font-medium transition-colors',
                 viewMode === 'columns'
                   ? 'bg-surface-3 text-text shadow-2xs'
                   : 'text-text-muted hover:text-text'
@@ -318,7 +314,7 @@ export function CandidatesTable() {
               type="button"
               onClick={() => setViewMode('table')}
               className={cn(
-                'flex items-center gap-1 px-2 py-1 text-[11.5px] font-medium rounded-[4px] transition-colors cursor-pointer',
+                'flex cursor-pointer items-center gap-1 rounded-[4px] px-2 py-1 text-[11.5px] font-medium transition-colors',
                 viewMode === 'table'
                   ? 'bg-surface-3 text-text shadow-2xs'
                   : 'text-text-muted hover:text-text'
@@ -338,7 +334,7 @@ export function CandidatesTable() {
           {[1, 2].map((group) => (
             <div key={group} className="space-y-3">
               <Skeleton className="h-7 w-48 rounded-[6px]" />
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
+              <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-4">
                 <Skeleton className="h-32 w-full rounded-[10px]" />
                 <Skeleton className="h-32 w-full rounded-[10px]" />
                 <Skeleton className="h-32 w-full rounded-[10px]" />

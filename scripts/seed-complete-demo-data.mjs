@@ -5,7 +5,9 @@ async function main() {
   const t0 = Date.now();
   await resetSupabaseDemoData();
   const sourced = DEMO_CANDIDATES.filter((c) => c.stage === 'Sourced');
-  console.log(`✓ Seeded ${DEMO_OPENINGS.length} Openings, ${DEMO_CANDIDATES.length} Candidates (${sourced.length} in Sourced) in ${Date.now() - t0}ms`);
+  console.log(
+    `✓ Seeded ${DEMO_OPENINGS.length} Openings, ${DEMO_CANDIDATES.length} Candidates (${sourced.length} in Sourced) in ${Date.now() - t0}ms`
+  );
 }
 
 main().catch((err) => {

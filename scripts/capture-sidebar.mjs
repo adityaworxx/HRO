@@ -3,7 +3,8 @@ import path from 'node:path';
 import fs from 'node:fs';
 
 const outDir = path.resolve('screenshots');
-const artifactDir = 'C:\\Users\\adity\\.gemini\\antigravity\\brain\\4445bf77-ea56-4237-9627-e3f6a9dd188c\\screenshots';
+const artifactDir =
+  'C:\\Users\\adity\\.gemini\\antigravity\\brain\\4445bf77-ea56-4237-9627-e3f6a9dd188c\\screenshots';
 
 fs.mkdirSync(outDir, { recursive: true });
 fs.mkdirSync(artifactDir, { recursive: true });
@@ -31,7 +32,10 @@ async function main() {
   console.log('Saved: sidebar-expanded-dark.png');
 
   // Measure icon X position before collapse
-  const firstIconBefore = await page.locator('nav[aria-label="Main Navigation"] svg').first().boundingBox();
+  const firstIconBefore = await page
+    .locator('nav[aria-label="Main Navigation"] svg')
+    .first()
+    .boundingBox();
   console.log('First icon position before collapse:', firstIconBefore);
 
   // 2. Collapse Sidebar by clicking collapse button
@@ -40,7 +44,10 @@ async function main() {
   await page.waitForTimeout(400); // Wait for 280ms transition + buffer
 
   // Measure icon X position after collapse
-  const firstIconAfter = await page.locator('nav[aria-label="Main Navigation"] svg').first().boundingBox();
+  const firstIconAfter = await page
+    .locator('nav[aria-label="Main Navigation"] svg')
+    .first()
+    .boundingBox();
   console.log('First icon position after collapse:', firstIconAfter);
 
   const deltaX = Math.abs((firstIconBefore?.x ?? 0) - (firstIconAfter?.x ?? 0));

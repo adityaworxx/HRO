@@ -1,5 +1,12 @@
 import { generateSeedData } from '@/scripts/seed';
-import type { Opening, Candidate, OnboardingItem, ActivityEvent, User, Notification } from '@/types/entities';
+import type {
+  Opening,
+  Candidate,
+  OnboardingItem,
+  ActivityEvent,
+  User,
+  Notification,
+} from '@/types/entities';
 import { LOCAL_STORAGE_KEY } from '@/lib/constants';
 
 export interface StoreState {

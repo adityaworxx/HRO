@@ -17,7 +17,6 @@ import {
   Users,
   ChevronLeft,
   ChevronRight,
-  Sparkles,
 } from 'lucide-react';
 import type { Opening, Candidate } from '@/types/entities';
 import type { OpeningStatus } from '@/lib/domain/status-transitions';
@@ -97,7 +96,13 @@ export function OpeningColumnsView({
       return a.localeCompare(b);
     });
 
-    const deptColors = ['bg-indigo-500', 'bg-accent', 'bg-emerald-500', 'bg-cyan-500', 'bg-amber-500'];
+    const deptColors = [
+      'bg-indigo-500',
+      'bg-accent',
+      'bg-emerald-500',
+      'bg-cyan-500',
+      'bg-amber-500',
+    ];
 
     return sortedDepts.map((dept, index) => {
       const Icon = DEPARTMENT_ICONS[dept] || Building2;
@@ -113,10 +118,10 @@ export function OpeningColumnsView({
 
   if (openings.length === 0) {
     return (
-      <div className="rounded-[12px] border border-border bg-surface-1 p-12 text-center select-none">
-        <Briefcase className="h-8 w-8 text-text-subtle mx-auto mb-2 opacity-60" />
-        <h3 className="text-[14px] font-semibold text-text">No job openings found</h3>
-        <p className="text-[12px] text-text-muted mt-0.5 max-w-xs mx-auto">
+      <div className="border-border bg-surface-1 rounded-[12px] border p-12 text-center select-none">
+        <Briefcase className="text-text-subtle mx-auto mb-2 h-8 w-8 opacity-60" />
+        <h3 className="text-text text-[14px] font-semibold">No job openings found</h3>
+        <p className="text-text-muted mx-auto mt-0.5 max-w-xs text-[12px]">
           Try clearing your search or status filter.
         </p>
       </div>
@@ -126,7 +131,7 @@ export function OpeningColumnsView({
   return (
     <div className="space-y-4">
       {/* Horizontal Multi-Column Board - Exact same responsive breadth as Candidates & Pipeline */}
-      <div className="flex gap-4 overflow-x-auto pb-6 items-start pt-1 scrollbar-thin">
+      <div className="flex scrollbar-thin items-start gap-4 overflow-x-auto pt-1 pb-6">
         {columns.map((column) => {
           const ColIcon = column.icon;
 
@@ -136,42 +141,39 @@ export function OpeningColumnsView({
           const currentPage = pageByDept[column.id] || 1;
           const validPage = Math.min(Math.max(1, currentPage), Math.max(1, totalPages));
           const startIndex = (validPage - 1) * OPENINGS_PER_PAGE;
-          const visibleOpenings = column.openings.slice(
-            startIndex,
-            startIndex + OPENINGS_PER_PAGE
-          );
+          const visibleOpenings = column.openings.slice(startIndex, startIndex + OPENINGS_PER_PAGE);
 
           return (
             <div
               key={column.id}
-              className="w-[340px] xs:w-[360px] sm:w-[380px] max-w-[calc(100vw-2.5rem)] shrink-0 flex flex-col justify-between rounded-[12px] bg-surface-2/30 border border-border/70 p-3.5 space-y-2.5"
+              className="xs:w-[360px] bg-surface-2/30 border-border/70 flex w-[340px] max-w-[calc(100vw-2.5rem)] shrink-0 flex-col justify-between space-y-2.5 rounded-[12px] border p-3.5 sm:w-[380px]"
             >
               <div className="space-y-2.5">
                 {/* Column Header */}
-                <div className="flex items-center justify-between pb-2 border-b border-border/60">
-                  <div className="flex items-center gap-2 min-w-0">
+                <div className="border-border/60 flex items-center justify-between border-b pb-2">
+                  <div className="flex min-w-0 items-center gap-2">
                     {ColIcon ? (
-                      <div className="flex h-6 w-6 items-center justify-center rounded-[6px] bg-surface-3/80 text-text-muted border border-border/60 shrink-0">
+                      <div className="bg-surface-3/80 text-text-muted border-border/60 flex h-6 w-6 shrink-0 items-center justify-center rounded-[6px] border">
                         <ColIcon className="h-3.5 w-3.5" />
                       </div>
                     ) : (
-                      <span className="h-2 w-2 rounded-full bg-accent shrink-0" />
+                      <span className="bg-accent h-2 w-2 shrink-0 rounded-full" />
                     )}
-                    <h3 className="text-[13.5px] font-semibold text-text truncate">
+                    <h3 className="text-text truncate text-[13.5px] font-semibold">
                       {column.title}
                     </h3>
                   </div>
 
-                  <span className="font-mono text-[11px] font-semibold text-text-muted bg-surface-3/90 border border-border/60 px-2 py-0.5 rounded-full shrink-0 tabular-nums">
+                  <span className="text-text-muted bg-surface-3/90 border-border/60 shrink-0 rounded-full border px-2 py-0.5 font-sans text-[11px] font-semibold tabular-nums">
                     {totalOpenings}
                   </span>
                 </div>
 
                 {/* Column Cards Container: Identical layout and spacing to Candidate Cards */}
-                <div className="space-y-2 min-h-[100px]">
+                <div className="min-h-[100px] space-y-2">
                   {column.openings.length === 0 ? (
-                    <div className="rounded-[8px] border border-dashed border-border/60 p-5 text-center select-none">
-                      <p className="text-[11.5px] text-text-subtle">No roles</p>
+                    <div className="border-border/60 rounded-[8px] border border-dashed p-5 text-center select-none">
+                      <p className="text-text-subtle text-[11.5px]">No roles</p>
                     </div>
                   ) : (
                     visibleOpenings.map((opening) => {
@@ -194,7 +196,7 @@ export function OpeningColumnsView({
 
               {/* Per-Column Pagination Footer when more than 4 openings */}
               {totalPages > 1 && (
-                <div className="flex items-center justify-between pt-2.5 mt-1 border-t border-border/50 text-[11.5px] select-none">
+                <div className="border-border/50 mt-1 flex items-center justify-between border-t pt-2.5 text-[11.5px] select-none">
                   <button
                     type="button"
                     disabled={validPage <= 1}
@@ -204,14 +206,14 @@ export function OpeningColumnsView({
                         [column.id]: Math.max(1, validPage - 1),
                       }))
                     }
-                    className="h-6 w-6 inline-flex items-center justify-center rounded-[5px] border border-border/70 bg-surface-1 text-text-muted hover:text-text hover:bg-surface-2 disabled:opacity-25 disabled:cursor-not-allowed transition-colors cursor-pointer shadow-2xs"
+                    className="border-border/70 bg-surface-1 text-text-muted hover:text-text hover:bg-surface-2 inline-flex h-6 w-6 cursor-pointer items-center justify-center rounded-[5px] border shadow-2xs transition-colors disabled:cursor-not-allowed disabled:opacity-25"
                     title="Previous page"
                     aria-label="Previous page"
                   >
                     <ChevronLeft className="h-3.5 w-3.5" />
                   </button>
 
-                  <span className="font-mono text-text-muted text-[11px] font-medium">
+                  <span className="text-text-muted font-sans text-[11px] font-medium">
                     {validPage} of {totalPages}
                   </span>
 
@@ -224,7 +226,7 @@ export function OpeningColumnsView({
                         [column.id]: Math.min(totalPages, validPage + 1),
                       }))
                     }
-                    className="h-6 w-6 inline-flex items-center justify-center rounded-[5px] border border-border/70 bg-surface-1 text-text-muted hover:text-text hover:bg-surface-2 disabled:opacity-25 disabled:cursor-not-allowed transition-colors cursor-pointer shadow-2xs"
+                    className="border-border/70 bg-surface-1 text-text-muted hover:text-text hover:bg-surface-2 inline-flex h-6 w-6 cursor-pointer items-center justify-center rounded-[5px] border shadow-2xs transition-colors disabled:cursor-not-allowed disabled:opacity-25"
                     title="Next page"
                     aria-label="Next page"
                   >

@@ -112,7 +112,7 @@ export function DatePicker({
       <PopoverContent
         align="start"
         sideOffset={6}
-        className="border-border bg-surface-1 w-[280px] p-3 shadow-xl z-[100]"
+        className="border-border bg-surface-1 z-[100] w-[280px] p-3 shadow-xl"
       >
         {/* Header: Month name & navigation arrows */}
         <div className="mb-2.5 flex items-center justify-between px-1">

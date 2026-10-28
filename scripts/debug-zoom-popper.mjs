@@ -29,7 +29,9 @@ async function debugZoom() {
 
   // Check what getBoundingClientRect returns inside the page context
   const rects = await page.evaluate(() => {
-    const trigger = document.querySelector('button[aria-haspopup="listbox"], button:has-text("All Departments")');
+    const trigger = document.querySelector(
+      'button[aria-haspopup="listbox"], button:has-text("All Departments")'
+    );
     const wrap = document.querySelector('[data-radix-popper-content-wrapper]');
     return {
       triggerRect: trigger ? trigger.getBoundingClientRect() : null,
@@ -44,4 +46,3 @@ async function debugZoom() {
 }
 
 debugZoom();
-

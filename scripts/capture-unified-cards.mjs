@@ -60,7 +60,7 @@ async function run() {
   await page.waitForTimeout(1500);
   // Switch to Columns/Cards view if not active
   const cardsBtn = page.locator('button', { hasText: 'Columns' });
-  if (await cardsBtn.count() > 0) {
+  if ((await cardsBtn.count()) > 0) {
     await cardsBtn.click();
     await page.waitForTimeout(800);
   }

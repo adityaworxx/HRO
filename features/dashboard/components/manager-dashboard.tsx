@@ -30,7 +30,7 @@ import {
   TrendingUp,
 } from 'lucide-react';
 import { VideoCameraIcon } from '@/components/ui/icons';
-import { formatCtc, formatInterviewDateTime, formatCtcRange } from '@/lib/format';
+import { formatCtc, formatInterviewDateTime, formatCtcRange, formatRoleTitle } from '@/lib/format';
 import { cn } from '@/lib/utils';
 import { matchCandidateToOpening } from '@/lib/ai-matcher';
 
@@ -102,7 +102,13 @@ export function ManagerDashboard() {
       offer: offerCandidates.length,
       hired: hiredCandidates.length,
     }),
-    [candidates, pendingReviewCandidates.length, interviewCandidates.length, offerCandidates.length, hiredCandidates.length]
+    [
+      candidates,
+      pendingReviewCandidates.length,
+      interviewCandidates.length,
+      offerCandidates.length,
+      hiredCandidates.length,
+    ]
   );
 
   const totalCandidates = candidates.length || 1;
@@ -197,7 +203,11 @@ export function ManagerDashboard() {
             <StatCard
               label="Awaiting Shortlist Review"
               value={pendingReviewCandidates.length}
-              delta={pendingReviewCandidates.length > 0 ? `${pendingReviewCandidates.length} Action Required` : 'Queue Clear'}
+              delta={
+                pendingReviewCandidates.length > 0
+                  ? `${pendingReviewCandidates.length} Action Required`
+                  : 'Queue Clear'
+              }
               isWarning={pendingReviewCandidates.length > 0}
               href="/shortlist"
               icon={<CheckCircle2 className="h-4 w-4" />}
@@ -225,16 +235,16 @@ export function ManagerDashboard() {
         {/* LEFT COLUMN (8 cols): Shortlist Review Telemetry & Pipeline Velocity */}
         <div className="col-span-12 flex flex-col space-y-6 lg:col-span-8">
           {/* A. Candidates Awaiting Review Telemetry (Styled matching Technical Interviews) */}
-          <div className="border border-border bg-surface-1 flex flex-col justify-between rounded-[12px] p-5 shadow-xs">
+          <div className="border-border bg-surface-1 flex flex-col justify-between rounded-[12px] border p-5 shadow-xs">
             {/* Header matching Technical Interviews typography */}
-            <div className="flex items-center justify-between gap-4 pb-3 border-b border-border/60">
+            <div className="border-border/60 flex items-center justify-between gap-4 border-b pb-3">
               <h2 className="text-text text-[16px] leading-[24px] font-medium tracking-[-0.01em]">
                 Candidates Awaiting Review
               </h2>
 
               <Link
                 href="/shortlist"
-                className="inline-flex items-center gap-1 text-[13px] leading-[20px] font-medium text-text-muted hover:text-text transition-colors shrink-0"
+                className="text-text-muted hover:text-text inline-flex shrink-0 items-center gap-1 text-[13px] leading-[20px] font-medium transition-colors"
               >
                 <span>View all</span>
                 <ChevronRight className="h-3.5 w-3.5" />
@@ -243,14 +253,14 @@ export function ManagerDashboard() {
 
             {/* Department Filter Pills (Clean Text, No Border Boxes) */}
             {/* Department Filter Pills (Proper Orange When Selected, Matching Openings) */}
-            <div className="pt-3 pb-1 flex items-center gap-1.5 overflow-x-auto no-scrollbar">
+            <div className="no-scrollbar flex items-center gap-1.5 overflow-x-auto pt-3 pb-1">
               <button
                 type="button"
                 onClick={() => handleSelectReviewDept('all')}
                 className={cn(
-                  'inline-flex items-center gap-1.5 px-2.5 py-1 text-[12.5px] font-medium rounded-[6px] transition-colors cursor-pointer shrink-0',
+                  'inline-flex shrink-0 cursor-pointer items-center gap-1.5 rounded-[6px] px-2.5 py-1 text-[12.5px] font-medium transition-colors',
                   selectedReviewDept === 'all'
-                    ? 'bg-accent text-white font-semibold shadow-xs'
+                    ? 'bg-accent font-semibold text-white shadow-xs'
                     : 'bg-surface-2 text-text-muted hover:bg-surface-3 hover:text-text'
                 )}
               >
@@ -259,7 +269,7 @@ export function ManagerDashboard() {
                   className={cn(
                     'rounded-full px-1.5 font-mono text-[11px]',
                     selectedReviewDept === 'all'
-                      ? 'bg-white/20 text-white font-semibold'
+                      ? 'bg-white/20 font-semibold text-white'
                       : 'bg-surface-3 text-text-subtle'
                   )}
                 >
@@ -275,9 +285,9 @@ export function ManagerDashboard() {
                     type="button"
                     onClick={() => handleSelectReviewDept(group.id)}
                     className={cn(
-                      'inline-flex items-center gap-1.5 px-2.5 py-1 text-[12.5px] font-medium rounded-[6px] transition-colors cursor-pointer shrink-0',
+                      'inline-flex shrink-0 cursor-pointer items-center gap-1.5 rounded-[6px] px-2.5 py-1 text-[12.5px] font-medium transition-colors',
                       isSelected
-                        ? 'bg-accent text-white font-semibold shadow-xs'
+                        ? 'bg-accent font-semibold text-white shadow-xs'
                         : 'bg-surface-2 text-text-muted hover:bg-surface-3 hover:text-text'
                     )}
                   >
@@ -287,7 +297,7 @@ export function ManagerDashboard() {
                       className={cn(
                         'rounded-full px-1.5 font-mono text-[11px]',
                         isSelected
-                          ? 'bg-white/20 text-white font-semibold'
+                          ? 'bg-white/20 font-semibold text-white'
                           : 'bg-surface-3 text-text-subtle'
                       )}
                     >
@@ -299,7 +309,7 @@ export function ManagerDashboard() {
             </div>
 
             {/* Content: Structured Table View (Clean & Highly Organized, AI without Box) */}
-            <div className="pt-2 flex-1">
+            <div className="flex-1 pt-2">
               {isInitialLoading ? (
                 <div className="space-y-3 py-2">
                   <Skeleton className="h-[48px] rounded-[8px]" />
@@ -308,48 +318,52 @@ export function ManagerDashboard() {
                 </div>
               ) : filteredReviewCandidates.length === 0 ? (
                 <div className="flex h-36 flex-col items-center justify-center text-center select-none">
-                  <CheckCircle2 className="h-6 w-6 text-emerald-500/70 mb-1.5" />
-                  <p className="text-text text-[14px] font-medium">No candidates in this department</p>
-                  <p className="text-text-subtle text-[12px] mt-0.5">
+                  <CheckCircle2 className="mb-1.5 h-6 w-6 text-emerald-500/70" />
+                  <p className="text-text text-[14px] font-medium">
+                    No candidates in this department
+                  </p>
+                  <p className="text-text-subtle mt-0.5 text-[12px]">
                     Select another department or view all pending candidates.
                   </p>
                 </div>
               ) : (
-                <div className="border border-border/70 rounded-[10px] overflow-hidden bg-surface-1 shadow-2xs">
-                  <div className="overflow-x-auto no-scrollbar">
+                <div className="border-border/70 bg-surface-1 overflow-hidden rounded-[10px] border shadow-2xs">
+                  <div className="no-scrollbar overflow-x-auto">
                     {/* Table Header */}
-                    <div className="grid grid-cols-[minmax(180px,2fr)_minmax(140px,1.5fr)_minmax(90px,1fr)_minmax(95px,1fr)_minmax(90px,1fr)] items-center gap-3 px-3.5 py-2 bg-surface-2/40 border-b border-border/60 text-[11px] font-semibold uppercase tracking-wider text-text-subtle select-none">
+                    <div className="bg-surface-2/40 border-border/60 text-text-subtle grid grid-cols-[minmax(180px,2fr)_minmax(140px,1.5fr)_minmax(90px,1fr)_minmax(95px,1fr)_minmax(90px,1fr)] items-center gap-3 border-b px-3.5 py-2 text-[11px] font-semibold tracking-wider uppercase select-none">
                       <div>Candidate</div>
                       <div>Target Requisition</div>
-                      <div>Exp & Notice</div>
+                      <div>Experience</div>
                       <div>AI Match</div>
                       <div className="text-right">Expected CTC</div>
                     </div>
 
                     {/* Table Rows */}
-                    <div className="divide-y divide-border/50">
+                    <div className="divide-border/50 divide-y">
                       {paginatedReviewCandidates.map((candidate) => {
                         const opening = openingsMap.get(candidate.openingId);
                         const dept = opening?.department || 'General';
-                        const aiMatch = opening ? matchCandidateToOpening(candidate, opening) : null;
+                        const aiMatch = opening
+                          ? matchCandidateToOpening(candidate, opening)
+                          : null;
 
                         return (
                           <Link
                             key={candidate.id}
                             href="/shortlist"
-                            className="grid grid-cols-[minmax(180px,2fr)_minmax(140px,1.5fr)_minmax(90px,1fr)_minmax(95px,1fr)_minmax(90px,1fr)] items-center gap-3 px-3.5 py-2.5 hover:bg-surface-2/60 transition-colors group cursor-pointer"
+                            className="hover:bg-surface-2/60 group grid cursor-pointer grid-cols-[minmax(180px,2fr)_minmax(140px,1.5fr)_minmax(90px,1fr)_minmax(95px,1fr)_minmax(90px,1fr)] items-center gap-3 px-3.5 py-2.5 transition-colors"
                           >
                             {/* 1. Candidate Info */}
-                            <div className="flex items-center gap-2.5 min-w-0 pr-2">
+                            <div className="flex min-w-0 items-center gap-2.5 pr-2">
                               <CompanyLogo
                                 company={candidate.currentCompany}
-                                className="h-4 w-4 rounded-[3px] shrink-0 shadow-2xs"
+                                className="h-4 w-4 shrink-0 rounded-[3px] shadow-2xs"
                               />
                               <div className="min-w-0 truncate">
-                                <span className="text-text text-[13.5px] leading-[18px] font-medium transition-colors block truncate">
+                                <span className="text-text block truncate text-[13.5px] leading-[18px] font-medium transition-colors">
                                   {candidate.name}
                                 </span>
-                                <span className="text-text-muted text-[11.5px] leading-[15px] block truncate">
+                                <span className="text-text-muted block truncate text-[11.5px] leading-[15px]">
                                   {candidate.currentRole}
                                 </span>
                               </div>
@@ -357,51 +371,38 @@ export function ManagerDashboard() {
 
                             {/* 2. Target Requisition */}
                             <div className="min-w-0 pr-2">
-                              <span className="text-text text-[13px] leading-[18px] font-medium block truncate">
-                                {opening?.title ?? 'Requisition'}
+                              <span className="text-text block truncate text-[13px] leading-[18px] font-medium">
+                                {formatRoleTitle(opening?.title)}
                               </span>
-                              <span className="text-text-muted text-[11.5px] leading-[15px] block truncate mt-0.5">
+                              <span className="text-text-muted mt-0.5 block truncate text-[11.5px] leading-[15px]">
                                 {dept}
                               </span>
                             </div>
 
-                            {/* 3. Exp & Notice */}
+                            {/* 3. Experience */}
                             <div className="min-w-0 pr-2">
-                              <span className="font-mono text-[12px] font-medium text-text block tabular-nums">
+                              <span className="text-text block font-mono text-[12px] font-medium tabular-nums">
                                 {candidate.experienceYears}y exp
-                              </span>
-                              <span className="text-text-subtle text-[11px] block truncate">
-                                {candidate.noticePeriod}
                               </span>
                             </div>
 
-                            {/* 4. AI Match (Clean text without box or icon) */}
+                            {/* 4. AI Match */}
                             <div className="min-w-0 pr-2">
                               {aiMatch ? (
-                                <div className="space-y-0.5">
-                                  <span className="font-mono text-[11.5px] font-semibold text-accent block tabular-nums">
-                                    {aiMatch.score}% Match
-                                  </span>
-                                  <span className="text-text-subtle text-[10.5px] block truncate">
-                                    {aiMatch.tier}
-                                  </span>
-                                </div>
+                                <span className="text-text block font-sans text-[11.5px] font-medium tabular-nums">
+                                  {aiMatch.score}% Match
+                                </span>
                               ) : (
                                 <span className="text-text-subtle text-[11.5px]">—</span>
                               )}
                             </div>
 
                             {/* 5. Expected CTC & Chevron */}
-                            <div className="flex items-center justify-end gap-1.5 text-right shrink-0">
-                              <div className="text-right">
-                                <span className="font-mono text-text text-[13px] font-semibold tabular-nums block whitespace-nowrap">
-                                  {formatCtc(candidate.expectedCtc)}
-                                </span>
-                                <span className="text-text-subtle text-[10px] block">
-                                  In budget
-                                </span>
-                              </div>
-                              <ChevronRight className="h-3.5 w-3.5 text-text-subtle group-hover:text-text group-hover:translate-x-0.5 transition-all shrink-0 ml-1" />
+                            <div className="flex shrink-0 items-center justify-end gap-1.5 text-right">
+                              <span className="text-text block font-sans text-[13px] font-semibold whitespace-nowrap tabular-nums">
+                                {formatCtc(candidate.expectedCtc)}
+                              </span>
+                              <ChevronRight className="text-text-subtle group-hover:text-text ml-1 h-3.5 w-3.5 shrink-0 transition-all group-hover:translate-x-0.5" />
                             </div>
                           </Link>
                         );
@@ -413,24 +414,24 @@ export function ManagerDashboard() {
             </div>
 
             {/* Footer Direct Redirect Link & Pagination */}
-            <div className="pt-3 border-t border-border/60 mt-2 flex items-center justify-between">
+            <div className="border-border/60 mt-2 flex items-center justify-between border-t pt-3">
               <Link
                 href="/shortlist"
-                className="inline-flex items-center gap-1.5 text-[13px] leading-[20px] text-text-muted hover:text-text font-medium transition-colors"
+                className="text-text-muted hover:text-text inline-flex items-center gap-1.5 text-[13px] leading-[20px] font-medium transition-colors"
               >
                 <span>Manage Review Queue ({pendingReviewCandidates.length} Pending)</span>
                 <ChevronRight className="h-3.5 w-3.5" />
               </Link>
               {totalReviewPages > 1 && (
                 <div className="flex items-center gap-1.5">
-                  <span className="text-[12px] text-text-muted font-mono mr-1">
+                  <span className="text-text-muted mr-1 font-mono text-[12px]">
                     Page {reviewPage} of {totalReviewPages}
                   </span>
                   <button
                     type="button"
                     onClick={() => setReviewPage((p) => Math.max(1, p - 1))}
                     disabled={reviewPage <= 1}
-                    className="h-6 w-6 inline-flex items-center justify-center rounded-[4px] border border-border/70 hover:bg-surface-2 disabled:opacity-30 disabled:cursor-not-allowed text-text-muted hover:text-text cursor-pointer transition-colors"
+                    className="border-border/70 hover:bg-surface-2 text-text-muted hover:text-text inline-flex h-6 w-6 cursor-pointer items-center justify-center rounded-[4px] border transition-colors disabled:cursor-not-allowed disabled:opacity-30"
                     title="Previous page"
                     aria-label="Previous page"
                   >
@@ -440,7 +441,7 @@ export function ManagerDashboard() {
                     type="button"
                     onClick={() => setReviewPage((p) => Math.min(totalReviewPages, p + 1))}
                     disabled={reviewPage >= totalReviewPages}
-                    className="h-6 w-6 inline-flex items-center justify-center rounded-[4px] border border-border/70 hover:bg-surface-2 disabled:opacity-30 disabled:cursor-not-allowed text-text-muted hover:text-text cursor-pointer transition-colors"
+                    className="border-border/70 hover:bg-surface-2 text-text-muted hover:text-text inline-flex h-6 w-6 cursor-pointer items-center justify-center rounded-[4px] border transition-colors disabled:cursor-not-allowed disabled:opacity-30"
                     title="Next page"
                     aria-label="Next page"
                   >
@@ -452,9 +453,9 @@ export function ManagerDashboard() {
           </div>
 
           {/* B. Talent Pipeline Velocity & Throughput Tracker (Redirects to /pipeline) */}
-          <div className="border border-border bg-surface-1 flex flex-col rounded-[12px] p-5 shadow-xs">
+          <div className="border-border bg-surface-1 flex flex-col rounded-[12px] border p-5 shadow-xs">
             {/* Header */}
-            <div className="flex items-start justify-between gap-4 pb-4 border-b border-border/60">
+            <div className="border-border/60 flex items-start justify-between gap-4 border-b pb-4">
               <div>
                 <h2 className="text-text text-[16px] leading-[24px] font-medium tracking-[-0.01em]">
                   Talent Pipeline Velocity
@@ -466,7 +467,7 @@ export function ManagerDashboard() {
 
               <Link
                 href="/pipeline"
-                className="inline-flex items-center gap-1 text-[13px] leading-[20px] font-medium text-text-muted hover:text-text transition-colors shrink-0"
+                className="text-text-muted hover:text-text inline-flex shrink-0 items-center gap-1 text-[13px] leading-[20px] font-medium transition-colors"
               >
                 <span>Open Pipeline Board</span>
                 <ChevronRight className="h-3.5 w-3.5" />
@@ -474,23 +475,23 @@ export function ManagerDashboard() {
             </div>
 
             {/* Progression Track: Clean Open Stages without Box Borders */}
-            <div className="pt-3 space-y-3.5">
-              <div className="grid grid-cols-2 sm:grid-cols-5 gap-2">
+            <div className="space-y-3.5 pt-3">
+              <div className="grid grid-cols-2 gap-2 sm:grid-cols-5">
                 {/* 1. Sourced */}
                 <Link
                   href="/pipeline"
-                  className="p-3 rounded-[8px] hover:bg-surface-2 transition-colors group cursor-pointer flex flex-col justify-between"
+                  className="hover:bg-surface-2 group flex cursor-pointer flex-col justify-between rounded-[8px] p-3 transition-colors"
                 >
                   <div className="flex items-center justify-between">
-                    <span className="text-text-muted text-[12.5px] font-medium group-hover:text-text">
+                    <span className="text-text-muted group-hover:text-text text-[12.5px] font-medium">
                       1. Sourced
                     </span>
-                    <span className="text-text-subtle font-mono text-[11px] tabular-nums">
+                    <span className="text-text-subtle font-sans text-[11px] tabular-nums">
                       {Math.round((stagesCount.sourced / totalCandidates) * 100)}%
                     </span>
                   </div>
                   <div className="mt-2.5 flex items-baseline gap-1.5">
-                    <span className="text-text font-mono text-[22px] font-semibold tabular-nums">
+                    <span className="text-text font-sans text-[22px] font-semibold tabular-nums">
                       {stagesCount.sourced}
                     </span>
                     <span className="text-text-subtle text-[11px]">in pool</span>
@@ -500,18 +501,18 @@ export function ManagerDashboard() {
                 {/* 2. Manager Review */}
                 <Link
                   href="/shortlist"
-                  className="p-3 rounded-[8px] hover:bg-surface-2 transition-colors group cursor-pointer flex flex-col justify-between"
+                  className="hover:bg-surface-2 group flex cursor-pointer flex-col justify-between rounded-[8px] p-3 transition-colors"
                 >
                   <div className="flex items-center justify-between">
-                    <span className="text-text-muted text-[12.5px] font-medium group-hover:text-text">
+                    <span className="text-text-muted group-hover:text-text text-[12.5px] font-medium">
                       2. Review
                     </span>
-                    <span className="text-accent font-mono text-[11px] font-semibold tabular-nums">
+                    <span className="text-text-muted font-sans text-[11px] font-semibold tabular-nums">
                       {Math.round((stagesCount.shared / totalCandidates) * 100)}%
                     </span>
                   </div>
                   <div className="mt-2.5 flex items-baseline gap-1.5">
-                    <span className="text-accent font-mono text-[22px] font-semibold tabular-nums">
+                    <span className="text-text font-sans text-[22px] font-semibold tabular-nums">
                       {stagesCount.shared}
                     </span>
                     <span className="text-text-subtle text-[11px]">pending</span>
@@ -521,18 +522,18 @@ export function ManagerDashboard() {
                 {/* 3. Technical Interview */}
                 <Link
                   href="/interviews"
-                  className="p-3 rounded-[8px] hover:bg-surface-2 transition-colors group cursor-pointer flex flex-col justify-between"
+                  className="hover:bg-surface-2 group flex cursor-pointer flex-col justify-between rounded-[8px] p-3 transition-colors"
                 >
                   <div className="flex items-center justify-between">
-                    <span className="text-text-muted text-[12.5px] font-medium group-hover:text-text">
+                    <span className="text-text-muted group-hover:text-text text-[12.5px] font-medium">
                       3. Interview
                     </span>
-                    <span className="text-text-subtle font-mono text-[11px] tabular-nums">
+                    <span className="text-text-subtle font-sans text-[11px] tabular-nums">
                       {Math.round((stagesCount.interview / totalCandidates) * 100)}%
                     </span>
                   </div>
                   <div className="mt-2.5 flex items-baseline gap-1.5">
-                    <span className="text-text font-mono text-[22px] font-semibold tabular-nums">
+                    <span className="text-text font-sans text-[22px] font-semibold tabular-nums">
                       {stagesCount.interview}
                     </span>
                     <span className="text-text-subtle text-[11px]">rounds</span>
@@ -542,18 +543,18 @@ export function ManagerDashboard() {
                 {/* 4. Offer Stage */}
                 <Link
                   href="/pipeline"
-                  className="p-3 rounded-[8px] hover:bg-surface-2 transition-colors group cursor-pointer flex flex-col justify-between"
+                  className="hover:bg-surface-2 group flex cursor-pointer flex-col justify-between rounded-[8px] p-3 transition-colors"
                 >
                   <div className="flex items-center justify-between">
-                    <span className="text-text-muted text-[12.5px] font-medium group-hover:text-text">
+                    <span className="text-text-muted group-hover:text-text text-[12.5px] font-medium">
                       4. Offer
                     </span>
-                    <span className="text-text-subtle font-mono text-[11px] tabular-nums">
+                    <span className="text-text-subtle font-sans text-[11px] tabular-nums">
                       {Math.round((stagesCount.offer / totalCandidates) * 100)}%
                     </span>
                   </div>
                   <div className="mt-2.5 flex items-baseline gap-1.5">
-                    <span className="text-text font-mono text-[22px] font-semibold tabular-nums">
+                    <span className="text-text font-sans text-[22px] font-semibold tabular-nums">
                       {stagesCount.offer}
                     </span>
                     <span className="text-text-subtle text-[11px]">extended</span>
@@ -563,21 +564,19 @@ export function ManagerDashboard() {
                 {/* 5. Joined */}
                 <Link
                   href="/pipeline"
-                  className="p-3 col-span-2 sm:col-span-1 rounded-[8px] hover:bg-accent/10 transition-colors group cursor-pointer flex flex-col justify-between"
+                  className="hover:bg-accent/10 group col-span-2 flex cursor-pointer flex-col justify-between rounded-[8px] p-3 transition-colors sm:col-span-1"
                 >
                   <div className="flex items-center justify-between">
-                    <span className="text-accent text-[12.5px] font-semibold">
-                      5. Joined
-                    </span>
-                    <span className="text-accent font-mono text-[11px] font-bold tabular-nums">
+                    <span className="text-text text-[12.5px] font-semibold">5. Joined</span>
+                    <span className="text-text-muted font-sans text-[11px] font-bold tabular-nums">
                       {Math.round((stagesCount.hired / totalCandidates) * 100)}%
                     </span>
                   </div>
                   <div className="mt-2.5 flex items-baseline gap-1.5">
-                    <span className="text-accent font-mono text-[22px] font-bold tabular-nums">
+                    <span className="text-text font-sans text-[22px] font-bold tabular-nums">
                       {stagesCount.hired}
                     </span>
-                    <span className="text-accent/80 text-[11px]">finalized</span>
+                    <span className="text-text-muted text-[11px]">finalized</span>
                   </div>
                 </Link>
               </div>
@@ -609,7 +608,8 @@ export function ManagerDashboard() {
                 <div className="text-text-subtle flex items-center justify-between text-[11px] select-none">
                   <span>Talent acquisition progression</span>
                   <span className="text-text-muted font-medium">
-                    {stagesCount.hired} hires finalized ({Math.round((stagesCount.hired / totalCandidates) * 100)}% conversion)
+                    {stagesCount.hired} hires finalized (
+                    {Math.round((stagesCount.hired / totalCandidates) * 100)}% conversion)
                   </span>
                 </div>
               </div>
@@ -620,10 +620,10 @@ export function ManagerDashboard() {
         {/* RIGHT COLUMN (4 cols): Upcoming Schedules & Key Benchmarks */}
         <div className="col-span-12 flex flex-col space-y-6 lg:col-span-4">
           {/* C. Technical Interviews Schedule (Agenda List, Links to /interviews) */}
-          <div className="border border-border bg-surface-1 flex flex-col justify-between rounded-[12px] p-5 shadow-xs">
+          <div className="border-border bg-surface-1 flex flex-col justify-between rounded-[12px] border p-5 shadow-xs">
             <div>
               {/* Header */}
-              <div className="flex items-start justify-between gap-4 pb-4 border-b border-border/60">
+              <div className="border-border/60 flex items-start justify-between gap-4 border-b pb-4">
                 <div>
                   <h2 className="text-text text-[16px] leading-[24px] font-medium tracking-[-0.01em]">
                     Technical Interviews
@@ -634,7 +634,7 @@ export function ManagerDashboard() {
                 </div>
                 <Link
                   href="/interviews"
-                  className="inline-flex items-center gap-1 text-[13px] leading-[20px] font-medium text-text-muted hover:text-text transition-colors shrink-0"
+                  className="text-text-muted hover:text-text inline-flex shrink-0 items-center gap-1 text-[13px] leading-[20px] font-medium transition-colors"
                 >
                   <span>View all</span>
                   <ChevronRight className="h-3.5 w-3.5" />
@@ -650,33 +650,37 @@ export function ManagerDashboard() {
                   </div>
                 ) : interviewCandidates.length === 0 ? (
                   <div className="flex h-36 flex-col items-center justify-center text-center select-none">
-                    <Clock className="h-6 w-6 text-text-subtle mb-1.5 opacity-60" />
+                    <Clock className="text-text-subtle mb-1.5 h-6 w-6 opacity-60" />
                     <p className="text-text text-[14px] font-medium">No interviews scheduled</p>
-                    <p className="text-text-subtle text-[12px] mt-0.5">
+                    <p className="text-text-subtle mt-0.5 text-[12px]">
                       Shortlist candidates to begin scheduling technical discussions.
                     </p>
                   </div>
                 ) : (
-                  <div className="divide-y divide-border/60">
+                  <div className="divide-border/60 divide-y">
                     {interviewCandidates.slice(0, 4).map((candidate) => {
                       const mode = candidate.interviewMode ?? 'Video';
-                      const ModeIcon = mode === 'Phone' ? Phone : mode === 'Onsite' ? MapPin : VideoCameraIcon;
+                      const ModeIcon =
+                        mode === 'Phone' ? Phone : mode === 'Onsite' ? MapPin : VideoCameraIcon;
 
                       return (
                         <Link
                           key={candidate.id}
                           href="/interviews"
-                          className="group hover:bg-surface-2 -mx-2 flex flex-col justify-between gap-1.5 rounded-[8px] px-2 py-3 transition-colors cursor-pointer"
+                          className="group hover:bg-surface-2 -mx-2 flex cursor-pointer flex-col justify-between gap-1.5 rounded-[8px] px-2 py-3 transition-colors"
                         >
                           <div className="flex items-center justify-between gap-2">
-                            <div className="flex items-center gap-2 min-w-0">
-                              <CompanyLogo company={candidate.currentCompany} className="h-4 w-4 rounded-[3px] shrink-0 shadow-2xs" />
+                            <div className="flex min-w-0 items-center gap-2">
+                              <CompanyLogo
+                                company={candidate.currentCompany}
+                                className="h-4 w-4 shrink-0 rounded-[3px] shadow-2xs"
+                              />
                               <span className="text-text truncate text-[14px] leading-[20px] font-medium">
                                 {candidate.name}
                               </span>
                             </div>
                             <span
-                              className="text-text-subtle group-hover:text-text-muted transition-colors shrink-0 flex items-center"
+                              className="text-text-subtle group-hover:text-text-muted flex shrink-0 items-center transition-colors"
                               title={`${mode} Interview`}
                               aria-label={`${mode} Interview`}
                             >
@@ -702,10 +706,10 @@ export function ManagerDashboard() {
             </div>
 
             {/* Footer Direct Redirect Link */}
-            <div className="pt-3 border-t border-border/60 mt-2">
+            <div className="border-border/60 mt-2 border-t pt-3">
               <Link
                 href="/interviews"
-                className="flex items-center justify-between text-[13px] leading-[20px] text-text-muted hover:text-text font-medium transition-colors"
+                className="text-text-muted hover:text-text flex items-center justify-between text-[13px] leading-[20px] font-medium transition-colors"
               >
                 <span>Manage Interview Scorecards</span>
                 <ChevronRight className="h-3.5 w-3.5" />
@@ -714,69 +718,67 @@ export function ManagerDashboard() {
           </div>
 
           {/* D. Operational Benchmarks & Hiring Health Telemetry */}
-          <div className="border border-border bg-surface-1 flex flex-col justify-between rounded-[12px] p-5 shadow-xs">
+          <div className="border-border bg-surface-1 flex flex-col justify-between rounded-[12px] border p-5 shadow-xs">
             <div>
-              <div className="flex items-center justify-between pb-3.5 border-b border-border/60">
+              <div className="border-border/60 flex items-center justify-between border-b pb-3.5">
                 <div className="flex items-center gap-2">
-                  <TrendingUp className="h-4 w-4 text-accent" />
+                  <TrendingUp className="text-text-muted h-4 w-4" />
                   <h2 className="text-text text-[15px] font-semibold tracking-[-0.01em]">
                     Hiring Telemetry
                   </h2>
                 </div>
-                <span className="text-[11px] font-mono text-emerald-600 dark:text-emerald-400 font-semibold bg-emerald-500/10 border border-emerald-500/25 px-2 py-0.5 rounded-full select-none">
+                <span className="text-text bg-surface-2 border-border/60 rounded-full border px-2 py-0.5 font-sans text-[11px] font-medium select-none">
                   Healthy Velocity
                 </span>
               </div>
 
               <div className="grid grid-cols-2 gap-4 pt-3.5">
                 <div className="py-1">
-                  <span className="text-text-subtle text-[11px] font-medium uppercase tracking-wider block">
+                  <span className="text-text-subtle block text-[11px] font-medium tracking-wider uppercase">
                     Avg. Time-to-Hire
                   </span>
-                  <p className="text-text font-bold font-mono text-[18px] mt-1">18 Days</p>
-                  <span className="text-emerald-600 dark:text-emerald-400 text-[11px] font-medium block mt-0.5">
+                  <p className="text-text mt-1 font-sans text-[18px] font-bold">18 Days</p>
+                  <span className="text-text-muted mt-0.5 block text-[11px] font-medium">
                     Top 10% benchmark
                   </span>
                 </div>
 
                 <div className="py-1">
-                  <span className="text-text-subtle text-[11px] font-medium uppercase tracking-wider block">
+                  <span className="text-text-subtle block text-[11px] font-medium tracking-wider uppercase">
                     Offer Acceptance
                   </span>
-                  <p className="text-emerald-600 dark:text-emerald-400 font-bold font-mono text-[18px] mt-1">
-                    94.2%
-                  </p>
-                  <span className="text-text-subtle text-[11px] font-medium block mt-0.5">
+                  <p className="text-text mt-1 font-sans text-[18px] font-bold">94.2%</p>
+                  <span className="text-text-subtle mt-0.5 block text-[11px] font-medium">
                     vs 82% industry avg
                   </span>
                 </div>
 
                 <div className="py-1">
-                  <span className="text-text-subtle text-[11px] font-medium uppercase tracking-wider block">
+                  <span className="text-text-subtle block text-[11px] font-medium tracking-wider uppercase">
                     AI Match Conviction
                   </span>
-                  <p className="text-accent font-bold font-mono text-[18px] mt-1">88%</p>
-                  <span className="text-text-subtle text-[11px] font-medium block mt-0.5">
+                  <p className="text-text mt-1 font-sans text-[18px] font-bold">88%</p>
+                  <span className="text-text-subtle mt-0.5 block text-[11px] font-medium">
                     Verified competencies
                   </span>
                 </div>
 
                 <div className="py-1">
-                  <span className="text-text-subtle text-[11px] font-medium uppercase tracking-wider block">
+                  <span className="text-text-subtle block text-[11px] font-medium tracking-wider uppercase">
                     Review SLA
                   </span>
-                  <p className="text-text font-bold font-mono text-[18px] mt-1">&lt; 24h</p>
-                  <span className="text-text-subtle text-[11px] font-medium block mt-0.5">
+                  <p className="text-text mt-1 font-sans text-[18px] font-bold">&lt; 24h</p>
+                  <span className="text-text-subtle mt-0.5 block text-[11px] font-medium">
                     Target: 48h turnaround
                   </span>
                 </div>
               </div>
             </div>
 
-            <div className="pt-3 border-t border-border/60 mt-3">
+            <div className="border-border/60 mt-3 border-t pt-3">
               <Link
                 href="/reports"
-                className="flex items-center justify-between text-[12px] text-text-subtle hover:text-text font-medium transition-colors"
+                className="text-text-subtle hover:text-text flex items-center justify-between text-[12px] font-medium transition-colors"
               >
                 <span>View Full Analytics & Reports</span>
                 <ChevronRight className="h-3.5 w-3.5" />

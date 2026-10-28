@@ -47,10 +47,7 @@ export function OpeningForm({ initialData, isEditing = false }: OpeningFormProps
     initialData?.department ?? 'Engineering'
   );
 
-  const currentProfile = React.useMemo(
-    () => getDepartmentProfile(department),
-    [department]
-  );
+  const currentProfile = React.useMemo(() => getDepartmentProfile(department), [department]);
 
   const initialProfile = React.useMemo(
     () => getDepartmentProfile(initialData?.department ?? 'Engineering'),
@@ -71,9 +68,7 @@ export function OpeningForm({ initialData, isEditing = false }: OpeningFormProps
     initialData?.title ?? getDepartmentProfile('Engineering').defaultRole
   );
 
-  const [location, setLocation] = React.useState(
-    initialData?.location ?? 'Bangalore (Hybrid)'
-  );
+  const [location, setLocation] = React.useState(initialData?.location ?? 'Bangalore (Hybrid)');
   const [employmentType, setEmploymentType] = React.useState<
     'Full-time' | 'Part-time' | 'Contract' | 'Internship'
   >(initialData?.employmentType ?? 'Full-time');
@@ -246,8 +241,7 @@ export function OpeningForm({ initialData, isEditing = false }: OpeningFormProps
     if (!description.trim()) newErrors.description = 'Description is required';
     if (!headcount || parseInt(headcount, 10) <= 0)
       newErrors.headcount = 'Valid headcount is required';
-    if (mustSkills.length === 0)
-      newErrors.skills = 'At least 1 must-have skill is required';
+    if (mustSkills.length === 0) newErrors.skills = 'At least 1 must-have skill is required';
 
     if (Object.keys(newErrors).length > 0) {
       setErrors(newErrors);
@@ -336,7 +330,7 @@ export function OpeningForm({ initialData, isEditing = false }: OpeningFormProps
                     <SelectValue placeholder="Select position title" />
                   </SelectTrigger>
                   <SelectContent>
-                    <div className="px-2 py-1.5 text-[11px] font-semibold text-text-muted uppercase tracking-wider">
+                    <div className="text-text-muted px-2 py-1.5 text-[11px] font-semibold tracking-wider uppercase">
                       {department} Roles ({currentProfile.positions.length})
                     </div>
                     {currentProfile.positions.map((pos) => (
@@ -569,7 +563,7 @@ export function OpeningForm({ initialData, isEditing = false }: OpeningFormProps
                 variant="outline"
                 size="sm"
                 onClick={handleResetToDepartmentStack}
-                className="h-7 px-2.5 text-[11.5px] font-normal text-text-muted hover:text-text hover:bg-surface-2 rounded-[6px] border border-border/80 self-start sm:self-auto cursor-pointer"
+                className="text-text-muted hover:text-text hover:bg-surface-2 border-border/80 h-7 cursor-pointer self-start rounded-[6px] border px-2.5 text-[11.5px] font-normal sm:self-auto"
                 title={`Pre-fill recommended skills for ${department}`}
               >
                 Reset to {department} stack
@@ -586,7 +580,7 @@ export function OpeningForm({ initialData, isEditing = false }: OpeningFormProps
                     <span>Must-Have Skills</span>
                     <span className="text-danger">*</span>
                     {mustSkills.length > 0 && (
-                      <span className="font-mono text-[11px] text-text-subtle font-normal">
+                      <span className="text-text-subtle font-mono text-[11px] font-normal">
                         ({mustSkills.length})
                       </span>
                     )}
@@ -600,22 +594,22 @@ export function OpeningForm({ initialData, isEditing = false }: OpeningFormProps
               {/* Sleek Tag Input Box */}
               <div
                 className={cn(
-                  'min-h-[44px] w-full rounded-[8px] border bg-surface-1 p-2 flex flex-wrap items-center gap-1.5 transition-all',
+                  'bg-surface-1 flex min-h-[44px] w-full flex-wrap items-center gap-1.5 rounded-[8px] border p-2 transition-all',
                   errors.skills
-                    ? 'border-danger/70 focus-within:border-danger focus-within:ring-1 focus-within:ring-danger/20'
-                    : 'border-border focus-within:border-border-strong focus-within:ring-1 focus-within:ring-border/80'
+                    ? 'border-danger/70 focus-within:border-danger focus-within:ring-danger/20 focus-within:ring-1'
+                    : 'border-border focus-within:border-border-strong focus-within:ring-border/80 focus-within:ring-1'
                 )}
               >
                 {mustSkills.map((skill) => (
                   <span
                     key={skill}
-                    className="inline-flex items-center gap-1.5 rounded-[5px] bg-surface-2 border border-border/70 px-2.5 py-1 text-[12px] font-medium text-text select-none"
+                    className="bg-surface-2 border-border/70 text-text inline-flex items-center gap-1.5 rounded-[5px] border px-2.5 py-1 text-[12px] font-medium select-none"
                   >
                     <span>{skill}</span>
                     <button
                       type="button"
                       onClick={() => removeMustSkill(skill)}
-                      className="text-text-subtle hover:text-text -mr-0.5 p-0.5 rounded-[3px] hover:bg-surface-3 transition-colors cursor-pointer"
+                      className="text-text-subtle hover:text-text hover:bg-surface-3 -mr-0.5 cursor-pointer rounded-[3px] p-0.5 transition-colors"
                       title={`Remove ${skill}`}
                       aria-label={`Remove ${skill}`}
                     >
@@ -623,7 +617,7 @@ export function OpeningForm({ initialData, isEditing = false }: OpeningFormProps
                     </button>
                   </span>
                 ))}
-                <div className="flex-1 min-w-[170px] flex items-center gap-1">
+                <div className="flex min-w-[170px] flex-1 items-center gap-1">
                   <input
                     value={customMustInput}
                     onChange={(e) => setCustomMustInput(e.target.value)}
@@ -638,13 +632,13 @@ export function OpeningForm({ initialData, isEditing = false }: OpeningFormProps
                         ? 'Type a skill and press Enter, or pick below...'
                         : 'Add skill...'
                     }
-                    className="w-full bg-transparent text-[12.5px] text-text placeholder:text-text-subtle/70 focus:outline-none px-1 h-6"
+                    className="text-text placeholder:text-text-subtle/70 h-6 w-full bg-transparent px-1 text-[12.5px] focus:outline-none"
                   />
                   {customMustInput.trim() && (
                     <button
                       type="button"
                       onClick={() => handleAddCustomMustSkill()}
-                      className="h-6 px-2 text-[11px] font-medium text-text bg-surface-2 hover:bg-surface-3 rounded-[4px] border border-border/70 cursor-pointer shrink-0 transition-colors"
+                      className="text-text bg-surface-2 hover:bg-surface-3 border-border/70 h-6 shrink-0 cursor-pointer rounded-[4px] border px-2 text-[11px] font-medium transition-colors"
                     >
                       Add
                     </button>
@@ -658,7 +652,7 @@ export function OpeningForm({ initialData, isEditing = false }: OpeningFormProps
 
               {/* Clean, Non-intrusive Suggestions */}
               <div className="space-y-1.5 pt-0.5">
-                <span className="text-[11.5px] text-text-subtle font-medium select-none">
+                <span className="text-text-subtle text-[11.5px] font-medium select-none">
                   Suggested for {department}:
                 </span>
                 <div className="flex flex-wrap gap-1.5">
@@ -701,9 +695,9 @@ export function OpeningForm({ initialData, isEditing = false }: OpeningFormProps
                 <div>
                   <label className="text-text flex items-center gap-1.5 text-[13px] font-semibold">
                     <span>Nice-to-Have Skills</span>
-                    <span className="text-text-subtle font-normal text-[11.5px]">(Optional)</span>
+                    <span className="text-text-subtle text-[11.5px] font-normal">(Optional)</span>
                     {niceSkills.length > 0 && (
-                      <span className="font-mono text-[11px] text-text-subtle font-normal">
+                      <span className="text-text-subtle font-mono text-[11px] font-normal">
                         ({niceSkills.length})
                       </span>
                     )}
@@ -715,17 +709,17 @@ export function OpeningForm({ initialData, isEditing = false }: OpeningFormProps
               </div>
 
               {/* Sleek Tag Input Box */}
-              <div className="min-h-[44px] w-full rounded-[8px] border border-border bg-surface-1 p-2 flex flex-wrap items-center gap-1.5 focus-within:border-border-strong focus-within:ring-1 focus-within:ring-border/80 transition-all">
+              <div className="border-border bg-surface-1 focus-within:border-border-strong focus-within:ring-border/80 flex min-h-[44px] w-full flex-wrap items-center gap-1.5 rounded-[8px] border p-2 transition-all focus-within:ring-1">
                 {niceSkills.map((skill) => (
                   <span
                     key={skill}
-                    className="inline-flex items-center gap-1.5 rounded-[5px] bg-surface-2 border border-border/70 px-2.5 py-1 text-[12px] font-medium text-text select-none"
+                    className="bg-surface-2 border-border/70 text-text inline-flex items-center gap-1.5 rounded-[5px] border px-2.5 py-1 text-[12px] font-medium select-none"
                   >
                     <span>{skill}</span>
                     <button
                       type="button"
                       onClick={() => removeNiceSkill(skill)}
-                      className="text-text-subtle hover:text-text -mr-0.5 p-0.5 rounded-[3px] hover:bg-surface-3 transition-colors cursor-pointer"
+                      className="text-text-subtle hover:text-text hover:bg-surface-3 -mr-0.5 cursor-pointer rounded-[3px] p-0.5 transition-colors"
                       title={`Remove ${skill}`}
                       aria-label={`Remove ${skill}`}
                     >
@@ -733,7 +727,7 @@ export function OpeningForm({ initialData, isEditing = false }: OpeningFormProps
                     </button>
                   </span>
                 ))}
-                <div className="flex-1 min-w-[170px] flex items-center gap-1">
+                <div className="flex min-w-[170px] flex-1 items-center gap-1">
                   <input
                     value={customNiceInput}
                     onChange={(e) => setCustomNiceInput(e.target.value)}
@@ -748,13 +742,13 @@ export function OpeningForm({ initialData, isEditing = false }: OpeningFormProps
                         ? 'Type a skill and press Enter, or pick below...'
                         : 'Add skill...'
                     }
-                    className="w-full bg-transparent text-[12.5px] text-text placeholder:text-text-subtle/70 focus:outline-none px-1 h-6"
+                    className="text-text placeholder:text-text-subtle/70 h-6 w-full bg-transparent px-1 text-[12.5px] focus:outline-none"
                   />
                   {customNiceInput.trim() && (
                     <button
                       type="button"
                       onClick={() => handleAddCustomNiceSkill()}
-                      className="h-6 px-2 text-[11px] font-medium text-text bg-surface-2 hover:bg-surface-3 rounded-[4px] border border-border/70 cursor-pointer shrink-0 transition-colors"
+                      className="text-text bg-surface-2 hover:bg-surface-3 border-border/70 h-6 shrink-0 cursor-pointer rounded-[4px] border px-2 text-[11px] font-medium transition-colors"
                     >
                       Add
                     </button>
@@ -764,7 +758,7 @@ export function OpeningForm({ initialData, isEditing = false }: OpeningFormProps
 
               {/* Clean, Non-intrusive Suggestions */}
               <div className="space-y-1.5 pt-0.5">
-                <span className="text-[11.5px] text-text-subtle font-medium select-none">
+                <span className="text-text-subtle text-[11.5px] font-medium select-none">
                   Suggested for {department}:
                 </span>
                 <div className="flex flex-wrap gap-1.5">

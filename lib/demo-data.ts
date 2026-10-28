@@ -57,7 +57,13 @@ export const DEMO_OPENINGS = [
     experience_max: 7,
     budget_min: 20,
     budget_max: 32,
-    must_have_skills: ['Figma', 'Design Systems', 'User Research', 'Prototyping', 'Interaction Design'],
+    must_have_skills: [
+      'Figma',
+      'Design Systems',
+      'User Research',
+      'Prototyping',
+      'Interaction Design',
+    ],
     nice_to_have_skills: ['HTML/CSS', 'Motion Design', 'Micro-interactions', 'Design Tokens'],
     description:
       'Craft intuitive end-to-end recruitment workflows, build scalable multi-brand design systems, and run usability tests with enterprise talent teams.',
@@ -171,7 +177,8 @@ export const DEMO_CANDIDATES = [
     source: 'LinkedIn',
     profile_url: 'https://linkedin.com/in/pooja-nair',
     resume_file_name: 'Pooja_Nair_Resume.pdf',
-    hr_notes: 'Deep expertise in React 19, Next.js App Router, SSR performance, and design systems. Sourced through outbound LinkedIn outreach.',
+    hr_notes:
+      'Deep expertise in React 19, Next.js App Router, SSR performance, and design systems. Sourced through outbound LinkedIn outreach.',
     stage: 'Sourced',
     manager_decision: 'Pending',
     manager_comment: null,
@@ -194,7 +201,8 @@ export const DEMO_CANDIDATES = [
     source: 'LinkedIn',
     profile_url: 'https://linkedin.com/in/deepika-pillai',
     resume_file_name: 'Deepika_Pillai_Resume.pdf',
-    hr_notes: 'Exceptional visual design portfolio, token architecture, and micro-animations. Sourced from Dribbble talent showcase.',
+    hr_notes:
+      'Exceptional visual design portfolio, token architecture, and micro-animations. Sourced from Dribbble talent showcase.',
     stage: 'Sourced',
     manager_decision: 'Pending',
     manager_comment: null,
@@ -217,7 +225,8 @@ export const DEMO_CANDIDATES = [
     source: 'Naukri',
     profile_url: 'https://linkedin.com/in/kunal-ghosh',
     resume_file_name: 'Kunal_Ghosh_CV.pdf',
-    hr_notes: 'Strong in SQL, dbt, and user cohort retention analysis. Active profile on Naukri job boards.',
+    hr_notes:
+      'Strong in SQL, dbt, and user cohort retention analysis. Active profile on Naukri job boards.',
     stage: 'Sourced',
     manager_decision: 'Pending',
     manager_comment: null,
@@ -240,7 +249,8 @@ export const DEMO_CANDIDATES = [
     source: 'Referral',
     profile_url: 'https://linkedin.com/in/meera-bhatt',
     resume_file_name: 'Meera_Bhatt_Resume.pdf',
-    hr_notes: 'Referred by Rohit Verma. Owned onboarding activation and referral loops resulting in 18% lift.',
+    hr_notes:
+      'Referred by Rohit Verma. Owned onboarding activation and referral loops resulting in 18% lift.',
     stage: 'Sourced',
     manager_decision: 'Pending',
     manager_comment: null,
@@ -267,7 +277,8 @@ export const DEMO_CANDIDATES = [
     source: 'Referral',
     profile_url: 'https://linkedin.com/in/rohan-mehta',
     resume_file_name: 'Rohan_Mehta_Resume.pdf',
-    hr_notes: 'Strong in Golang and event-driven microservices. Good fit for our distributed systems backend.',
+    hr_notes:
+      'Strong in Golang and event-driven microservices. Good fit for our distributed systems backend.',
     stage: 'Shared with Manager',
     manager_decision: 'Pending',
     manager_comment: null,
@@ -290,7 +301,8 @@ export const DEMO_CANDIDATES = [
     source: 'Referral',
     profile_url: 'https://linkedin.com/in/anish-kapoor',
     resume_file_name: 'Anish_Kapoor_Resume.pdf',
-    hr_notes: 'Referred by Arjun Kapoor. Strong product problem-solving skills and consumer checkout UX.',
+    hr_notes:
+      'Referred by Arjun Kapoor. Strong product problem-solving skills and consumer checkout UX.',
     stage: 'Shared with Manager',
     manager_decision: 'Pending',
     manager_comment: null,
@@ -313,7 +325,8 @@ export const DEMO_CANDIDATES = [
     source: 'Referral',
     profile_url: 'https://linkedin.com/in/amit-choudhury',
     resume_file_name: 'Amit_Choudhury_CV.pdf',
-    hr_notes: 'Has worked with Fortune 500 client reporting suites. Excellent stakeholder communication.',
+    hr_notes:
+      'Has worked with Fortune 500 client reporting suites. Excellent stakeholder communication.',
     stage: 'Shared with Manager',
     manager_decision: 'Pending',
     manager_comment: null,
@@ -555,7 +568,8 @@ export const DEMO_CANDIDATES = [
     source: 'LinkedIn',
     profile_url: 'https://linkedin.com/in/ritu-saxena',
     resume_file_name: 'Ritu_Saxena_Resume.pdf',
-    hr_notes: 'Exceptional SQL mastery and cohort analysis experience. Offer letter approved by Vikram.',
+    hr_notes:
+      'Exceptional SQL mastery and cohort analysis experience. Offer letter approved by Vikram.',
     stage: 'Offer Sent',
     manager_decision: 'Shortlisted',
     manager_comment: 'Top scorer in the SQL data modeling case study. Approved offer of ₹18 LPA.',
@@ -581,7 +595,8 @@ export const DEMO_CANDIDATES = [
     hr_notes: 'Drove 40% growth in merchant payment conversions. Top tier PM candidate.',
     stage: 'Offer Sent',
     manager_decision: 'Shortlisted',
-    manager_comment: 'Outstanding strategic clarity. Unanimous hire recommendation from leadership panel.',
+    manager_comment:
+      'Outstanding strategic clarity. Unanimous hire recommendation from leadership panel.',
     interview_date: new Date(Date.now() - 86400000 * 6).toISOString(),
     interview_mode: 'Video',
     interview_outcome: 'Selected',
@@ -701,7 +716,8 @@ export const DEMO_CANDIDATES = [
     source: 'Indeed',
     profile_url: 'https://linkedin.com/in/devendra-singh',
     resume_file_name: 'Devendra_Singh_Resume.pdf',
-    hr_notes: 'Primary background in monolithic enterprise Java, not suitable for Golang microservices.',
+    hr_notes:
+      'Primary background in monolithic enterprise Java, not suitable for Golang microservices.',
     stage: 'Rejected',
     manager_decision: 'Rejected',
     manager_comment: 'Did not clear the basic concurrency coding evaluation.',
@@ -958,7 +974,10 @@ export async function resetSupabaseDemoData(): Promise<void> {
   // 1. Clear tables in reverse dependency order
   await supabase.from('activities').delete().neq('id', '00000000-0000-0000-0000-000000000000');
   await supabase.from('notifications').delete().neq('id', '00000000-0000-0000-0000-000000000000');
-  await supabase.from('onboarding_items').delete().neq('id', '00000000-0000-0000-0000-000000000000');
+  await supabase
+    .from('onboarding_items')
+    .delete()
+    .neq('id', '00000000-0000-0000-0000-000000000000');
   await supabase.from('candidates').delete().neq('id', '00000000-0000-0000-0000-000000000000');
   await supabase.from('openings').delete().neq('id', '00000000-0000-0000-0000-000000000000');
 

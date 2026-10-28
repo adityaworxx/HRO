@@ -125,18 +125,18 @@ export function ActiveOpeningsCard({
   return (
     <div
       className={cn(
-        'border border-border bg-surface-1 rounded-[12px] p-5 flex flex-col',
+        'border-border bg-surface-1 flex flex-col rounded-[12px] border p-5',
         className
       )}
     >
       {/* 1. Header: Title + Count Badge + Search + View all link */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-4 border-b border-border/60">
+      <div className="border-border/60 flex flex-col justify-between gap-3 border-b pb-4 sm:flex-row sm:items-center">
         <div className="flex items-center gap-2.5">
           <h2 className="text-text text-[16px] leading-[24px] font-semibold tracking-[-0.01em]">
             {title}
           </h2>
           {openings.length > 0 && (
-            <span className="text-[11px] font-semibold text-text-muted bg-surface-3 border border-border/60 px-2 py-0.5 rounded-full tabular-nums">
+            <span className="text-text-muted bg-surface-3 border-border/60 rounded-full border px-2 py-0.5 text-[11px] font-semibold tabular-nums">
               {openings.length}
             </span>
           )}
@@ -151,14 +151,14 @@ export function ActiveOpeningsCard({
               onChange={(e) => setSearchQuery(e.target.value)}
               placeholder="Search roles..."
               aria-label="Search active openings"
-              className="bg-surface-2/40 border-border/70 hover:border-border focus:border-border-strong h-7.5 w-full pl-8 pr-2 text-[12px] rounded-[6px]"
+              className="bg-surface-2/40 border-border/70 hover:border-border focus:border-border-strong h-7.5 w-full rounded-[6px] pr-2 pl-8 text-[12px]"
             />
           </div>
 
           {viewAllHref && (
             <Link
               href={viewAllHref}
-              className="inline-flex items-center gap-1 text-[13px] leading-[20px] font-medium text-text-muted hover:text-text transition-colors shrink-0"
+              className="text-text-muted hover:text-text inline-flex shrink-0 items-center gap-1 text-[13px] leading-[20px] font-medium transition-colors"
             >
               <span>View all</span>
               <ChevronRight className="h-3.5 w-3.5" />
@@ -167,20 +167,18 @@ export function ActiveOpeningsCard({
         </div>
       </div>
 
-      {subtitle && (
-        <p className="text-text-muted mt-1 text-[13px] leading-[20px]">{subtitle}</p>
-      )}
+      {subtitle && <p className="text-text-muted mt-1 text-[13px] leading-[20px]">{subtitle}</p>}
 
       {/* 2. Content */}
       <div className="pt-4">
         {isLoading ? (
-          <div className="flex gap-3.5 overflow-x-auto pb-2 items-start scrollbar-thin">
+          <div className="flex scrollbar-thin items-start gap-3.5 overflow-x-auto pb-2">
             {[1, 2, 3].map((i) => (
               <div
                 key={i}
-                className="flex-1 min-w-[270px] sm:min-w-[290px] max-w-[360px] rounded-[12px] bg-surface-2/30 border border-border/70 border-t-2 border-t-accent p-3 space-y-2.5"
+                className="bg-surface-2/30 border-border/70 border-t-accent max-w-[360px] min-w-[270px] flex-1 space-y-2.5 rounded-[12px] border border-t-2 p-3 sm:min-w-[290px]"
               >
-                <div className="flex items-center justify-between pb-2 border-b border-border/60">
+                <div className="border-border/60 flex items-center justify-between border-b pb-2">
                   <Skeleton className="h-5 w-28 rounded-[4px]" />
                   <Skeleton className="h-4 w-6 rounded-full" />
                 </div>
@@ -193,21 +191,23 @@ export function ActiveOpeningsCard({
           </div>
         ) : openings.length === 0 ? (
           <div className="py-12 text-center select-none">
-            <p className="text-[13px] leading-[20px] text-text-muted">No active openings.</p>
+            <p className="text-text-muted text-[13px] leading-[20px]">No active openings.</p>
           </div>
         ) : departmentGroups.length === 0 ? (
           <div className="py-12 text-center select-none">
-            <p className="text-[13px] leading-[20px] text-text-muted">No roles match &quot;{searchQuery}&quot;</p>
+            <p className="text-text-muted text-[13px] leading-[20px]">
+              No roles match &quot;{searchQuery}&quot;
+            </p>
             <button
               type="button"
               onClick={() => setSearchQuery('')}
-              className="text-[12px] text-accent hover:underline mt-1 cursor-pointer"
+              className="text-accent mt-1 cursor-pointer text-[12px] hover:underline"
             >
               Clear search
             </button>
           </div>
         ) : (
-          <div className="flex gap-3.5 overflow-x-auto pb-2 items-start scrollbar-thin">
+          <div className="flex scrollbar-thin items-start gap-3.5 overflow-x-auto pb-2">
             {departmentGroups.map((group) => {
               const GroupIcon = group.icon;
               const totalInDept = group.openings.length;
@@ -220,20 +220,20 @@ export function ActiveOpeningsCard({
               return (
                 <div
                   key={group.id}
-                  className="flex-1 min-w-[340px] sm:min-w-[370px] max-w-[430px] shrink-0 flex flex-col justify-between rounded-[12px] bg-surface-2/30 border border-border/70 p-3.5 space-y-2.5"
+                  className="bg-surface-2/30 border-border/70 flex max-w-[430px] min-w-[340px] flex-1 shrink-0 flex-col justify-between space-y-2.5 rounded-[12px] border p-3.5 sm:min-w-[370px]"
                 >
                   <div className="space-y-2.5">
                     {/* Column Header */}
-                    <div className="flex items-center justify-between pb-2 border-b border-border/60">
-                      <div className="flex items-center gap-2 min-w-0">
-                        <div className="flex h-6 w-6 items-center justify-center rounded-[6px] bg-surface-3/80 text-text-muted border border-border/60 shrink-0">
+                    <div className="border-border/60 flex items-center justify-between border-b pb-2">
+                      <div className="flex min-w-0 items-center gap-2">
+                        <div className="bg-surface-3/80 text-text-muted border-border/60 flex h-6 w-6 shrink-0 items-center justify-center rounded-[6px] border">
                           <GroupIcon className="h-3.5 w-3.5" />
                         </div>
-                        <h3 className="text-[13px] font-semibold text-text truncate">
+                        <h3 className="text-text truncate text-[13px] font-semibold">
                           {group.title}
                         </h3>
                       </div>
-                      <span className="text-[11px] font-semibold text-text-muted bg-surface-3/90 border border-border/60 px-2 py-0.5 rounded-full shrink-0 tabular-nums">
+                      <span className="text-text-muted bg-surface-3/90 border-border/60 shrink-0 rounded-full border px-2 py-0.5 text-[11px] font-semibold tabular-nums">
                         {totalInDept}
                       </span>
                     </div>
@@ -259,7 +259,7 @@ export function ActiveOpeningsCard({
 
                   {/* Per-Column Pagination Footer when more than pageSize openings */}
                   {deptTotalPages > 1 && (
-                    <div className="flex items-center justify-between pt-2.5 mt-1 border-t border-border/50 text-[11.5px] select-none">
+                    <div className="border-border/50 mt-1 flex items-center justify-between border-t pt-2.5 text-[11.5px] select-none">
                       <button
                         type="button"
                         disabled={validDeptPage <= 1}
@@ -269,7 +269,7 @@ export function ActiveOpeningsCard({
                             [group.id]: Math.max(1, validDeptPage - 1),
                           }))
                         }
-                        className="h-6 w-6 inline-flex items-center justify-center rounded-[5px] border border-border/70 bg-surface-1 text-text-muted hover:text-text hover:bg-surface-2 disabled:opacity-25 disabled:cursor-not-allowed transition-colors cursor-pointer shadow-2xs"
+                        className="border-border/70 bg-surface-1 text-text-muted hover:text-text hover:bg-surface-2 inline-flex h-6 w-6 cursor-pointer items-center justify-center rounded-[5px] border shadow-2xs transition-colors disabled:cursor-not-allowed disabled:opacity-25"
                         title="Previous page"
                         aria-label="Previous page"
                       >
@@ -289,7 +289,7 @@ export function ActiveOpeningsCard({
                             [group.id]: Math.min(deptTotalPages, validDeptPage + 1),
                           }))
                         }
-                        className="h-6 w-6 inline-flex items-center justify-center rounded-[5px] border border-border/70 bg-surface-1 text-text-muted hover:text-text hover:bg-surface-2 disabled:opacity-25 disabled:cursor-not-allowed transition-colors cursor-pointer shadow-2xs"
+                        className="border-border/70 bg-surface-1 text-text-muted hover:text-text hover:bg-surface-2 inline-flex h-6 w-6 cursor-pointer items-center justify-center rounded-[5px] border shadow-2xs transition-colors disabled:cursor-not-allowed disabled:opacity-25"
                         title="Next page"
                         aria-label="Next page"
                       >

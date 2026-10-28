@@ -48,7 +48,6 @@ import {
   Columns3,
   List,
   SlidersHorizontal,
-  Sparkles,
 } from 'lucide-react';
 import { toast } from 'sonner';
 
@@ -204,17 +203,18 @@ export function OpeningsTable() {
           const allowedTransitions = getNextAllowedOpeningStatuses(opening.status);
 
           return (
-            <div className="flex items-center justify-end gap-1.5" onClick={(e) => e.stopPropagation()}>
-              <Button
-                variant="outline"
-                size="sm"
+            <div
+              className="flex items-center justify-end gap-1.5"
+              onClick={(e) => e.stopPropagation()}
+            >
+              <button
+                type="button"
                 onClick={() => setAiMatchOpening(opening)}
-                className="border-accent/30 bg-accent/10 text-accent hover:bg-accent/20 h-7 gap-1 px-2 text-[11px] font-semibold"
+                className="inline-flex cursor-pointer items-center justify-center rounded-[5px] border-0 bg-blue-600 px-2.5 py-1 text-[11px] font-semibold text-white shadow-2xs transition-colors select-none hover:bg-blue-700 active:scale-95 active:bg-blue-800"
                 title="Match candidates with AI"
               >
-                <Sparkles className="h-3 w-3" />
                 <span>AI Match</span>
-              </Button>
+              </button>
 
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
@@ -266,7 +266,7 @@ export function OpeningsTable() {
   );
 
   return (
-    <div className="space-y-3.5 -mt-1">
+    <div className="-mt-1 space-y-3.5">
       {/* 1. Header Toolbar: Status Pills, Search, Department, and Create Button */}
       <div className="flex flex-wrap items-center justify-between gap-2.5">
         {/* Status Filter Tabs */}
@@ -302,8 +302,7 @@ export function OpeningsTable() {
             {
               id: 'Closed',
               label: 'Closed',
-              count: openings.filter((o) => o.status === 'Closed' || o.status === 'Filled')
-                .length,
+              count: openings.filter((o) => o.status === 'Closed' || o.status === 'Filled').length,
             },
           ].map((tab) => {
             const isSelected = selectedStatus === tab.id;
@@ -341,7 +340,7 @@ export function OpeningsTable() {
               onChange={(e) => setSearchQuery(e.target.value)}
               placeholder="Search openings..."
               aria-label="Search openings"
-              className="bg-surface-1 border-border/80 focus:border-border-strong h-8 w-full pl-8 pr-2.5 text-[12.5px]"
+              className="bg-surface-1 border-border/80 focus:border-border-strong h-8 w-full pr-2.5 pl-8 text-[12.5px]"
             />
           </div>
 

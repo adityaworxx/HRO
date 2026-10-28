@@ -337,7 +337,7 @@ export function DateTimePicker({
                   setSelectedDate(updated);
                   onChange?.(formatToInputValue(updated));
                 }}
-                className="text-[10px] text-accent font-medium hover:underline cursor-pointer"
+                className="text-accent cursor-pointer text-[10px] font-medium hover:underline"
               >
                 Now
               </button>

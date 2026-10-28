@@ -31,7 +31,7 @@ export function ReorderIcon({
         }
       }}
       className={cn(
-        'cursor-grab active:cursor-grabbing text-text-subtle/60 hover:text-text transition-colors p-0.5 rounded-[4px] hover:bg-surface-2 focus:outline-none flex items-center justify-center shrink-0',
+        'text-text-subtle/60 hover:text-text hover:bg-surface-2 flex shrink-0 cursor-grab items-center justify-center rounded-[4px] p-0.5 transition-colors focus:outline-none active:cursor-grabbing',
         isActive && 'text-text bg-surface-3 cursor-grabbing',
         className
       )}
@@ -55,4 +55,3 @@ export function ReorderIcon({
     </motion.button>
   );
 }
-

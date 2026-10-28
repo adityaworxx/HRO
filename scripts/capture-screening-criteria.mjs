@@ -1,12 +1,13 @@
 import { chromium } from '@playwright/test';
 import path from 'node:path';
 
-const artifactDir = 'C:\\Users\\adity\\.gemini\\antigravity\\brain\\fc37d0ad-3708-4d7f-8488-7ab9c4414fa2';
+const artifactDir =
+  'C:\\Users\\adity\\.gemini\\antigravity\\brain\\fc37d0ad-3708-4d7f-8488-7ab9c4414fa2';
 
 async function capture() {
   const browser = await chromium.launch({
     headless: true,
-    executablePath: 'C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe'
+    executablePath: 'C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe',
   });
 
   const page = await browser.newPage({ viewport: { width: 1440, height: 1000 } });
@@ -53,7 +54,9 @@ async function capture() {
   }
 
   // Type custom skill "GraphQL" in Must-Have
-  const mustInput = page.locator('input[placeholder*="Type a skill"], input[placeholder*="Add skill"]').first();
+  const mustInput = page
+    .locator('input[placeholder*="Type a skill"], input[placeholder*="Add skill"]')
+    .first();
   await mustInput.fill('GraphQL');
   await page.keyboard.press('Enter');
   await page.waitForTimeout(400);
@@ -69,4 +72,3 @@ capture().catch((err) => {
   console.error(err);
   process.exit(1);
 });
-

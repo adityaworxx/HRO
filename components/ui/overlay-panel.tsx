@@ -23,4 +23,3 @@ export const OverlayPanel = React.forwardRef<HTMLDivElement, OverlayPanelProps>(
   }
 );
 OverlayPanel.displayName = 'OverlayPanel';
-

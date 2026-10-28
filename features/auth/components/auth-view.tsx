@@ -55,7 +55,9 @@ export function AuthView({ initialMode = 'login' }: AuthViewProps) {
   // Quick 1-click persona switch
   const handleQuickLogin = (role: 'manager' | 'hr', personaName: string) => {
     setRole(role);
-    toast.success(`Logged in as ${personaName} (${role === 'manager' ? 'Hiring Manager' : 'HR Specialist'})`);
+    toast.success(
+      `Logged in as ${personaName} (${role === 'manager' ? 'Hiring Manager' : 'HR Specialist'})`
+    );
     router.push('/');
   };
 
@@ -79,12 +81,12 @@ export function AuthView({ initialMode = 'login' }: AuthViewProps) {
   };
 
   return (
-    <div className="bg-bg text-text min-h-screen flex flex-col lg:grid lg:grid-cols-12 overflow-x-hidden">
+    <div className="bg-bg text-text flex min-h-screen flex-col overflow-x-hidden lg:grid lg:grid-cols-12">
       {/* LEFT COLUMN: Visual Brand Showcase (lg:col-span-5) */}
-      <div className="relative hidden lg:flex lg:col-span-5 flex-col justify-between border-r border-border bg-surface-2/30 p-10 overflow-hidden">
+      <div className="border-border bg-surface-2/30 relative hidden flex-col justify-between overflow-hidden border-r p-10 lg:col-span-5 lg:flex">
         {/* Subtle decorative radial glow and grid texture */}
-        <div className="pointer-events-none absolute -top-32 -left-32 h-96 w-96 rounded-full bg-accent-subtle blur-3xl opacity-60" />
-        <div className="pointer-events-none absolute -bottom-32 -right-32 h-96 w-96 rounded-full bg-accent-subtle blur-3xl opacity-40" />
+        <div className="bg-accent-subtle pointer-events-none absolute -top-32 -left-32 h-96 w-96 rounded-full opacity-60 blur-3xl" />
+        <div className="bg-accent-subtle pointer-events-none absolute -right-32 -bottom-32 h-96 w-96 rounded-full opacity-40 blur-3xl" />
 
         {/* Top Header Logo & Platform Badge */}
         <div className="relative z-10 flex items-center justify-between">
@@ -95,11 +97,13 @@ export function AuthView({ initialMode = 'login' }: AuthViewProps) {
             <div>
               <div className="flex items-center gap-2">
                 <span className="text-text text-[17px] font-bold tracking-tight">HRO</span>
-                <span className="bg-accent-subtle text-accent rounded-[4px] px-1.5 py-0.5 text-[10.5px] font-semibold uppercase tracking-wider">
+                <span className="bg-accent-subtle text-accent rounded-[4px] px-1.5 py-0.5 text-[10.5px] font-semibold tracking-wider uppercase">
                   Enterprise
                 </span>
               </div>
-              <p className="text-text-subtle text-[11.5px] font-medium">Recruitment Operations Platform</p>
+              <p className="text-text-subtle text-[11.5px] font-medium">
+                Recruitment Operations Platform
+              </p>
             </div>
           </div>
         </div>
@@ -108,84 +112,93 @@ export function AuthView({ initialMode = 'login' }: AuthViewProps) {
         <div className="relative z-10 my-auto space-y-6 py-6">
           {/* Main Title & Vision */}
           <div className="space-y-2">
-            <h2 className="text-text text-[26px] font-bold tracking-tight leading-[1.25]">
+            <h2 className="text-text text-[26px] leading-[1.25] font-bold tracking-tight">
               The modern operating system for high-growth hiring.
             </h2>
             <p className="text-text-muted text-[13.5px] leading-relaxed">
-              Orchestrate talent sourcing, streamline manager review queues, and coordinate technical interviews in one unified workspace.
+              Orchestrate talent sourcing, streamline manager review queues, and coordinate
+              technical interviews in one unified workspace.
             </p>
           </div>
 
           {/* Interactive Live Pipeline Health & Metric Widget (No personal names) */}
-          <div className="rounded-[10px] border border-border/80 bg-surface-1 p-4 shadow-sm select-none space-y-3.5">
+          <div className="border-border/80 bg-surface-1 space-y-3.5 rounded-[10px] border p-4 shadow-sm select-none">
             {/* Widget Status Header */}
-            <div className="flex items-center justify-between border-b border-border/60 pb-2.5">
+            <div className="border-border/60 flex items-center justify-between border-b pb-2.5">
               <div className="flex items-center gap-2">
                 <span className="relative flex h-2 w-2">
-                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75" />
-                  <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500" />
+                  <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-400 opacity-75" />
+                  <span className="relative inline-flex h-2 w-2 rounded-full bg-emerald-500" />
                 </span>
-                <span className="text-text text-[12px] font-semibold tracking-tight">Active Pipeline Velocity</span>
+                <span className="text-text text-[12px] font-semibold tracking-tight">
+                  Active Pipeline Velocity
+                </span>
               </div>
-              <span className="text-accent text-[11px] font-semibold uppercase tracking-wider font-mono">
+              <span className="text-accent font-mono text-[11px] font-semibold tracking-wider uppercase">
                 Live Overview
               </span>
             </div>
 
             {/* Stage Progress Columns */}
             <div className="grid grid-cols-4 gap-2">
-              <div className="rounded-[6px] border border-border/70 bg-surface-2/40 p-2 text-center">
-                <p className="text-text text-[15px] font-bold font-mono tabular-nums">14</p>
-                <p className="text-text-subtle text-[10.5px] font-medium mt-0.5 truncate">Sourced</p>
+              <div className="border-border/70 bg-surface-2/40 rounded-[6px] border p-2 text-center">
+                <p className="text-text font-mono text-[15px] font-bold tabular-nums">14</p>
+                <p className="text-text-subtle mt-0.5 truncate text-[10.5px] font-medium">
+                  Sourced
+                </p>
               </div>
 
-              <div className="rounded-[6px] border border-accent/40 bg-accent-subtle/25 p-2 text-center">
-                <p className="text-accent text-[15px] font-bold font-mono tabular-nums">3</p>
-                <p className="text-accent text-[10.5px] font-semibold mt-0.5 truncate">Review</p>
+              <div className="border-accent/40 bg-accent-subtle/25 rounded-[6px] border p-2 text-center">
+                <p className="text-accent font-mono text-[15px] font-bold tabular-nums">3</p>
+                <p className="text-accent mt-0.5 truncate text-[10.5px] font-semibold">Review</p>
               </div>
 
-              <div className="rounded-[6px] border border-border/70 bg-surface-2/40 p-2 text-center">
-                <p className="text-text text-[15px] font-bold font-mono tabular-nums">5</p>
-                <p className="text-text-subtle text-[10.5px] font-medium mt-0.5 truncate">Interview</p>
+              <div className="border-border/70 bg-surface-2/40 rounded-[6px] border p-2 text-center">
+                <p className="text-text font-mono text-[15px] font-bold tabular-nums">5</p>
+                <p className="text-text-subtle mt-0.5 truncate text-[10.5px] font-medium">
+                  Interview
+                </p>
               </div>
 
-              <div className="rounded-[6px] border border-border/70 bg-surface-2/40 p-2 text-center">
-                <p className="text-text text-[15px] font-bold font-mono tabular-nums">2</p>
-                <p className="text-text-subtle text-[10.5px] font-medium mt-0.5 truncate">Offered</p>
+              <div className="border-border/70 bg-surface-2/40 rounded-[6px] border p-2 text-center">
+                <p className="text-text font-mono text-[15px] font-bold tabular-nums">2</p>
+                <p className="text-text-subtle mt-0.5 truncate text-[10.5px] font-medium">
+                  Offered
+                </p>
               </div>
             </div>
 
             {/* Quick Efficiency KPI Metrics */}
-            <div className="border-t border-border/60 pt-2.5 grid grid-cols-2 gap-3 text-[11.5px]">
+            <div className="border-border/60 grid grid-cols-2 gap-3 border-t pt-2.5 text-[11.5px]">
               <div className="flex items-center justify-between">
                 <span className="text-text-subtle font-medium">Avg. Time-to-Hire</span>
-                <span className="text-text font-bold font-mono">18 Days</span>
+                <span className="text-text font-mono font-bold">18 Days</span>
               </div>
               <div className="flex items-center justify-between">
                 <span className="text-text-subtle font-medium">Offer Acceptance</span>
-                <span className="text-text font-bold font-mono">94.2%</span>
+                <span className="text-text font-mono font-bold">94.2%</span>
               </div>
             </div>
           </div>
 
           {/* Platform Capabilities List */}
           <div className="space-y-2.5 pt-1">
-            <div className="flex items-center gap-2.5 text-[12.5px] text-text">
-              <div className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-accent-subtle text-accent">
+            <div className="text-text flex items-center gap-2.5 text-[12.5px]">
+              <div className="bg-accent-subtle text-accent flex h-5 w-5 shrink-0 items-center justify-center rounded-full">
                 <GitPullRequest className="h-3 w-3 stroke-[2.2]" />
               </div>
               <span className="font-medium">7-Stage Real-time Drag & Drop Kanban</span>
             </div>
 
-            <div className="flex items-center gap-2.5 text-[12.5px] text-text">
-              <div className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-accent-subtle text-accent">
+            <div className="text-text flex items-center gap-2.5 text-[12.5px]">
+              <div className="bg-accent-subtle text-accent flex h-5 w-5 shrink-0 items-center justify-center rounded-full">
                 <Sparkles className="h-3 w-3 stroke-[2.2]" />
               </div>
               <span className="font-medium">Instant Manager Shortlist Approvals</span>
             </div>
 
-            <div className="flex items-center gap-2.5 text-[12.5px] text-text">
-              <div className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-accent-subtle text-accent">
+            <div className="text-text flex items-center gap-2.5 text-[12.5px]">
+              <div className="bg-accent-subtle text-accent flex h-5 w-5 shrink-0 items-center justify-center rounded-full">
                 <ShieldCheck className="h-3 w-3 stroke-[2.2]" />
               </div>
               <span className="font-medium">Role-Based Access Control (RBAC) & Audit Logs</span>
@@ -194,16 +207,16 @@ export function AuthView({ initialMode = 'login' }: AuthViewProps) {
         </div>
 
         {/* Footer Security Compliance */}
-        <div className="relative z-10 flex items-center gap-2 text-text-subtle text-[11.5px]">
-          <ShieldCheck className="h-4 w-4 text-accent shrink-0" />
+        <div className="text-text-subtle relative z-10 flex items-center gap-2 text-[11.5px]">
+          <ShieldCheck className="text-accent h-4 w-4 shrink-0" />
           <span>SOC2 Type II Certified · Role-Based Security · 99.99% Uptime</span>
         </div>
       </div>
 
       {/* RIGHT COLUMN: Auth Form (lg:col-span-7) */}
-      <div className="flex-1 lg:col-span-7 flex flex-col justify-between p-6 sm:p-8 lg:p-10 min-h-screen">
+      <div className="flex min-h-screen flex-1 flex-col justify-between p-6 sm:p-8 lg:col-span-7 lg:p-10">
         {/* Top Bar with Mode/Theme Controls */}
-        <div className="flex items-center justify-between w-full">
+        <div className="flex w-full items-center justify-between">
           <div className="flex items-center gap-2 lg:hidden">
             <div className="bg-accent flex h-8 w-8 items-center justify-center rounded-[8px] font-bold text-white shadow-xs">
               H
@@ -216,9 +229,9 @@ export function AuthView({ initialMode = 'login' }: AuthViewProps) {
         </div>
 
         {/* Central Auth Container - Balanced Width */}
-        <div className="my-auto w-full max-w-[440px] mx-auto py-4">
+        <div className="mx-auto my-auto w-full max-w-[440px] py-4">
           {/* Form Header */}
-          <div className="space-y-1.5 text-center mb-5">
+          <div className="mb-5 space-y-1.5 text-center">
             <h1 className="text-text text-[22px] font-bold tracking-tight">
               {mode === 'login' ? 'Welcome back to HRO' : 'Create your HRO account'}
             </h1>
@@ -230,12 +243,12 @@ export function AuthView({ initialMode = 'login' }: AuthViewProps) {
           </div>
 
           {/* Tab Switcher (Sign In / Register) */}
-          <div className="grid grid-cols-2 rounded-[8px] border border-border bg-surface-2 p-1 mb-5">
+          <div className="border-border bg-surface-2 mb-5 grid grid-cols-2 rounded-[8px] border p-1">
             <button
               type="button"
               onClick={() => setMode('login')}
               className={cn(
-                'rounded-[6px] py-1.5 text-[13px] font-semibold transition-all duration-150 cursor-pointer',
+                'cursor-pointer rounded-[6px] py-1.5 text-[13px] font-semibold transition-all duration-150',
                 mode === 'login'
                   ? 'bg-surface-1 text-text shadow-xs'
                   : 'text-text-muted hover:text-text'
@@ -247,7 +260,7 @@ export function AuthView({ initialMode = 'login' }: AuthViewProps) {
               type="button"
               onClick={() => setMode('register')}
               className={cn(
-                'rounded-[6px] py-1.5 text-[13px] font-semibold transition-all duration-150 cursor-pointer',
+                'cursor-pointer rounded-[6px] py-1.5 text-[13px] font-semibold transition-all duration-150',
                 mode === 'register'
                   ? 'bg-surface-1 text-text shadow-xs'
                   : 'text-text-muted hover:text-text'
@@ -262,18 +275,18 @@ export function AuthView({ initialMode = 'login' }: AuthViewProps) {
             {mode === 'register' ? (
               <>
                 {/* 2-Column Row 1: Full Name & Work Email */}
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
                   <div className="space-y-1">
                     <label className="text-text text-[12px] font-medium">Full Name</label>
                     <div className="relative">
-                      <User className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-text-subtle" />
+                      <User className="text-text-subtle pointer-events-none absolute top-1/2 left-3 h-3.5 w-3.5 -translate-y-1/2" />
                       <Input
                         type="text"
                         required
                         placeholder="e.g. Rahul Sharma"
                         value={fullName}
                         onChange={(e) => setFullName(e.target.value)}
-                        className="pl-8.5 h-9.5 rounded-[8px] text-[13px]"
+                        className="h-9.5 rounded-[8px] pl-8.5 text-[13px]"
                       />
                     </div>
                   </div>
@@ -281,49 +294,49 @@ export function AuthView({ initialMode = 'login' }: AuthViewProps) {
                   <div className="space-y-1">
                     <label className="text-text text-[12px] font-medium">Work Email</label>
                     <div className="relative">
-                      <Mail className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-text-subtle" />
+                      <Mail className="text-text-subtle pointer-events-none absolute top-1/2 left-3 h-3.5 w-3.5 -translate-y-1/2" />
                       <Input
                         type="email"
                         required
                         placeholder="name@company.com"
                         value={email}
                         onChange={(e) => setEmail(e.target.value)}
-                        className="pl-8.5 h-9.5 rounded-[8px] text-[13px]"
+                        className="h-9.5 rounded-[8px] pl-8.5 text-[13px]"
                       />
                     </div>
                   </div>
                 </div>
 
                 {/* 2-Column Row 2: Role Selector & Department */}
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
                   {/* Compact Role Selector */}
                   <div className="space-y-1">
                     <label className="text-text text-[12px] font-medium">Your Role</label>
-                    <div className="grid grid-cols-2 rounded-[8px] border border-border bg-surface-2 p-1 h-9.5">
+                    <div className="border-border bg-surface-2 grid h-9.5 grid-cols-2 rounded-[8px] border p-1">
                       <button
                         type="button"
                         onClick={() => setSelectedRole('manager')}
                         className={cn(
-                          'flex items-center justify-center gap-1.5 rounded-[6px] text-[12px] font-medium transition-all duration-150 cursor-pointer select-none',
+                          'flex cursor-pointer items-center justify-center gap-1.5 rounded-[6px] text-[12px] font-medium transition-all duration-150 select-none',
                           selectedRole === 'manager'
-                            ? 'bg-surface-1 text-text shadow-xs font-semibold'
+                            ? 'bg-surface-1 text-text font-semibold shadow-xs'
                             : 'text-text-muted hover:text-text'
                         )}
                       >
-                        <Briefcase className="h-3.5 w-3.5 text-accent shrink-0" />
+                        <Briefcase className="text-accent h-3.5 w-3.5 shrink-0" />
                         <span>Manager</span>
                       </button>
                       <button
                         type="button"
                         onClick={() => setSelectedRole('hr')}
                         className={cn(
-                          'flex items-center justify-center gap-1.5 rounded-[6px] text-[12px] font-medium transition-all duration-150 cursor-pointer select-none',
+                          'flex cursor-pointer items-center justify-center gap-1.5 rounded-[6px] text-[12px] font-medium transition-all duration-150 select-none',
                           selectedRole === 'hr'
-                            ? 'bg-surface-1 text-text shadow-xs font-semibold'
+                            ? 'bg-surface-1 text-text font-semibold shadow-xs'
                             : 'text-text-muted hover:text-text'
                         )}
                       >
-                        <Users className="h-3.5 w-3.5 text-accent shrink-0" />
+                        <Users className="text-accent h-3.5 w-3.5 shrink-0" />
                         <span>HR Talent</span>
                       </button>
                     </div>
@@ -333,11 +346,11 @@ export function AuthView({ initialMode = 'login' }: AuthViewProps) {
                   <div className="space-y-1">
                     <label className="text-text text-[12px] font-medium">Department</label>
                     <div className="relative">
-                      <Building2 className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-text-subtle" />
+                      <Building2 className="text-text-subtle pointer-events-none absolute top-1/2 left-3 h-3.5 w-3.5 -translate-y-1/2" />
                       <select
                         value={department}
                         onChange={(e) => setDepartment(e.target.value)}
-                        className="bg-surface-2 text-text border border-border h-9.5 w-full rounded-[8px] pl-8.5 pr-8 text-[12.5px] font-medium transition-colors focus:border-border-strong focus:outline-none appearance-none cursor-pointer"
+                        className="bg-surface-2 text-text border-border focus:border-border-strong h-9.5 w-full cursor-pointer appearance-none rounded-[8px] border pr-8 pl-8.5 text-[12.5px] font-medium transition-colors focus:outline-none"
                       >
                         <option value="Engineering">Engineering</option>
                         <option value="Product">Product</option>
@@ -346,7 +359,7 @@ export function AuthView({ initialMode = 'login' }: AuthViewProps) {
                         <option value="Operations">Operations</option>
                         <option value="People Ops">People Operations / HR</option>
                       </select>
-                      <div className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-text-subtle text-[10px]">
+                      <div className="text-text-subtle pointer-events-none absolute top-1/2 right-3 -translate-y-1/2 text-[10px]">
                         ▼
                       </div>
                     </div>
@@ -357,19 +370,19 @@ export function AuthView({ initialMode = 'login' }: AuthViewProps) {
                 <div className="space-y-1">
                   <label className="text-text text-[12px] font-medium">Create Password</label>
                   <div className="relative">
-                    <Lock className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-text-subtle" />
+                    <Lock className="text-text-subtle pointer-events-none absolute top-1/2 left-3 h-3.5 w-3.5 -translate-y-1/2" />
                     <Input
                       type={showPassword ? 'text' : 'password'}
                       required
                       placeholder="At least 8 characters"
                       value={password}
                       onChange={(e) => setPassword(e.target.value)}
-                      className="pl-8.5 pr-10 h-9.5 rounded-[8px] text-[13px]"
+                      className="h-9.5 rounded-[8px] pr-10 pl-8.5 text-[13px]"
                     />
                     <button
                       type="button"
                       onClick={() => setShowPassword(!showPassword)}
-                      className="absolute right-3 top-1/2 -translate-y-1/2 text-text-subtle hover:text-text cursor-pointer"
+                      className="text-text-subtle hover:text-text absolute top-1/2 right-3 -translate-y-1/2 cursor-pointer"
                     >
                       {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
                     </button>
@@ -385,7 +398,7 @@ export function AuthView({ initialMode = 'login' }: AuthViewProps) {
                   />
                   <label
                     htmlFor="agree-terms"
-                    className="text-text-muted text-[12px] cursor-pointer select-none font-medium leading-tight"
+                    className="text-text-muted cursor-pointer text-[12px] leading-tight font-medium select-none"
                   >
                     I agree to the HRO Platform Terms and Privacy Policy
                   </label>
@@ -397,14 +410,14 @@ export function AuthView({ initialMode = 'login' }: AuthViewProps) {
                 <div className="space-y-1">
                   <label className="text-text text-[12px] font-medium">Email Address</label>
                   <div className="relative">
-                    <Mail className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-text-subtle" />
+                    <Mail className="text-text-subtle pointer-events-none absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2" />
                     <Input
                       type="email"
                       required
                       placeholder="name@company.com"
                       value={email}
                       onChange={(e) => setEmail(e.target.value)}
-                      className="pl-9 h-10 rounded-[8px] text-[13.5px]"
+                      className="h-10 rounded-[8px] pl-9 text-[13.5px]"
                     />
                   </div>
                 </div>
@@ -415,26 +428,28 @@ export function AuthView({ initialMode = 'login' }: AuthViewProps) {
                     <label className="text-text text-[12px] font-medium">Password</label>
                     <button
                       type="button"
-                      onClick={() => toast.info('For this demo, any password or 1-click persona works!')}
-                      className="text-[11.5px] font-medium text-accent hover:underline cursor-pointer"
+                      onClick={() =>
+                        toast.info('For this demo, any password or 1-click persona works!')
+                      }
+                      className="text-accent cursor-pointer text-[11.5px] font-medium hover:underline"
                     >
                       Forgot password?
                     </button>
                   </div>
                   <div className="relative">
-                    <Lock className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-text-subtle" />
+                    <Lock className="text-text-subtle pointer-events-none absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2" />
                     <Input
                       type={showPassword ? 'text' : 'password'}
                       required
                       placeholder="••••••••••••"
                       value={password}
                       onChange={(e) => setPassword(e.target.value)}
-                      className="pl-9 pr-10 h-10 rounded-[8px] text-[13.5px]"
+                      className="h-10 rounded-[8px] pr-10 pl-9 text-[13.5px]"
                     />
                     <button
                       type="button"
                       onClick={() => setShowPassword(!showPassword)}
-                      className="absolute right-3 top-1/2 -translate-y-1/2 text-text-subtle hover:text-text cursor-pointer"
+                      className="text-text-subtle hover:text-text absolute top-1/2 right-3 -translate-y-1/2 cursor-pointer"
                     >
                       {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
                     </button>
@@ -450,7 +465,7 @@ export function AuthView({ initialMode = 'login' }: AuthViewProps) {
                   />
                   <label
                     htmlFor="remember-me"
-                    className="text-text-muted text-[12.5px] cursor-pointer select-none font-medium"
+                    className="text-text-muted cursor-pointer text-[12.5px] font-medium select-none"
                   >
                     Keep me signed in for 30 days
                   </label>
@@ -463,20 +478,22 @@ export function AuthView({ initialMode = 'login' }: AuthViewProps) {
               type="submit"
               variant="primary"
               loading={isSubmitting}
-              className="w-full h-10 rounded-[8px] text-[13.5px] font-semibold gap-2 mt-2 shadow-2xs cursor-pointer"
+              className="mt-2 h-10 w-full cursor-pointer gap-2 rounded-[8px] text-[13.5px] font-semibold shadow-2xs"
             >
-              <span>{mode === 'login' ? 'Sign In to Workspace' : 'Create Account & Enter HRO'}</span>
+              <span>
+                {mode === 'login' ? 'Sign In to Workspace' : 'Create Account & Enter HRO'}
+              </span>
               <ArrowRight className="h-4 w-4" />
             </Button>
           </form>
 
           {/* Quick Access Demo Personas (Available in both, styled cleanly) */}
-          <div className="mt-6 pt-5 border-t border-border/80 space-y-2.5">
+          <div className="border-border/80 mt-6 space-y-2.5 border-t pt-5">
             <div className="flex items-center justify-between">
-              <span className="text-text-subtle text-[11px] font-semibold uppercase tracking-wider">
+              <span className="text-text-subtle text-[11px] font-semibold tracking-wider uppercase">
                 1-Click Demo Persona Access
               </span>
-              <span className="text-[10.5px] text-accent font-medium">Instant Test</span>
+              <span className="text-accent text-[10.5px] font-medium">Instant Test</span>
             </div>
 
             <div className="grid grid-cols-2 gap-2">
@@ -484,52 +501,55 @@ export function AuthView({ initialMode = 'login' }: AuthViewProps) {
               <button
                 type="button"
                 onClick={() => handleQuickLogin('manager', managerUser?.name ?? 'Arjun Kapoor')}
-                className="group flex items-center justify-between rounded-[8px] border border-border bg-surface-1 p-2 text-left transition-all duration-150 hover:border-accent hover:bg-accent-subtle/15 hover:shadow-2xs cursor-pointer select-none"
+                className="group border-border bg-surface-1 hover:border-accent hover:bg-accent-subtle/15 flex cursor-pointer items-center justify-between rounded-[8px] border p-2 text-left transition-all duration-150 select-none hover:shadow-2xs"
               >
-                <div className="flex items-center gap-2 min-w-0">
+                <div className="flex min-w-0 items-center gap-2">
                   <Avatar className="h-7 w-7 shrink-0">
                     <AvatarFallback className="bg-accent-subtle text-accent text-[10.5px] font-bold">
                       AK
                     </AvatarFallback>
                   </Avatar>
                   <div className="min-w-0">
-                    <p className="text-text text-[12px] font-semibold truncate transition-colors">
+                    <p className="text-text truncate text-[12px] font-semibold transition-colors">
                       {managerUser?.name ?? 'Arjun Kapoor'}
                     </p>
-                    <p className="text-text-subtle text-[10.5px] truncate">Hiring Manager</p>
+                    <p className="text-text-subtle truncate text-[10.5px]">Hiring Manager</p>
                   </div>
                 </div>
-                <ArrowRight className="h-3 w-3 text-text-subtle group-hover:text-text group-hover:translate-x-0.5 transition-all shrink-0 ml-1" />
+                <ArrowRight className="text-text-subtle group-hover:text-text ml-1 h-3 w-3 shrink-0 transition-all group-hover:translate-x-0.5" />
               </button>
 
               {/* Persona 2: HR */}
               <button
                 type="button"
                 onClick={() => handleQuickLogin('hr', hrUser?.name ?? 'Priya Sharma')}
-                className="group flex items-center justify-between rounded-[8px] border border-border bg-surface-1 p-2 text-left transition-all duration-150 hover:border-accent hover:bg-accent-subtle/15 hover:shadow-2xs cursor-pointer select-none"
+                className="group border-border bg-surface-1 hover:border-accent hover:bg-accent-subtle/15 flex cursor-pointer items-center justify-between rounded-[8px] border p-2 text-left transition-all duration-150 select-none hover:shadow-2xs"
               >
-                <div className="flex items-center gap-2 min-w-0">
+                <div className="flex min-w-0 items-center gap-2">
                   <Avatar className="h-7 w-7 shrink-0">
                     <AvatarFallback className="bg-surface-2 text-text text-[10.5px] font-bold">
                       PS
                     </AvatarFallback>
                   </Avatar>
                   <div className="min-w-0">
-                    <p className="text-text text-[12px] font-semibold truncate transition-colors">
+                    <p className="text-text truncate text-[12px] font-semibold transition-colors">
                       {hrUser?.name ?? 'Priya Sharma'}
                     </p>
-                    <p className="text-text-subtle text-[10.5px] truncate">HR Specialist</p>
+                    <p className="text-text-subtle truncate text-[10.5px]">HR Specialist</p>
                   </div>
                 </div>
-                <ArrowRight className="h-3 w-3 text-text-subtle group-hover:text-text group-hover:translate-x-0.5 transition-all shrink-0 ml-1" />
+                <ArrowRight className="text-text-subtle group-hover:text-text ml-1 h-3 w-3 shrink-0 transition-all group-hover:translate-x-0.5" />
               </button>
             </div>
           </div>
         </div>
 
         {/* Footer info */}
-        <div className="text-center text-text-subtle text-[11px] pt-3">
-          <span>Protected by enterprise security. By signing in, you agree to our Terms and Privacy Policy.</span>
+        <div className="text-text-subtle pt-3 text-center text-[11px]">
+          <span>
+            Protected by enterprise security. By signing in, you agree to our Terms and Privacy
+            Policy.
+          </span>
         </div>
       </div>
     </div>

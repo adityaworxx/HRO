@@ -6,4 +6,3 @@ import { PipelineBoard } from '@/features/candidates';
 export default function PipelinePage() {
   return <PipelineBoard />;
 }
-

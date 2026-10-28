@@ -298,4 +298,3 @@ export const DEPARTMENT_PROFILES: Record<string, DepartmentProfile> = {
 export function getDepartmentProfile(department: string): DepartmentProfile {
   return DEPARTMENT_PROFILES[department] || ENGINEERING_PROFILE;
 }
-

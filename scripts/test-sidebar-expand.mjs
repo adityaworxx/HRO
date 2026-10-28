@@ -1,7 +1,8 @@
 import { chromium } from '@playwright/test';
 import path from 'node:path';
 
-const screenshotDir = 'C:/Users/adity/.gemini/antigravity/brain/4445bf77-ea56-4237-9627-e3f6a9dd188c/screenshots';
+const screenshotDir =
+  'C:/Users/adity/.gemini/antigravity/brain/4445bf77-ea56-4237-9627-e3f6a9dd188c/screenshots';
 
 async function testSidebar() {
   console.log('🧪 Testing Sidebar Collapse & Expand...');
@@ -42,7 +43,9 @@ async function testSidebar() {
     await page.waitForTimeout(500);
 
     box = await aside.boundingBox();
-    console.log(`Expanded sidebar width after clicking sidebar button: ${box?.width}px (Expected ~240px)`);
+    console.log(
+      `Expanded sidebar width after clicking sidebar button: ${box?.width}px (Expected ~240px)`
+    );
     if (!box || Math.abs(box.width - 240) > 3) {
       throw new Error(`Expected ~240px, got ${box?.width}`);
     }

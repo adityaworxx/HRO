@@ -18,7 +18,12 @@ const DOT_COLOR_MAP: Record<string, string> = {
   neutral: 'bg-text-subtle',
 };
 
-export function StatusBadge({ status, type = 'opening', showDot = false, className }: StatusBadgeProps) {
+export function StatusBadge({
+  status,
+  type = 'opening',
+  showDot = false,
+  className,
+}: StatusBadgeProps) {
   let config: StatusConfig | undefined;
 
   if (type === 'opening') {
@@ -34,7 +39,7 @@ export function StatusBadge({ status, type = 'opening', showDot = false, classNa
   return (
     <span
       className={cn(
-        'inline-flex items-center text-[13px] leading-[20px] font-normal text-text-muted select-none',
+        'text-text-muted inline-flex items-center text-[13px] leading-[20px] font-normal select-none',
         showDot && 'gap-2',
         className
       )}

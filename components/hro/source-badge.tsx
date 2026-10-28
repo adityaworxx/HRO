@@ -32,7 +32,7 @@ export function SourceBadge({
         {showIcon && (
           <span
             aria-hidden="true"
-            className="flex h-3.5 w-3.5 items-center justify-center rounded-[2px] bg-[var(--source-linkedin-brand)] text-[8.5px] font-bold text-white leading-none shrink-0 select-none"
+            className="flex h-3.5 w-3.5 shrink-0 items-center justify-center rounded-[2px] bg-[var(--source-linkedin-brand)] text-[8.5px] leading-none font-bold text-white select-none"
           >
             in
           </span>
@@ -52,7 +52,7 @@ export function SourceBadge({
             aria-hidden="true"
             width={14}
             height={14}
-            className="h-3.5 w-3.5 rounded-full object-contain shrink-0 select-none"
+            className="h-3.5 w-3.5 shrink-0 rounded-full object-contain select-none"
           />
         )}
         <span>Naukri</span>
@@ -66,7 +66,7 @@ export function SourceBadge({
         {showIcon && (
           <span
             aria-hidden="true"
-            className="flex h-3.5 w-3.5 items-center justify-center rounded-[2px] bg-white text-[var(--source-indeed-brand)] shrink-0 select-none shadow-2xs"
+            className="flex h-3.5 w-3.5 shrink-0 items-center justify-center rounded-[2px] bg-white text-[var(--source-indeed-brand)] shadow-2xs select-none"
           >
             <svg
               role="img"

@@ -224,7 +224,10 @@ export const mockApi: HroApiClient = {
         const mgrNotification: Notification = {
           id: crypto.randomUUID(),
           recipientRole: 'manager',
-          title: updatedList.length === 1 ? 'Candidate Shared for Review' : `${updatedList.length} Candidates Shared for Review`,
+          title:
+            updatedList.length === 1
+              ? 'Candidate Shared for Review'
+              : `${updatedList.length} Candidates Shared for Review`,
           message: `HR shared ${names} for technical review.`,
           timestamp: new Date().toISOString(),
           read: false,
@@ -355,7 +358,9 @@ export const mockApi: HroApiClient = {
         stage,
         managerDecision: 'Pending' as const,
         hrNotes: notes
-          ? (existingCandidate.hrNotes ? `${notes}\n\n${existingCandidate.hrNotes}` : notes)
+          ? existingCandidate.hrNotes
+            ? `${notes}\n\n${existingCandidate.hrNotes}`
+            : notes
           : existingCandidate.hrNotes,
       };
       store.candidates[idx] = updated;

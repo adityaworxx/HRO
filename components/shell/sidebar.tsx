@@ -200,7 +200,7 @@ export function Sidebar() {
             <button
               type="button"
               onClick={handleLogout}
-              className="flex w-full items-center justify-center gap-2 rounded-[8px] border border-border/70 bg-surface-2 p-2.5 text-[13px] font-medium text-text-muted hover:text-danger hover:bg-surface-3 transition-colors cursor-pointer select-none"
+              className="border-border/70 bg-surface-2 text-text-muted hover:text-danger hover:bg-surface-3 flex w-full cursor-pointer items-center justify-center gap-2 rounded-[8px] border p-2.5 text-[13px] font-medium transition-colors select-none"
             >
               <LogOut className="h-4 w-4 stroke-[1.75]" />
               <span>Log out</span>
@@ -213,7 +213,7 @@ export function Sidebar() {
       <TooltipProvider delayDuration={150}>
         <aside
           className={cn(
-            'border-border bg-surface-1 relative hidden h-full flex-col border-r transition-[width] ease-out lg:flex select-none z-10',
+            'border-border bg-surface-1 relative z-10 hidden h-full flex-col border-r transition-[width] ease-out select-none lg:flex',
             isCollapsed ? 'w-16 duration-150' : 'w-60 duration-200'
           )}
         >
@@ -288,7 +288,7 @@ export function Sidebar() {
                   type="button"
                   onClick={handleLogout}
                   aria-label="Log out"
-                  className="hover:bg-surface-2 hover:text-danger text-text-subtle flex h-9 w-9 shrink-0 items-center justify-center rounded-[var(--radius-md)] transition-colors cursor-pointer select-none mx-auto"
+                  className="hover:bg-surface-2 hover:text-danger text-text-subtle mx-auto flex h-9 w-9 shrink-0 cursor-pointer items-center justify-center rounded-[var(--radius-md)] transition-colors select-none"
                 >
                   <LogOut className="h-4 w-4 stroke-[1.75]" />
                 </button>
@@ -297,9 +297,9 @@ export function Sidebar() {
               <button
                 type="button"
                 onClick={handleLogout}
-                className="hover:bg-surface-2 hover:text-danger text-text-muted flex h-9 w-full items-center gap-2.5 rounded-[8px] px-3 text-[13px] font-medium transition-colors cursor-pointer select-none"
+                className="hover:bg-surface-2 hover:text-danger text-text-muted flex h-9 w-full cursor-pointer items-center gap-2.5 rounded-[8px] px-3 text-[13px] font-medium transition-colors select-none"
               >
-                <LogOut className="h-4 w-4 stroke-[1.75] shrink-0" />
+                <LogOut className="h-4 w-4 shrink-0 stroke-[1.75]" />
                 <span className="truncate">Log out</span>
               </button>
             )}

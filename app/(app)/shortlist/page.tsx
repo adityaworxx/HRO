@@ -6,4 +6,3 @@ import { ShortlistReview } from '@/features/candidates';
 export default function ShortlistPage() {
   return <ShortlistReview />;
 }
-

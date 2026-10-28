@@ -15,6 +15,7 @@ import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import { CandidateAvatar } from '@/components/hro/candidate-avatar';
+import { CompanyLogo } from '@/components/hro/company-logo';
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import {
   Select,
@@ -389,22 +390,22 @@ export function OnboardingDashboard() {
             onValueChange={(val) => setViewMode(val as typeof viewMode)}
             className="w-full lg:w-auto"
           >
-            <TabsList className="bg-surface-2/40 border-border/80 h-auto w-full grid-cols-3 gap-1 rounded-[10px] border p-1 grid lg:flex lg:w-auto">
+            <TabsList className="bg-surface-2/40 border-border/80 grid h-auto w-full grid-cols-3 gap-1 rounded-[10px] border p-1 lg:flex lg:w-auto">
               <TabsTrigger
                 value="by-candidate"
-                className="data-[state=active]:bg-accent data-[state=active]:text-white data-[state=active]:font-bold text-text-muted hover:text-text rounded-[8px] px-2 sm:px-3.5 py-1.5 text-[11px] sm:text-[12px] font-medium transition-colors whitespace-nowrap"
+                className="data-[state=active]:bg-accent text-text-muted hover:text-text rounded-[8px] px-2 py-1.5 text-[11px] font-medium whitespace-nowrap transition-colors data-[state=active]:font-bold data-[state=active]:text-white sm:px-3.5 sm:text-[12px]"
               >
                 <span>By New Hire</span>
               </TabsTrigger>
               <TabsTrigger
                 value="by-phase"
-                className="data-[state=active]:bg-accent data-[state=active]:text-white data-[state=active]:font-bold text-text-muted hover:text-text rounded-[8px] px-2 sm:px-3.5 py-1.5 text-[11px] sm:text-[12px] font-medium transition-colors whitespace-nowrap"
+                className="data-[state=active]:bg-accent text-text-muted hover:text-text rounded-[8px] px-2 py-1.5 text-[11px] font-medium whitespace-nowrap transition-colors data-[state=active]:font-bold data-[state=active]:text-white sm:px-3.5 sm:text-[12px]"
               >
                 <span>By Phase</span>
               </TabsTrigger>
               <TabsTrigger
                 value="all-tasks"
-                className="data-[state=active]:bg-accent data-[state=active]:text-white data-[state=active]:font-bold text-text-muted hover:text-text rounded-[8px] px-2 sm:px-3.5 py-1.5 text-[11px] sm:text-[12px] font-medium transition-colors whitespace-nowrap"
+                className="data-[state=active]:bg-accent text-text-muted hover:text-text rounded-[8px] px-2 py-1.5 text-[11px] font-medium whitespace-nowrap transition-colors data-[state=active]:font-bold data-[state=active]:text-white sm:px-3.5 sm:text-[12px]"
               >
                 <span>All Tasks ({filteredItems.length})</span>
               </TabsTrigger>
@@ -530,17 +531,24 @@ export function OnboardingDashboard() {
                         <tr key={candidate.id} className="hover:bg-surface-2/30 transition-colors">
                           <td className="px-4 py-2.5 whitespace-nowrap sm:px-5">
                             <div className="flex items-center gap-2">
-                              <Avatar className="border-border h-6 w-6 shrink-0 border">
-                                <AvatarFallback className="bg-surface-3 text-text text-[9px] font-medium">
-                                  {candidate.name.slice(0, 2).toUpperCase()}
-                                </AvatarFallback>
-                              </Avatar>
+                              <CandidateAvatar
+                                name={candidate.name}
+                                candidateId={candidate.id}
+                                size="xs"
+                              />
                               <span className="text-text font-medium">{candidate.name}</span>
                             </div>
                           </td>
                           <td className="text-text-muted truncate px-3 py-2.5 whitespace-nowrap sm:px-4">
-                            {candidate.currentRole} <span className="text-text-subtle">•</span>{' '}
-                            {candidate.currentCompany}
+                            <span className="inline-flex items-center gap-1.5">
+                              <span>{candidate.currentRole}</span>
+                              <span className="text-text-subtle">•</span>
+                              <CompanyLogo
+                                company={candidate.currentCompany}
+                                className="h-3.5 w-3.5 shrink-0 rounded-[3px] shadow-2xs"
+                              />
+                              <span>{candidate.currentCompany}</span>
+                            </span>
                           </td>
                           <td className="px-3 py-2.5 whitespace-nowrap sm:px-4">
                             <Badge
@@ -606,235 +614,249 @@ export function OnboardingDashboard() {
           ) : (
             <>
               {visibleHires.map((candidate) => {
-              const candidateTasks = filteredItems.filter((i) => i.candidateId === candidate.id);
-              const total = candidateTasks.length;
-              const completed = candidateTasks.filter((i) => i.done).length;
-              const percent = total > 0 ? Math.round((completed / total) * 100) : 0;
-              const joiningDate = getCandidateJoiningDate(candidate);
+                const candidateTasks = filteredItems.filter((i) => i.candidateId === candidate.id);
+                const total = candidateTasks.length;
+                const completed = candidateTasks.filter((i) => i.done).length;
+                const percent = total > 0 ? Math.round((completed / total) * 100) : 0;
+                const joiningDate = getCandidateJoiningDate(candidate);
 
-              return (
-                <Card
-                  key={candidate.id}
-                  className="border-border bg-surface-1 overflow-hidden shadow-xs"
-                >
-                  {/* Candidate Header Summary */}
-                  <div className="border-border bg-surface-2/40 flex flex-col gap-3 border-b px-4 py-3 sm:flex-row sm:items-center sm:justify-between sm:px-5 sm:py-3.5">
-                    <div className="flex min-w-0 items-center gap-3">
-                      <Avatar className="border-border h-9 w-9 shrink-0 border">
-                        <AvatarFallback className="bg-surface-3 text-text text-[12px] font-semibold">
-                          {candidate.name.slice(0, 2).toUpperCase()}
-                        </AvatarFallback>
-                      </Avatar>
-                      <div className="min-w-0">
-                        <div className="flex flex-wrap items-center gap-2">
-                          <span className="text-text truncate text-[14px] font-semibold">
-                            {candidate.name}
-                          </span>
-                          <span className="text-text-muted bg-surface-2/60 border-border flex items-center gap-1 rounded-[4px] border px-2 py-0.5 font-mono text-[11px] tabular-nums">
-                            <Calendar className="text-accent h-3 w-3 shrink-0" />
-                            <span>Joining: {joiningDate}</span>
-                          </span>
+                return (
+                  <Card
+                    key={candidate.id}
+                    className="border-border bg-surface-1 overflow-hidden shadow-xs"
+                  >
+                    {/* Candidate Header Summary */}
+                    <div className="border-border bg-surface-2/40 flex flex-col gap-3 border-b px-4 py-3 sm:flex-row sm:items-center sm:justify-between sm:px-5 sm:py-3.5">
+                      <div className="flex min-w-0 items-center gap-3">
+                        <CandidateAvatar
+                          name={candidate.name}
+                          candidateId={candidate.id}
+                          size="md"
+                        />
+                        <div className="min-w-0">
+                          <div className="flex flex-wrap items-center gap-2">
+                            <span className="text-text truncate text-[14px] font-semibold">
+                              {candidate.name}
+                            </span>
+                            <span className="text-text-muted bg-surface-2/60 border-border flex items-center gap-1 rounded-[4px] border px-2 py-0.5 font-mono text-[11px] tabular-nums">
+                              <Calendar className="text-accent h-3 w-3 shrink-0" />
+                              <span>Joining: {joiningDate}</span>
+                            </span>
+                          </div>
+                          <p className="text-text-muted mt-0.5 flex items-center gap-1.5 truncate text-[12px]">
+                            <span>{candidate.currentRole}</span>
+                            <span className="text-text-subtle">•</span>
+                            <CompanyLogo
+                              company={candidate.currentCompany}
+                              className="h-3.5 w-3.5 shrink-0 rounded-[3px] shadow-2xs"
+                            />
+                            <span>{candidate.currentCompany}</span>
+                          </p>
                         </div>
-                        <p className="text-text-muted truncate text-[12px]">
-                          {candidate.currentRole} • {candidate.currentCompany}
-                        </p>
-                      </div>
-                    </div>
-
-                    <div className="border-border/50 flex w-full flex-wrap items-center justify-between gap-3 border-t pt-2 sm:w-auto sm:flex-nowrap sm:justify-end sm:border-t-0 sm:pt-0">
-                      {/* Progress Indicator */}
-                      <div className="flex items-center gap-2">
-                        <div className="shrink-0 text-right">
-                          <span className="text-text font-mono text-[12px] font-semibold">
-                            {completed}/{total}
-                          </span>
-                          <span className="text-text-muted ml-1 text-[11px]">tasks</span>
-                        </div>
-                        <Progress value={percent} className="h-2 w-20 sm:w-28" />
-                        <Badge
-                          variant={percent === 100 ? 'success' : 'default'}
-                          className="shrink-0 font-mono text-[11px]"
-                        >
-                          {percent}%
-                        </Badge>
                       </div>
 
-                      {/* Add Task for Candidate Button */}
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        onClick={() => handleOpenCreateModal(candidate.id)}
-                        className="border-border hover:bg-surface-2 h-8 shrink-0 cursor-pointer gap-1 text-[12px]"
-                      >
-                        <Plus className="h-3.5 w-3.5" />
-                        <span>Add Task</span>
-                      </Button>
-                    </div>
-                  </div>
-
-                  {/* 3-Phase Columns Board */}
-                  <CardContent className="p-3.5 sm:p-4">
-                    <div className="grid grid-cols-1 md:grid-cols-3 gap-3.5 items-start">
-                      {PHASES.map((phase) => {
-                        const phaseTasks = candidateTasks.filter((t) => t.phase === phase);
-                        const phaseCompleted = phaseTasks.filter((t) => t.done).length;
-
-                        return (
-                          <div
-                            key={phase}
-                            className="rounded-[10px] border border-border/70 bg-surface-2/20 p-3 space-y-2.5 flex flex-col justify-between"
+                      <div className="border-border/50 flex w-full flex-wrap items-center justify-between gap-3 border-t pt-2 sm:w-auto sm:flex-nowrap sm:justify-end sm:border-t-0 sm:pt-0">
+                        {/* Progress Indicator */}
+                        <div className="flex items-center gap-2">
+                          <div className="shrink-0 text-right">
+                            <span className="text-text font-mono text-[12px] font-semibold">
+                              {completed}/{total}
+                            </span>
+                            <span className="text-text-muted ml-1 text-[11px]">tasks</span>
+                          </div>
+                          <Progress value={percent} className="h-2 w-20 sm:w-28" />
+                          <Badge
+                            variant={percent === 100 ? 'success' : 'default'}
+                            className="shrink-0 font-mono text-[11px]"
                           >
-                            <div className="space-y-2.5">
-                              {/* Phase Header */}
-                              <div className="flex items-center justify-between pb-2 border-b border-border/60">
-                                <div className="flex items-center gap-1.5 min-w-0">
+                            {percent}%
+                          </Badge>
+                        </div>
+
+                        {/* Add Task for Candidate Button */}
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          onClick={() => handleOpenCreateModal(candidate.id)}
+                          className="border-border hover:bg-surface-2 h-8 shrink-0 cursor-pointer gap-1 text-[12px]"
+                        >
+                          <Plus className="h-3.5 w-3.5" />
+                          <span>Add Task</span>
+                        </Button>
+                      </div>
+                    </div>
+
+                    {/* 3-Phase Columns Board */}
+                    <CardContent className="p-3.5 sm:p-4">
+                      <div className="grid grid-cols-1 items-start gap-3.5 md:grid-cols-3">
+                        {PHASES.map((phase) => {
+                          const phaseTasks = candidateTasks.filter((t) => t.phase === phase);
+                          const phaseCompleted = phaseTasks.filter((t) => t.done).length;
+
+                          return (
+                            <div
+                              key={phase}
+                              className="border-border/70 bg-surface-2/20 flex flex-col justify-between space-y-2.5 rounded-[10px] border p-3"
+                            >
+                              <div className="space-y-2.5">
+                                {/* Phase Header */}
+                                <div className="border-border/60 flex items-center justify-between border-b pb-2">
+                                  <div className="flex min-w-0 items-center gap-1.5">
+                                    <span
+                                      className={cn(
+                                        'h-2 w-2 shrink-0 rounded-full',
+                                        phase === 'Before joining'
+                                          ? 'bg-accent'
+                                          : phase === 'Day 1'
+                                            ? 'bg-indigo-400'
+                                            : 'bg-emerald-400'
+                                      )}
+                                    />
+                                    <span className="text-text truncate text-[12.5px] font-semibold">
+                                      {phase}
+                                    </span>
+                                  </div>
                                   <span
                                     className={cn(
-                                      'h-2 w-2 rounded-full shrink-0',
-                                      phase === 'Before joining'
-                                        ? 'bg-accent'
-                                        : phase === 'Day 1'
-                                          ? 'bg-indigo-400'
-                                          : 'bg-emerald-400'
+                                      'py-0.2 shrink-0 rounded-full px-1.5 font-mono text-[10.5px] font-semibold',
+                                      phaseCompleted === phaseTasks.length && phaseTasks.length > 0
+                                        ? 'bg-emerald-500/15 text-emerald-400'
+                                        : 'bg-surface-3 text-text-subtle'
                                     )}
-                                  />
-                                  <span className="text-[12.5px] font-semibold text-text truncate">
-                                    {phase}
+                                  >
+                                    {phaseCompleted}/{phaseTasks.length}
                                   </span>
                                 </div>
-                                <span
-                                  className={cn(
-                                    'font-mono text-[10.5px] font-semibold px-1.5 py-0.2 rounded-full shrink-0',
-                                    phaseCompleted === phaseTasks.length && phaseTasks.length > 0
-                                      ? 'bg-emerald-500/15 text-emerald-400'
-                                      : 'bg-surface-3 text-text-subtle'
-                                  )}
-                                >
-                                  {phaseCompleted}/{phaseTasks.length}
-                                </span>
+
+                                {/* Task Cards */}
+                                {phaseTasks.length === 0 ? (
+                                  <div className="border-border/60 rounded-[8px] border border-dashed p-4 text-center select-none">
+                                    <p className="text-text-subtle text-[11px]">
+                                      No tasks in this phase
+                                    </p>
+                                  </div>
+                                ) : (
+                                  <div className="space-y-2">
+                                    {phaseTasks.map((task) => (
+                                      <div
+                                        key={task.id}
+                                        className={cn(
+                                          'group border-border/70 space-y-1.5 rounded-[8px] border p-2.5 transition-all duration-140',
+                                          task.done
+                                            ? 'bg-surface-2/30 border-border/50 opacity-70'
+                                            : 'bg-surface-1 hover:border-border-strong hover:bg-surface-2/40'
+                                        )}
+                                      >
+                                        {/* Checkbox + Title */}
+                                        <div className="flex min-w-0 items-start gap-2.5">
+                                          <Checkbox
+                                            id={task.id}
+                                            checked={task.done}
+                                            onCheckedChange={() =>
+                                              handleToggle(task.id, task.done, task.title)
+                                            }
+                                            className="mt-0.5 h-4 w-4 shrink-0 cursor-pointer"
+                                          />
+                                          <label
+                                            htmlFor={task.id}
+                                            className={cn(
+                                              'block min-w-0 cursor-pointer text-[12.5px] leading-[17px] font-medium transition-colors duration-150 select-none',
+                                              task.done
+                                                ? 'text-text-muted font-normal'
+                                                : 'text-text'
+                                            )}
+                                          >
+                                            {task.title}
+                                          </label>
+                                        </div>
+
+                                        {/* Optional Note */}
+                                        {task.notes && (
+                                          <p
+                                            className="text-text-subtle line-clamp-1 truncate pl-[26px] text-[11px]"
+                                            title={task.notes}
+                                          >
+                                            {task.notes}
+                                          </p>
+                                        )}
+
+                                        {/* Bottom Meta: Owner Badge + Due Date */}
+                                        <div className="flex items-center justify-between pt-1 pl-[26px] text-[11px]">
+                                          <Badge
+                                            variant="default"
+                                            className={cn(
+                                              'rounded-[4px] px-1.5 py-0 text-[10px] leading-tight font-medium',
+                                              task.owner === 'HR'
+                                                ? 'border-accent/30 text-accent bg-accent/10'
+                                                : 'border-border text-text-muted bg-surface-3'
+                                            )}
+                                          >
+                                            {task.owner}
+                                          </Badge>
+
+                                          <span className="text-text-subtle font-mono text-[10.5px] tabular-nums">
+                                            {formatDate(task.dueDate, 'dd MMM')}
+                                          </span>
+                                        </div>
+                                      </div>
+                                    ))}
+                                  </div>
+                                )}
                               </div>
-
-                              {/* Task Cards */}
-                              {phaseTasks.length === 0 ? (
-                                <div className="rounded-[8px] border border-dashed border-border/60 p-4 text-center select-none">
-                                  <p className="text-[11px] text-text-subtle">No tasks in this phase</p>
-                                </div>
-                              ) : (
-                                <div className="space-y-2">
-                                  {phaseTasks.map((task) => (
-                                    <div
-                                      key={task.id}
-                                      className={cn(
-                                        'group rounded-[8px] border border-border/70 p-2.5 transition-all duration-140 space-y-1.5',
-                                        task.done
-                                          ? 'bg-surface-2/30 opacity-70 border-border/50'
-                                          : 'bg-surface-1 hover:border-border-strong hover:bg-surface-2/40'
-                                      )}
-                                    >
-                                      {/* Checkbox + Title */}
-                                      <div className="flex items-start gap-2.5 min-w-0">
-                                        <Checkbox
-                                          id={task.id}
-                                          checked={task.done}
-                                          onCheckedChange={() =>
-                                            handleToggle(task.id, task.done, task.title)
-                                          }
-                                          className="mt-0.5 h-4 w-4 shrink-0 cursor-pointer"
-                                        />
-                                        <label
-                                          htmlFor={task.id}
-                                          className={cn(
-                                            'text-[12.5px] leading-[17px] font-medium cursor-pointer block min-w-0 select-none transition-colors duration-150',
-                                            task.done
-                                              ? 'text-text-muted font-normal'
-                                              : 'text-text'
-                                          )}
-                                        >
-                                          {task.title}
-                                        </label>
-                                      </div>
-
-                                      {/* Optional Note */}
-                                      {task.notes && (
-                                        <p
-                                          className="text-[11px] text-text-subtle pl-[26px] line-clamp-1 truncate"
-                                          title={task.notes}
-                                        >
-                                          {task.notes}
-                                        </p>
-                                      )}
-
-                                      {/* Bottom Meta: Owner Badge + Due Date */}
-                                      <div className="flex items-center justify-between pl-[26px] pt-1 text-[11px]">
-                                        <Badge
-                                          variant="default"
-                                          className={cn(
-                                            'px-1.5 py-0 text-[10px] font-medium rounded-[4px] leading-tight',
-                                            task.owner === 'HR'
-                                              ? 'border-accent/30 text-accent bg-accent/10'
-                                              : 'border-border text-text-muted bg-surface-3'
-                                          )}
-                                        >
-                                          {task.owner}
-                                        </Badge>
-
-                                        <span className="text-text-subtle font-mono text-[10.5px] tabular-nums">
-                                          {formatDate(task.dueDate, 'dd MMM')}
-                                        </span>
-                                      </div>
-                                    </div>
-                                  ))}
-                                </div>
-                              )}
                             </div>
-                          </div>
-                        );
-                      })}
-                    </div>
-
-                    {candidateTasks.length === 0 && (
-                      <div className="text-text-muted p-6 text-center text-[12px]">
-                        No tasks match your active filter.
+                          );
+                        })}
                       </div>
-                    )}
-                  </CardContent>
-                </Card>
-              );
-            })}
 
-            {totalHiresPages > 1 && (
-              <div className="flex items-center justify-between pt-3 border-t border-border/60 text-[12px] select-none">
-                <span className="font-mono text-text-subtle text-[11.5px]">
-                  Showing {(validHiresPage - 1) * HIRES_PAGE_SIZE + 1}–{Math.min(validHiresPage * HIRES_PAGE_SIZE, candidatesWithActiveChecklists.length)} of {candidatesWithActiveChecklists.length} new hires (Page {validHiresPage} of {totalHiresPages})
-                </span>
-                <div className="flex items-center gap-1.5">
-                  <button
-                    type="button"
-                    disabled={validHiresPage <= 1}
-                    onClick={() => setHiresPage((p) => Math.max(1, p - 1))}
-                    className="h-7 w-7 inline-flex items-center justify-center rounded-[6px] border border-border/70 bg-surface-1 text-text-muted hover:text-text hover:bg-surface-2 disabled:opacity-25 disabled:cursor-not-allowed transition-colors cursor-pointer"
-                    title="Previous page"
-                    aria-label="Previous page"
-                  >
-                    <ChevronLeft className="h-3.5 w-3.5" />
-                  </button>
-                  <button
-                    type="button"
-                    disabled={validHiresPage >= totalHiresPages}
-                    onClick={() => setHiresPage((p) => Math.min(totalHiresPages, p + 1))}
-                    className="h-7 w-7 inline-flex items-center justify-center rounded-[6px] border border-border/70 bg-surface-1 text-text-muted hover:text-text hover:bg-surface-2 disabled:opacity-25 disabled:cursor-not-allowed transition-colors cursor-pointer"
-                    title="Next page"
-                    aria-label="Next page"
-                  >
-                    <ChevronRight className="h-3.5 w-3.5" />
-                  </button>
+                      {candidateTasks.length === 0 && (
+                        <div className="text-text-muted p-6 text-center text-[12px]">
+                          No tasks match your active filter.
+                        </div>
+                      )}
+                    </CardContent>
+                  </Card>
+                );
+              })}
+
+              {totalHiresPages > 1 && (
+                <div className="border-border/60 flex items-center justify-between border-t pt-3 text-[12px] select-none">
+                  <span className="text-text-subtle font-mono text-[11.5px]">
+                    Showing {(validHiresPage - 1) * HIRES_PAGE_SIZE + 1}–
+                    {Math.min(
+                      validHiresPage * HIRES_PAGE_SIZE,
+                      candidatesWithActiveChecklists.length
+                    )}{' '}
+                    of {candidatesWithActiveChecklists.length} new hires (Page {validHiresPage} of{' '}
+                    {totalHiresPages})
+                  </span>
+                  <div className="flex items-center gap-1.5">
+                    <button
+                      type="button"
+                      disabled={validHiresPage <= 1}
+                      onClick={() => setHiresPage((p) => Math.max(1, p - 1))}
+                      className="border-border/70 bg-surface-1 text-text-muted hover:text-text hover:bg-surface-2 inline-flex h-7 w-7 cursor-pointer items-center justify-center rounded-[6px] border transition-colors disabled:cursor-not-allowed disabled:opacity-25"
+                      title="Previous page"
+                      aria-label="Previous page"
+                    >
+                      <ChevronLeft className="h-3.5 w-3.5" />
+                    </button>
+                    <button
+                      type="button"
+                      disabled={validHiresPage >= totalHiresPages}
+                      onClick={() => setHiresPage((p) => Math.min(totalHiresPages, p + 1))}
+                      className="border-border/70 bg-surface-1 text-text-muted hover:text-text hover:bg-surface-2 inline-flex h-7 w-7 cursor-pointer items-center justify-center rounded-[6px] border transition-colors disabled:cursor-not-allowed disabled:opacity-25"
+                      title="Next page"
+                      aria-label="Next page"
+                    >
+                      <ChevronRight className="h-3.5 w-3.5" />
+                    </button>
+                  </div>
                 </div>
-              </div>
-            )}
-          </>
-        )}
-      </div>
-    )}
+              )}
+            </>
+          )}
+        </div>
+      )}
 
       {/* VIEW 2: BY PHASE (Timeline Stage View) */}
       {viewMode === 'by-phase' && (
@@ -912,9 +934,7 @@ export function OnboardingDashboard() {
                               <div className="min-w-0 flex-1 space-y-1 overflow-hidden">
                                 <span
                                   className={`block truncate text-[13px] leading-snug font-medium transition-colors duration-150 ${
-                                    item.done
-                                      ? 'text-text-muted font-normal'
-                                      : 'text-text'
+                                    item.done ? 'text-text-muted font-normal' : 'text-text'
                                   }`}
                                   title={item.title}
                                 >
@@ -922,15 +942,20 @@ export function OnboardingDashboard() {
                                 </span>
                                 {candidate && (
                                   <div className="text-text-muted flex items-center gap-1.5 truncate text-[11px]">
-                                    <Avatar className="h-4 w-4 shrink-0">
-                                      <AvatarFallback className="bg-surface-3 text-[8px]">
-                                        {candidate.name.slice(0, 2).toUpperCase()}
-                                      </AvatarFallback>
-                                    </Avatar>
+                                    <CandidateAvatar
+                                      name={candidate.name}
+                                      candidateId={candidate.id}
+                                      size="xs"
+                                      className="h-4 w-4 text-[7px]"
+                                    />
                                     <span className="text-text truncate font-medium">
                                       {candidate.name}
                                     </span>
                                     <span>•</span>
+                                    <CompanyLogo
+                                      company={candidate.currentCompany}
+                                      className="h-3 w-3 shrink-0 rounded-[2.5px]"
+                                    />
                                     <span className="text-text-subtle truncate">
                                       {candidate.currentRole}
                                     </span>
@@ -1031,9 +1056,7 @@ export function OnboardingDashboard() {
                             <span
                               className={cn(
                                 'text-[13px] leading-snug font-medium break-words transition-colors duration-150',
-                                item.done
-                                  ? 'text-text-muted font-normal'
-                                  : 'text-text'
+                                item.done ? 'text-text-muted font-normal' : 'text-text'
                               )}
                             >
                               {item.title}
@@ -1050,11 +1073,12 @@ export function OnboardingDashboard() {
                         <td className="px-3 py-3 align-middle whitespace-nowrap">
                           {candidate ? (
                             <div className="flex items-center gap-2">
-                              <Avatar className="border-border/80 h-5 w-5 shrink-0 border">
-                                <AvatarFallback className="bg-surface-3 text-text text-[9px] font-semibold">
-                                  {candidate.name.slice(0, 2).toUpperCase()}
-                                </AvatarFallback>
-                              </Avatar>
+                              <CandidateAvatar
+                                name={candidate.name}
+                                candidateId={candidate.id}
+                                size="xs"
+                                className="h-5 w-5 text-[8.5px]"
+                              />
                               <span
                                 className="text-text max-w-[130px] truncate text-[12px] font-medium"
                                 title={candidate.name}
@@ -1118,16 +1142,18 @@ export function OnboardingDashboard() {
           </div>
 
           {totalTasksPages > 1 && (
-            <div className="border-border/80 bg-surface-2/20 flex items-center justify-between border-t px-4 py-2.5 sm:px-5 text-[12px] select-none">
-              <span className="font-mono text-text-subtle text-[11.5px]">
-                Showing {(validTasksPage - 1) * TASKS_PAGE_SIZE + 1}–{Math.min(validTasksPage * TASKS_PAGE_SIZE, filteredItems.length)} of {filteredItems.length} tasks (Page {validTasksPage} of {totalTasksPages})
+            <div className="border-border/80 bg-surface-2/20 flex items-center justify-between border-t px-4 py-2.5 text-[12px] select-none sm:px-5">
+              <span className="text-text-subtle font-mono text-[11.5px]">
+                Showing {(validTasksPage - 1) * TASKS_PAGE_SIZE + 1}–
+                {Math.min(validTasksPage * TASKS_PAGE_SIZE, filteredItems.length)} of{' '}
+                {filteredItems.length} tasks (Page {validTasksPage} of {totalTasksPages})
               </span>
               <div className="flex items-center gap-1.5">
                 <button
                   type="button"
                   disabled={validTasksPage <= 1}
                   onClick={() => setTasksPage((p) => Math.max(1, p - 1))}
-                  className="h-7 w-7 inline-flex items-center justify-center rounded-[6px] border border-border/70 bg-surface-1 text-text-muted hover:text-text hover:bg-surface-2 disabled:opacity-25 disabled:cursor-not-allowed transition-colors cursor-pointer"
+                  className="border-border/70 bg-surface-1 text-text-muted hover:text-text hover:bg-surface-2 inline-flex h-7 w-7 cursor-pointer items-center justify-center rounded-[6px] border transition-colors disabled:cursor-not-allowed disabled:opacity-25"
                   title="Previous page"
                   aria-label="Previous page"
                 >
@@ -1137,7 +1163,7 @@ export function OnboardingDashboard() {
                   type="button"
                   disabled={validTasksPage >= totalTasksPages}
                   onClick={() => setTasksPage((p) => Math.min(totalTasksPages, p + 1))}
-                  className="h-7 w-7 inline-flex items-center justify-center rounded-[6px] border border-border/70 bg-surface-1 text-text-muted hover:text-text hover:bg-surface-2 disabled:opacity-25 disabled:cursor-not-allowed transition-colors cursor-pointer"
+                  className="border-border/70 bg-surface-1 text-text-muted hover:text-text hover:bg-surface-2 inline-flex h-7 w-7 cursor-pointer items-center justify-center rounded-[6px] border transition-colors disabled:cursor-not-allowed disabled:opacity-25"
                   title="Next page"
                   aria-label="Next page"
                 >

@@ -32,6 +32,7 @@ import {
 } from '@/components/ui/select';
 import { Search, ChevronLeft, ChevronRight } from 'lucide-react';
 import { toast } from 'sonner';
+import { formatRoleTitle } from '@/lib/format';
 
 const PIPELINE_STAGES: CandidateStage[] = [
   'Sourced',
@@ -66,17 +67,14 @@ function DraggableCandidateCard({
     return (
       <div
         ref={setNodeRef}
-        className="h-[160px] min-h-[160px] w-full rounded-[10px] border border-dashed border-border/80 bg-surface-2/20 select-none pointer-events-none opacity-40"
+        className="border-border/80 bg-surface-2/20 pointer-events-none h-[160px] min-h-[160px] w-full rounded-[10px] border border-dashed opacity-40 select-none"
       />
     );
   }
 
   return (
     <div ref={setNodeRef} {...listeners} {...attributes} className="touch-none select-none">
-      <CandidateCard
-        candidate={candidate}
-        onClick={onClick}
-      />
+      <CandidateCard candidate={candidate} onClick={onClick} />
     </div>
   );
 }
@@ -133,11 +131,10 @@ export function PipelineBoard() {
         c.email.toLowerCase().includes(q) ||
         c.currentCompany.toLowerCase().includes(q) ||
         c.currentRole.toLowerCase().includes(q) ||
-        (opening && (
-          opening.title.toLowerCase().includes(q) ||
-          opening.department.toLowerCase().includes(q) ||
-          opening.mustHaveSkills.some((s) => s.toLowerCase().includes(q))
-        ));
+        (opening &&
+          (opening.title.toLowerCase().includes(q) ||
+            opening.department.toLowerCase().includes(q) ||
+            opening.mustHaveSkills.some((s) => s.toLowerCase().includes(q))));
       return matchesOpening && matchesDept && matchesSearch;
     });
   }, [candidates, openings, selectedOpeningId, selectedDepartment, searchQuery]);
@@ -193,14 +190,14 @@ export function PipelineBoard() {
     <div className="space-y-4">
       {/* Filter and Search Bar */}
       <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-        <div className="flex flex-col sm:flex-row flex-1 items-stretch sm:items-center gap-2.5 sm:gap-3">
+        <div className="flex flex-1 flex-col items-stretch gap-2.5 sm:flex-row sm:items-center sm:gap-3">
           <div className="relative w-full sm:max-w-xs">
-            <Search className="text-text-subtle absolute top-2.5 left-3 h-4 w-4 pointer-events-none" />
+            <Search className="text-text-subtle pointer-events-none absolute top-2.5 left-3 h-4 w-4" />
             <Input
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               placeholder="Search candidate, role, skill..."
-              className="h-9 pl-9 text-[13px] bg-surface-2/40 border-border/70 hover:border-border focus:bg-surface-1 rounded-[8px] transition-all shadow-2xs w-full"
+              className="bg-surface-2/40 border-border/70 hover:border-border focus:bg-surface-1 h-9 w-full rounded-[8px] pl-9 text-[13px] shadow-2xs transition-all"
             />
           </div>
 
@@ -211,15 +208,19 @@ export function PipelineBoard() {
                 value={selectedDepartment}
                 onValueChange={(val) => setSelectedDepartment(val)}
               >
-                <SelectTrigger className="h-9 w-full sm:w-auto min-w-0 sm:min-w-[150px] gap-2 border-border/70 bg-surface-2/40 hover:bg-surface-2 text-text px-3 text-[13px] font-medium rounded-[8px] shadow-2xs">
+                <SelectTrigger className="border-border/70 bg-surface-2/40 hover:bg-surface-2 text-text h-9 w-full min-w-0 gap-2 rounded-[8px] px-3 text-[13px] font-medium shadow-2xs sm:w-auto sm:min-w-[150px]">
                   <SelectValue placeholder="All Departments" />
                 </SelectTrigger>
                 <SelectContent align="start" className="min-w-[180px]">
-                  <SelectItem value="all" className="text-[13px] py-1.5 min-h-[32px] rounded-[6px]">
+                  <SelectItem value="all" className="min-h-[32px] rounded-[6px] py-1.5 text-[13px]">
                     All Departments
                   </SelectItem>
                   {departments.map((dept) => (
-                    <SelectItem key={dept} value={dept} className="text-[13px] py-1.5 min-h-[32px] rounded-[6px]">
+                    <SelectItem
+                      key={dept}
+                      value={dept}
+                      className="min-h-[32px] rounded-[6px] py-1.5 text-[13px]"
+                    >
                       {dept}
                     </SelectItem>
                   ))}
@@ -228,20 +229,21 @@ export function PipelineBoard() {
             )}
 
             {/* Requisition Filter */}
-            <Select
-              value={selectedOpeningId}
-              onValueChange={(val) => setSelectedOpeningId(val)}
-            >
-              <SelectTrigger className="h-9 w-full sm:w-auto min-w-0 sm:min-w-[200px] gap-2 border-border/70 bg-surface-2/40 hover:bg-surface-2 text-text px-3 text-[13px] font-medium rounded-[8px] shadow-2xs">
+            <Select value={selectedOpeningId} onValueChange={(val) => setSelectedOpeningId(val)}>
+              <SelectTrigger className="border-border/70 bg-surface-2/40 hover:bg-surface-2 text-text h-9 w-full min-w-0 gap-2 rounded-[8px] px-3 text-[13px] font-medium shadow-2xs sm:w-auto sm:min-w-[200px]">
                 <SelectValue placeholder={`All Requisitions (${openings.length})`} />
               </SelectTrigger>
               <SelectContent align="start" className="min-w-[240px]">
-                <SelectItem value="all" className="text-[13px] py-1.5 min-h-[32px] rounded-[6px]">
+                <SelectItem value="all" className="min-h-[32px] rounded-[6px] py-1.5 text-[13px]">
                   All Requisitions ({openings.length})
                 </SelectItem>
                 {openings.map((opening) => (
-                  <SelectItem key={opening.id} value={opening.id} className="text-[13px] py-1.5 min-h-[32px] rounded-[6px]">
-                    {opening.title} ({opening.department})
+                  <SelectItem
+                    key={opening.id}
+                    value={opening.id}
+                    className="min-h-[32px] rounded-[6px] py-1.5 text-[13px]"
+                  >
+                    {formatRoleTitle(opening.title)} ({opening.department})
                   </SelectItem>
                 ))}
               </SelectContent>
@@ -250,7 +252,8 @@ export function PipelineBoard() {
         </div>
 
         <div className="text-text-muted text-[12px] font-medium">
-          Showing <span className="text-text font-semibold">{filteredCandidates.length}</span> candidates
+          Showing <span className="text-text font-semibold">{filteredCandidates.length}</span>{' '}
+          candidates
         </div>
       </div>
 
@@ -276,7 +279,7 @@ export function PipelineBoard() {
 
             const paginationFooter =
               stageTotalPages > 1 ? (
-                <div className="flex items-center justify-between pt-2 border-t border-border/60 text-[11.5px] select-none">
+                <div className="border-border/60 flex items-center justify-between border-t pt-2 text-[11.5px] select-none">
                   <button
                     type="button"
                     disabled={validStagePage <= 1}
@@ -286,14 +289,14 @@ export function PipelineBoard() {
                         [stage]: Math.max(1, validStagePage - 1),
                       }))
                     }
-                    className="h-6 w-6 inline-flex items-center justify-center rounded-[5px] border border-border/70 bg-surface-1 text-text-muted hover:text-text hover:bg-surface-2 disabled:opacity-25 disabled:cursor-not-allowed transition-colors cursor-pointer"
+                    className="border-border/70 bg-surface-1 text-text-muted hover:text-text hover:bg-surface-2 inline-flex h-6 w-6 cursor-pointer items-center justify-center rounded-[5px] border transition-colors disabled:cursor-not-allowed disabled:opacity-25"
                     title="Previous page"
                     aria-label="Previous page"
                   >
                     <ChevronLeft className="h-3.5 w-3.5" />
                   </button>
 
-                  <span className="font-mono text-text-subtle text-[11px]">
+                  <span className="text-text-subtle font-mono text-[11px]">
                     {validStagePage} of {stageTotalPages}
                   </span>
 
@@ -306,7 +309,7 @@ export function PipelineBoard() {
                         [stage]: Math.min(stageTotalPages, validStagePage + 1),
                       }))
                     }
-                    className="h-6 w-6 inline-flex items-center justify-center rounded-[5px] border border-border/70 bg-surface-1 text-text-muted hover:text-text hover:bg-surface-2 disabled:opacity-25 disabled:cursor-not-allowed transition-colors cursor-pointer"
+                    className="border-border/70 bg-surface-1 text-text-muted hover:text-text hover:bg-surface-2 inline-flex h-6 w-6 cursor-pointer items-center justify-center rounded-[5px] border transition-colors disabled:cursor-not-allowed disabled:opacity-25"
                     title="Next page"
                     aria-label="Next page"
                   >
@@ -336,9 +339,11 @@ export function PipelineBoard() {
         </div>
 
         {/* Drag Overlay Preview */}
-        <DragOverlay dropAnimation={{ duration: 150, easing: 'cubic-bezier(0.18, 0.67, 0.6, 1.22)' }}>
+        <DragOverlay
+          dropAnimation={{ duration: 150, easing: 'cubic-bezier(0.18, 0.67, 0.6, 1.22)' }}
+        >
           {activeCandidate ? (
-            <div className="w-[356px] cursor-grabbing select-none pointer-events-none rounded-[8px] overflow-hidden shadow-2xl">
+            <div className="pointer-events-none w-[356px] cursor-grabbing overflow-hidden rounded-[8px] shadow-2xl select-none">
               <CandidateCard candidate={activeCandidate} isDragging />
             </div>
           ) : null}

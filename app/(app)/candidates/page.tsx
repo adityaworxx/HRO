@@ -6,4 +6,3 @@ import { CandidatesTable } from '@/features/candidates';
 export default function CandidatesPage() {
   return <CandidatesTable />;
 }
-

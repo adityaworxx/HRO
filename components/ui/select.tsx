@@ -66,7 +66,7 @@ export const SelectContent = React.forwardRef<
       ref={ref}
       className={cn(
         OVERLAY_PANEL_CLASS,
-        'relative z-50 max-h-96 min-w-[8rem] p-1.5 space-y-0.5',
+        'relative z-50 max-h-96 min-w-[8rem] space-y-0.5 p-1.5',
         position === 'popper' &&
           'data-[side=bottom]:translate-y-1 data-[side=left]:-translate-x-1 data-[side=right]:translate-x-1 data-[side=top]:-translate-y-1',
         className
@@ -78,8 +78,7 @@ export const SelectContent = React.forwardRef<
       <SelectPrimitive.Viewport
         className={cn(
           'p-0',
-          position === 'popper' &&
-            'w-full min-w-[var(--radix-select-trigger-width)]'
+          position === 'popper' && 'w-full min-w-[var(--radix-select-trigger-width)]'
         )}
       >
         {children}
@@ -120,7 +119,7 @@ export const SelectItem = React.forwardRef<
   <SelectPrimitive.Item
     ref={ref}
     className={cn(
-      'relative flex h-9 min-h-[36px] w-full cursor-pointer items-center rounded-[8px] px-3 py-2 text-[14px] leading-[20px] font-medium text-text transition-colors outline-none select-none hover:bg-surface-2 focus:bg-surface-2 data-[highlighted]:bg-surface-2 data-[state=checked]:bg-surface-3 data-[disabled]:pointer-events-none data-[disabled]:opacity-50 pr-8',
+      'text-text hover:bg-surface-2 focus:bg-surface-2 data-[highlighted]:bg-surface-2 data-[state=checked]:bg-surface-3 relative flex h-9 min-h-[36px] w-full cursor-pointer items-center rounded-[8px] px-3 py-2 pr-8 text-[14px] leading-[20px] font-medium transition-colors outline-none select-none data-[disabled]:pointer-events-none data-[disabled]:opacity-50',
       className
     )}
     {...props}
@@ -140,7 +139,9 @@ export const SelectItem = React.forwardRef<
       <div className="flex flex-col truncate text-left">
         <SelectPrimitive.ItemText>{children}</SelectPrimitive.ItemText>
         {supportingText ? (
-          <span className="text-text-muted truncate text-[12px] leading-[16px] font-normal">{supportingText}</span>
+          <span className="text-text-muted truncate text-[12px] leading-[16px] font-normal">
+            {supportingText}
+          </span>
         ) : null}
       </div>
     </div>

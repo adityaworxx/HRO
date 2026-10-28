@@ -2,7 +2,10 @@ import fs from 'node:fs';
 
 // 1. candidate-detail-sheet.tsx
 {
-  let content = fs.readFileSync('features/candidates/components/candidate-detail-sheet.tsx', 'utf8');
+  let content = fs.readFileSync(
+    'features/candidates/components/candidate-detail-sheet.tsx',
+    'utf8'
+  );
   if (!content.includes('CandidateAvatar')) {
     content = content.replace(
       "import { Avatar, AvatarFallback } from '@/components/ui/avatar';",
@@ -89,4 +92,3 @@ import fs from 'node:fs';
   fs.writeFileSync('features/onboarding/components/onboarding-dashboard.tsx', content, 'utf8');
   console.log('Updated onboarding-dashboard.tsx');
 }
-

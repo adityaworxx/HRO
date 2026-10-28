@@ -81,7 +81,11 @@ describe('AI Shortlist Manager Routing Flow', () => {
     expect(foundInQueue?.name).toBe('Vikram Malhotra');
 
     // Now Hiring Manager reviews and makes decision
-    const reviewed = await mockApi.candidates.recordDecision(created.id, 'Shortlisted', 'Strong technical match from Swiggy.');
+    const reviewed = await mockApi.candidates.recordDecision(
+      created.id,
+      'Shortlisted',
+      'Strong technical match from Swiggy.'
+    );
     expect(reviewed.managerDecision).toBe('Shortlisted');
 
     // Once manager decides, candidate leaves the pending review queue

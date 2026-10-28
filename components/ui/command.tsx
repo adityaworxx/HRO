@@ -49,12 +49,12 @@ export const CommandInput = React.forwardRef<
     <CommandPrimitive.Input
       ref={ref}
       className={cn(
-        'text-text placeholder:text-text-subtle flex h-full w-full bg-transparent text-[15px] leading-[20px] border-none outline-none ring-0 shadow-none focus:outline-none focus-visible:outline-none focus:ring-0 focus-visible:ring-0 disabled:cursor-not-allowed disabled:opacity-50',
+        'text-text placeholder:text-text-subtle flex h-full w-full border-none bg-transparent text-[15px] leading-[20px] shadow-none ring-0 outline-none focus:ring-0 focus:outline-none focus-visible:ring-0 focus-visible:outline-none disabled:cursor-not-allowed disabled:opacity-50',
         className
       )}
       {...props}
     />
-    <Kbd className="hidden sm:inline-flex shrink-0">Esc</Kbd>
+    <Kbd className="hidden shrink-0 sm:inline-flex">Esc</Kbd>
   </div>
 ));
 CommandInput.displayName = CommandPrimitive.Input.displayName;
@@ -65,7 +65,7 @@ export const CommandList = React.forwardRef<
 >(({ className, ...props }, ref) => (
   <CommandPrimitive.List
     ref={ref}
-    className={cn('max-h-[300px] overflow-x-hidden overflow-y-auto p-2 space-y-1', className)}
+    className={cn('max-h-[300px] space-y-1 overflow-x-hidden overflow-y-auto p-2', className)}
     {...props}
   />
 ));
@@ -102,11 +102,10 @@ export const CommandItem = React.forwardRef<
   <CommandPrimitive.Item
     ref={ref}
     className={cn(
-      'relative flex h-9 min-h-[36px] w-full cursor-pointer items-center gap-3 rounded-[8px] px-3 text-[14px] leading-[20px] font-medium text-text select-none outline-none transition-colors data-[selected=true]:bg-surface-3 hover:bg-surface-2 [&_svg]:h-4 [&_svg]:w-4 [&_svg]:shrink-0 [&_svg]:stroke-[1.75] [&_svg]:text-text-subtle',
+      'text-text data-[selected=true]:bg-surface-3 hover:bg-surface-2 [&_svg]:text-text-subtle relative flex h-9 min-h-[36px] w-full cursor-pointer items-center gap-3 rounded-[8px] px-3 text-[14px] leading-[20px] font-medium transition-colors outline-none select-none [&_svg]:h-4 [&_svg]:w-4 [&_svg]:shrink-0 [&_svg]:stroke-[1.75]',
       className
     )}
     {...props}
   />
 ));
 CommandItem.displayName = CommandPrimitive.Item.displayName;
-

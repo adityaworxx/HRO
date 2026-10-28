@@ -1,10 +1,7 @@
 import { faker } from '@faker-js/faker';
 import type { Opening, Candidate, OnboardingItem, ActivityEvent, User } from '@/types/entities';
 import type { OpeningStatus, CandidateStage } from '@/lib/domain/status-transitions';
-import {
-  CANDIDATE_SOURCES,
-  URGENCY_LEVELS,
-} from '@/lib/constants';
+import { CANDIDATE_SOURCES, URGENCY_LEVELS } from '@/lib/constants';
 import { INITIAL_USERS } from '@/fixtures/users';
 
 // Deterministic seed for reproducible data
@@ -59,7 +56,8 @@ const ROLE_TEMPLATES: RoleTemplate[] = [
     budgetMax: 42,
     mustSkills: ['Go', 'PostgreSQL', 'Kafka', 'Redis', 'Distributed Systems'],
     niceSkills: ['Docker', 'Kubernetes', 'gRPC'],
-    description: 'Scale our core platform infrastructure, architect high-concurrency transactional pipelines, and maintain fault-tolerant microservices.',
+    description:
+      'Scale our core platform infrastructure, architect high-concurrency transactional pipelines, and maintain fault-tolerant microservices.',
     candidateRole: 'Senior Backend Developer',
   },
   {
@@ -72,7 +70,8 @@ const ROLE_TEMPLATES: RoleTemplate[] = [
     budgetMax: 48,
     mustSkills: ['React', 'TypeScript', 'Next.js', 'Architecture', 'Web Performance'],
     niceSkills: ['Tailwind CSS', 'Radix UI', 'Playwright'],
-    description: 'Establish enterprise web architecture, lead frontend engineering standards, and build accessible, responsive user interfaces.',
+    description:
+      'Establish enterprise web architecture, lead frontend engineering standards, and build accessible, responsive user interfaces.',
     candidateRole: 'Staff Frontend Engineer',
   },
   {
@@ -85,7 +84,8 @@ const ROLE_TEMPLATES: RoleTemplate[] = [
     budgetMax: 36,
     mustSkills: ['Kubernetes', 'AWS', 'Terraform', 'CI/CD', 'Prometheus'],
     niceSkills: ['ArgoCD', 'Helm', 'Golang'],
-    description: 'Manage cloud platform infrastructure, automate deployment topologies, and maintain 99.99% service level objectives.',
+    description:
+      'Manage cloud platform infrastructure, automate deployment topologies, and maintain 99.99% service level objectives.',
     candidateRole: 'Senior Site Reliability Engineer',
   },
   {
@@ -98,7 +98,8 @@ const ROLE_TEMPLATES: RoleTemplate[] = [
     budgetMax: 28,
     mustSkills: ['Playwright', 'TypeScript', 'Jest', 'API Testing', 'CI Integration'],
     niceSkills: ['Cypress', 'Docker', 'K6'],
-    description: 'Lead automated quality assurance, establish robust regression testing pipelines, and accelerate release confidence.',
+    description:
+      'Lead automated quality assurance, establish robust regression testing pipelines, and accelerate release confidence.',
     candidateRole: 'Lead QA Engineer',
   },
   {
@@ -111,7 +112,8 @@ const ROLE_TEMPLATES: RoleTemplate[] = [
     budgetMax: 70,
     mustSkills: ['Python', 'Kubernetes', 'PyTorch', 'Distributed Systems'],
     niceSkills: ['vLLM', 'Triton', 'CUDA'],
-    description: 'Design distributed inference clusters, optimize LLM serving latency, and scale high-throughput AI infrastructure.',
+    description:
+      'Design distributed inference clusters, optimize LLM serving latency, and scale high-throughput AI infrastructure.',
     candidateRole: 'Principal AI Infrastructure Engineer',
   },
   {
@@ -124,7 +126,8 @@ const ROLE_TEMPLATES: RoleTemplate[] = [
     budgetMax: 35,
     mustSkills: ['Next.js', 'Node.js', 'PostgreSQL', 'TypeScript', 'Tailwind CSS'],
     niceSkills: ['GraphQL', 'Redis', 'Docker'],
-    description: 'Deliver end-to-end features spanning server actions, relational data persistence, and performant web interfaces.',
+    description:
+      'Deliver end-to-end features spanning server actions, relational data persistence, and performant web interfaces.',
     candidateRole: 'Full Stack Developer',
   },
   {
@@ -137,7 +140,8 @@ const ROLE_TEMPLATES: RoleTemplate[] = [
     budgetMax: 45,
     mustSkills: ['React Native', 'Swift', 'Kotlin', 'Mobile Architecture', 'Offline Sync'],
     niceSkills: ['Fastlane', 'Firebase', 'App Store CI'],
-    description: 'Own enterprise mobile experiences, build native bridge modules, and ensure 60fps fluid UI execution.',
+    description:
+      'Own enterprise mobile experiences, build native bridge modules, and ensure 60fps fluid UI execution.',
     candidateRole: 'Lead Mobile Developer',
   },
   {
@@ -150,7 +154,8 @@ const ROLE_TEMPLATES: RoleTemplate[] = [
     budgetMax: 55,
     mustSkills: ['AWS Security', 'SOC2', 'Vault', 'IAM', 'Threat Modeling'],
     niceSkills: ['Zero Trust', 'Kubernetes Hardening', 'Audit Logs'],
-    description: 'Architect security guardrails, automate continuous vulnerability mitigation, and enforce rigorous RBAC standards.',
+    description:
+      'Architect security guardrails, automate continuous vulnerability mitigation, and enforce rigorous RBAC standards.',
     candidateRole: 'Security Operations Architect',
   },
 
@@ -165,7 +170,8 @@ const ROLE_TEMPLATES: RoleTemplate[] = [
     budgetMax: 40,
     mustSkills: ['Product Strategy', 'Roadmapping', 'Agile', 'User Discovery', 'Metrics'],
     niceSkills: ['SQL', 'Mixpanel', 'B2B SaaS'],
-    description: 'Own end-to-end roadmap for core products, define high-impact feature specifications, and partner with design and engineering.',
+    description:
+      'Own end-to-end roadmap for core products, define high-impact feature specifications, and partner with design and engineering.',
     candidateRole: 'Lead Product Manager',
   },
   {
@@ -178,7 +184,8 @@ const ROLE_TEMPLATES: RoleTemplate[] = [
     budgetMax: 44,
     mustSkills: ['Growth Loops', 'A/B Testing', 'Funnel Analytics', 'Onboarding Optimization'],
     niceSkills: ['Amplitude', 'SQL', 'Conversion Rate Optimization'],
-    description: 'Accelerate acquisition and self-serve adoption velocity through data-backed behavioral experiments and activation journeys.',
+    description:
+      'Accelerate acquisition and self-serve adoption velocity through data-backed behavioral experiments and activation journeys.',
     candidateRole: 'Senior Growth Manager',
   },
   {
@@ -191,7 +198,8 @@ const ROLE_TEMPLATES: RoleTemplate[] = [
     budgetMax: 38,
     mustSkills: ['API Product Management', 'Developer Experience', 'Swagger', 'Microservices'],
     niceSkills: ['Webhooks', 'Partner Integrations', 'Technical Docs'],
-    description: 'Shape the developer platform, design robust external API interfaces, and champion seamless partner ecosystem integrations.',
+    description:
+      'Shape the developer platform, design robust external API interfaces, and champion seamless partner ecosystem integrations.',
     candidateRole: 'Technical PM',
   },
   {
@@ -204,7 +212,8 @@ const ROLE_TEMPLATES: RoleTemplate[] = [
     budgetMax: 20,
     mustSkills: ['Feature Specs', 'User Research', 'Sprint Planning', 'PRD Authoring'],
     niceSkills: ['JIRA', 'Figma', 'Basic SQL'],
-    description: 'Collaborate with engineering squads to execute tactical product milestones, synthesize user feedback, and measure feature adoption.',
+    description:
+      'Collaborate with engineering squads to execute tactical product milestones, synthesize user feedback, and measure feature adoption.',
     candidateRole: 'Product Associate',
   },
 
@@ -219,7 +228,8 @@ const ROLE_TEMPLATES: RoleTemplate[] = [
     budgetMax: 28,
     mustSkills: ['Figma', 'Design Systems', 'User Research', 'Prototyping'],
     niceSkills: ['Micro-interactions', 'Accessibility', 'Framer'],
-    description: 'Design intuitive, enterprise-grade workflows and establish unified design tokens across our entire application suite.',
+    description:
+      'Design intuitive, enterprise-grade workflows and establish unified design tokens across our entire application suite.',
     candidateRole: 'Senior Product Designer',
   },
   {
@@ -230,9 +240,15 @@ const ROLE_TEMPLATES: RoleTemplate[] = [
     expMax: 9,
     budgetMin: 26,
     budgetMax: 38,
-    mustSkills: ['Design Tokens', 'Figma Variants', 'Accessibility (WCAG 2.1 AA)', 'Component Specs'],
+    mustSkills: [
+      'Design Tokens',
+      'Figma Variants',
+      'Accessibility (WCAG 2.1 AA)',
+      'Component Specs',
+    ],
     niceSkills: ['Storybook', 'CSS Variables', 'Motion Design'],
-    description: 'Architect foundational design systems, standardize token semantics across web and mobile platforms, and drive cross-org consistency.',
+    description:
+      'Architect foundational design systems, standardize token semantics across web and mobile platforms, and drive cross-org consistency.',
     candidateRole: 'Lead Design Systems Specialist',
   },
   {
@@ -243,9 +259,15 @@ const ROLE_TEMPLATES: RoleTemplate[] = [
     expMax: 7,
     budgetMin: 20,
     budgetMax: 32,
-    mustSkills: ['Usability Testing', 'Contextual Inquiries', 'Survey Design', 'User Journey Mapping'],
+    mustSkills: [
+      'Usability Testing',
+      'Contextual Inquiries',
+      'Survey Design',
+      'User Journey Mapping',
+    ],
     niceSkills: ['Mixed Methods', 'Persona Development', 'Dovetail'],
-    description: 'Uncover qualitative insights, conduct customer interviews, and guide product direction through validated user behaviors.',
+    description:
+      'Uncover qualitative insights, conduct customer interviews, and guide product direction through validated user behaviors.',
     candidateRole: 'Staff UX Researcher',
   },
   {
@@ -258,7 +280,8 @@ const ROLE_TEMPLATES: RoleTemplate[] = [
     budgetMax: 26,
     mustSkills: ['After Effects', 'Lottie', 'Brand Guidelines', 'Micro-animations'],
     niceSkills: ['3D Illustration', 'Spline', 'Figma Animation'],
-    description: 'Craft tactile animations, interactive transitions, and polished brand collateral that give products a refined, fluid tactile feel.',
+    description:
+      'Craft tactile animations, interactive transitions, and polished brand collateral that give products a refined, fluid tactile feel.',
     candidateRole: 'Motion Designer',
   },
 
@@ -273,7 +296,8 @@ const ROLE_TEMPLATES: RoleTemplate[] = [
     budgetMax: 22,
     mustSkills: ['SQL', 'Python', 'PowerBI', 'Data Modeling', 'Cohort Analysis'],
     niceSkills: ['dbt', 'Snowflake', 'Airflow'],
-    description: 'Drive actionable business analytics, synthesize behavioral cohort funnels, and build executive reporting suites.',
+    description:
+      'Drive actionable business analytics, synthesize behavioral cohort funnels, and build executive reporting suites.',
     candidateRole: 'Senior Business Intelligence Analyst',
   },
   {
@@ -286,7 +310,8 @@ const ROLE_TEMPLATES: RoleTemplate[] = [
     budgetMax: 38,
     mustSkills: ['dbt', 'Snowflake', 'BigQuery', 'SQL Optimization', 'Data Warehousing'],
     niceSkills: ['Airflow', 'Fivetran', 'Data Quality Testing'],
-    description: 'Build robust dimensional data marts, manage automated transform jobs, and curate single sources of analytical truth.',
+    description:
+      'Build robust dimensional data marts, manage automated transform jobs, and curate single sources of analytical truth.',
     candidateRole: 'Lead Analytics Engineer',
   },
   {
@@ -299,7 +324,8 @@ const ROLE_TEMPLATES: RoleTemplate[] = [
     budgetMax: 50,
     mustSkills: ['Python', 'Scikit-Learn', 'Feature Engineering', 'Predictive Modeling', 'MLOps'],
     niceSkills: ['XGBoost', 'MLflow', 'Spark ML'],
-    description: 'Develop recommendation and classification models, deploy inference endpoints, and measure predictive uplift against production metrics.',
+    description:
+      'Develop recommendation and classification models, deploy inference endpoints, and measure predictive uplift against production metrics.',
     candidateRole: 'Data Scientist II',
   },
   {
@@ -312,7 +338,8 @@ const ROLE_TEMPLATES: RoleTemplate[] = [
     budgetMax: 24,
     mustSkills: ['Advanced Excel', 'SQL', 'Financial Modeling', 'Process Analytics'],
     niceSkills: ['Tableau', 'Alteryx', 'Executive Presentations'],
-    description: 'Evaluate unit economics, dissect operational bottleneck telemetry, and partner with leadership on capacity allocation models.',
+    description:
+      'Evaluate unit economics, dissect operational bottleneck telemetry, and partner with leadership on capacity allocation models.',
     candidateRole: 'BizOps Analyst',
   },
 
@@ -325,9 +352,15 @@ const ROLE_TEMPLATES: RoleTemplate[] = [
     expMax: 6,
     budgetMin: 14,
     budgetMax: 22,
-    mustSkills: ['Tech Sourcing', 'Candidate Coordination', 'LinkedIn Recruiter', 'Offer Negotiation'],
+    mustSkills: [
+      'Tech Sourcing',
+      'Candidate Coordination',
+      'LinkedIn Recruiter',
+      'Offer Negotiation',
+    ],
     niceSkills: ['ATS Administration', 'Campus Hiring', 'Employer Branding'],
-    description: 'Manage full-cycle tech hiring, coordinate candidate schedules, and deliver memorable candidate interview experiences.',
+    description:
+      'Manage full-cycle tech hiring, coordinate candidate schedules, and deliver memorable candidate interview experiences.',
     candidateRole: 'Senior Technical Recruiter',
   },
   {
@@ -338,9 +371,15 @@ const ROLE_TEMPLATES: RoleTemplate[] = [
     expMax: 8,
     budgetMin: 18,
     budgetMax: 28,
-    mustSkills: ['HRIS Management', 'Onboarding Automation', 'Employee Engagement', 'Payroll & Compliance'],
+    mustSkills: [
+      'HRIS Management',
+      'Onboarding Automation',
+      'Employee Engagement',
+      'Payroll & Compliance',
+    ],
     niceSkills: ['Performance Cycles', 'Labor Law', 'Culture Programs'],
-    description: 'Streamline joiner onboarding workflows, manage employee operations, and foster an inclusive, high-performance team culture.',
+    description:
+      'Streamline joiner onboarding workflows, manage employee operations, and foster an inclusive, high-performance team culture.',
     candidateRole: 'People Operations Manager',
   },
 
@@ -353,9 +392,15 @@ const ROLE_TEMPLATES: RoleTemplate[] = [
     expMax: 7,
     budgetMin: 18,
     budgetMax: 30,
-    mustSkills: ['SLA Optimization', 'Cross-functional Execution', 'Risk Mitigation', 'Vendor Management'],
+    mustSkills: [
+      'SLA Optimization',
+      'Cross-functional Execution',
+      'Risk Mitigation',
+      'Vendor Management',
+    ],
     niceSkills: ['Six Sigma', 'Logistics Analytics', 'Process Automation'],
-    description: 'Oversee high-volume service delivery pipelines, eliminate procedural friction, and ensure strict SLA adherence.',
+    description:
+      'Oversee high-volume service delivery pipelines, eliminate procedural friction, and ensure strict SLA adherence.',
     candidateRole: 'Senior Operations Lead',
   },
   {
@@ -368,30 +413,166 @@ const ROLE_TEMPLATES: RoleTemplate[] = [
     budgetMax: 22,
     mustSkills: ['CSAT / NPS Frameworks', 'Escalation Workflows', 'Team Mentorship', 'Zendesk'],
     niceSkills: ['Customer Journey Mapping', 'Intercom', 'Voice of Customer'],
-    description: 'Champion client delight, resolve tier-3 operational escalations, and establish proactive issue-prevention mechanisms.',
+    description:
+      'Champion client delight, resolve tier-3 operational escalations, and establish proactive issue-prevention mechanisms.',
     candidateRole: 'Customer Support Manager',
   },
 ];
 
 const FIRST_NAMES = [
-  'Aarav', 'Aditi', 'Rohan', 'Neha', 'Karan', 'Sneha', 'Vikram', 'Pooja', 'Devendra', 'Ritu',
-  'Gaurav', 'Kavita', 'Amit', 'Meera', 'Anish', 'Tanvi', 'Siddharth', 'Deepika', 'Manoj', 'Shreya',
-  'Harsh', 'Divya', 'Kunal', 'Preeti', 'Rajesh', 'Swati', 'Nikhil', 'Rashmi', 'Abhishek', 'Pallavi',
-  'Varun', 'Ananya', 'Rahul', 'Ishita', 'Tarun', 'Radhika', 'Aditya', 'Payal', 'Vishal', 'Simran',
-  'Akash', 'Kriti', 'Mayank', 'Riya', 'Pranav', 'Sonam', 'Chirag', 'Shalini', 'Saurabh', 'Priyanka',
-  'Sandeep', 'Shruti', 'Alok', 'Barkha', 'Mohit', 'Aarti', 'Deepak', 'Chetna', 'Naveen', 'Garima',
-  'Arjun', 'Vandana', 'Vivek', 'Jyoti', 'Sachin', 'Sonia', 'Prashant', 'Nidhi', 'Ashish', 'Akanksha',
-  'Sameer', 'Shilpa', 'Sanjay', 'Monica', 'Abhinav', 'Komal', 'Manish', 'Ankita', 'Chetan', 'Richa',
-  'Sumit', 'Bhavna', 'Tushar', 'Parul', 'Ayush', 'Surbhi', 'Yash', 'Tanuja', 'Rohit', 'Sakshi',
-  'Sunny', 'Suman', 'Aman', 'Neetu', 'Bhupesh', 'Anamika', 'Himanshu', 'Anupriya', 'Rishabh', 'Natasha',
+  'Aarav',
+  'Aditi',
+  'Rohan',
+  'Neha',
+  'Karan',
+  'Sneha',
+  'Vikram',
+  'Pooja',
+  'Devendra',
+  'Ritu',
+  'Gaurav',
+  'Kavita',
+  'Amit',
+  'Meera',
+  'Anish',
+  'Tanvi',
+  'Siddharth',
+  'Deepika',
+  'Manoj',
+  'Shreya',
+  'Harsh',
+  'Divya',
+  'Kunal',
+  'Preeti',
+  'Rajesh',
+  'Swati',
+  'Nikhil',
+  'Rashmi',
+  'Abhishek',
+  'Pallavi',
+  'Varun',
+  'Ananya',
+  'Rahul',
+  'Ishita',
+  'Tarun',
+  'Radhika',
+  'Aditya',
+  'Payal',
+  'Vishal',
+  'Simran',
+  'Akash',
+  'Kriti',
+  'Mayank',
+  'Riya',
+  'Pranav',
+  'Sonam',
+  'Chirag',
+  'Shalini',
+  'Saurabh',
+  'Priyanka',
+  'Sandeep',
+  'Shruti',
+  'Alok',
+  'Barkha',
+  'Mohit',
+  'Aarti',
+  'Deepak',
+  'Chetna',
+  'Naveen',
+  'Garima',
+  'Arjun',
+  'Vandana',
+  'Vivek',
+  'Jyoti',
+  'Sachin',
+  'Sonia',
+  'Prashant',
+  'Nidhi',
+  'Ashish',
+  'Akanksha',
+  'Sameer',
+  'Shilpa',
+  'Sanjay',
+  'Monica',
+  'Abhinav',
+  'Komal',
+  'Manish',
+  'Ankita',
+  'Chetan',
+  'Richa',
+  'Sumit',
+  'Bhavna',
+  'Tushar',
+  'Parul',
+  'Ayush',
+  'Surbhi',
+  'Yash',
+  'Tanuja',
+  'Rohit',
+  'Sakshi',
+  'Sunny',
+  'Suman',
+  'Aman',
+  'Neetu',
+  'Bhupesh',
+  'Anamika',
+  'Himanshu',
+  'Anupriya',
+  'Rishabh',
+  'Natasha',
 ];
 
 const LAST_NAMES = [
-  'Sharma', 'Verma', 'Mehta', 'Iyer', 'Patel', 'Kulkarni', 'Rao', 'Nair', 'Singh', 'Saxena',
-  'Joshi', 'Reddy', 'Choudhury', 'Bhatt', 'Kapoor', 'Deshmukh', 'Jain', 'Pillai', 'Tiwari', 'Sengupta',
-  'Vardhan', 'Menon', 'Ghosh', 'Agarwal', 'Nambiar', 'Dubey', 'Anand', 'Hegde', 'Sinha', 'Sen',
-  'Mishra', 'Bansal', 'Gupta', 'Malhotra', 'Bhatia', 'Trivedi', 'Mukhopadhyay', 'Das', 'Banerjee', 'Chakraborty',
-  'Bose', 'Dutta', 'Roy', 'Ganguly', 'Somani', 'Mittal', 'Singhania', 'Goenka', 'Maheshwari', 'Shrivastav',
+  'Sharma',
+  'Verma',
+  'Mehta',
+  'Iyer',
+  'Patel',
+  'Kulkarni',
+  'Rao',
+  'Nair',
+  'Singh',
+  'Saxena',
+  'Joshi',
+  'Reddy',
+  'Choudhury',
+  'Bhatt',
+  'Kapoor',
+  'Deshmukh',
+  'Jain',
+  'Pillai',
+  'Tiwari',
+  'Sengupta',
+  'Vardhan',
+  'Menon',
+  'Ghosh',
+  'Agarwal',
+  'Nambiar',
+  'Dubey',
+  'Anand',
+  'Hegde',
+  'Sinha',
+  'Sen',
+  'Mishra',
+  'Bansal',
+  'Gupta',
+  'Malhotra',
+  'Bhatia',
+  'Trivedi',
+  'Mukhopadhyay',
+  'Das',
+  'Banerjee',
+  'Chakraborty',
+  'Bose',
+  'Dutta',
+  'Roy',
+  'Ganguly',
+  'Somani',
+  'Mittal',
+  'Singhania',
+  'Goenka',
+  'Maheshwari',
+  'Shrivastav',
 ];
 
 export function generateSeedData(): {
@@ -406,22 +587,60 @@ export function generateSeedData(): {
   // 1. Generate 48 realistic Openings distributed across all departments and statuses
   const openingStatusesDistribution: OpeningStatus[] = [
     // 18 Open
-    'Open', 'Open', 'Open', 'Open', 'Open', 'Open', 'Open', 'Open', 'Open',
-    'Open', 'Open', 'Open', 'Open', 'Open', 'Open', 'Open', 'Open', 'Open',
+    'Open',
+    'Open',
+    'Open',
+    'Open',
+    'Open',
+    'Open',
+    'Open',
+    'Open',
+    'Open',
+    'Open',
+    'Open',
+    'Open',
+    'Open',
+    'Open',
+    'Open',
+    'Open',
+    'Open',
+    'Open',
     // 10 Sourcing
-    'Sourcing', 'Sourcing', 'Sourcing', 'Sourcing', 'Sourcing',
-    'Sourcing', 'Sourcing', 'Sourcing', 'Sourcing', 'Sourcing',
+    'Sourcing',
+    'Sourcing',
+    'Sourcing',
+    'Sourcing',
+    'Sourcing',
+    'Sourcing',
+    'Sourcing',
+    'Sourcing',
+    'Sourcing',
+    'Sourcing',
     // 8 Interviewing
-    'Interviewing', 'Interviewing', 'Interviewing', 'Interviewing',
-    'Interviewing', 'Interviewing', 'Interviewing', 'Interviewing',
+    'Interviewing',
+    'Interviewing',
+    'Interviewing',
+    'Interviewing',
+    'Interviewing',
+    'Interviewing',
+    'Interviewing',
+    'Interviewing',
     // 4 Shortlist Shared
-    'Shortlist Shared', 'Shortlist Shared', 'Shortlist Shared', 'Shortlist Shared',
+    'Shortlist Shared',
+    'Shortlist Shared',
+    'Shortlist Shared',
+    'Shortlist Shared',
     // 3 Offer Stage
-    'Offer Stage', 'Offer Stage', 'Offer Stage',
+    'Offer Stage',
+    'Offer Stage',
+    'Offer Stage',
     // 3 Filled
-    'Filled', 'Filled', 'Filled',
+    'Filled',
+    'Filled',
+    'Filled',
     // 2 On Hold
-    'On Hold', 'On Hold',
+    'On Hold',
+    'On Hold',
   ];
 
   const openings: Opening[] = openingStatusesDistribution.map((status, index) => {
@@ -436,7 +655,7 @@ export function generateSeedData(): {
 
     return {
       id: `10000000-0000-0000-0000-${String(index + 1).padStart(12, '0')}`,
-      title: index >= ROLE_TEMPLATES.length ? `${tmpl.title} - Squad ${Math.floor(index / ROLE_TEMPLATES.length) + 1}` : tmpl.title,
+      title: tmpl.title,
       department: tmpl.department,
       location: loc,
       employmentType: 'Full-time',
@@ -483,7 +702,8 @@ export function generateSeedData(): {
       const source = CANDIDATE_SOURCES[globalIdx % CANDIDATE_SOURCES.length]!;
 
       const firstName = FIRST_NAMES[globalIdx % FIRST_NAMES.length]!;
-      const lastName = LAST_NAMES[Math.floor(globalIdx / FIRST_NAMES.length + i) % LAST_NAMES.length]!;
+      const lastName =
+        LAST_NAMES[Math.floor(globalIdx / FIRST_NAMES.length + i) % LAST_NAMES.length]!;
       const name = `${firstName} ${lastName}`;
 
       // Notice period distribution
@@ -506,7 +726,12 @@ export function generateSeedData(): {
 
       if (stage === 'Shared with Manager') {
         managerDecision = 'Pending'; // Sits in Shortlist Review queue
-      } else if (stage === 'Interview' || stage === 'Selected' || stage === 'Offer Sent' || stage === 'Joined') {
+      } else if (
+        stage === 'Interview' ||
+        stage === 'Selected' ||
+        stage === 'Offer Sent' ||
+        stage === 'Joined'
+      ) {
         managerDecision = 'Shortlisted';
         managerComment =
           i % 3 === 0
@@ -575,7 +800,10 @@ export function generateSeedData(): {
         phone: `+91 98${faker.string.numeric(8)}`,
         currentCompany: INDIAN_COMPANIES[globalIdx % INDIAN_COMPANIES.length] || 'Razorpay',
         currentRole: tmpl.candidateRole,
-        experienceYears: Math.min(tmpl.expMax, Math.max(tmpl.expMin, tmpl.expMin + (i % (tmpl.expMax - tmpl.expMin + 1)))),
+        experienceYears: Math.min(
+          tmpl.expMax,
+          Math.max(tmpl.expMin, tmpl.expMin + (i % (tmpl.expMax - tmpl.expMin + 1)))
+        ),
         noticePeriod,
         expectedCtc: tmpl.budgetMin + (i % (tmpl.budgetMax - tmpl.budgetMin + 1)),
         source,
@@ -602,19 +830,54 @@ export function generateSeedData(): {
   });
 
   // 3. Onboarding tasks for all Joined / Offer Sent candidates
-  const onboardingCandidates = candidates.filter(
-    (c) => c.stage === 'Joined' || c.stage === 'Offer Sent' || c.stage === 'Selected'
-  ).slice(0, 15);
+  const onboardingCandidates = candidates
+    .filter((c) => c.stage === 'Joined' || c.stage === 'Offer Sent' || c.stage === 'Selected')
+    .slice(0, 15);
 
   const onboarding: OnboardingItem[] = [];
   const defaultTasks = [
-    { title: 'Collect documents (PAN, Aadhaar, Degree)', owner: 'HR' as const, phase: 'Before joining' as const, daysOffset: -5 },
-    { title: 'Create email and system accounts', owner: 'HR' as const, phase: 'Before joining' as const, daysOffset: -3 },
-    { title: 'Arrange laptop and workstation setup', owner: 'HR' as const, phase: 'Before joining' as const, daysOffset: -2 },
-    { title: 'Prepare first-week onboarding plan', owner: 'Manager' as const, phase: 'Before joining' as const, daysOffset: -1 },
-    { title: 'Welcome and culture orientation', owner: 'HR' as const, phase: 'Day 1' as const, daysOffset: 0 },
-    { title: 'Introduce team and assign peer mentor', owner: 'Manager' as const, phase: 'Day 1' as const, daysOffset: 0 },
-    { title: '30-day technical performance check-in', owner: 'Manager' as const, phase: 'First 30 days' as const, daysOffset: 30 },
+    {
+      title: 'Collect documents (PAN, Aadhaar, Degree)',
+      owner: 'HR' as const,
+      phase: 'Before joining' as const,
+      daysOffset: -5,
+    },
+    {
+      title: 'Create email and system accounts',
+      owner: 'HR' as const,
+      phase: 'Before joining' as const,
+      daysOffset: -3,
+    },
+    {
+      title: 'Arrange laptop and workstation setup',
+      owner: 'HR' as const,
+      phase: 'Before joining' as const,
+      daysOffset: -2,
+    },
+    {
+      title: 'Prepare first-week onboarding plan',
+      owner: 'Manager' as const,
+      phase: 'Before joining' as const,
+      daysOffset: -1,
+    },
+    {
+      title: 'Welcome and culture orientation',
+      owner: 'HR' as const,
+      phase: 'Day 1' as const,
+      daysOffset: 0,
+    },
+    {
+      title: 'Introduce team and assign peer mentor',
+      owner: 'Manager' as const,
+      phase: 'Day 1' as const,
+      daysOffset: 0,
+    },
+    {
+      title: '30-day technical performance check-in',
+      owner: 'Manager' as const,
+      phase: 'First 30 days' as const,
+      daysOffset: 30,
+    },
   ];
 
   let taskCounter = 1;

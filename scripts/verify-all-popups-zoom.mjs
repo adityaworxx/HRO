@@ -1,7 +1,8 @@
 import { chromium } from '@playwright/test';
 import path from 'node:path';
 
-const screenshotDir = 'C:/Users/adity/.gemini/antigravity/brain/4445bf77-ea56-4237-9627-e3f6a9dd188c/screenshots';
+const screenshotDir =
+  'C:/Users/adity/.gemini/antigravity/brain/4445bf77-ea56-4237-9627-e3f6a9dd188c/screenshots';
 
 async function verifyAllPopups() {
   console.log('Launching Chrome browser...');
@@ -28,7 +29,9 @@ async function verifyAllPopups() {
   console.log('Dept Trigger:', deptTriggerBox);
   console.log('Dept ListBox:', deptListBox);
 
-  const xDiff = Math.abs((deptListBox.x + deptListBox.width) - (deptTriggerBox.x + deptTriggerBox.width));
+  const xDiff = Math.abs(
+    deptListBox.x + deptListBox.width - (deptTriggerBox.x + deptTriggerBox.width)
+  );
   console.log(`Dept dropdown alignment diff: ${xDiff.toFixed(2)}px`);
   await page.screenshot({ path: path.join(screenshotDir, 'final-zoom-dept.png') });
 
@@ -47,7 +50,9 @@ async function verifyAllPopups() {
   console.log('Action Trigger:', actionTriggerBox);
   console.log('Menu:', menuBox);
 
-  const actionXDiff = Math.abs((menuBox.x + menuBox.width) - (actionTriggerBox.x + actionTriggerBox.width));
+  const actionXDiff = Math.abs(
+    menuBox.x + menuBox.width - (actionTriggerBox.x + actionTriggerBox.width)
+  );
   console.log(`Action menu alignment diff: ${actionXDiff.toFixed(2)}px`);
   await page.screenshot({ path: path.join(screenshotDir, 'final-zoom-actions.png') });
 
@@ -104,7 +109,9 @@ async function verifyAllPopups() {
   const sheetBox = await sheet.boundingBox();
   console.log('Candidate Sheet BoundingBox:', sheetBox);
   const sheetRightEdge = sheetBox.x + sheetBox.width;
-  console.log(`Candidate Sheet Right Edge: ${sheetRightEdge.toFixed(1)}px (viewport width: 1440px)`);
+  console.log(
+    `Candidate Sheet Right Edge: ${sheetRightEdge.toFixed(1)}px (viewport width: 1440px)`
+  );
   await page.screenshot({ path: path.join(screenshotDir, 'final-zoom-candidate-sheet.png') });
 
   await browser.close();
@@ -115,4 +122,3 @@ verifyAllPopups().catch((err) => {
   console.error('Verification error:', err);
   process.exit(1);
 });
-

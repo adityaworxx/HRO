@@ -18,11 +18,7 @@ export const DropdownMenuContent = React.forwardRef<
     <DropdownMenuPrimitive.Content
       ref={ref}
       sideOffset={sideOffset}
-      className={cn(
-        OVERLAY_PANEL_CLASS,
-        'z-50 min-w-[8rem] p-1.5 space-y-0.5',
-        className
-      )}
+      className={cn(OVERLAY_PANEL_CLASS, 'z-50 min-w-[8rem] space-y-0.5 p-1.5', className)}
       {...props}
     />
   </DropdownMenuPrimitive.Portal>
@@ -38,7 +34,7 @@ export const DropdownMenuItem = React.forwardRef<
   <DropdownMenuPrimitive.Item
     ref={ref}
     className={cn(
-      'relative flex h-9 min-h-[36px] w-full cursor-pointer items-center gap-3 rounded-[8px] px-3 text-[14px] leading-[20px] font-medium text-text transition-colors outline-none select-none hover:bg-surface-2 focus:bg-surface-2 data-[highlighted]:bg-surface-2 data-[disabled]:pointer-events-none data-[disabled]:opacity-50 [&_svg]:h-4 [&_svg]:w-4 [&_svg]:stroke-[1.75] [&_svg]:text-text-subtle',
+      'text-text hover:bg-surface-2 focus:bg-surface-2 data-[highlighted]:bg-surface-2 [&_svg]:text-text-subtle relative flex h-9 min-h-[36px] w-full cursor-pointer items-center gap-3 rounded-[8px] px-3 text-[14px] leading-[20px] font-medium transition-colors outline-none select-none data-[disabled]:pointer-events-none data-[disabled]:opacity-50 [&_svg]:h-4 [&_svg]:w-4 [&_svg]:stroke-[1.75]',
       inset && 'pl-8',
       className
     )}

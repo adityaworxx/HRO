@@ -11,7 +11,6 @@ import {
   Users,
   Briefcase,
   Clock,
-  Sparkles,
   ArrowRight,
   MoreHorizontal,
   Eye,
@@ -21,7 +20,7 @@ import {
 import type { Opening } from '@/types/entities';
 import type { OpeningStatus } from '@/lib/domain/status-transitions';
 import { getNextAllowedOpeningStatuses } from '@/lib/domain/status-transitions';
-import { formatCtcRange } from '@/lib/format';
+import { formatCtcRange, formatRoleTitle } from '@/lib/format';
 import { cn } from '@/lib/utils';
 import { getAvatarColor } from './candidate-avatar';
 import {
@@ -74,40 +73,40 @@ export function OpeningCard({
   return (
     <div
       className={cn(
-        'group relative flex flex-col justify-between rounded-[12px] border border-border/70 bg-surface-1 p-3.5 transition-colors duration-150',
-        'hover:border-border-strong select-none space-y-2.5',
+        'group border-border/70 bg-surface-1 relative flex flex-col justify-between rounded-[12px] border p-3.5 transition-colors duration-150',
+        'hover:border-border-strong space-y-2.5 select-none',
         className
       )}
     >
       {/* 1. Header: Colorful Profile Avatar + Opening Title & Location + Experience Pill */}
       <div className="flex items-start justify-between gap-2.5">
-        <div className="flex items-center gap-2.5 min-w-0 flex-1">
+        <div className="flex min-w-0 flex-1 items-center gap-2.5">
           <div
             className={cn(
-              'flex h-8.5 w-8.5 shrink-0 items-center justify-center rounded-full text-white shadow-2xs select-none border border-black/5 dark:border-white/15',
+              'flex h-8.5 w-8.5 shrink-0 items-center justify-center rounded-full border border-black/5 text-white shadow-2xs select-none dark:border-white/15',
               avatarColor.bg
             )}
           >
-            <DeptIcon className="h-4 w-4 text-white stroke-[2]" />
+            <DeptIcon className="h-4 w-4 stroke-[2] text-white" />
           </div>
           <div className="min-w-0 flex-1">
-            <h4 className="text-[14px] font-semibold text-text tracking-[-0.015em] transition-colors truncate">
+            <h4 className="text-text truncate text-[14px] font-semibold tracking-[-0.015em] transition-colors">
               <Link
                 href={`/openings/${opening.id}`}
-                title={opening.title}
+                title={formatRoleTitle(opening.title)}
                 className="hover:text-text"
               >
-                {opening.title}
+                {formatRoleTitle(opening.title)}
               </Link>
             </h4>
-            <p className="text-[12px] text-text-muted truncate mt-0.5 font-normal">
+            <p className="text-text-muted mt-0.5 truncate text-[12px] font-normal">
               <span>{opening.location}</span>
             </p>
           </div>
         </div>
 
-        <div className="flex items-center gap-1.5 shrink-0">
-          <span className="text-[11.5px] font-medium text-text-muted shrink-0 tabular-nums select-none">
+        <div className="flex shrink-0 items-center gap-1.5">
+          <span className="text-text-muted shrink-0 text-[11.5px] font-medium tabular-nums select-none">
             {expText}
           </span>
 
@@ -117,7 +116,7 @@ export function OpeningCard({
                 <button
                   type="button"
                   aria-label="Opening actions"
-                  className="cursor-pointer text-text-subtle/60 hover:text-text transition-colors p-0.5 rounded-[4px] hover:bg-surface-2 focus:outline-none flex items-center justify-center shrink-0"
+                  className="text-text-subtle/60 hover:text-text hover:bg-surface-2 flex shrink-0 cursor-pointer items-center justify-center rounded-[4px] p-0.5 transition-colors focus:outline-none"
                 >
                   <MoreHorizontal className="h-3.5 w-3.5" />
                 </button>
@@ -156,28 +155,28 @@ export function OpeningCard({
       </div>
 
       {/* 2. Middle Body: Employment Type */}
-      <div className="flex items-center gap-2 min-w-0 text-[12.5px] font-medium text-text">
-        <Briefcase className="h-4 w-4 text-text-subtle stroke-[1.75]" />
+      <div className="text-text flex min-w-0 items-center gap-2 text-[12.5px] font-medium">
+        <Briefcase className="text-text-subtle h-4 w-4 stroke-[1.75]" />
         <span className="truncate">{opening.employmentType}</span>
       </div>
 
       {/* 3. Headcount & Compensation Range */}
-      <div className="flex items-center justify-between gap-3 text-[12px] pt-0.5 pb-0.5">
-        <span className="font-medium text-text truncate min-w-0">
-          {opening.headcount ? `${opening.headcount} ${opening.headcount === 1 ? 'opening' : 'openings'}` : '1 opening'}
+      <div className="flex items-center justify-between gap-3 pt-0.5 pb-0.5 text-[12px]">
+        <span className="text-text min-w-0 truncate font-medium">
+          {opening.headcount
+            ? `${opening.headcount} ${opening.headcount === 1 ? 'opening' : 'openings'}`
+            : '1 opening'}
         </span>
-        <span className="font-semibold text-text shrink-0 text-[12px] tabular-nums font-sans">
+        <span className="text-text shrink-0 font-sans text-[12px] font-semibold tabular-nums">
           {formatCtcRange(minBudget, maxBudget)}
         </span>
       </div>
 
       {/* 4. Bottom Meta: Status & AI Match / Urgency */}
-      <div className="border-t border-border/40 pt-2.5 flex items-center justify-between gap-2 text-[11px]">
+      <div className="border-border/40 flex items-center justify-between gap-2 border-t pt-2.5 text-[11px]">
         {opening.status === 'On Hold' ? (
           <div className="flex items-center gap-1.5">
-            <span className="text-[11px] font-medium text-text select-none">
-              On Hold
-            </span>
+            <span className="text-text text-[11px] font-medium select-none">On Hold</span>
             {onReactivate && (
               <button
                 type="button"
@@ -186,19 +185,17 @@ export function OpeningCard({
                   e.stopPropagation();
                   onReactivate(opening.id, opening.title);
                 }}
-                className="ml-1 text-[10.5px] font-medium text-text-muted hover:text-text hover:underline cursor-pointer"
+                className="text-text-muted hover:text-text ml-1 cursor-pointer text-[10.5px] font-medium hover:underline"
               >
                 Resume
               </button>
             )}
           </div>
         ) : (
-          <span className="text-[11px] font-medium text-text select-none">
-            {opening.status}
-          </span>
+          <span className="text-text text-[11px] font-medium select-none">{opening.status}</span>
         )}
 
-        <div className="flex items-center shrink-0">
+        <div className="flex shrink-0 items-center">
           {onAiMatch ? (
             <button
               type="button"
@@ -207,15 +204,14 @@ export function OpeningCard({
                 e.stopPropagation();
                 onAiMatch(opening);
               }}
-              className="inline-flex items-center gap-1 text-[11px] font-medium text-text hover:text-text-muted cursor-pointer select-none"
+              className="inline-flex cursor-pointer items-center justify-center rounded-[5px] bg-blue-600 px-2.5 py-1 text-[11px] font-semibold text-white shadow-2xs transition-colors select-none hover:bg-blue-700 active:scale-95 active:bg-blue-800"
               title="Scan & Match Candidates with AI"
             >
-              <Sparkles className="h-3 w-3 text-text-muted shrink-0" />
               <span>AI Match</span>
             </button>
           ) : (
-            <span className="inline-flex items-center gap-1 text-[11px] font-medium text-text-muted select-none">
-              <Clock className="h-3 w-3 text-text-subtle stroke-[1.75]" />
+            <span className="text-text-muted inline-flex items-center gap-1 text-[11px] font-medium select-none">
+              <Clock className="text-text-subtle h-3 w-3 stroke-[1.75]" />
               <span>{opening.urgency} Priority</span>
             </span>
           )}
@@ -225,10 +221,10 @@ export function OpeningCard({
       {/* 5. Footer: View Requisition Details Action */}
       <Link
         href={`/openings/${opening.id}`}
-        className="pt-2.5 border-t border-border/40 flex items-center justify-between text-[11.5px] text-text-muted group-hover:text-text transition-colors"
+        className="border-border/40 text-text-muted group-hover:text-text flex items-center justify-between border-t pt-2.5 text-[11.5px] transition-colors"
       >
         <span className="font-medium">{actionText || 'View Requisition Details'}</span>
-        <ArrowRight className="h-3.5 w-3.5 opacity-60 group-hover:opacity-100 group-hover:translate-x-0.5 transition-all text-text-muted group-hover:text-text" />
+        <ArrowRight className="text-text-muted group-hover:text-text h-3.5 w-3.5 opacity-60 transition-all group-hover:translate-x-0.5 group-hover:opacity-100" />
       </Link>
     </div>
   );

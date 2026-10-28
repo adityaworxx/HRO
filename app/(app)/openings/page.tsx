@@ -6,4 +6,3 @@ import { OpeningsTable } from '@/features/openings';
 export default function OpeningsPage() {
   return <OpeningsTable />;
 }
-

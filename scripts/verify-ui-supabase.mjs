@@ -2,7 +2,8 @@ import { chromium } from '@playwright/test';
 import path from 'node:path';
 import fs from 'node:fs';
 
-const screenshotDir = 'C:/Users/adity/.gemini/antigravity/brain/4445bf77-ea56-4237-9627-e3f6a9dd188c/screenshots';
+const screenshotDir =
+  'C:/Users/adity/.gemini/antigravity/brain/4445bf77-ea56-4237-9627-e3f6a9dd188c/screenshots';
 if (!fs.existsSync(screenshotDir)) {
   fs.mkdirSync(screenshotDir, { recursive: true });
 }
@@ -42,10 +43,16 @@ async function verifyUI() {
     await page.waitForTimeout(2000);
 
     await setTheme(page, 'light');
-    await page.screenshot({ path: path.join(screenshotDir, 'supabase-dashboard-light.png'), fullPage: true });
+    await page.screenshot({
+      path: path.join(screenshotDir, 'supabase-dashboard-light.png'),
+      fullPage: true,
+    });
 
     await setTheme(page, 'dark');
-    await page.screenshot({ path: path.join(screenshotDir, 'supabase-dashboard-dark.png'), fullPage: true });
+    await page.screenshot({
+      path: path.join(screenshotDir, 'supabase-dashboard-dark.png'),
+      fullPage: true,
+    });
     console.log('✓ Captured Manager Dashboard (Light & Dark)');
 
     // Switch to HR View by clicking the visible Role Switcher
@@ -67,10 +74,16 @@ async function verifyUI() {
     await page.waitForTimeout(2000);
 
     await setTheme(page, 'light');
-    await page.screenshot({ path: path.join(screenshotDir, 'supabase-openings-light.png'), fullPage: true });
+    await page.screenshot({
+      path: path.join(screenshotDir, 'supabase-openings-light.png'),
+      fullPage: true,
+    });
 
     await setTheme(page, 'dark');
-    await page.screenshot({ path: path.join(screenshotDir, 'supabase-openings-dark.png'), fullPage: true });
+    await page.screenshot({
+      path: path.join(screenshotDir, 'supabase-openings-dark.png'),
+      fullPage: true,
+    });
     console.log('✓ Captured Openings (Light & Dark)');
 
     // 3. Candidates Pipeline
@@ -79,10 +92,16 @@ async function verifyUI() {
     await page.waitForTimeout(2000);
 
     await setTheme(page, 'light');
-    await page.screenshot({ path: path.join(screenshotDir, 'supabase-candidates-light.png'), fullPage: true });
+    await page.screenshot({
+      path: path.join(screenshotDir, 'supabase-candidates-light.png'),
+      fullPage: true,
+    });
 
     await setTheme(page, 'dark');
-    await page.screenshot({ path: path.join(screenshotDir, 'supabase-candidates-dark.png'), fullPage: true });
+    await page.screenshot({
+      path: path.join(screenshotDir, 'supabase-candidates-dark.png'),
+      fullPage: true,
+    });
     console.log('✓ Captured Candidates Table (Light & Dark)');
 
     // 3b. Kanban Pipeline Board
@@ -91,7 +110,10 @@ async function verifyUI() {
     await page.waitForTimeout(2000);
 
     await setTheme(page, 'dark');
-    await page.screenshot({ path: path.join(screenshotDir, 'supabase-pipeline-dark.png'), fullPage: true });
+    await page.screenshot({
+      path: path.join(screenshotDir, 'supabase-pipeline-dark.png'),
+      fullPage: true,
+    });
     console.log('✓ Captured Kanban Pipeline Board');
 
     // 4. Onboarding Checklist
@@ -100,10 +122,16 @@ async function verifyUI() {
     await page.waitForTimeout(2000);
 
     await setTheme(page, 'light');
-    await page.screenshot({ path: path.join(screenshotDir, 'supabase-onboarding-light.png'), fullPage: true });
+    await page.screenshot({
+      path: path.join(screenshotDir, 'supabase-onboarding-light.png'),
+      fullPage: true,
+    });
 
     await setTheme(page, 'dark');
-    await page.screenshot({ path: path.join(screenshotDir, 'supabase-onboarding-dark.png'), fullPage: true });
+    await page.screenshot({
+      path: path.join(screenshotDir, 'supabase-onboarding-dark.png'),
+      fullPage: true,
+    });
     console.log('✓ Captured Onboarding (Light & Dark)');
 
     // 5. Reports & Funnels
@@ -112,10 +140,16 @@ async function verifyUI() {
     await page.waitForTimeout(2000);
 
     await setTheme(page, 'light');
-    await page.screenshot({ path: path.join(screenshotDir, 'supabase-reports-light.png'), fullPage: true });
+    await page.screenshot({
+      path: path.join(screenshotDir, 'supabase-reports-light.png'),
+      fullPage: true,
+    });
 
     await setTheme(page, 'dark');
-    await page.screenshot({ path: path.join(screenshotDir, 'supabase-reports-dark.png'), fullPage: true });
+    await page.screenshot({
+      path: path.join(screenshotDir, 'supabase-reports-dark.png'),
+      fullPage: true,
+    });
     console.log('✓ Captured Reports (Light & Dark)');
 
     // 6. Mobile Viewport (Responsive test)
@@ -123,7 +157,10 @@ async function verifyUI() {
     const mobilePage = await browser.newPage({ viewport: { width: 390, height: 844 } });
     await mobilePage.goto('http://localhost:3000', { waitUntil: 'networkidle' });
     await mobilePage.waitForTimeout(2000);
-    await mobilePage.screenshot({ path: path.join(screenshotDir, 'supabase-mobile-dashboard.png'), fullPage: true });
+    await mobilePage.screenshot({
+      path: path.join(screenshotDir, 'supabase-mobile-dashboard.png'),
+      fullPage: true,
+    });
     console.log('✓ Captured Mobile Dashboard');
     await mobilePage.close();
 

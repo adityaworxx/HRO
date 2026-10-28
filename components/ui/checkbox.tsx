@@ -10,13 +10,13 @@ export const Checkbox = React.forwardRef<
   <CheckboxPrimitive.Root
     ref={ref}
     className={cn(
-      'peer border-border bg-surface-1 data-[state=checked]:bg-accent data-[state=checked]:border-accent h-4 w-4 shrink-0 rounded-[var(--radius-sm)] border shadow-xs transition-colors focus:outline-none focus-visible:outline-none disabled:cursor-not-allowed disabled:opacity-50 cursor-pointer text-white',
+      'peer border-border bg-surface-1 data-[state=checked]:bg-accent data-[state=checked]:border-accent h-4 w-4 shrink-0 cursor-pointer rounded-[var(--radius-sm)] border text-white shadow-xs transition-colors focus:outline-none focus-visible:outline-none disabled:cursor-not-allowed disabled:opacity-50',
       className
     )}
     {...props}
   >
     <CheckboxPrimitive.Indicator className={cn('flex items-center justify-center text-white')}>
-      <Check className="h-3 w-3 text-white stroke-[3.5]" />
+      <Check className="h-3 w-3 stroke-[3.5] text-white" />
     </CheckboxPrimitive.Indicator>
   </CheckboxPrimitive.Root>
 ));

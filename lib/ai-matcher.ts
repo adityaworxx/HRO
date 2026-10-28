@@ -56,56 +56,158 @@ const SKILL_ALIASES: Record<string, string[]> = {
 // Implied core competencies based on industry job titles
 const ROLE_SKILL_ASSOCIATIONS: Record<string, string[]> = {
   frontend: [
-    'react', 'next.js', 'typescript', 'javascript', 'tailwind css', 'css',
-    'web performance', 'html', 'design systems', 'jest', 'vitest', 'frontend architecture',
-    'api integration', 'graphql'
+    'react',
+    'next.js',
+    'typescript',
+    'javascript',
+    'tailwind css',
+    'css',
+    'web performance',
+    'html',
+    'design systems',
+    'jest',
+    'vitest',
+    'frontend architecture',
+    'api integration',
+    'graphql',
   ],
   backend: [
-    'node.js', 'python', 'java', 'golang', 'go', 'postgresql', 'sql', 'redis',
-    'docker', 'kubernetes', 'aws', 'rest apis', 'microservices', 'kafka', 'ci/cd'
+    'node.js',
+    'python',
+    'java',
+    'golang',
+    'go',
+    'postgresql',
+    'sql',
+    'redis',
+    'docker',
+    'kubernetes',
+    'aws',
+    'rest apis',
+    'microservices',
+    'kafka',
+    'ci/cd',
   ],
   fullstack: [
-    'react', 'next.js', 'typescript', 'node.js', 'postgresql', 'docker', 'rest apis', 'tailwind css'
+    'react',
+    'next.js',
+    'typescript',
+    'node.js',
+    'postgresql',
+    'docker',
+    'rest apis',
+    'tailwind css',
   ],
   qa: [
-    'playwright', 'selenium', 'jest', 'vitest', 'api testing', 'automation',
-    'ci integration', 'typescript', 'cypress', 'qa automation', 'testing'
+    'playwright',
+    'selenium',
+    'jest',
+    'vitest',
+    'api testing',
+    'automation',
+    'ci integration',
+    'typescript',
+    'cypress',
+    'qa automation',
+    'testing',
   ],
-  architect: [
-    'system design', 'architecture', 'scalability', 'cloud', 'docker', 'ci/cd'
-  ],
+  architect: ['system design', 'architecture', 'scalability', 'cloud', 'docker', 'ci/cd'],
   devops: [
-    'docker', 'kubernetes', 'aws', 'gcp', 'terraform', 'ci/cd pipelines',
-    'linux', 'helm', 'monitoring', 'sre', 'cloud architecture'
+    'docker',
+    'kubernetes',
+    'aws',
+    'gcp',
+    'terraform',
+    'ci/cd pipelines',
+    'linux',
+    'helm',
+    'monitoring',
+    'sre',
+    'cloud architecture',
   ],
   designer: [
-    'figma', 'ui design', 'ux research', 'design systems', 'wireframing',
-    'interactive prototyping', 'tokens', 'wcag', 'usability', 'mobile ux'
+    'figma',
+    'ui design',
+    'ux research',
+    'design systems',
+    'wireframing',
+    'interactive prototyping',
+    'tokens',
+    'wcag',
+    'usability',
+    'mobile ux',
   ],
   design: [
-    'figma', 'ui design', 'ux research', 'design systems', 'wireframing',
-    'interactive prototyping', 'tokens', 'wcag', 'usability', 'mobile ux'
+    'figma',
+    'ui design',
+    'ux research',
+    'design systems',
+    'wireframing',
+    'interactive prototyping',
+    'tokens',
+    'wcag',
+    'usability',
+    'mobile ux',
   ],
   analyst: [
-    'sql', 'python', 'tableau', 'power bi', 'pandas', 'analytics',
-    'etl', 'data modeling', 'statistics', 'dbt', 'dashboards'
+    'sql',
+    'python',
+    'tableau',
+    'power bi',
+    'pandas',
+    'analytics',
+    'etl',
+    'data modeling',
+    'statistics',
+    'dbt',
+    'dashboards',
   ],
   data: [
-    'sql', 'python', 'tableau', 'power bi', 'pandas', 'analytics',
-    'etl', 'data modeling', 'statistics', 'dbt', 'dashboards', 'snowflake', 'spark'
+    'sql',
+    'python',
+    'tableau',
+    'power bi',
+    'pandas',
+    'analytics',
+    'etl',
+    'data modeling',
+    'statistics',
+    'dbt',
+    'dashboards',
+    'snowflake',
+    'spark',
   ],
   product: [
-    'product strategy', 'roadmap planning', 'agile / scrum', 'jira',
-    'user research', 'a/b testing', 'prd documentation', 'feature prioritization',
-    'kpi & okr tracking', 'mixpanel'
+    'product strategy',
+    'roadmap planning',
+    'agile / scrum',
+    'jira',
+    'user research',
+    'a/b testing',
+    'prd documentation',
+    'feature prioritization',
+    'kpi & okr tracking',
+    'mixpanel',
   ],
   hr: [
-    'technical recruiting', 'talent sourcing', 'ats', 'hris', 'employee relations',
-    'performance management', 'onboarding', 'compliance'
+    'technical recruiting',
+    'talent sourcing',
+    'ats',
+    'hris',
+    'employee relations',
+    'performance management',
+    'onboarding',
+    'compliance',
   ],
   talent: [
-    'technical recruiting', 'talent sourcing', 'ats', 'hris', 'employee relations',
-    'performance management', 'onboarding', 'compliance'
+    'technical recruiting',
+    'talent sourcing',
+    'ats',
+    'hris',
+    'employee relations',
+    'performance management',
+    'onboarding',
+    'compliance',
   ],
 };
 
@@ -174,7 +276,10 @@ export function matchCandidateToOpening(
     roleRelevance = 100;
   } else {
     // Check keyword and domain overlap
-    const titleWords = opening.title.toLowerCase().split(/[\s/,-]+/).filter((w) => w.length > 2);
+    const titleWords = opening.title
+      .toLowerCase()
+      .split(/[\s/,-]+/)
+      .filter((w) => w.length > 2);
     let matchedWords = 0;
     for (const w of titleWords) {
       if (roleLower.includes(w) || candidateCorpus.toLowerCase().includes(w)) {
@@ -304,7 +409,7 @@ export function matchCandidateToOpening(
           skillsRelevance * 0.35 +
           niceSkillsRatio * 100 * 0.15 +
           experienceRelevance * 0.15 +
-          budgetRelevance * 0.10
+          budgetRelevance * 0.1
       )
     )
   );
@@ -421,4 +526,3 @@ export function rankCandidatesForOpening(
 
   return results;
 }
-

@@ -1,7 +1,8 @@
 import { chromium } from '@playwright/test';
 import path from 'node:path';
 
-const screenshotDir = 'C:/Users/adity/.gemini/antigravity/brain/4445bf77-ea56-4237-9627-e3f6a9dd188c/screenshots';
+const screenshotDir =
+  'C:/Users/adity/.gemini/antigravity/brain/4445bf77-ea56-4237-9627-e3f6a9dd188c/screenshots';
 
 async function capture() {
   const browser = await chromium.launch({ channel: 'chrome' });
@@ -16,7 +17,10 @@ async function capture() {
   await page.goto('http://localhost:3000/openings/new', { waitUntil: 'networkidle' });
   await page.waitForTimeout(600);
 
-  await page.screenshot({ path: path.join(screenshotDir, 'opening-form-dark-full.png'), fullPage: false });
+  await page.screenshot({
+    path: path.join(screenshotDir, 'opening-form-dark-full.png'),
+    fullPage: false,
+  });
 
   // 2. Test Live Preview update by typing a new title
   console.log('Testing live interactive updates...');
@@ -25,7 +29,9 @@ async function capture() {
   await page.waitForTimeout(400);
 
   // Take screenshot showing live preview updating in the right sidebar!
-  await page.screenshot({ path: path.join(screenshotDir, 'opening-form-interactive-live-preview.png') });
+  await page.screenshot({
+    path: path.join(screenshotDir, 'opening-form-interactive-live-preview.png'),
+  });
 
   // 3. Switch to Light Mode
   console.log('Testing Light Mode...');
@@ -44,4 +50,3 @@ capture().catch((err) => {
   console.error(err);
   process.exit(1);
 });
-

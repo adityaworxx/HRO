@@ -82,14 +82,7 @@ export function VideoCameraIcon({
   ...props
 }: React.SVGProps<SVGSVGElement>) {
   return (
-    <svg
-      width={24}
-      height={24}
-      viewBox="0 0 24 24"
-      fill="none"
-      className={className}
-      {...props}
-    >
+    <svg width={24} height={24} viewBox="0 0 24 24" fill="none" className={className} {...props}>
       <path
         d="M22 8.93137C22 8.32555 22 8.02265 21.8802 7.88238C21.7763 7.76068 21.6203 7.69609 21.4608 7.70865C21.2769 7.72312 21.0627 7.93731 20.6343 8.36569L17 12L20.6343 15.6343C21.0627 16.0627 21.2769 16.2769 21.4608 16.2914C21.6203 16.3039 21.7763 16.2393 21.8802 16.1176C22 15.9774 22 15.6744 22 15.0686V8.93137Z"
         stroke="currentColor"

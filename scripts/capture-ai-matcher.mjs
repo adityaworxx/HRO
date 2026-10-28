@@ -2,7 +2,8 @@ import { chromium } from '@playwright/test';
 import path from 'node:path';
 import fs from 'node:fs';
 
-const artifactDir = 'C:\\Users\\adity\\.gemini\\antigravity\\brain\\ec6c76ac-059a-4331-936d-42988c000706';
+const artifactDir =
+  'C:\\Users\\adity\\.gemini\\antigravity\\brain\\ec6c76ac-059a-4331-936d-42988c000706';
 fs.mkdirSync(artifactDir, { recursive: true });
 
 async function main() {
@@ -73,4 +74,3 @@ async function main() {
 }
 
 main().catch(console.error);
-

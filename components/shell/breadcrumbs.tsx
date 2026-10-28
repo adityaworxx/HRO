@@ -31,9 +31,8 @@ export function Breadcrumbs() {
   }, [pathname]);
 
   return (
-    <h1 className="text-text text-[14px] sm:text-[15px] font-semibold tracking-tight select-none leading-none m-0 p-0 truncate text-left flex items-center justify-start">
+    <h1 className="text-text m-0 flex items-center justify-start truncate p-0 text-left text-[14px] leading-none font-semibold tracking-tight select-none sm:text-[15px]">
       {title}
     </h1>
   );
 }
-

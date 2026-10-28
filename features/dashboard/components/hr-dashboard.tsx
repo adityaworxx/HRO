@@ -6,6 +6,8 @@ import { useOpenings } from '@/features/openings/hooks';
 import { useCandidates } from '@/features/candidates/hooks';
 import { useAllOnboarding } from '@/features/onboarding/hooks';
 import { StatCard } from '@/components/hro/stat-card';
+import { CandidateAvatar } from '@/components/hro/candidate-avatar';
+import { CompanyLogo } from '@/components/hro/company-logo';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Skeleton } from '@/components/ui/skeleton';
@@ -58,10 +60,7 @@ export function HrDashboard() {
   const SLA_PAGE_SIZE = 3;
 
   const allSlaAlertCandidates = React.useMemo(
-    () =>
-      candidates.filter(
-        (c) => c.stage === 'Interview' || c.stage === 'Shared with Manager'
-      ),
+    () => candidates.filter((c) => c.stage === 'Interview' || c.stage === 'Shared with Manager'),
     [candidates]
   );
 
@@ -123,28 +122,30 @@ export function HrDashboard() {
 
       {/* Shortlisted Candidates Ready for Interview Scheduling Action Alert */}
       {candidatesAwaitingScheduling.length > 0 && (
-        <div className="rounded-[12px] border border-warning/40 bg-warning/10 p-4 shadow-xs">
-          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+        <div className="border-warning/40 bg-warning/10 rounded-[12px] border p-4 shadow-xs">
+          <div className="flex flex-col justify-between gap-3 sm:flex-row sm:items-center">
             <div className="flex items-center gap-3">
-              <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-warning/20 text-warning">
+              <div className="bg-warning/20 text-warning flex h-10 w-10 shrink-0 items-center justify-center rounded-full">
                 <Calendar className="h-5 w-5" />
               </div>
               <div>
                 <div className="flex items-center gap-2">
-                  <h3 className="text-text font-semibold text-[14px]">
-                    {candidatesAwaitingScheduling.length} Shortlisted Candidate(s) Ready for Interview Scheduling
+                  <h3 className="text-text text-[14px] font-semibold">
+                    {candidatesAwaitingScheduling.length} Shortlisted Candidate(s) Ready for
+                    Interview Scheduling
                   </h3>
-                  <span className="flex h-2 w-2 rounded-full bg-warning animate-pulse" />
+                  <span className="bg-warning flex h-2 w-2 animate-pulse rounded-full" />
                 </div>
-                <p className="text-text-muted text-[12px] mt-0.5">
-                  Hiring managers have approved these candidates. Call candidates to coordinate availability and book interview slots.
+                <p className="text-text-muted mt-0.5 text-[12px]">
+                  Hiring managers have approved these candidates. Call candidates to coordinate
+                  availability and book interview slots.
                 </p>
               </div>
             </div>
 
             <Link
               href="/interviews"
-              className="inline-flex items-center gap-1.5 rounded-[8px] bg-accent px-3.5 py-2 text-[12px] font-semibold text-accent-contrast hover:bg-accent/90 transition-colors shrink-0 shadow-2xs"
+              className="bg-accent text-accent-contrast hover:bg-accent/90 inline-flex shrink-0 items-center gap-1.5 rounded-[8px] px-3.5 py-2 text-[12px] font-semibold shadow-2xs transition-colors"
             >
               <Phone className="h-3.5 w-3.5" />
               <span>Call & Schedule ({candidatesAwaitingScheduling.length})</span>
@@ -398,13 +399,19 @@ export function HrDashboard() {
                         className="flex items-center justify-between py-2 text-[12px]"
                       >
                         <div className="flex min-w-0 items-center gap-2">
-                          <div className="bg-surface-2 text-text flex h-6 w-6 shrink-0 items-center justify-center rounded-full text-[11px] font-medium">
-                            {candidate.name.slice(0, 2).toUpperCase()}
-                          </div>
+                          <CandidateAvatar
+                            name={candidate.name}
+                            candidateId={candidate.id}
+                            size="xs"
+                          />
                           <span className="text-text truncate font-medium">{candidate.name}</span>
                         </div>
-                        <span className="text-text-muted ml-2 truncate text-[11px]">
-                          {candidate.currentRole}
+                        <span className="text-text-muted ml-2 flex items-center gap-1.5 truncate text-[11px]">
+                          <CompanyLogo
+                            company={candidate.currentCompany}
+                            className="h-3 w-3 shrink-0 rounded-[2.5px]"
+                          />
+                          <span className="truncate">{candidate.currentRole}</span>
                         </span>
                       </div>
                     ))}
@@ -425,7 +432,7 @@ export function HrDashboard() {
                   SLA Watchlist
                 </h2>
                 {allSlaAlertCandidates.length > 0 && (
-                  <span className="font-mono text-[11px] font-semibold text-accent bg-accent/10 px-2 py-0.5 rounded-full">
+                  <span className="text-accent bg-accent/10 rounded-full px-2 py-0.5 font-mono text-[11px] font-semibold">
                     {allSlaAlertCandidates.length}
                   </span>
                 )}
@@ -434,7 +441,7 @@ export function HrDashboard() {
               <div className="flex items-center gap-3">
                 {totalSlaPages > 1 && (
                   <div className="flex items-center gap-1.5 text-[11.5px] select-none">
-                    <span className="font-mono text-text-subtle text-[11px]">
+                    <span className="text-text-subtle font-mono text-[11px]">
                       {validSlaPage} of {totalSlaPages}
                     </span>
                     <div className="flex items-center gap-1">
@@ -442,7 +449,7 @@ export function HrDashboard() {
                         type="button"
                         disabled={validSlaPage <= 1}
                         onClick={() => setSlaPage((p) => Math.max(1, p - 1))}
-                        className="h-6 w-6 inline-flex items-center justify-center rounded-[5px] border border-border/70 bg-surface-1 text-text-muted hover:text-text hover:bg-surface-2 disabled:opacity-25 disabled:cursor-not-allowed transition-colors cursor-pointer"
+                        className="border-border/70 bg-surface-1 text-text-muted hover:text-text hover:bg-surface-2 inline-flex h-6 w-6 cursor-pointer items-center justify-center rounded-[5px] border transition-colors disabled:cursor-not-allowed disabled:opacity-25"
                         title="Previous page"
                         aria-label="Previous page"
                       >
@@ -452,7 +459,7 @@ export function HrDashboard() {
                         type="button"
                         disabled={validSlaPage >= totalSlaPages}
                         onClick={() => setSlaPage((p) => Math.min(totalSlaPages, p + 1))}
-                        className="h-6 w-6 inline-flex items-center justify-center rounded-[5px] border border-border/70 bg-surface-1 text-text-muted hover:text-text hover:bg-surface-2 disabled:opacity-25 disabled:cursor-not-allowed transition-colors cursor-pointer"
+                        className="border-border/70 bg-surface-1 text-text-muted hover:text-text hover:bg-surface-2 inline-flex h-6 w-6 cursor-pointer items-center justify-center rounded-[5px] border transition-colors disabled:cursor-not-allowed disabled:opacity-25"
                         title="Next page"
                         aria-label="Next page"
                       >
@@ -499,15 +506,24 @@ export function HrDashboard() {
                         >
                           {/* 1. Candidate Info */}
                           <div className="flex min-w-0 items-center gap-3">
-                            <div className="bg-surface-2 border-border text-text flex h-8 w-8 shrink-0 items-center justify-center rounded-full border text-[11px] font-semibold">
-                              {candidate.name.slice(0, 2).toUpperCase()}
-                            </div>
+                            <CandidateAvatar
+                              name={candidate.name}
+                              candidateId={candidate.id}
+                              size="md"
+                            />
                             <div className="min-w-0">
                               <p className="text-text truncate text-[13px] leading-tight font-medium">
                                 {candidate.name}
                               </p>
-                              <p className="text-text-muted mt-0.5 truncate text-[11px] leading-tight">
-                                {opening?.title || candidate.currentRole}
+                              <p className="text-text-muted mt-0.5 flex items-center gap-1.5 truncate text-[11px] leading-tight">
+                                <CompanyLogo
+                                  company={candidate.currentCompany}
+                                  className="h-3 w-3 shrink-0 rounded-[2.5px] shadow-2xs"
+                                />
+                                <span className="truncate">
+                                  {opening?.title || candidate.currentRole} •{' '}
+                                  {candidate.currentCompany}
+                                </span>
                               </p>
                             </div>
                           </div>
@@ -531,15 +547,19 @@ export function HrDashboard() {
                           </div>
 
                           {/* 4. Notice Period */}
-                          <div className="text-text font-bold font-mono text-[12px] tabular-nums">
+                          <div className="text-text font-mono text-[12px] font-bold tabular-nums">
                             {candidate.noticePeriod}
                           </div>
 
                           {/* 5. Redirect Gateway */}
                           <div className="flex justify-end">
                             <Link
-                              href={candidate.stage === 'Shared with Manager' ? '/shortlist' : '/pipeline'}
-                              className="inline-flex items-center gap-1 text-[11.5px] font-semibold text-text-muted hover:text-text transition-colors"
+                              href={
+                                candidate.stage === 'Shared with Manager'
+                                  ? '/shortlist'
+                                  : '/pipeline'
+                              }
+                              className="text-text-muted hover:text-text inline-flex items-center gap-1 text-[11.5px] font-semibold transition-colors"
                             >
                               <span>View Profile</span>
                               <ChevronRight className="h-3.5 w-3.5" />

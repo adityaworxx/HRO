@@ -12,6 +12,7 @@ import {
   DropdownMenuLabel,
 } from '@/components/ui/dropdown-menu';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
+import { CandidateAvatar } from '@/components/hro/candidate-avatar';
 import { useCurrentUser, useSwitchRole } from '@/features/auth/hooks';
 import { useUiStore } from '@/lib/store';
 import { isRouteAllowed } from '@/lib/navigation';
@@ -62,15 +63,16 @@ export function ProfileDropdown() {
       <DropdownMenuTrigger asChild>
         <button
           type="button"
-          className="relative flex h-9 w-9 cursor-pointer items-center justify-center rounded-full transition-all select-none focus-visible:outline-none focus:outline-none"
+          className="relative flex h-9 w-9 cursor-pointer items-center justify-center rounded-full transition-all select-none focus:outline-none focus-visible:outline-none"
           aria-label="User profile menu"
           title={`${displayName} (${displayDepartment})`}
         >
-          <Avatar className="border-border/80 hover:border-border-strong h-8 w-8 border shadow-2xs transition-colors">
-            <AvatarFallback className="bg-surface-3 text-text text-[12px] font-bold" suppressHydrationWarning>
-              {displayInitials}
-            </AvatarFallback>
-          </Avatar>
+          <CandidateAvatar
+            name={displayName}
+            initials={displayInitials}
+            size="sm"
+            className="h-8 w-8 hover:scale-105"
+          />
         </button>
       </DropdownMenuTrigger>
 
@@ -78,49 +80,75 @@ export function ProfileDropdown() {
         {/* User Identity Header */}
         <div className="px-3 py-2">
           <p className="text-text-subtle text-[11px] leading-[14px]">Signed in as</p>
-          <p className="text-text truncate text-[13.5px] leading-[18px] font-semibold mt-0.5">{displayName}</p>
+          <p className="text-text mt-0.5 truncate text-[13.5px] leading-[18px] font-semibold">
+            {displayName}
+          </p>
           <p className="text-text-muted truncate text-[11.5px]">{displayEmail}</p>
         </div>
 
         <DropdownMenuSeparator />
 
         {/* Roles / Personas Section */}
-        <DropdownMenuLabel className="text-[11px] text-text-subtle uppercase tracking-wider">
+        <DropdownMenuLabel className="text-text-subtle text-[11px] tracking-wider uppercase">
           Active Persona & Role
         </DropdownMenuLabel>
 
         {/* Hiring Manager Persona */}
         <DropdownMenuItem
           onClick={() => handleSelectRole('manager')}
-          className="justify-between cursor-pointer py-2"
+          className="cursor-pointer justify-between py-2"
         >
-          <div className="flex items-center gap-2.5 min-w-0">
-            <Shield className={cn("h-4 w-4 stroke-[1.75] shrink-0", isManager ? "text-accent" : "text-text-subtle")} />
-            <div className="flex flex-col min-w-0 text-left">
-              <span className={cn("text-[13px] leading-tight", isManager ? "font-semibold text-text" : "font-medium text-text-muted")}>
+          <div className="flex min-w-0 items-center gap-2.5">
+            <Shield
+              className={cn(
+                'h-4 w-4 shrink-0 stroke-[1.75]',
+                isManager ? 'text-accent' : 'text-text-subtle'
+              )}
+            />
+            <div className="flex min-w-0 flex-col text-left">
+              <span
+                className={cn(
+                  'text-[13px] leading-tight',
+                  isManager ? 'text-text font-semibold' : 'text-text-muted font-medium'
+                )}
+              >
                 Arjun Kapoor
               </span>
-              <span className="text-[11px] text-text-subtle truncate">Hiring Manager · Engineering</span>
+              <span className="text-text-subtle truncate text-[11px]">
+                Hiring Manager · Engineering
+              </span>
             </div>
           </div>
-          {isManager && <Check className="h-4 w-4 stroke-[2.2] text-accent shrink-0 ml-2" />}
+          {isManager && <Check className="text-accent ml-2 h-4 w-4 shrink-0 stroke-[2.2]" />}
         </DropdownMenuItem>
 
         {/* HR Specialist Persona */}
         <DropdownMenuItem
           onClick={() => handleSelectRole('hr')}
-          className="justify-between cursor-pointer py-2"
+          className="cursor-pointer justify-between py-2"
         >
-          <div className="flex items-center gap-2.5 min-w-0">
-            <Shield className={cn("h-4 w-4 stroke-[1.75] shrink-0", !isManager ? "text-accent" : "text-text-subtle")} />
-            <div className="flex flex-col min-w-0 text-left">
-              <span className={cn("text-[13px] leading-tight", !isManager ? "font-semibold text-text" : "font-medium text-text-muted")}>
+          <div className="flex min-w-0 items-center gap-2.5">
+            <Shield
+              className={cn(
+                'h-4 w-4 shrink-0 stroke-[1.75]',
+                !isManager ? 'text-accent' : 'text-text-subtle'
+              )}
+            />
+            <div className="flex min-w-0 flex-col text-left">
+              <span
+                className={cn(
+                  'text-[13px] leading-tight',
+                  !isManager ? 'text-text font-semibold' : 'text-text-muted font-medium'
+                )}
+              >
                 Priya Sharma
               </span>
-              <span className="text-[11px] text-text-subtle truncate">HR Specialist · People Ops</span>
+              <span className="text-text-subtle truncate text-[11px]">
+                HR Specialist · People Ops
+              </span>
             </div>
           </div>
-          {!isManager && <Check className="h-4 w-4 stroke-[2.2] text-accent shrink-0 ml-2" />}
+          {!isManager && <Check className="text-accent ml-2 h-4 w-4 shrink-0 stroke-[2.2]" />}
         </DropdownMenuItem>
 
         <DropdownMenuSeparator />
@@ -128,7 +156,7 @@ export function ProfileDropdown() {
         {/* Navigation & Toggle */}
         <DropdownMenuItem asChild className="cursor-pointer py-1.5">
           <Link href="/settings">
-            <Settings className="h-4 w-4 stroke-[1.75] text-text-subtle" />
+            <Settings className="text-text-subtle h-4 w-4 stroke-[1.75]" />
             <span>Account & settings</span>
           </Link>
         </DropdownMenuItem>
@@ -137,7 +165,7 @@ export function ProfileDropdown() {
           onClick={() => handleSelectRole(isManager ? 'hr' : 'manager')}
           className="cursor-pointer py-1.5"
         >
-          <ArrowLeftRight className="h-4 w-4 stroke-[1.75] text-text-subtle" />
+          <ArrowLeftRight className="text-text-subtle h-4 w-4 stroke-[1.75]" />
           <span>Quick Switch to {isManager ? 'HR view' : 'Manager view'}</span>
         </DropdownMenuItem>
 
@@ -148,7 +176,7 @@ export function ProfileDropdown() {
           onClick={handleLogout}
           className="text-danger hover:bg-surface-2 focus:bg-surface-2 focus:text-danger cursor-pointer py-1.5"
         >
-          <LogOut className="h-4 w-4 stroke-[1.75] text-danger" />
+          <LogOut className="text-danger h-4 w-4 stroke-[1.75]" />
           <span>Log out of HRO</span>
         </DropdownMenuItem>
       </DropdownMenuContent>

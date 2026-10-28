@@ -37,9 +37,13 @@ export function RoleSwitcher({ isCollapsed = false }: { isCollapsed?: boolean })
           type="button"
           onClick={handleToggle}
           className={cn(
-            'group relative flex h-9.5 w-full items-center rounded-[8px] border border-border/70 bg-surface-2 text-[12px] font-medium text-text select-none cursor-pointer transition-colors hover:bg-surface-3 hover:border-border overflow-hidden'
+            'group border-border/70 bg-surface-2 text-text hover:bg-surface-3 hover:border-border relative flex h-9.5 w-full cursor-pointer items-center overflow-hidden rounded-[8px] border text-[12px] font-medium transition-colors select-none'
           )}
-          title={!isCollapsed ? `Switch to ${isManager ? 'HR View (Priya Sharma)' : 'Manager View (Arjun Kapoor)'}` : undefined}
+          title={
+            !isCollapsed
+              ? `Switch to ${isManager ? 'HR View (Priya Sharma)' : 'Manager View (Arjun Kapoor)'}`
+              : undefined
+          }
         >
           {/* Stationary Icon container: ALWAYS 36x36px */}
           <div className="flex h-9 w-9 shrink-0 items-center justify-center">
@@ -49,21 +53,21 @@ export function RoleSwitcher({ isCollapsed = false }: { isCollapsed?: boolean })
           {/* Role details with smooth asymmetrical fade & slide */}
           <div
             className={cn(
-              'flex-1 min-w-0 pr-2.5 overflow-hidden text-left transition-[opacity,transform,max-width] ease-out',
+              'min-w-0 flex-1 overflow-hidden pr-2.5 text-left transition-[opacity,transform,max-width] ease-out',
               isCollapsed
-                ? 'opacity-0 -translate-x-2 max-w-0 pointer-events-none duration-150'
-                : 'opacity-100 translate-x-0 max-w-[180px] duration-200 delay-100'
+                ? 'pointer-events-none max-w-0 -translate-x-2 opacity-0 duration-150'
+                : 'max-w-[180px] translate-x-0 opacity-100 delay-100 duration-200'
             )}
           >
             <div className="flex items-center justify-between text-[11.5px] leading-tight">
-              <span className="text-text font-semibold truncate">
+              <span className="text-text truncate font-semibold">
                 {isManager ? 'Arjun Kapoor' : 'Priya Sharma'}
               </span>
-              <span className="text-accent font-mono font-semibold uppercase text-[10px] px-1.5 py-0.5 rounded-[4px] bg-accent-subtle border border-accent/20">
+              <span className="text-accent bg-accent-subtle border-accent/20 rounded-[4px] border px-1.5 py-0.5 font-mono text-[10px] font-semibold uppercase">
                 {isManager ? 'Mgr' : 'HR'}
               </span>
             </div>
-            <p className="text-[10px] text-text-subtle truncate mt-0.5">
+            <p className="text-text-subtle mt-0.5 truncate text-[10px]">
               {isManager ? 'Hiring Manager' : 'HR Specialist'} · Switch &rarr;
             </p>
           </div>
@@ -73,7 +77,7 @@ export function RoleSwitcher({ isCollapsed = false }: { isCollapsed?: boolean })
         <TooltipContent
           side="right"
           sideOffset={14}
-          className="font-medium text-[12px] z-50 pointer-events-none select-none"
+          className="pointer-events-none z-50 text-[12px] font-medium select-none"
         >
           Persona: {isManager ? 'Arjun Kapoor (Manager)' : 'Priya Sharma (HR)'} (Click to switch)
         </TooltipContent>

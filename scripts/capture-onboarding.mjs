@@ -3,7 +3,8 @@ import path from 'node:path';
 import fs from 'node:fs';
 
 const outDir = path.resolve('screenshots');
-const artifactDir = 'C:\\Users\\adity\\.gemini\\antigravity\\brain\\4d3ca75e-ea01-4dc4-a353-c89cd4966ed4\\screenshots';
+const artifactDir =
+  'C:\\Users\\adity\\.gemini\\antigravity\\brain\\4d3ca75e-ea01-4dc4-a353-c89cd4966ed4\\screenshots';
 
 fs.mkdirSync(outDir, { recursive: true });
 fs.mkdirSync(artifactDir, { recursive: true });
@@ -71,4 +72,3 @@ main().catch((err) => {
   console.error(err);
   process.exit(1);
 });
-

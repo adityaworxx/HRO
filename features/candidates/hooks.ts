@@ -143,7 +143,10 @@ export function useUpdateCandidateStage() {
     },
     onError: (_err, _variables, context) => {
       if (context?.previousCandidates) {
-        queryClient.setQueriesData({ queryKey: candidatesKeys.lists() }, context.previousCandidates);
+        queryClient.setQueriesData(
+          { queryKey: candidatesKeys.lists() },
+          context.previousCandidates
+        );
       }
     },
     onSettled: (_, __, variables) => {
@@ -170,7 +173,9 @@ export function useAssignCandidateToOpening() {
     }) => api.candidates.assignToOpening(candidateId, openingId, stage, notes),
     onSuccess: (_, variables) => {
       void queryClient.invalidateQueries({ queryKey: candidatesKeys.lists() });
-      void queryClient.invalidateQueries({ queryKey: candidatesKeys.detail(variables.candidateId) });
+      void queryClient.invalidateQueries({
+        queryKey: candidatesKeys.detail(variables.candidateId),
+      });
       void queryClient.invalidateQueries({ queryKey: openingsKeys.all });
       void queryClient.invalidateQueries({ queryKey: notificationsKeys.all });
     },

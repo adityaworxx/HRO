@@ -52,7 +52,9 @@ export function AiCandidateMatcherSheet({
   const [selectedTier, setSelectedTier] = React.useState<'all' | 'strong' | 'good' | 'fast'>('all');
   const [sortBy, setSortBy] = React.useState<'score' | 'experience' | 'notice' | 'ctc'>('score');
   const [shortlistedMap, setShortlistedMap] = React.useState<Record<string, boolean>>({});
-  const [expandedQuestionsMap, setExpandedQuestionsMap] = React.useState<Record<string, boolean>>({});
+  const [expandedQuestionsMap, setExpandedQuestionsMap] = React.useState<Record<string, boolean>>(
+    {}
+  );
 
   // Compute AI Match rankings
   const rankedResults = React.useMemo(() => {
@@ -99,7 +101,9 @@ export function AiCandidateMatcherSheet({
         if (lower.includes('60')) return 3;
         return 4;
       };
-      list.sort((a, b) => noticeOrder(a.candidate.noticePeriod) - noticeOrder(b.candidate.noticePeriod));
+      list.sort(
+        (a, b) => noticeOrder(a.candidate.noticePeriod) - noticeOrder(b.candidate.noticePeriod)
+      );
     } else if (sortBy === 'ctc') {
       list.sort((a, b) => a.candidate.expectedCtc - b.candidate.expectedCtc);
     } else {
@@ -136,7 +140,9 @@ export function AiCandidateMatcherSheet({
           toast.success(`🎯 ${candidate.name} (${match.score}% match) shared with Hiring Manager!`);
         },
         onError: (err) => {
-          toast.error(err instanceof Error ? err.message : 'Failed to share candidate with manager');
+          toast.error(
+            err instanceof Error ? err.message : 'Failed to share candidate with manager'
+          );
         },
       }
     );
@@ -173,18 +179,20 @@ export function AiCandidateMatcherSheet({
         <div className="border-border/60 bg-surface-1 shrink-0 border-b px-6 pt-5 pb-4 select-none">
           <div className="flex items-start justify-between gap-3">
             <div className="min-w-0 flex-1">
-              <span className="text-[11px] font-semibold text-accent uppercase tracking-wider font-mono">
+              <span className="text-accent font-mono text-[11px] font-semibold tracking-wider uppercase">
                 AI Talent Match
               </span>
-              <h2 className="text-text text-[17px] font-bold tracking-tight truncate mt-0.5">
+              <h2 className="text-text mt-0.5 truncate text-[17px] font-bold tracking-tight">
                 {opening.title}
               </h2>
-              <p className="text-text-muted text-[12px] truncate mt-1">
+              <p className="text-text-muted mt-1 truncate text-[12px]">
                 <span>{opening.department}</span>
                 <span className="text-text-subtle/50 mx-1.5">•</span>
                 <span>{formatCtcRange(opening.budgetRange.min, opening.budgetRange.max)}</span>
                 <span className="text-text-subtle/50 mx-1.5">•</span>
-                <span>{opening.experienceRange.min}–{opening.experienceRange.max}y exp</span>
+                <span>
+                  {opening.experienceRange.min}–{opening.experienceRange.max}y exp
+                </span>
                 <span className="text-text-subtle/50 mx-1.5">•</span>
                 <span className="text-text-subtle">{allCandidates.length} evaluated</span>
               </p>
@@ -195,7 +203,7 @@ export function AiCandidateMatcherSheet({
               variant="outline"
               size="sm"
               onClick={handleBatchShortlistTop}
-              className="border-border/80 hover:bg-surface-2 text-text h-7.5 shrink-0 px-3 text-[11.5px] font-semibold rounded-[6px] mr-8 transition-colors shadow-2xs cursor-pointer"
+              className="border-border/80 hover:bg-surface-2 text-text mr-8 h-7.5 shrink-0 cursor-pointer rounded-[6px] px-3 text-[11.5px] font-semibold shadow-2xs transition-colors"
             >
               Shortlist Top 3
             </Button>
@@ -210,7 +218,7 @@ export function AiCandidateMatcherSheet({
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               placeholder="Search candidate by name, company, or skill..."
-              className="bg-surface-2/40 border-border/60 hover:border-border focus:bg-surface-1 h-8.5 pl-9 pr-8 text-[12.5px] rounded-[7px] shadow-2xs transition-all w-full"
+              className="bg-surface-2/40 border-border/60 hover:border-border focus:bg-surface-1 h-8.5 w-full rounded-[7px] pr-8 pl-9 text-[12.5px] shadow-2xs transition-all"
             />
             {searchQuery && (
               <button
@@ -226,14 +234,14 @@ export function AiCandidateMatcherSheet({
 
           <div className="flex flex-wrap items-center justify-between gap-2 text-[12px]">
             {/* Apple-style Segmented Control */}
-            <div className="inline-flex items-center gap-1 rounded-[7px] border border-border/60 bg-surface-2/50 p-0.5 select-none">
+            <div className="border-border/60 bg-surface-2/50 inline-flex items-center gap-1 rounded-[7px] border p-0.5 select-none">
               <button
                 type="button"
                 onClick={() => setSelectedTier('all')}
                 className={cn(
-                  'h-6.5 px-2.5 rounded-[5px] text-[11.5px] font-medium transition-all cursor-pointer',
+                  'h-6.5 cursor-pointer rounded-[5px] px-2.5 text-[11.5px] font-medium transition-all',
                   selectedTier === 'all'
-                    ? 'bg-surface-1 text-text font-semibold shadow-2xs border border-border/60'
+                    ? 'bg-surface-1 text-text border-border/60 border font-semibold shadow-2xs'
                     : 'text-text-muted hover:text-text'
                 )}
               >
@@ -243,9 +251,9 @@ export function AiCandidateMatcherSheet({
                 type="button"
                 onClick={() => setSelectedTier('strong')}
                 className={cn(
-                  'h-6.5 px-2.5 rounded-[5px] text-[11.5px] font-medium transition-all cursor-pointer',
+                  'h-6.5 cursor-pointer rounded-[5px] px-2.5 text-[11.5px] font-medium transition-all',
                   selectedTier === 'strong'
-                    ? 'bg-surface-1 text-accent font-semibold shadow-2xs border border-border/60'
+                    ? 'bg-surface-1 text-text border-border/60 border font-semibold shadow-2xs'
                     : 'text-text-muted hover:text-text'
                 )}
               >
@@ -255,9 +263,9 @@ export function AiCandidateMatcherSheet({
                 type="button"
                 onClick={() => setSelectedTier('good')}
                 className={cn(
-                  'h-6.5 px-2.5 rounded-[5px] text-[11.5px] font-medium transition-all cursor-pointer',
+                  'h-6.5 cursor-pointer rounded-[5px] px-2.5 text-[11.5px] font-medium transition-all',
                   selectedTier === 'good'
-                    ? 'bg-surface-1 text-emerald-600 dark:text-emerald-400 font-semibold shadow-2xs border border-border/60'
+                    ? 'bg-surface-1 text-text border-border/60 border font-semibold shadow-2xs'
                     : 'text-text-muted hover:text-text'
                 )}
               >
@@ -267,9 +275,9 @@ export function AiCandidateMatcherSheet({
                 type="button"
                 onClick={() => setSelectedTier('fast')}
                 className={cn(
-                  'h-6.5 px-2.5 rounded-[5px] text-[11.5px] font-medium transition-all cursor-pointer',
+                  'h-6.5 cursor-pointer rounded-[5px] px-2.5 text-[11.5px] font-medium transition-all',
                   selectedTier === 'fast'
-                    ? 'bg-surface-1 text-text font-semibold shadow-2xs border border-border/60'
+                    ? 'bg-surface-1 text-text border-border/60 border font-semibold shadow-2xs'
                     : 'text-text-muted hover:text-text'
                 )}
               >
@@ -278,22 +286,22 @@ export function AiCandidateMatcherSheet({
             </div>
 
             {/* Compact Sort Select */}
-            <div className="flex items-center gap-1.5 shrink-0">
+            <div className="flex shrink-0 items-center gap-1.5">
               <Select value={sortBy} onValueChange={(val) => setSortBy(val as any)}>
-                <SelectTrigger className="h-7 w-[125px] gap-1 border-border/60 bg-surface-1 hover:bg-surface-2 text-text px-2 text-[11.5px] font-medium rounded-[6px] shadow-2xs">
+                <SelectTrigger className="border-border/60 bg-surface-1 hover:bg-surface-2 text-text h-7 w-[125px] gap-1 rounded-[6px] px-2 text-[11.5px] font-medium shadow-2xs">
                   <SelectValue placeholder="Sort" />
                 </SelectTrigger>
                 <SelectContent align="end" className="min-w-[150px]">
-                  <SelectItem value="score" className="text-[12px] py-1.5">
+                  <SelectItem value="score" className="py-1.5 text-[12px]">
                     Best Match
                   </SelectItem>
-                  <SelectItem value="experience" className="text-[12px] py-1.5">
+                  <SelectItem value="experience" className="py-1.5 text-[12px]">
                     Experience
                   </SelectItem>
-                  <SelectItem value="notice" className="text-[12px] py-1.5">
+                  <SelectItem value="notice" className="py-1.5 text-[12px]">
                     Fastest Notice
                   </SelectItem>
-                  <SelectItem value="ctc" className="text-[12px] py-1.5">
+                  <SelectItem value="ctc" className="py-1.5 text-[12px]">
                     Lowest CTC
                   </SelectItem>
                 </SelectContent>
@@ -307,9 +315,7 @@ export function AiCandidateMatcherSheet({
           {filteredResults.length === 0 ? (
             <div className="border-border/60 bg-surface-2/20 flex flex-col items-center justify-center rounded-[8px] border border-dashed py-12 text-center select-none">
               <Filter className="text-text-subtle h-6 w-6 stroke-[1.5]" />
-              <p className="text-text mt-2 text-[13px] font-medium">
-                No matching candidates
-              </p>
+              <p className="text-text mt-2 text-[13px] font-medium">No matching candidates</p>
               <p className="text-text-muted mt-0.5 text-[11.5px]">
                 Try adjusting your search keyword or relaxing the filters.
               </p>
@@ -320,78 +326,80 @@ export function AiCandidateMatcherSheet({
                 match;
               const isAssigned = candidate.openingId === opening.id;
               const isSharedWithManager =
-                (isAssigned && candidate.stage === 'Shared with Manager' && candidate.managerDecision === 'Pending') ||
+                (isAssigned &&
+                  candidate.stage === 'Shared with Manager' &&
+                  candidate.managerDecision === 'Pending') ||
                 Boolean(shortlistedMap[candidate.id]);
               const isManagerApproved =
-                isAssigned && (candidate.managerDecision === 'Shortlisted' || candidate.stage === 'Interview');
+                isAssigned &&
+                (candidate.managerDecision === 'Shortlisted' || candidate.stage === 'Interview');
               const isQuestionsExpanded = Boolean(expandedQuestionsMap[candidate.id]);
               const isImmediate = candidate.noticePeriod.toLowerCase().includes('immediate');
 
               return (
                 <div
                   key={candidate.id}
-                  className="group relative flex flex-col justify-between rounded-[12px] border border-border/70 bg-surface-1/95 p-3.5 backdrop-blur-md transition-all duration-200 ease-out shadow-[0_2px_8px_rgba(0,0,0,0.03),0_1px_2px_rgba(0,0,0,0.02)] dark:shadow-[0_2px_12px_rgba(0,0,0,0.35)] hover:-translate-y-0.5 hover:border-border-strong hover:shadow-[0_8px_20px_rgba(0,0,0,0.06)] dark:hover:shadow-[0_8px_24px_rgba(0,0,0,0.5)] select-none space-y-2.5"
+                  className="group border-border/70 bg-surface-1/95 hover:border-border-strong relative flex flex-col justify-between space-y-2.5 rounded-[12px] border p-3.5 shadow-[0_2px_8px_rgba(0,0,0,0.03),0_1px_2px_rgba(0,0,0,0.02)] backdrop-blur-md transition-all duration-200 ease-out select-none hover:-translate-y-0.5 hover:shadow-[0_8px_20px_rgba(0,0,0,0.06)] dark:shadow-[0_2px_12px_rgba(0,0,0,0.35)] dark:hover:shadow-[0_8px_24px_rgba(0,0,0,0.5)]"
                 >
                   {/* Row 1: Header (Avatar, Name, Role/Company & Match Score) */}
                   <div className="flex items-start justify-between gap-2.5">
-                    <div className="flex items-center gap-2.5 min-w-0 flex-1">
+                    <div className="flex min-w-0 flex-1 items-center gap-2.5">
                       <CandidateAvatar name={candidate.name} size="md" />
 
                       <div className="min-w-0 flex-1">
-                        <div className="flex items-center gap-1.5 flex-wrap">
-                          <h4 className="text-[13.5px] font-bold text-text tracking-tight transition-colors truncate">
+                        <div className="flex flex-wrap items-center gap-1.5">
+                          <h4 className="text-text truncate text-[13.5px] font-bold tracking-tight transition-colors">
                             {candidate.name}
                           </h4>
                           <SourceBadge source={candidate.source} variant="plain" />
                         </div>
-                        <p className="text-[11.5px] text-text-muted truncate mt-0.5 font-normal">
+                        <p className="text-text-muted mt-0.5 truncate text-[11.5px] font-normal">
                           <span>{candidate.currentRole}</span>
                           <span className="text-text-subtle/50 mx-1">·</span>
-                          <span className="inline-flex items-center gap-1"><CompanyLogo company={candidate.currentCompany} className="h-3.5 w-3.5 rounded-[3px] shrink-0 shadow-2xs" /><span>{candidate.currentCompany}</span></span>
+                          <span className="inline-flex items-center gap-1">
+                            <CompanyLogo
+                              company={candidate.currentCompany}
+                              className="h-3.5 w-3.5 shrink-0 rounded-[3px] shadow-2xs"
+                            />
+                            <span>{candidate.currentCompany}</span>
+                          </span>
                         </p>
                       </div>
                     </div>
 
-                    <div className="flex flex-col items-end gap-0.5 shrink-0 select-none">
-                      <span className="font-mono text-[11.5px] font-bold text-accent tabular-nums bg-accent/10 px-2 py-0.5 rounded-[5px]">
+                    <div className="flex shrink-0 flex-col items-end gap-0.5 select-none">
+                      <span className="text-text bg-surface-2 border-border/70 rounded-[5px] border px-2 py-0.5 font-sans text-[11.5px] font-medium tabular-nums">
                         {score}% Fit
                       </span>
                       {isSharedWithManager ? (
-                        <span className="text-[10.5px] font-medium text-accent">
+                        <span className="text-text-muted text-[10.5px] font-medium">
                           • In Manager Queue
                         </span>
                       ) : isManagerApproved ? (
-                        <span className="text-[10.5px] font-semibold text-emerald-600 dark:text-emerald-400">
-                          • Shortlisted
-                        </span>
+                        <span className="text-text text-[10.5px] font-medium">• Shortlisted</span>
                       ) : null}
                     </div>
                   </div>
 
                   {/* Row 2: Signature Unboxed Spec Row (Experience, CTC, Notice) */}
-                  <div className="flex items-center justify-between text-[11.5px] pt-0.5 pb-0.5 text-text-muted">
-                    <div className="flex items-center gap-2 min-w-0 truncate">
-                      <span className="font-medium text-text tabular-nums">
+                  <div className="text-text-muted flex items-center justify-between pt-0.5 pb-0.5 text-[11.5px]">
+                    <div className="flex min-w-0 items-center gap-2 truncate">
+                      <span className="text-text font-medium tabular-nums">
                         {candidate.experienceYears}y exp
                       </span>
                       <span className="text-border-strong">•</span>
-                      <span className="font-mono font-semibold text-emerald-600 dark:text-emerald-400 tabular-nums">
+                      <span className="text-text font-sans font-medium tabular-nums">
                         {formatCtc(candidate.expectedCtc)}
                       </span>
                       <span className="text-border-strong">•</span>
-                      <span
-                        className={
-                          isImmediate
-                            ? 'font-semibold text-emerald-600 dark:text-emerald-400'
-                            : 'text-text-muted'
-                        }
-                      >
+                      <span className={isImmediate ? 'text-text font-medium' : 'text-text-muted'}>
                         {candidate.noticePeriod}
                       </span>
                     </div>
 
-                    <span className="text-[10.5px] font-mono text-text-subtle shrink-0">
-                      {matchedMustSkills.length}/{matchedMustSkills.length + missingMustSkills.length} skills verified
+                    <span className="text-text-subtle shrink-0 font-sans text-[10.5px]">
+                      {matchedMustSkills.length}/
+                      {matchedMustSkills.length + missingMustSkills.length} skills verified
                     </span>
                   </div>
 
@@ -400,7 +408,7 @@ export function AiCandidateMatcherSheet({
                     {matchedMustSkills.map((s) => (
                       <span
                         key={s}
-                        className="text-[11px] font-medium text-text bg-surface-2 px-2 py-0.5 rounded-[4px] border border-border/60"
+                        className="text-text bg-surface-2 border-border/60 rounded-[4px] border px-2 py-0.5 text-[11px] font-medium"
                       >
                         {s}
                       </span>
@@ -408,7 +416,7 @@ export function AiCandidateMatcherSheet({
                     {missingMustSkills.map((s) => (
                       <span
                         key={s}
-                        className="text-[11px] font-normal text-text-subtle/60 px-1.5 py-0.5 rounded-[4px] border border-border/40 border-dashed"
+                        className="text-text-subtle/60 border-border/40 rounded-[4px] border border-dashed px-1.5 py-0.5 text-[11px] font-normal"
                         title="Skill not listed in candidate profile"
                       >
                         {s}
@@ -417,7 +425,7 @@ export function AiCandidateMatcherSheet({
                   </div>
 
                   {/* Row 4: Apple Intelligence Fit Summary */}
-                  <div className="text-[11.5px] text-text-muted leading-relaxed pl-2.5 border-l-2 border-accent/40 space-y-1">
+                  <div className="text-text-muted border-accent/40 space-y-1 border-l-2 pl-2.5 text-[11.5px] leading-relaxed">
                     <p>{summary}</p>
 
                     {match.suggestedQuestions && match.suggestedQuestions.length > 0 && (
@@ -430,18 +438,20 @@ export function AiCandidateMatcherSheet({
                               [candidate.id]: !prev[candidate.id],
                             }))
                           }
-                          className="text-[10.5px] font-medium text-accent hover:underline cursor-pointer inline-flex items-center gap-1"
+                          className="text-accent inline-flex cursor-pointer items-center gap-1 text-[10.5px] font-medium hover:underline"
                         >
-                          <span>Suggested interview questions ({match.suggestedQuestions.length})</span>
+                          <span>
+                            Suggested interview questions ({match.suggestedQuestions.length})
+                          </span>
                           <ChevronDown
                             className={cn(
-                              'h-3 w-3 text-text-subtle transition-transform duration-150',
+                              'text-text-subtle h-3 w-3 transition-transform duration-150',
                               isQuestionsExpanded && 'rotate-180'
                             )}
                           />
                         </button>
                         {isQuestionsExpanded && (
-                          <ul className="mt-1 space-y-1 text-[11px] text-text-muted list-disc pl-3">
+                          <ul className="text-text-muted mt-1 list-disc space-y-1 pl-3 text-[11px]">
                             {match.suggestedQuestions.map((q, qIdx) => (
                               <li key={qIdx} className="leading-snug">
                                 {q}
@@ -454,12 +464,12 @@ export function AiCandidateMatcherSheet({
                   </div>
 
                   {/* Row 5: Action Footer */}
-                  <div className="border-t border-border/60 pt-2 flex items-center justify-between gap-2 text-[11px]">
+                  <div className="border-border/60 flex items-center justify-between gap-2 border-t pt-2 text-[11px]">
                     {onInspectCandidate ? (
                       <button
                         type="button"
                         onClick={() => onInspectCandidate(candidate)}
-                        className="inline-flex items-center gap-1 text-[11px] font-medium text-text-muted hover:text-text transition-colors cursor-pointer"
+                        className="text-text-muted hover:text-text inline-flex cursor-pointer items-center gap-1 text-[11px] font-medium transition-colors"
                       >
                         <span>View dossier</span>
                         <ArrowRight className="h-3 w-3" />
@@ -470,12 +480,12 @@ export function AiCandidateMatcherSheet({
 
                     <div className="flex items-center gap-2">
                       {isManagerApproved ? (
-                        <span className="inline-flex items-center gap-1 text-[11px] font-semibold text-emerald-600 dark:text-emerald-400">
+                        <span className="text-text inline-flex items-center gap-1 text-[11px] font-medium">
                           <CheckCircle2 className="h-3.5 w-3.5" />
                           <span>Manager Approved</span>
                         </span>
                       ) : isSharedWithManager ? (
-                        <span className="inline-flex items-center gap-1 text-[11px] font-medium text-accent">
+                        <span className="text-text inline-flex items-center gap-1 text-[11px] font-medium">
                           <Clock className="h-3 w-3 animate-pulse" />
                           <span>In Manager Queue</span>
                         </span>
@@ -485,7 +495,7 @@ export function AiCandidateMatcherSheet({
                           size="sm"
                           disabled={assignCandidate.isPending}
                           onClick={() => handleShortlistCandidate(match)}
-                          className="h-7 px-3 text-[11px] font-semibold rounded-[6px] shadow-2xs cursor-pointer"
+                          className="h-7 cursor-pointer rounded-[6px] px-3 text-[11px] font-semibold shadow-2xs"
                         >
                           <UserCheck className="h-3.5 w-3.5" />
                           <span>Send to Manager</span>

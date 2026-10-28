@@ -62,6 +62,11 @@ export function formatCtc(amount: number): string {
   return `₹${amount} LPA`;
 }
 
+export function formatRoleTitle(title?: string | null): string {
+  if (!title) return 'Requisition';
+  return title.replace(/\s*-\s*Squad\s*\d+/gi, '').trim();
+}
+
 export function formatDaysOpen(createdAt: string): number {
   try {
     const created = parseISO(createdAt);

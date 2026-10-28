@@ -200,8 +200,7 @@ INSERT INTO users (id, name, role, department, avatar_initials) VALUES
   sql += activityValues + ';\n\n';
 
   // Seed Sample Notifications
-  sql +=
-    '-- 9. Seed Notifications\n-- ---------------------------------------------------------\n';
+  sql += '-- 9. Seed Notifications\n-- ---------------------------------------------------------\n';
   sql += `INSERT INTO notifications (id, recipient_role, title, message, timestamp, read) VALUES
   ('n1111111-1111-1111-1111-111111111111'::uuid, 'manager', '3 Candidates Shortlisted', 'Hiring Manager shortlisted 3 candidates for Senior Backend Engineer.', now(), false),
   ('n2222222-2222-2222-2222-222222222222'::uuid, 'manager', 'New Opening Submitted', 'Frontend Tech Lead opening has been created and awaits sourcing.', now() - interval '1 hour', true),
@@ -220,4 +219,3 @@ const sqlContent = generateCompleteSql();
 const outputPath = path.join(outputDir, 'schema_and_seed.sql');
 fs.writeFileSync(outputPath, sqlContent, 'utf-8');
 console.log(`Generated migration script at: ${outputPath} (${sqlContent.length} bytes)`);
-

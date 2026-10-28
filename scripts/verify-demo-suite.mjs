@@ -1,7 +1,8 @@
 import { chromium } from '@playwright/test';
 import path from 'node:path';
 
-const screenshotDir = 'C:/Users/adity/.gemini/antigravity/brain/4445bf77-ea56-4237-9627-e3f6a9dd188c/screenshots';
+const screenshotDir =
+  'C:/Users/adity/.gemini/antigravity/brain/4445bf77-ea56-4237-9627-e3f6a9dd188c/screenshots';
 
 async function verifySuite() {
   const browser = await chromium.launch({ channel: 'chrome' });
@@ -19,7 +20,9 @@ async function verifySuite() {
 
   // 2. Data Analyst with Candidates
   console.log('2. Capturing Data Analyst Opening with Candidates...');
-  await page.goto('http://localhost:3000/openings/10000000-0000-0000-0000-000000000005', { waitUntil: 'networkidle' });
+  await page.goto('http://localhost:3000/openings/10000000-0000-0000-0000-000000000005', {
+    waitUntil: 'networkidle',
+  });
   await page.waitForTimeout(1000);
   const candTab = page.locator('button[role="tab"]:has-text("Candidates")');
   await candTab.click();
@@ -28,7 +31,9 @@ async function verifySuite() {
 
   // 3. Product Designer with Candidates
   console.log('3. Capturing Product Designer Opening with Candidates...');
-  await page.goto('http://localhost:3000/openings/10000000-0000-0000-0000-000000000003', { waitUntil: 'networkidle' });
+  await page.goto('http://localhost:3000/openings/10000000-0000-0000-0000-000000000003', {
+    waitUntil: 'networkidle',
+  });
   await page.waitForTimeout(1000);
   const designCandTab = page.locator('button[role="tab"]:has-text("Candidates")');
   await designCandTab.click();
@@ -52,4 +57,3 @@ async function verifySuite() {
 }
 
 verifySuite().catch(console.error);
-

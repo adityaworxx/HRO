@@ -21,9 +21,7 @@ export function CommandPalette() {
     const down = (e: KeyboardEvent) => {
       const target = e.target as HTMLElement | null;
       const isInput =
-        target?.tagName === 'INPUT' ||
-        target?.tagName === 'TEXTAREA' ||
-        target?.isContentEditable;
+        target?.tagName === 'INPUT' || target?.tagName === 'TEXTAREA' || target?.isContentEditable;
 
       if ((e.key === 'k' || e.key === 'K') && (e.metaKey || e.ctrlKey)) {
         e.preventDefault();
@@ -59,10 +57,7 @@ export function CommandPalette() {
           {items.map((item) => {
             const Icon = item.icon;
             return (
-              <CommandItem
-                key={item.href}
-                onSelect={() => handleSelect(item.href)}
-              >
+              <CommandItem key={item.href} onSelect={() => handleSelect(item.href)}>
                 <Icon className="text-text-subtle h-4 w-4 shrink-0 stroke-[1.75]" />
                 <span className="truncate">{item.title}</span>
               </CommandItem>

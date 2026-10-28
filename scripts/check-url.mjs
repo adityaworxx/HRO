@@ -18,4 +18,3 @@ async function checkUrl() {
 }
 
 checkUrl().catch(console.error);
-

@@ -2,7 +2,8 @@ import { chromium } from '@playwright/test';
 import path from 'node:path';
 import fs from 'node:fs';
 
-const brainScreenshotsDir = 'C:/Users/adity/.gemini/antigravity/brain/4445bf77-ea56-4237-9627-e3f6a9dd188c/screenshots';
+const brainScreenshotsDir =
+  'C:/Users/adity/.gemini/antigravity/brain/4445bf77-ea56-4237-9627-e3f6a9dd188c/screenshots';
 fs.mkdirSync(brainScreenshotsDir, { recursive: true });
 
 async function main() {
@@ -31,21 +32,24 @@ async function main() {
 
     // 1. Capture Manager Dashboard (Manager role)
     await page.goto('http://localhost:3000', { waitUntil: 'networkidle' });
-    await page.evaluate(({ currentTheme }) => {
-      document.documentElement.setAttribute('data-theme', currentTheme);
-      if (currentTheme === 'dark') {
-        document.documentElement.classList.add('dark');
-        document.documentElement.classList.remove('light');
-      } else {
-        document.documentElement.classList.add('light');
-        document.documentElement.classList.remove('dark');
-      }
-    }, { currentTheme: theme });
+    await page.evaluate(
+      ({ currentTheme }) => {
+        document.documentElement.setAttribute('data-theme', currentTheme);
+        if (currentTheme === 'dark') {
+          document.documentElement.classList.add('dark');
+          document.documentElement.classList.remove('light');
+        } else {
+          document.documentElement.classList.add('light');
+          document.documentElement.classList.remove('dark');
+        }
+      },
+      { currentTheme: theme }
+    );
     await page.waitForTimeout(400);
 
     // Make sure role is Manager
     const switchMgr = page.locator('button:has-text("Switch to Manager View")');
-    if (await switchMgr.count() > 0) {
+    if ((await switchMgr.count()) > 0) {
       await switchMgr.click();
       await page.waitForTimeout(400);
     }
@@ -55,7 +59,7 @@ async function main() {
 
     // 2. Switch to HR View and capture HR Dashboard
     const switchHr = page.locator('button:has-text("Switch to HR View")');
-    if (await switchHr.count() > 0) {
+    if ((await switchHr.count()) > 0) {
       await switchHr.click();
       await page.waitForTimeout(400);
     }

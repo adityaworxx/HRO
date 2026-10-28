@@ -85,24 +85,24 @@ export function DataTable<TData, TValue>({
         <div className="flex flex-col gap-2.5 sm:flex-row sm:items-center sm:justify-between">
           {showSearch ? (
             <div className="relative w-full sm:max-w-xs">
-              <Search className="text-text-subtle absolute top-2.5 left-3 h-4 w-4 pointer-events-none" />
+              <Search className="text-text-subtle pointer-events-none absolute top-2.5 left-3 h-4 w-4" />
               <Input
                 placeholder={searchPlaceholder}
                 value={globalFilter ?? ''}
                 onChange={(e) => setGlobalFilter(e.target.value)}
-                className="h-9 pl-9 text-[13px] bg-surface-2/40 border-border/70 hover:border-border focus:bg-surface-1 rounded-[8px] transition-all shadow-2xs"
+                className="bg-surface-2/40 border-border/70 hover:border-border focus:bg-surface-1 h-9 rounded-[8px] pl-9 text-[13px] shadow-2xs transition-all"
               />
             </div>
           ) : null}
 
-          <div className={cn("flex items-center gap-2", !showSearch && "ml-auto")}>
+          <div className={cn('flex items-center gap-2', !showSearch && 'ml-auto')}>
             <Button
               variant="outline"
               size="sm"
               onClick={() => setDensity(density === 'compact' ? 'normal' : 'compact')}
-              className="h-9 text-[12px] font-medium border-border/70 bg-surface-2/40 hover:bg-surface-2 text-text-muted hover:text-text rounded-[8px] shadow-2xs transition-all"
+              className="border-border/70 bg-surface-2/40 hover:bg-surface-2 text-text-muted hover:text-text h-9 rounded-[8px] text-[12px] font-medium shadow-2xs transition-all"
             >
-              <SlidersHorizontal className="mr-1.5 h-3.5 w-3.5 text-text-subtle" />
+              <SlidersHorizontal className="text-text-subtle mr-1.5 h-3.5 w-3.5" />
               {density === 'compact' ? 'Comfortable' : 'Compact'}
             </Button>
           </div>
@@ -110,17 +110,17 @@ export function DataTable<TData, TValue>({
       )}
 
       {/* Table Container */}
-      <div className="border border-border/80 bg-surface-1/70 backdrop-blur-xs overflow-hidden rounded-[12px] shadow-xs">
+      <div className="border-border/80 bg-surface-1/70 overflow-hidden rounded-[12px] border shadow-xs backdrop-blur-xs">
         <div className="overflow-x-auto">
-          <table className="w-full border-collapse text-left text-[13px] min-w-[640px]">
-            <thead className="border-b border-border/70 bg-surface-2/50 backdrop-blur-sm select-none">
+          <table className="w-full min-w-[640px] border-collapse text-left text-[13px]">
+            <thead className="border-border/70 bg-surface-2/50 border-b backdrop-blur-sm select-none">
               {table.getHeaderGroups().map((headerGroup) => (
                 <tr key={headerGroup.id}>
                   {headerGroup.headers.map((header) => (
                     <th
                       key={header.id}
                       className={cn(
-                        'text-text-muted text-[11px] font-bold tracking-wider uppercase first:pl-5 last:pr-5 transition-colors whitespace-nowrap',
+                        'text-text-muted text-[11px] font-bold tracking-wider whitespace-nowrap uppercase transition-colors first:pl-5 last:pr-5',
                         rowPadding
                       )}
                     >
@@ -132,12 +132,15 @@ export function DataTable<TData, TValue>({
                 </tr>
               ))}
             </thead>
-            <tbody className="divide-y divide-border/40">
+            <tbody className="divide-border/40 divide-y">
               {loading ? (
                 Array.from({ length: 5 }).map((_, i) => (
                   <tr key={`loading-row-${i}`}>
                     {columns.map((_, colIdx) => (
-                      <td key={`loading-col-${colIdx}`} className={cn(rowPadding, 'first:pl-5 last:pr-5')}>
+                      <td
+                        key={`loading-col-${colIdx}`}
+                        className={cn(rowPadding, 'first:pl-5 last:pr-5')}
+                      >
                         <Skeleton className="h-4 w-full max-w-[120px]" />
                       </td>
                     ))}
@@ -154,7 +157,10 @@ export function DataTable<TData, TValue>({
                     )}
                   >
                     {row.getVisibleCells().map((cell) => (
-                      <td key={cell.id} className={cn('text-text align-middle first:pl-5 last:pr-5', rowPadding)}>
+                      <td
+                        key={cell.id}
+                        className={cn('text-text align-middle first:pl-5 last:pr-5', rowPadding)}
+                      >
                         {flexRender(cell.column.columnDef.cell, cell.getContext())}
                       </td>
                     ))}
@@ -186,7 +192,7 @@ export function DataTable<TData, TValue>({
             size="sm"
             onClick={() => table.previousPage()}
             disabled={!table.getCanPreviousPage()}
-            className="h-8 w-8 p-0 border-border/70 bg-surface-2/40 hover:bg-surface-2 rounded-[6px] shadow-2xs"
+            className="border-border/70 bg-surface-2/40 hover:bg-surface-2 h-8 w-8 rounded-[6px] p-0 shadow-2xs"
           >
             <ChevronLeft className="h-4 w-4" />
             <span className="sr-only">Previous page</span>
@@ -196,7 +202,7 @@ export function DataTable<TData, TValue>({
             size="sm"
             onClick={() => table.nextPage()}
             disabled={!table.getCanNextPage()}
-            className="h-8 w-8 p-0 border-border/70 bg-surface-2/40 hover:bg-surface-2 rounded-[6px] shadow-2xs"
+            className="border-border/70 bg-surface-2/40 hover:bg-surface-2 h-8 w-8 rounded-[6px] p-0 shadow-2xs"
           >
             <ChevronRight className="h-4 w-4" />
             <span className="sr-only">Next page</span>

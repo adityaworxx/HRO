@@ -40,10 +40,8 @@ export const ListItem = React.forwardRef<HTMLButtonElement, ListItemProps>(
         aria-selected={active ? true : undefined}
         data-active={active ? 'true' : undefined}
         className={cn(
-          'group relative flex h-9 w-full items-center gap-3 rounded-[8px] px-3 text-[14px] leading-[20px] font-medium text-text select-none cursor-pointer outline-none transition-colors text-left',
-          active
-            ? 'bg-surface-3 text-text'
-            : 'text-text hover:bg-surface-2 focus:bg-surface-2',
+          'group text-text relative flex h-9 w-full cursor-pointer items-center gap-3 rounded-[8px] px-3 text-left text-[14px] leading-[20px] font-medium transition-colors outline-none select-none',
+          active ? 'bg-surface-3 text-text' : 'text-text hover:bg-surface-2 focus:bg-surface-2',
           disabled && 'pointer-events-none opacity-50',
           className
         )}
@@ -55,11 +53,11 @@ export const ListItem = React.forwardRef<HTMLButtonElement, ListItemProps>(
           <>
             {Icon && (
               <Icon
-                className="h-4 w-4 shrink-0 stroke-[1.75] text-text-subtle transition-colors"
+                className="text-text-subtle h-4 w-4 shrink-0 stroke-[1.75] transition-colors"
                 strokeWidth={1.75}
               />
             )}
-            <span className="flex-1 truncate text-text">{label}</span>
+            <span className="text-text flex-1 truncate">{label}</span>
             {secondary && (
               <span className="text-text-muted shrink-0 text-[12px] leading-[16px] font-normal">
                 {secondary}
@@ -96,4 +94,3 @@ export const ListGroupHeader = React.forwardRef<HTMLDivElement, ListGroupHeaderP
   }
 );
 ListGroupHeader.displayName = 'ListGroupHeader';
-

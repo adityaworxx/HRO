@@ -37,7 +37,13 @@ const monthlyPipelineData = [
 const channelBreakdownData = [
   { source: 'LinkedIn Talent', count: 10, pct: 33, tag: 'High Volume', convRate: '28% offer rate' },
   { source: 'Employee Referrals', count: 7, pct: 23, tag: 'Top ROI', convRate: '57% offer rate' },
-  { source: 'Naukri Direct', count: 6, pct: 20, tag: 'Active Pipeline', convRate: '18% offer rate' },
+  {
+    source: 'Naukri Direct',
+    count: 6,
+    pct: 20,
+    tag: 'Active Pipeline',
+    convRate: '18% offer rate',
+  },
   { source: 'Indeed Direct', count: 4, pct: 14, tag: 'Inbound', convRate: '15% offer rate' },
   { source: 'Agency & Other', count: 3, pct: 10, tag: 'Specialist', convRate: '33% offer rate' },
 ];
@@ -135,38 +141,38 @@ export default function ReportsPage() {
       </div>
 
       {/* Analytics Row 1: Pipeline Conversion & Hiring Velocity (Balanced 2-Col Grid) */}
-      <div className="grid grid-cols-1 gap-6 lg:grid-cols-2 items-stretch">
+      <div className="grid grid-cols-1 items-stretch gap-6 lg:grid-cols-2">
         {/* Card 1: Recruitment Conversion Funnel */}
-        <Card className="flex flex-col justify-between h-full">
+        <Card className="flex h-full flex-col justify-between">
           <div>
-            <CardHeader className="pb-4 border-b border-border/40">
+            <CardHeader className="border-border/40 border-b pb-4">
               <div className="flex items-center justify-between">
                 <div>
-                  <CardTitle className="text-[16px] font-semibold text-text tracking-[-0.01em]">
+                  <CardTitle className="text-text text-[16px] font-semibold tracking-[-0.01em]">
                     Recruitment Conversion Funnel
                   </CardTitle>
-                  <CardDescription className="text-[12px] text-text-muted mt-0.5">
+                  <CardDescription className="text-text-muted mt-0.5 text-[12px]">
                     Candidate volume drop-off and progression across key hiring milestones.
                   </CardDescription>
                 </div>
-                <span className="text-[11px] font-mono font-medium text-text-subtle bg-surface-2 border border-border px-2 py-0.5 rounded-[6px] select-none">
+                <span className="text-text-subtle bg-surface-2 border-border rounded-[6px] border px-2 py-0.5 font-mono text-[11px] font-medium select-none">
                   5 Stages
                 </span>
               </div>
             </CardHeader>
 
-            <CardContent className="pt-4 space-y-4">
+            <CardContent className="space-y-4 pt-4">
               {funnelStages.map((stage) => (
                 <div key={stage.num} className="space-y-1.5">
                   <div className="flex items-center justify-between text-[13px]">
                     <div className="flex items-center gap-2">
-                      <span className="bg-surface-3 text-text-subtle flex h-5 w-5 items-center justify-center rounded-[4px] font-mono text-[11px] font-medium border border-border/60">
+                      <span className="bg-surface-3 text-text-subtle border-border/60 flex h-5 w-5 items-center justify-center rounded-[4px] border font-mono text-[11px] font-medium">
                         {stage.num}
                       </span>
-                      <span className="text-text font-medium text-[13px]">{stage.label}</span>
+                      <span className="text-text text-[13px] font-medium">{stage.label}</span>
                     </div>
                     <div className="flex items-center gap-2 font-mono">
-                      <span className="text-text font-semibold text-[13px]">{stage.count}</span>
+                      <span className="text-text text-[13px] font-semibold">{stage.count}</span>
                       <span className="text-text-subtle text-[11px]">({stage.pct}%)</span>
                     </div>
                   </div>
@@ -175,7 +181,7 @@ export default function ReportsPage() {
                   <Progress value={stage.pct} className="h-1.5" />
 
                   {/* Context Note / Drop-off Rate */}
-                  <div className="flex items-center justify-between text-[11px] text-text-subtle">
+                  <div className="text-text-subtle flex items-center justify-between text-[11px]">
                     <span>{stage.sub}</span>
                     <span className="text-text-muted font-medium">{stage.note}</span>
                   </div>
@@ -185,7 +191,7 @@ export default function ReportsPage() {
           </div>
 
           {/* Footer Summary Strip */}
-          <div className="border-t border-border/50 px-4 sm:px-6 py-2.5 sm:py-3 bg-surface-2/30 flex flex-wrap items-center justify-between gap-2 text-[11px] select-none rounded-b-[12px]">
+          <div className="border-border/50 bg-surface-2/30 flex flex-wrap items-center justify-between gap-2 rounded-b-[12px] border-t px-4 py-2.5 text-[11px] select-none sm:px-6 sm:py-3">
             <span className="text-text-subtle">
               Net Yield: <strong className="text-accent font-mono font-semibold">27%</strong>
             </span>
@@ -193,19 +199,20 @@ export default function ReportsPage() {
               Avg Cycle: <strong className="text-text font-mono font-semibold">18.4 Days</strong>
             </span>
             <span className="text-text-subtle">
-              Active Pipeline: <strong className="text-text font-mono font-semibold">26 Candidates</strong>
+              Active Pipeline:{' '}
+              <strong className="text-text font-mono font-semibold">26 Candidates</strong>
             </span>
           </div>
         </Card>
 
         {/* Card 2: Hiring Velocity & Trends Graph (with Toggle for Sources / Shared with Manager) */}
-        <Card className="flex flex-col justify-between h-full">
+        <Card className="flex h-full flex-col justify-between">
           <div>
-            <CardHeader className="pb-4 border-b border-border/40">
-              <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-3">
+            <CardHeader className="border-border/40 border-b pb-4">
+              <div className="flex flex-col justify-between gap-3 sm:flex-row sm:items-start">
                 <div>
-                  <div className="flex items-center gap-2 flex-wrap">
-                    <CardTitle className="text-[16px] font-semibold text-text tracking-[-0.01em]">
+                  <div className="flex flex-wrap items-center gap-2">
+                    <CardTitle className="text-text text-[16px] font-semibold tracking-[-0.01em]">
                       {graphMode === 'velocity'
                         ? 'Hiring Velocity & Trends'
                         : graphMode === 'sources'
@@ -213,7 +220,7 @@ export default function ReportsPage() {
                           : 'Monthly Sourced vs. Shared with Manager'}
                     </CardTitle>
                   </div>
-                  <CardDescription className="text-[12px] text-text-muted mt-0.5">
+                  <CardDescription className="text-text-muted mt-0.5 text-[12px]">
                     {graphMode === 'velocity'
                       ? 'Monthly offers extended vs. confirmed candidate joins.'
                       : graphMode === 'sources'
@@ -223,14 +230,14 @@ export default function ReportsPage() {
                 </div>
 
                 {/* Graph Mode Segmented Toggle Buttons */}
-                <div className="flex items-center gap-1 bg-surface-2/40 p-1 rounded-[10px] border border-border/80 shrink-0 self-start max-w-full overflow-x-auto">
+                <div className="bg-surface-2/40 border-border/80 flex max-w-full shrink-0 items-center gap-1 self-start overflow-x-auto rounded-[10px] border p-1">
                   <button
                     type="button"
                     onClick={() => setGraphMode('velocity')}
                     className={cn(
-                      'px-2.5 sm:px-3.5 py-1.5 text-[11.5px] sm:text-[12px] whitespace-nowrap rounded-[8px] transition-colors cursor-pointer select-none',
+                      'cursor-pointer rounded-[8px] px-2.5 py-1.5 text-[11.5px] whitespace-nowrap transition-colors select-none sm:px-3.5 sm:text-[12px]',
                       graphMode === 'velocity'
-                        ? 'bg-accent text-white font-bold shadow-xs'
+                        ? 'bg-accent font-bold text-white shadow-xs'
                         : 'text-text-muted hover:text-text font-medium'
                     )}
                   >
@@ -240,9 +247,9 @@ export default function ReportsPage() {
                     type="button"
                     onClick={() => setGraphMode('sources')}
                     className={cn(
-                      'px-2.5 sm:px-3.5 py-1.5 text-[11.5px] sm:text-[12px] whitespace-nowrap rounded-[8px] transition-colors cursor-pointer select-none',
+                      'cursor-pointer rounded-[8px] px-2.5 py-1.5 text-[11.5px] whitespace-nowrap transition-colors select-none sm:px-3.5 sm:text-[12px]',
                       graphMode === 'sources'
-                        ? 'bg-accent text-white font-bold shadow-xs'
+                        ? 'bg-accent font-bold text-white shadow-xs'
                         : 'text-text-muted hover:text-text font-medium'
                     )}
                   >
@@ -252,9 +259,9 @@ export default function ReportsPage() {
                     type="button"
                     onClick={() => setGraphMode('monthly')}
                     className={cn(
-                      'px-2.5 sm:px-3.5 py-1.5 text-[11.5px] sm:text-[12px] whitespace-nowrap rounded-[8px] transition-colors cursor-pointer select-none',
+                      'cursor-pointer rounded-[8px] px-2.5 py-1.5 text-[11.5px] whitespace-nowrap transition-colors select-none sm:px-3.5 sm:text-[12px]',
                       graphMode === 'monthly'
-                        ? 'bg-accent text-white font-bold shadow-xs'
+                        ? 'bg-accent font-bold text-white shadow-xs'
                         : 'text-text-muted hover:text-text font-medium'
                     )}
                   >
@@ -264,13 +271,13 @@ export default function ReportsPage() {
               </div>
 
               {/* Clean Typography Legend */}
-              <div className="flex items-center gap-4 text-[11px] font-medium text-text-muted select-none pt-3">
+              <div className="text-text-muted flex items-center gap-4 pt-3 text-[11px] font-medium select-none">
                 <div className="flex items-center gap-1.5">
-                  <span className="h-2 w-2 rounded-full bg-surface-3 border border-border" />
+                  <span className="bg-surface-3 border-border h-2 w-2 rounded-full border" />
                   <span>{graphMode === 'velocity' ? 'Offers' : 'Total Sourced'}</span>
                 </div>
                 <div className="flex items-center gap-1.5">
-                  <span className="h-2 w-2 rounded-full bg-accent" />
+                  <span className="bg-accent h-2 w-2 rounded-full" />
                   <span className="text-text">
                     {graphMode === 'velocity' ? 'Joined' : 'Shared with Manager'}
                   </span>
@@ -278,7 +285,7 @@ export default function ReportsPage() {
               </div>
             </CardHeader>
 
-            <CardContent className="pt-4 space-y-4">
+            <CardContent className="space-y-4 pt-4">
               {/* Dual-bar SVG / CSS Chart Area */}
               {(() => {
                 const activeData =
@@ -291,15 +298,15 @@ export default function ReportsPage() {
                 const midVal = maxVal / 2;
 
                 return (
-                  <div className="h-[210px] w-full flex items-end justify-between gap-3 sm:gap-4 pt-6 pb-2 px-2 relative">
+                  <div className="relative flex h-[210px] w-full items-end justify-between gap-3 px-2 pt-6 pb-2 sm:gap-4">
                     {/* Horizontal Background Grid Reference Lines */}
-                    <div className="absolute inset-x-0 top-6 border-b border-border/40 flex items-center justify-end pr-1 text-[10px] text-text-subtle font-mono select-none">
+                    <div className="border-border/40 text-text-subtle absolute inset-x-0 top-6 flex items-center justify-end border-b pr-1 font-mono text-[10px] select-none">
                       {maxVal}
                     </div>
-                    <div className="absolute inset-x-0 top-[50%] border-b border-border/40 flex items-center justify-end pr-1 text-[10px] text-text-subtle font-mono select-none">
+                    <div className="border-border/40 text-text-subtle absolute inset-x-0 top-[50%] flex items-center justify-end border-b pr-1 font-mono text-[10px] select-none">
                       {midVal}
                     </div>
-                    <div className="absolute inset-x-0 bottom-6 border-b border-border flex items-center justify-end pr-1 text-[10px] text-text-subtle font-mono select-none">
+                    <div className="border-border text-text-subtle absolute inset-x-0 bottom-6 flex items-center justify-end border-b pr-1 font-mono text-[10px] select-none">
                       0
                     </div>
 
@@ -310,10 +317,10 @@ export default function ReportsPage() {
                       return (
                         <div
                           key={d.label}
-                          className="group relative flex-1 flex flex-col items-center justify-end h-full z-10"
+                          className="group relative z-10 flex h-full flex-1 flex-col items-center justify-end"
                         >
                           {/* Tooltip on hover */}
-                          <div className="absolute -top-7 opacity-0 group-hover:opacity-100 transition-opacity bg-surface-3 border border-border text-text rounded-[var(--radius-sm)] px-2 py-0.5 text-[10px] font-mono tabular-nums shadow-sm whitespace-nowrap pointer-events-none z-20">
+                          <div className="bg-surface-3 border-border text-text pointer-events-none absolute -top-7 z-20 rounded-[var(--radius-sm)] border px-2 py-0.5 font-mono text-[10px] whitespace-nowrap tabular-nums opacity-0 shadow-sm transition-opacity group-hover:opacity-100">
                             {d.barA} {d.tipA} · {d.barB} {d.tipB}
                           </div>
 
@@ -322,19 +329,19 @@ export default function ReportsPage() {
                             {/* Bar A */}
                             <div
                               style={{ height: `${barAHeight}px` }}
-                              className="w-3.5 sm:w-5 rounded-t-[3px] bg-surface-3 border border-border group-hover:bg-border-strong transition-colors cursor-pointer"
+                              className="bg-surface-3 border-border group-hover:bg-border-strong w-3.5 cursor-pointer rounded-t-[3px] border transition-colors sm:w-5"
                               title={`${d.label}: ${d.barA} ${d.tipA}`}
                             />
                             {/* Bar B */}
                             <div
                               style={{ height: `${barBHeight}px` }}
-                              className="w-3.5 sm:w-5 rounded-t-[3px] bg-accent group-hover:opacity-90 transition-opacity cursor-pointer"
+                              className="bg-accent w-3.5 cursor-pointer rounded-t-[3px] transition-opacity group-hover:opacity-90 sm:w-5"
                               title={`${d.label}: ${d.barB} ${d.tipB}`}
                             />
                           </div>
 
                           {/* Category Label */}
-                          <span className="absolute bottom-0 text-[11px] font-medium text-text-subtle group-hover:text-text transition-colors select-none font-mono truncate max-w-full text-center">
+                          <span className="text-text-subtle group-hover:text-text absolute bottom-0 max-w-full truncate text-center font-mono text-[11px] font-medium transition-colors select-none">
                             {d.label}
                           </span>
                         </div>
@@ -345,25 +352,29 @@ export default function ReportsPage() {
               })()}
 
               {/* In-card Context Details */}
-              <div className="rounded-[8px] border border-border/60 bg-surface-2/40 p-2.5 flex items-center justify-between text-[11px] text-text-muted">
+              <div className="border-border/60 bg-surface-2/40 text-text-muted flex items-center justify-between rounded-[8px] border p-2.5 text-[11px]">
                 {graphMode === 'velocity' ? (
                   <>
                     <span>
-                      Peak Month: <strong className="text-text font-medium">September</strong> (11 offers, 8 hires)
+                      Peak Month: <strong className="text-text font-medium">September</strong> (11
+                      offers, 8 hires)
                     </span>
                     <span className="text-accent font-medium">Trending +14% QoQ</span>
                   </>
                 ) : graphMode === 'sources' ? (
                   <>
                     <span>
-                      Top Channel: <strong className="text-text font-medium">LinkedIn Talent</strong> (10 sourced, 8 shared with mgr)
+                      Top Channel:{' '}
+                      <strong className="text-text font-medium">LinkedIn Talent</strong> (10
+                      sourced, 8 shared with mgr)
                     </span>
                     <span className="text-accent font-medium">80% pass-through</span>
                   </>
                 ) : (
                   <>
                     <span>
-                      Peak Intake: <strong className="text-text font-medium">September</strong> (32 sourced, 27 shared with mgr)
+                      Peak Intake: <strong className="text-text font-medium">September</strong> (32
+                      sourced, 27 shared with mgr)
                     </span>
                     <span className="text-accent font-medium">84% review clearance</span>
                   </>
@@ -373,17 +384,19 @@ export default function ReportsPage() {
           </div>
 
           {/* Footer Summary Strip */}
-          <div className="border-t border-border/50 px-4 sm:px-6 py-2.5 sm:py-3 bg-surface-2/30 flex flex-wrap items-center justify-between gap-2 text-[11px] select-none rounded-b-[12px]">
+          <div className="border-border/50 bg-surface-2/30 flex flex-wrap items-center justify-between gap-2 rounded-b-[12px] border-t px-4 py-2.5 text-[11px] select-none sm:px-6 sm:py-3">
             {graphMode === 'velocity' ? (
               <>
                 <span className="text-text-subtle">
                   Total Hires: <strong className="text-text font-mono font-semibold">31</strong>
                 </span>
                 <span className="text-text-subtle">
-                  Avg Velocity: <strong className="text-text font-mono font-semibold">5.2/mo</strong>
+                  Avg Velocity:{' '}
+                  <strong className="text-text font-mono font-semibold">5.2/mo</strong>
                 </span>
                 <span className="text-text-subtle">
-                  Offer Conversion: <strong className="text-accent font-mono font-semibold">82%</strong>
+                  Offer Conversion:{' '}
+                  <strong className="text-accent font-mono font-semibold">82%</strong>
                 </span>
               </>
             ) : graphMode === 'sources' ? (
@@ -392,10 +405,12 @@ export default function ReportsPage() {
                   Total Sourced: <strong className="text-text font-mono font-semibold">30</strong>
                 </span>
                 <span className="text-text-subtle">
-                  Shared with Mgr: <strong className="text-accent font-mono font-semibold">24 (80%)</strong>
+                  Shared with Mgr:{' '}
+                  <strong className="text-accent font-mono font-semibold">24 (80%)</strong>
                 </span>
                 <span className="text-text-subtle">
-                  Top Yield: <strong className="text-text font-mono font-semibold">Referrals (86%)</strong>
+                  Top Yield:{' '}
+                  <strong className="text-text font-mono font-semibold">Referrals (86%)</strong>
                 </span>
               </>
             ) : (
@@ -404,10 +419,12 @@ export default function ReportsPage() {
                   Net Sourced: <strong className="text-text font-mono font-semibold">142</strong>
                 </span>
                 <span className="text-text-subtle">
-                  Shared with Mgr: <strong className="text-accent font-mono font-semibold">117 (82%)</strong>
+                  Shared with Mgr:{' '}
+                  <strong className="text-accent font-mono font-semibold">117 (82%)</strong>
                 </span>
                 <span className="text-text-subtle">
-                  Review SLA: <strong className="text-text font-mono font-semibold">2.1 Days</strong>
+                  Review SLA:{' '}
+                  <strong className="text-text font-mono font-semibold">2.1 Days</strong>
                 </span>
               </>
             )}
@@ -416,35 +433,35 @@ export default function ReportsPage() {
       </div>
 
       {/* Analytics Row 2: Capacity Allocation & Sourcing Attribution (Balanced 2-Col Grid) */}
-      <div className="grid grid-cols-1 gap-6 lg:grid-cols-2 items-stretch">
+      <div className="grid grid-cols-1 items-stretch gap-6 lg:grid-cols-2">
         {/* Card 3: Department Headcount Allocations */}
-        <Card className="flex flex-col justify-between h-full">
+        <Card className="flex h-full flex-col justify-between">
           <div>
-            <CardHeader className="pb-4 border-b border-border/40">
+            <CardHeader className="border-border/40 border-b pb-4">
               <div className="flex items-center justify-between">
                 <div>
-                  <CardTitle className="text-[16px] font-semibold text-text tracking-[-0.01em]">
+                  <CardTitle className="text-text text-[16px] font-semibold tracking-[-0.01em]">
                     Department Headcount Allocations
                   </CardTitle>
-                  <CardDescription className="text-[12px] text-text-muted mt-0.5">
+                  <CardDescription className="text-text-muted mt-0.5 text-[12px]">
                     Open requisitions and approved headcount capacity by business unit.
                   </CardDescription>
                 </div>
-                <span className="text-[11px] font-mono font-medium text-text-subtle bg-surface-2 border border-border px-2 py-0.5 rounded-[6px] select-none">
+                <span className="text-text-subtle bg-surface-2 border-border rounded-[6px] border px-2 py-0.5 font-mono text-[11px] font-medium select-none">
                   {departmentStats.length} Depts
                 </span>
               </div>
             </CardHeader>
 
-            <CardContent className="pt-2 divide-y divide-border/40">
+            <CardContent className="divide-border/40 divide-y pt-2">
               {departmentStats.map((item) => (
                 <div
                   key={item.department}
-                  className="py-3 flex items-center justify-between hover:bg-surface-2/20 transition-colors px-1 rounded-[6px]"
+                  className="hover:bg-surface-2/20 flex items-center justify-between rounded-[6px] px-1 py-3 transition-colors"
                 >
                   <div className="min-w-0 flex-1 pr-4">
-                    <div className="flex items-center justify-between text-[13px] mb-1">
-                      <span className="text-text font-medium text-[13px]">{item.department}</span>
+                    <div className="mb-1 flex items-center justify-between text-[13px]">
+                      <span className="text-text text-[13px] font-medium">{item.department}</span>
                       <span className="text-text-subtle font-mono text-[11px]">
                         {item.openings} active {item.openings > 1 ? 'roles' : 'role'}
                       </span>
@@ -452,13 +469,13 @@ export default function ReportsPage() {
                     {/* Allocation Proportion Bar */}
                     <div className="flex items-center gap-2">
                       <Progress value={item.sharePct} className="h-1.5 flex-1" />
-                      <span className="font-mono text-[11px] text-text-subtle w-8 text-right shrink-0">
+                      <span className="text-text-subtle w-8 shrink-0 text-right font-mono text-[11px]">
                         {item.sharePct}%
                       </span>
                     </div>
                   </div>
 
-                  <div className="text-right pl-3 border-l border-border/40 shrink-0 min-w-[70px]">
+                  <div className="border-border/40 min-w-[70px] shrink-0 border-l pl-3 text-right">
                     <span className="text-text font-mono text-[15px] font-semibold">
                       {item.headcount}
                     </span>
@@ -470,12 +487,14 @@ export default function ReportsPage() {
           </div>
 
           {/* Footer Summary Strip */}
-          <div className="border-t border-border/50 px-4 sm:px-6 py-2.5 sm:py-3 bg-surface-2/30 flex flex-wrap items-center justify-between gap-2 text-[11px] select-none rounded-b-[12px]">
+          <div className="border-border/50 bg-surface-2/30 flex flex-wrap items-center justify-between gap-2 rounded-b-[12px] border-t px-4 py-2.5 text-[11px] select-none sm:px-6 sm:py-3">
             <span className="text-text-subtle">
-              Total Quota: <strong className="text-text font-mono font-semibold">{totalHeadcount}</strong>
+              Total Quota:{' '}
+              <strong className="text-text font-mono font-semibold">{totalHeadcount}</strong>
             </span>
             <span className="text-text-subtle">
-              Open Positions: <strong className="text-text font-mono font-semibold">{activeOpenings}</strong>
+              Open Positions:{' '}
+              <strong className="text-text font-mono font-semibold">{activeOpenings}</strong>
             </span>
             <span className="text-text-subtle">
               Allocation Cap: <strong className="text-accent font-mono font-semibold">100%</strong>
@@ -484,39 +503,39 @@ export default function ReportsPage() {
         </Card>
 
         {/* Card 4: Sourcing Channel Performance */}
-        <Card className="flex flex-col justify-between h-full">
+        <Card className="flex h-full flex-col justify-between">
           <div>
-            <CardHeader className="pb-4 border-b border-border/40">
+            <CardHeader className="border-border/40 border-b pb-4">
               <div className="flex items-center justify-between">
                 <div>
-                  <CardTitle className="text-[16px] font-semibold text-text tracking-[-0.01em]">
+                  <CardTitle className="text-text text-[16px] font-semibold tracking-[-0.01em]">
                     Sourcing Channel Performance
                   </CardTitle>
-                  <CardDescription className="text-[12px] text-text-muted mt-0.5">
+                  <CardDescription className="text-text-muted mt-0.5 text-[12px]">
                     Candidate acquisition volume, channel share, and offer conversion yield.
                   </CardDescription>
                 </div>
-                <span className="text-[11px] font-mono font-medium text-text-subtle bg-surface-2 border border-border px-2 py-0.5 rounded-[6px] select-none">
+                <span className="text-text-subtle bg-surface-2 border-border rounded-[6px] border px-2 py-0.5 font-mono text-[11px] font-medium select-none">
                   {totalCandidates} Sourced
                 </span>
               </div>
             </CardHeader>
 
-            <CardContent className="pt-2 divide-y divide-border/40">
+            <CardContent className="divide-border/40 divide-y pt-2">
               {channelBreakdownData.map((item) => (
                 <div
                   key={item.source}
-                  className="py-3 flex items-center justify-between hover:bg-surface-2/20 transition-colors px-1 rounded-[6px]"
+                  className="hover:bg-surface-2/20 flex items-center justify-between rounded-[6px] px-1 py-3 transition-colors"
                 >
                   <div className="min-w-0 flex-1 pr-4">
-                    <div className="flex items-center justify-between text-[13px] mb-1">
+                    <div className="mb-1 flex items-center justify-between text-[13px]">
                       <div className="flex items-center gap-2">
-                        <span className="text-text font-medium text-[13px]">{item.source}</span>
-                        <span className="text-[10px] font-medium px-1.5 py-0.2 rounded-[4px] bg-surface-3 text-text-subtle border border-border/60">
+                        <span className="text-text text-[13px] font-medium">{item.source}</span>
+                        <span className="py-0.2 bg-surface-3 text-text-subtle border-border/60 rounded-[4px] border px-1.5 text-[10px] font-medium">
                           {item.tag}
                         </span>
                       </div>
-                      <span className="text-text-muted font-medium text-[11px]">
+                      <span className="text-text-muted text-[11px] font-medium">
                         {item.convRate}
                       </span>
                     </div>
@@ -524,13 +543,13 @@ export default function ReportsPage() {
                     {/* Progress Bar */}
                     <div className="flex items-center gap-2">
                       <Progress value={item.pct} className="h-1.5 flex-1" />
-                      <span className="font-mono text-[11px] text-text-subtle w-8 text-right shrink-0">
+                      <span className="text-text-subtle w-8 shrink-0 text-right font-mono text-[11px]">
                         {item.pct}%
                       </span>
                     </div>
                   </div>
 
-                  <div className="text-right pl-3 border-l border-border/40 shrink-0 min-w-[70px]">
+                  <div className="border-border/40 min-w-[70px] shrink-0 border-l pl-3 text-right">
                     <span className="text-text font-mono text-[15px] font-semibold">
                       {item.count}
                     </span>
@@ -542,12 +561,14 @@ export default function ReportsPage() {
           </div>
 
           {/* Footer Summary Strip */}
-          <div className="border-t border-border/50 px-4 sm:px-6 py-2.5 sm:py-3 bg-surface-2/30 flex flex-wrap items-center justify-between gap-2 text-[11px] select-none rounded-b-[12px]">
+          <div className="border-border/50 bg-surface-2/30 flex flex-wrap items-center justify-between gap-2 rounded-b-[12px] border-t px-4 py-2.5 text-[11px] select-none sm:px-6 sm:py-3">
             <span className="text-text-subtle">
-              Primary Source: <strong className="text-text font-mono font-semibold">LinkedIn (33%)</strong>
+              Primary Source:{' '}
+              <strong className="text-text font-mono font-semibold">LinkedIn (33%)</strong>
             </span>
             <span className="text-text-subtle">
-              Highest Yield: <strong className="text-accent font-mono font-semibold">Referrals (57%)</strong>
+              Highest Yield:{' '}
+              <strong className="text-accent font-mono font-semibold">Referrals (57%)</strong>
             </span>
             <span className="text-text-subtle">
               Channels: <strong className="text-text font-mono font-semibold">5 Active</strong>

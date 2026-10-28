@@ -6,4 +6,3 @@ import { InterviewsView } from '@/features/candidates';
 export default function InterviewsPage() {
   return <InterviewsView />;
 }
-
