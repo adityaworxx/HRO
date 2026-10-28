@@ -65,19 +65,9 @@ export function CandidateCard({
             </AvatarFallback>
           </Avatar>
           <div className="min-w-0 flex-1">
-            <div className="flex items-center gap-1.5 flex-wrap">
-              <h4 className="text-[13.5px] font-bold text-text tracking-tight group-hover:text-accent transition-colors truncate">
-                {candidate.name}
-              </h4>
-              {candidate.hrNotes?.includes('[AI Match:') && (
-                <span
-                  className="inline-flex items-center gap-0.5 rounded-full border border-accent/40 bg-accent/15 px-1.5 py-0.5 text-[9.5px] font-mono font-bold text-accent shrink-0 select-none"
-                  title="Screened & matched by AI Talent Scout"
-                >
-                  AI Fit
-                </span>
-              )}
-            </div>
+            <h4 className="text-[13.5px] font-bold text-text tracking-tight group-hover:text-accent transition-colors truncate">
+              {candidate.name}
+            </h4>
             <p className="text-[11.5px] text-text-muted truncate mt-0.5 font-normal">
               <span>{candidate.currentRole}</span>
             </p>
@@ -85,6 +75,14 @@ export function CandidateCard({
         </div>
 
         <div className="flex items-center gap-1.5 shrink-0">
+          {candidate.hrNotes?.includes('[AI Match:') && (
+            <span
+              className="inline-flex items-center gap-0.5 rounded-full border border-accent/40 bg-accent/15 px-1.5 py-0.5 text-[9.5px] font-mono font-bold text-accent shrink-0 select-none"
+              title="Screened & matched by AI Talent Scout"
+            >
+              AI Fit
+            </span>
+          )}
           <span className="font-mono text-[11px] font-semibold text-text tabular-nums bg-surface-2 border border-border/70 px-1.5 py-0.5 rounded-[5px] shrink-0 select-none">
             {candidate.experienceYears}y exp
           </span>
@@ -98,15 +96,12 @@ export function CandidateCard({
         <span className="truncate">{candidate.currentCompany}</span>
       </div>
 
-      {/* 3. Signature Inner Box: Target Requisition & Expected CTC */}
+      {/* 3. Signature Inner Box: Requisition & Expected CTC */}
       {targetOpeningTitle && (
-        <div className="bg-surface-2/40 border border-border/60 rounded-[6px] px-2.5 py-1.5 text-[11.5px] text-text-muted flex items-center justify-between gap-1">
-          <div className="truncate flex items-center gap-1 min-w-0">
-            <span className="text-text-subtle text-[11px]">Target:</span>
-            <span className="font-semibold text-text truncate text-[11.5px]">
-              {targetOpeningTitle}
-            </span>
-          </div>
+        <div className="bg-surface-2/40 border border-border/60 rounded-[6px] px-2.5 py-1.5 text-[11.5px] text-text-muted flex items-center justify-between gap-2">
+          <span className="font-semibold text-text truncate text-[11.5px] min-w-0">
+            {targetOpeningTitle}
+          </span>
           <span className="font-mono text-emerald-600 dark:text-emerald-400 font-bold shrink-0 text-[11.5px]">
             {formatCtc(candidate.expectedCtc)}
           </span>

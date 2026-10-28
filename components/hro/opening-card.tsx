@@ -84,15 +84,14 @@ export function OpeningCard({
             <DeptIcon className="h-4 w-4" />
           </div>
           <div className="min-w-0 flex-1">
-            <div className="flex items-center gap-1.5 flex-wrap">
+            <h4 className="text-[13.5px] font-bold text-text tracking-tight group-hover:text-accent transition-colors truncate">
               <Link
                 href={`/openings/${opening.id}`}
-                className="text-[13.5px] font-bold text-text tracking-tight group-hover:text-accent transition-colors truncate"
                 title={opening.title}
               >
                 {opening.title}
               </Link>
-            </div>
+            </h4>
             <div className="flex items-center gap-1 text-[11.5px] text-text-muted truncate mt-0.5 font-normal">
               <MapPin className="h-3 w-3 shrink-0 text-text-subtle stroke-[1.75]" />
               <span className="truncate">{opening.location}</span>
@@ -149,35 +148,27 @@ export function OpeningCard({
         </div>
       </div>
 
-      {/* 2. Middle Body: Employment Type & Headcount */}
+      {/* 2. Middle Body: Department */}
       <div className="flex items-center gap-1.5 min-w-0 text-[12px] font-medium text-text-muted">
-        <Briefcase className="h-3 w-3 shrink-0 text-text-subtle/80 stroke-[1.75]" />
-        <span className="truncate">
+        <Building2 className="h-3 w-3 shrink-0 text-text-subtle/80 stroke-[1.75]" />
+        <span className="truncate">{opening.department}</span>
+      </div>
+
+      {/* 3. Signature Inner Box: Employment Type & Compensation */}
+      <div className="bg-surface-2/40 border border-border/60 rounded-[6px] px-2.5 py-1.5 text-[11.5px] text-text-muted flex items-center justify-between gap-2">
+        <span className="font-semibold text-text truncate text-[11.5px] min-w-0">
           {opening.employmentType}
           {opening.headcount ? ` · ${opening.headcount} ${opening.headcount === 1 ? 'opening' : 'openings'}` : ''}
         </span>
-      </div>
-
-      {/* 3. Signature Inner Box: Budget & Active Pipeline Candidates */}
-      <div className="bg-surface-2/40 border border-border/60 rounded-[6px] px-2.5 py-1.5 text-[11.5px] text-text-muted flex items-center justify-between gap-1">
-        <div className="truncate flex items-center gap-1 min-w-0">
-          <span className="text-text-subtle text-[11px]">Budget:</span>
-          <span className="font-semibold text-text truncate text-[11.5px]">
-            {formatCtcRange(minBudget, maxBudget)}
-          </span>
-        </div>
         <span className="font-mono text-emerald-600 dark:text-emerald-400 font-bold shrink-0 text-[11.5px]">
-          {candidatesCount} in pipeline
+          {formatCtcRange(minBudget, maxBudget)}
         </span>
       </div>
 
-      {/* 4. Bottom Meta: Department & Opening Status Badge (+ AI Match trigger) */}
+      {/* 4. Bottom Meta: Department / AI Match & Opening Status Badge */}
       <div className="border-t border-border/60 pt-2 flex items-center justify-between gap-2 text-[11px]">
         <div className="flex items-center gap-1.5 min-w-0">
-          <span className="text-text-muted font-medium text-[11.5px] truncate">
-            {opening.department}
-          </span>
-          {onAiMatch && (
+          {onAiMatch ? (
             <button
               type="button"
               onClick={(e) => {
@@ -191,6 +182,8 @@ export function OpeningCard({
               <Sparkles className="h-2.5 w-2.5" />
               <span>AI Match</span>
             </button>
+          ) : (
+            <span className="text-text-subtle text-[11px] font-medium">Requisition</span>
           )}
         </div>
 
