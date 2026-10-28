@@ -136,7 +136,7 @@ export function ActiveOpeningsCard({
             {title}
           </h2>
           {openings.length > 0 && (
-            <span className="font-mono text-[11px] font-semibold text-accent bg-accent/10 px-2 py-0.5 rounded-full">
+            <span className="text-[11px] font-semibold text-text-muted bg-surface-3 border border-border/60 px-2 py-0.5 rounded-full tabular-nums">
               {openings.length}
             </span>
           )}
@@ -233,7 +233,7 @@ export function ActiveOpeningsCard({
                           {group.title}
                         </h3>
                       </div>
-                      <span className="font-mono text-[11px] font-semibold text-text-muted bg-surface-3/90 border border-border/60 px-2 py-0.5 rounded-full shrink-0 tabular-nums">
+                      <span className="text-[11px] font-semibold text-text-muted bg-surface-3/90 border border-border/60 px-2 py-0.5 rounded-full shrink-0 tabular-nums">
                         {totalInDept}
                       </span>
                     </div>
@@ -276,7 +276,7 @@ export function ActiveOpeningsCard({
                         <ChevronLeft className="h-3.5 w-3.5" />
                       </button>
 
-                      <span className="font-mono text-text-muted text-[11px] font-medium">
+                      <span className="text-text-muted text-[11px] font-medium tabular-nums">
                         {validDeptPage} of {deptTotalPages}
                       </span>
 

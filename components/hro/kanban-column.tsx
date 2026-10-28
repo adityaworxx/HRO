@@ -69,13 +69,13 @@ export function KanbanColumn({
               <StageIcon className="h-3.5 w-3.5" />
             </div>
           ) : (
-            <span className="h-2 w-2 rounded-full bg-accent shrink-0" />
+            <span className="h-2 w-2 rounded-full bg-text-subtle shrink-0" />
           )}
           <span className="text-text text-[13px] font-semibold tracking-tight truncate">{title}</span>
         </div>
 
         <div className="flex items-center gap-1.5 shrink-0">
-          <span className="font-mono text-[11px] font-semibold text-text-muted bg-surface-3/90 border border-border/60 px-2 py-0.5 rounded-full flex items-center justify-center tabular-nums">
+          <span className="text-[11px] font-semibold text-text-muted bg-surface-3/90 border border-border/60 px-2 py-0.5 rounded-full flex items-center justify-center tabular-nums">
             {count}
           </span>
 

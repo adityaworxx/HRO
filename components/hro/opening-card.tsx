@@ -166,7 +166,7 @@ export function OpeningCard({
         <span className="font-medium text-text truncate min-w-0">
           {opening.headcount ? `${opening.headcount} ${opening.headcount === 1 ? 'opening' : 'openings'}` : '1 opening'}
         </span>
-        <span className="font-semibold text-text shrink-0 text-[12px] tabular-nums font-mono">
+        <span className="font-semibold text-text shrink-0 text-[12px] tabular-nums font-sans">
           {formatCtcRange(minBudget, maxBudget)}
         </span>
       </div>
@@ -175,7 +175,7 @@ export function OpeningCard({
       <div className="border-t border-border/40 pt-2.5 flex items-center justify-between gap-2 text-[11px]">
         {opening.status === 'On Hold' ? (
           <div className="flex items-center gap-1.5">
-            <span className="text-[11px] font-medium text-amber-600 dark:text-amber-400 select-none">
+            <span className="text-[11px] font-medium text-text select-none">
               On Hold
             </span>
             {onReactivate && (
@@ -186,18 +186,14 @@ export function OpeningCard({
                   e.stopPropagation();
                   onReactivate(opening.id, opening.title);
                 }}
-                className="ml-1 text-[10.5px] font-medium text-accent hover:underline cursor-pointer"
+                className="ml-1 text-[10.5px] font-medium text-text-muted hover:text-text hover:underline cursor-pointer"
               >
                 Resume
               </button>
             )}
           </div>
-        ) : opening.status === 'Open' ? (
-          <span className="text-[11px] font-medium text-emerald-600 dark:text-emerald-400 select-none">
-            Open
-          </span>
         ) : (
-          <span className="text-[11px] font-medium text-accent select-none">
+          <span className="text-[11px] font-medium text-text select-none">
             {opening.status}
           </span>
         )}
@@ -211,10 +207,10 @@ export function OpeningCard({
                 e.stopPropagation();
                 onAiMatch(opening);
               }}
-              className="inline-flex items-center gap-1 text-[11px] font-semibold text-accent hover:underline cursor-pointer select-none"
+              className="inline-flex items-center gap-1 text-[11px] font-medium text-text hover:text-text-muted cursor-pointer select-none"
               title="Scan & Match Candidates with AI"
             >
-              <Sparkles className="h-3 w-3 text-accent shrink-0" />
+              <Sparkles className="h-3 w-3 text-text-muted shrink-0" />
               <span>AI Match</span>
             </button>
           ) : (

@@ -227,15 +227,10 @@ export function ManagerDashboard() {
           {/* A. Candidates Awaiting Review Telemetry (Styled matching Technical Interviews) */}
           <div className="border border-border bg-surface-1 flex flex-col justify-between rounded-[12px] p-5 shadow-xs">
             {/* Header matching Technical Interviews typography */}
-            <div className="flex items-start justify-between gap-4 pb-4 border-b border-border/60">
-              <div>
-                <h2 className="text-text text-[16px] leading-[24px] font-medium tracking-[-0.01em]">
-                  Candidates Awaiting Review
-                </h2>
-                <p className="text-text-muted mt-[2px] text-[13px] leading-[20px]">
-                  {pendingReviewCandidates.length} candidate profiles awaiting hiring manager evaluation
-                </p>
-              </div>
+            <div className="flex items-center justify-between gap-4 pb-3 border-b border-border/60">
+              <h2 className="text-text text-[16px] leading-[24px] font-medium tracking-[-0.01em]">
+                Candidates Awaiting Review
+              </h2>
 
               <Link
                 href="/shortlist"
