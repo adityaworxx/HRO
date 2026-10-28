@@ -236,7 +236,7 @@ export function ShortlistReview() {
       {
         onSuccess: () => {
           if (decision === 'Shortlisted') {
-            toast.success(`🎯 ${selectedCandidate.name} shortlisted for Technical Interview!`);
+            toast.success(`🎯 ${selectedCandidate.name} shortlisted! Sent to HR for interview scheduling.`);
           } else {
             toast.info(`${selectedCandidate.name} rejected from evaluation queue.`);
           }
@@ -383,7 +383,7 @@ export function ShortlistReview() {
             return (
               <div
                 key={group.id}
-                className="w-[300px] xs:w-[320px] sm:w-[335px] max-w-[calc(100vw-2.5rem)] shrink-0 flex flex-col justify-between rounded-[12px] bg-surface-2/30 border border-border/70 border-t-2 border-t-accent p-3 space-y-2.5"
+                className="w-[320px] xs:w-[340px] sm:w-[360px] max-w-[calc(100vw-2.5rem)] shrink-0 flex flex-col justify-between rounded-[12px] bg-surface-2/30 border border-border/70 border-t-2 border-t-accent p-3 space-y-2.5"
               >
                 <div className="space-y-2.5">
                   {/* Column Header */}

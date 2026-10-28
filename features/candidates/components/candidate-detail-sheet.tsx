@@ -5,6 +5,7 @@ import type { Candidate } from '@/types/entities';
 import type { CandidateStage } from '@/lib/domain/status-transitions';
 import { getNextAllowedCandidateStages } from '@/lib/domain/status-transitions';
 import { useUpdateCandidateStage, useRecordManagerDecision, useScheduleInterview } from '../hooks';
+import { useUiStore } from '@/lib/store';
 import {
   Sheet,
   SheetContent,
@@ -12,6 +13,7 @@ import {
 import { Badge } from '@/components/ui/badge';
 import { SourceBadge } from '@/components/hro/source-badge';
 import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import {
   Mail,
@@ -54,12 +56,16 @@ function getCurrentLocalDateTime(): string {
 }
 
 export function CandidateDetailSheet({ candidate, open, onOpenChange }: CandidateDetailSheetProps) {
+  const { role } = useUiStore();
+  const isHr = role === 'hr';
+
   const updateStage = useUpdateCandidateStage();
   const recordDecision = useRecordManagerDecision();
   const scheduleInterview = useScheduleInterview();
 
   const [interviewDate, setInterviewDate] = React.useState('');
   const [interviewMode, setInterviewMode] = React.useState<'Video' | 'Phone' | 'Onsite'>('Video');
+  const [scheduleNote, setScheduleNote] = React.useState('');
   const [showScheduleForm, setShowScheduleForm] = React.useState(false);
 
   if (!candidate) return null;
@@ -107,10 +113,11 @@ export function CandidateDetailSheet({ candidate, open, onOpenChange }: Candidat
         id: candidate.id,
         date: new Date(interviewDate).toISOString(),
         mode: interviewMode,
+        note: scheduleNote.trim() ? scheduleNote.trim() : undefined,
       },
       {
         onSuccess: () => {
-          toast.success(`Technical interview scheduled with ${candidate.name}!`);
+          toast.success(`Interview scheduled with ${candidate.name}! Hiring Manager has been notified.`);
           setShowScheduleForm(false);
         },
       }
@@ -354,19 +361,25 @@ export function CandidateDetailSheet({ candidate, open, onOpenChange }: Candidat
                     <Calendar className="text-accent h-4 w-4" />
                     <span>Interview Schedule</span>
                   </h4>
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    onClick={() => {
-                    if (!showScheduleForm && !interviewDate) {
-                      setInterviewDate(candidate.interviewDate ? candidate.interviewDate.slice(0, 16) : getCurrentLocalDateTime());
-                    }
-                    setShowScheduleForm(!showScheduleForm);
-                  }}
-                    className="h-7 text-[12px] cursor-pointer"
-                  >
-                    {candidate.interviewDate ? 'Reschedule' : 'Set Slot'}
-                  </Button>
+                  {isHr ? (
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={() => {
+                        if (!showScheduleForm && !interviewDate) {
+                          setInterviewDate(candidate.interviewDate ? candidate.interviewDate.slice(0, 16) : getCurrentLocalDateTime());
+                        }
+                        setShowScheduleForm(!showScheduleForm);
+                      }}
+                      className="h-7 text-[12px] cursor-pointer"
+                    >
+                      {candidate.interviewDate ? "Reschedule Slot" : "Call & Set Slot"}
+                    </Button>
+                  ) : (
+                    <span className="text-[11px] text-text-subtle font-medium">
+                      {candidate.interviewDate ? "Scheduled by HR" : "HR Scheduling in Progress"}
+                    </span>
+                  )}
                 </div>
 
                 {candidate.interviewDate ? (
@@ -437,6 +450,15 @@ export function CandidateDetailSheet({ candidate, open, onOpenChange }: Candidat
                           </SelectItem>
                         </SelectContent>
                       </Select>
+                    </div>
+                    <div className="space-y-1">
+                      <label className="text-text text-[12px] font-medium">Coordination Notes (Optional)</label>
+                      <Input
+                        value={scheduleNote}
+                        onChange={(e: React.ChangeEvent<HTMLInputElement>) => setScheduleNote(e.target.value)}
+                        placeholder="e.g. Candidate confirmed 11 AM slot. Link: meet.google.com/..."
+                        className="h-8 text-[12px]"
+                      />
                     </div>
                     <Button type="submit" variant="primary" size="sm" className="h-8 w-full text-[12px]">
                       Confirm Interview Slot

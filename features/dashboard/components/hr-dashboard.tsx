@@ -443,7 +443,7 @@ export function HrDashboard() {
                   <div>Current Stage</div>
                   <div>SLA Status</div>
                   <div>Notice Period</div>
-                  <div className="text-right">Action</div>
+                  <div className="text-right">Details</div>
                 </div>
 
                 {/* Table Content Rows */}
@@ -498,18 +498,15 @@ export function HrDashboard() {
                             {candidate.noticePeriod}
                           </div>
 
-                          {/* 5. Action */}
+                          {/* 5. Redirect Gateway */}
                           <div className="flex justify-end">
-                            <Button
-                              variant="outline"
-                              size="sm"
-                              className="border-border hover:bg-surface-2 hover:text-text h-7 cursor-pointer px-2.5 text-[11px] font-medium"
-                              onClick={() =>
-                                toast.success(`Nudge reminder sent for ${candidate.name}`)
-                              }
+                            <Link
+                              href={candidate.stage === 'Shared with Manager' ? '/shortlist' : '/pipeline'}
+                              className="inline-flex items-center gap-1 text-[11.5px] font-semibold text-text-muted hover:text-accent transition-colors"
                             >
-                              Nudge Team
-                            </Button>
+                              <span>View Profile</span>
+                              <ChevronRight className="h-3.5 w-3.5" />
+                            </Link>
                           </div>
                         </div>
                       );

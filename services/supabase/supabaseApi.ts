@@ -468,18 +468,33 @@ export const supabaseApi: HroApiClient = {
       if (error) throw error;
       const updated = mapCandidate(data as CandidateRow);
       await recordActivity('candidate', id, `Manager marked decision as "${decision}"`);
+
+      if (decision === 'Shortlisted') {
+        await createNotification(
+          'hr',
+          'Candidate Shortlisted - Ready for Scheduling',
+          `Hiring Manager shortlisted ${updated.name}. Please coordinate with candidate and schedule interview slot.`,
+          '/interviews'
+        );
+      }
+
       return updated;
     },
 
-    scheduleInterview: async (id, date, mode) => {
+    scheduleInterview: async (id, date, mode, note) => {
+      const updatePayload: Record<string, unknown> = {
+        interview_date: date,
+        interview_mode: mode,
+        stage: 'Interview',
+        interview_outcome: 'Pending',
+      };
+      if (note !== undefined) {
+        updatePayload.interview_note = note;
+      }
+
       const { data, error } = await supabase
         .from('candidates')
-        .update({
-          interview_date: date,
-          interview_mode: mode,
-          stage: 'Interview',
-          interview_outcome: 'Pending',
-        })
+        .update(updatePayload)
         .eq('id', id)
         .select()
         .single();
@@ -487,6 +502,14 @@ export const supabaseApi: HroApiClient = {
       if (error) throw error;
       const updated = mapCandidate(data as CandidateRow);
       await recordActivity('candidate', id, `Interview scheduled for ${new Date(date).toLocaleDateString()} (${mode})`);
+
+      await createNotification(
+        'manager',
+        'Interview Scheduled by HR',
+        `HR coordinated with ${updated.name} and scheduled technical interview for ${new Date(date).toLocaleString()} (${mode}).`,
+        '/interviews'
+      );
+
       return updated;
     },
 

@@ -87,14 +87,17 @@ export function useScheduleInterview() {
       id,
       date,
       mode,
+      note,
     }: {
       id: string;
       date: string;
       mode: 'Video' | 'Phone' | 'Onsite';
-    }) => api.candidates.scheduleInterview(id, date, mode),
+      note?: string;
+    }) => api.candidates.scheduleInterview(id, date, mode, note),
     onSuccess: (_, variables) => {
       void queryClient.invalidateQueries({ queryKey: candidatesKeys.lists() });
       void queryClient.invalidateQueries({ queryKey: candidatesKeys.detail(variables.id) });
+      void queryClient.invalidateQueries({ queryKey: notificationsKeys.all });
     },
   });
 }

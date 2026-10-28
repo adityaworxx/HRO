@@ -40,7 +40,8 @@ export interface CandidatesApi {
   scheduleInterview(
     id: string,
     date: string,
-    mode: 'Video' | 'Phone' | 'Onsite'
+    mode: 'Video' | 'Phone' | 'Onsite',
+    note?: string
   ): Promise<Candidate>;
   recordInterviewOutcome(
     id: string,

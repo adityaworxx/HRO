@@ -243,31 +243,74 @@ export const mockApi: HroApiClient = {
       const idx = store.candidates.findIndex((c) => c.id === id);
       if (idx === -1) throw { code: 'NOT_FOUND', message: `Candidate ${id} not found.` };
 
+      const existing = store.candidates[idx]!;
+      const opening = store.openings.find((o) => o.id === existing.openingId);
+
       const updated = {
-        ...store.candidates[idx]!,
+        ...existing,
         managerDecision: decision,
         managerComment: comment,
-        stage: decision === 'Rejected' ? ('Rejected' as const) : store.candidates[idx]!.stage,
+        stage:
+          decision === 'Shortlisted'
+            ? ('Interview' as const)
+            : decision === 'Rejected'
+              ? ('Rejected' as const)
+              : existing.stage,
       };
       store.candidates[idx] = updated;
+
+      if (decision === 'Shortlisted') {
+        const hrNotification = {
+          id: `notif-${Date.now()}-${Math.random()}`,
+          recipientRole: 'hr' as const,
+          title: 'Candidate Shortlisted - Ready for Scheduling',
+          message: `Hiring Manager shortlisted ${updated.name} for "${opening?.title || 'Open Role'}". Please coordinate with candidate and schedule interview slot.`,
+          timestamp: new Date().toISOString(),
+          read: false,
+          link: '/interviews',
+        };
+        store.notifications = [hrNotification, ...(store.notifications || [])];
+      }
+
       saveStore(store);
       return updated;
     },
 
-    scheduleInterview: async (id, date, mode) => {
+    scheduleInterview: async (id, date, mode, note) => {
       await simulateLatency();
       checkFailure();
       const store = getStore();
       const idx = store.candidates.findIndex((c) => c.id === id);
       if (idx === -1) throw { code: 'NOT_FOUND', message: `Candidate ${id} not found.` };
 
+      const existing = store.candidates[idx]!;
+      const opening = store.openings.find((o) => o.id === existing.openingId);
+
       const updated = {
-        ...store.candidates[idx]!,
+        ...existing,
         interviewDate: date,
         interviewMode: mode,
         stage: 'Interview' as const,
+        interviewNote: note !== undefined ? note : existing.interviewNote,
       };
       store.candidates[idx] = updated;
+
+      // Notify the Hiring Manager that HR scheduled the interview
+      const formattedDate = new Date(date).toLocaleString('en-US', {
+        dateStyle: 'medium',
+        timeStyle: 'short',
+      });
+      const mgrNotification = {
+        id: `notif-${Date.now()}-${Math.random()}`,
+        recipientRole: 'manager' as const,
+        title: 'Interview Scheduled by HR',
+        message: `HR coordinated with ${updated.name} and scheduled technical interview for ${formattedDate} (${mode}).`,
+        timestamp: new Date().toISOString(),
+        read: false,
+        link: '/interviews',
+      };
+      store.notifications = [mgrNotification, ...(store.notifications || [])];
+
       saveStore(store);
       return updated;
     },

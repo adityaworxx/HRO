@@ -2,8 +2,9 @@
 
 import * as React from 'react';
 import { useCandidates, useScheduleInterview, useRecordInterviewOutcome } from '../hooks';
+import { useOpenings } from '@/features/openings/hooks';
+import { useUiStore } from '@/lib/store';
 import type { Candidate } from '@/types/entities';
-import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Input } from '@/components/ui/input';
@@ -18,7 +19,25 @@ import {
   DialogFooter,
 } from '@/components/ui/dialog';
 import { EmptyState } from '@/components/hro/empty-state';
-import { Calendar, Clock, Phone, CheckCircle2, XCircle, PauseCircle, Building2, Search, ChevronLeft, ChevronRight } from 'lucide-react';
+import {
+  Calendar,
+  Clock,
+  Phone,
+  Mail,
+  CheckCircle2,
+  XCircle,
+  PauseCircle,
+  Building2,
+  Search,
+  ChevronLeft,
+  ChevronRight,
+  Sparkles,
+  UserCheck,
+  Briefcase,
+  AlertCircle,
+  FileText,
+  ExternalLink,
+} from 'lucide-react';
 import { VideoCameraIcon } from '@/components/ui/icons';
 import {
   Select,
@@ -30,6 +49,7 @@ import {
 import { DateTimePicker } from '@/components/ui/date-time-picker';
 import { toast } from 'sonner';
 import { cn } from '@/lib/utils';
+import { formatCtc } from '@/lib/format';
 
 function getCurrentLocalDateTime(): string {
   const now = new Date();
@@ -42,37 +62,66 @@ function getCurrentLocalDateTime(): string {
 }
 
 export function InterviewsView() {
+  const { role } = useUiStore();
+  const isHr = role === 'hr';
+
   const { data: candidates = [], isLoading } = useCandidates();
+  const { data: openings = [] } = useOpenings();
   const scheduleInterview = useScheduleInterview();
   const recordOutcome = useRecordInterviewOutcome();
 
-  // All candidates in Interview stage
+  // Openings map for quick lookup
+  const openingsMap = React.useMemo(() => {
+    return new Map(openings.map((o) => [o.id, o]));
+  }, [openings]);
+
+  // Candidates in Interview stage
+  const interviewCandidates = React.useMemo(() => {
+    return candidates.filter((c) => c.stage === 'Interview');
+  }, [candidates]);
+
+  // Count unscheduled vs scheduled
+  const unscheduledCandidates = React.useMemo(
+    () => interviewCandidates.filter((c) => !c.interviewDate),
+    [interviewCandidates]
+  );
+  const scheduledCandidates = React.useMemo(
+    () => interviewCandidates.filter((c) => Boolean(c.interviewDate)),
+    [interviewCandidates]
+  );
+
+  // Filters & State
   const [searchQuery, setSearchQuery] = React.useState<string>('');
+  const [statusTab, setStatusTab] = React.useState<'all' | 'needs-scheduling' | 'scheduled'>('all');
   const [outcomeFilter, setOutcomeFilter] = React.useState<string>('all');
   const [modeFilter, setModeFilter] = React.useState<string>('all');
   const [currentPage, setCurrentPage] = React.useState<number>(1);
 
   const PAGE_SIZE = 6;
 
-  // All candidates in Interview stage
-  const interviewCandidates = React.useMemo(() => {
-    return candidates.filter((c) => c.stage === 'Interview');
-  }, [candidates]);
-
   // Reset pagination when search or filters change
   React.useEffect(() => {
     setCurrentPage(1);
-  }, [searchQuery, outcomeFilter, modeFilter, interviewCandidates.length]);
+  }, [searchQuery, statusTab, outcomeFilter, modeFilter, interviewCandidates.length]);
 
   // Filtered interviews
   const filteredInterviews = React.useMemo(() => {
     const q = searchQuery.trim().toLowerCase();
     return interviewCandidates.filter((c) => {
+      // Tab filter
+      if (statusTab === 'needs-scheduling' && c.interviewDate) return false;
+      if (statusTab === 'scheduled' && !c.interviewDate) return false;
+
+      // Text search
+      const opening = openingsMap.get(c.openingId);
       const matchesSearch =
         !q ||
         c.name.toLowerCase().includes(q) ||
         c.currentRole.toLowerCase().includes(q) ||
         c.currentCompany.toLowerCase().includes(q) ||
+        c.phone.toLowerCase().includes(q) ||
+        c.email.toLowerCase().includes(q) ||
+        (opening && opening.title.toLowerCase().includes(q)) ||
         (c.interviewNote && c.interviewNote.toLowerCase().includes(q));
 
       const matchesOutcome =
@@ -85,7 +134,7 @@ export function InterviewsView() {
 
       return matchesSearch && matchesOutcome && matchesMode;
     });
-  }, [interviewCandidates, searchQuery, outcomeFilter, modeFilter]);
+  }, [interviewCandidates, statusTab, searchQuery, outcomeFilter, modeFilter, openingsMap]);
 
   const totalPages = Math.ceil(filteredInterviews.length / PAGE_SIZE);
   const validPage = Math.min(Math.max(1, currentPage), Math.max(1, totalPages));
@@ -100,18 +149,20 @@ export function InterviewsView() {
   const [outcomeModalOpen, setOutcomeModalOpen] = React.useState(false);
   const [interviewDate, setInterviewDate] = React.useState(getCurrentLocalDateTime());
   const [interviewMode, setInterviewMode] = React.useState<'Video' | 'Phone' | 'Onsite'>('Video');
+  const [scheduleNote, setScheduleNote] = React.useState('');
   const [outcomeNote, setOutcomeNote] = React.useState('');
 
   const handleOpenSchedule = (candidate: Candidate) => {
     setSelectedCandidate(candidate);
     setInterviewDate(candidate.interviewDate ? candidate.interviewDate.slice(0, 16) : getCurrentLocalDateTime());
     setInterviewMode(candidate.interviewMode ?? 'Video');
+    setScheduleNote(candidate.interviewNote ?? '');
     setScheduleModalOpen(true);
   };
 
   const handleOpenOutcome = (candidate: Candidate) => {
     setSelectedCandidate(candidate);
-    setOutcomeNote('');
+    setOutcomeNote(candidate.interviewNote ?? '');
     setOutcomeModalOpen(true);
   };
 
@@ -124,11 +175,15 @@ export function InterviewsView() {
         id: selectedCandidate.id,
         date: new Date(interviewDate).toISOString(),
         mode: interviewMode,
+        note: scheduleNote.trim() ? scheduleNote.trim() : undefined,
       },
       {
         onSuccess: () => {
-          toast.success(`Interview scheduled with ${selectedCandidate.name}!`);
+          toast.success(`🎯 Interview scheduled for ${selectedCandidate.name}! Hiring Manager has been notified.`);
           setScheduleModalOpen(false);
+        },
+        onError: (err) => {
+          toast.error(err instanceof Error ? err.message : 'Failed to schedule interview');
         },
       }
     );
@@ -148,6 +203,9 @@ export function InterviewsView() {
           toast.success(`Outcome marked as ${outcome} for ${selectedCandidate.name}!`);
           setOutcomeModalOpen(false);
         },
+        onError: (err) => {
+          toast.error(err instanceof Error ? err.message : 'Failed to record outcome');
+        },
       }
     );
   };
@@ -162,6 +220,43 @@ export function InterviewsView() {
 
   return (
     <div className="space-y-6">
+      {/* Header with Role Persona Context */}
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 border-b border-border/60 pb-4">
+        <div>
+          <div className="flex items-center gap-2.5">
+            <h1 className="text-xl sm:text-2xl font-bold tracking-tight text-text">
+              {isHr ? 'Interview Coordination & Scheduling' : 'Technical Interviews'}
+            </h1>
+            <Badge
+              variant="default"
+              className={cn(
+                'text-[10px] font-mono uppercase font-bold px-2 py-0.5',
+                isHr
+                  ? 'bg-accent/20 border-accent/40 text-accent'
+                  : 'bg-surface-3 border-border text-text-muted'
+              )}
+            >
+              {isHr ? 'HR Workspace' : 'Manager Workspace'}
+            </Badge>
+          </div>
+          <p className="text-text-muted text-[13px] mt-1">
+            {isHr
+              ? 'Coordinate with candidates shortlisted by hiring managers, confirm their availability via phone/email, and book interview slots.'
+              : 'Review upcoming technical interviews scheduled by HR, conduct rounds, and record your evaluation verdicts.'}
+          </p>
+        </div>
+
+        {/* Quick status pill */}
+        {isHr && unscheduledCandidates.length > 0 && (
+          <div className="flex items-center gap-2 rounded-[8px] border border-warning/40 bg-warning/10 px-3 py-2 text-[12px] text-text font-medium self-start sm:self-auto">
+            <span className="flex h-2 w-2 rounded-full bg-warning animate-pulse" />
+            <span>
+              <strong className="text-text">{unscheduledCandidates.length} candidate(s)</strong> awaiting interview slot
+            </span>
+          </div>
+        )}
+      </div>
+
       {/* KPI Overview */}
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
         <div className="border-border bg-surface-1 rounded-lg border p-4">
@@ -169,18 +264,23 @@ export function InterviewsView() {
           <p className="text-text mt-1 font-mono text-2xl font-bold">
             {interviewCandidates.length}
           </p>
+          <span className="text-text-subtle text-[11px] block mt-0.5">Active candidates</span>
         </div>
         <div className="border-border bg-surface-1 rounded-lg border p-4">
-          <span className="text-text-muted text-[12px] font-medium">Scheduled Slots</span>
+          <span className="text-text-muted text-[12px] font-medium">Awaiting HR Scheduling</span>
           <p className="text-text mt-1 font-mono text-2xl font-bold">
-            {interviewCandidates.filter((c) => c.interviewDate).length}
+            {unscheduledCandidates.length}
           </p>
+          <span className="text-warning text-[11px] font-medium block mt-0.5">
+            {unscheduledCandidates.length > 0 ? '📞 Action required: Call candidate' : 'All caught up'}
+          </span>
         </div>
         <div className="border-border bg-surface-1 rounded-lg border p-4">
-          <span className="text-text-muted text-[12px] font-medium">Awaiting Scheduling</span>
+          <span className="text-text-muted text-[12px] font-medium">Confirmed Slots</span>
           <p className="text-text mt-1 font-mono text-2xl font-bold">
-            {interviewCandidates.filter((c) => !c.interviewDate).length}
+            {scheduledCandidates.length}
           </p>
+          <span className="text-success text-[11px] font-medium block mt-0.5">Ready for Manager</span>
         </div>
       </div>
 
@@ -188,73 +288,122 @@ export function InterviewsView() {
         <EmptyState
           icon={Calendar}
           title="No Candidates in Interview Stage"
-          description="Shortlist candidates from your review queue to begin scheduling technical assessments."
+          description="Candidates shortlisted by hiring managers will appear here for HR interview scheduling and technical evaluation."
         />
       ) : (
         <div className="space-y-4">
-          {/* Search & Filter Toolbar */}
-          <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-            <div className="flex flex-col sm:flex-row flex-1 items-stretch sm:items-center gap-2.5 sm:gap-3">
-              <div className="relative w-full sm:max-w-xs">
-                <Search className="text-text-subtle absolute top-2.5 left-3 h-4 w-4 pointer-events-none" />
-                <Input
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                  placeholder="Search interview roster..."
-                  className="h-9 pl-9 text-[13px] bg-surface-2/40 border-border/70 hover:border-border focus:bg-surface-1 rounded-[8px] transition-all shadow-2xs w-full"
-                />
-              </div>
-
-              <div className="flex items-center gap-2">
-                {/* Outcome Filter */}
-                <Select value={outcomeFilter} onValueChange={setOutcomeFilter}>
-                  <SelectTrigger className="h-9 w-full sm:w-auto min-w-0 sm:min-w-[130px] gap-2 border-border/70 bg-surface-2/40 hover:bg-surface-2 text-text px-3 text-[13px] font-medium rounded-[8px] shadow-2xs">
-                    <SelectValue placeholder="All Outcomes" />
-                  </SelectTrigger>
-                  <SelectContent align="start" className="min-w-[150px]">
-                    <SelectItem value="all" className="text-[13px] py-1.5 min-h-[32px] rounded-[6px]">
-                      All Outcomes
-                    </SelectItem>
-                    <SelectItem value="Pending" className="text-[13px] py-1.5 min-h-[32px] rounded-[6px]">
-                      Pending
-                    </SelectItem>
-                    <SelectItem value="Selected" className="text-[13px] py-1.5 min-h-[32px] rounded-[6px]">
-                      Selected
-                    </SelectItem>
-                    <SelectItem value="Rejected" className="text-[13px] py-1.5 min-h-[32px] rounded-[6px]">
-                      Rejected
-                    </SelectItem>
-                    <SelectItem value="On Hold" className="text-[13px] py-1.5 min-h-[32px] rounded-[6px]">
-                      On Hold
-                    </SelectItem>
-                  </SelectContent>
-                </Select>
-
-                {/* Mode Filter */}
-                <Select value={modeFilter} onValueChange={setModeFilter}>
-                  <SelectTrigger className="h-9 w-full sm:w-auto min-w-0 sm:min-w-[120px] gap-2 border-border/70 bg-surface-2/40 hover:bg-surface-2 text-text px-3 text-[13px] font-medium rounded-[8px] shadow-2xs">
-                    <SelectValue placeholder="All Modes" />
-                  </SelectTrigger>
-                  <SelectContent align="start" className="min-w-[140px]">
-                    <SelectItem value="all" className="text-[13px] py-1.5 min-h-[32px] rounded-[6px]">
-                      All Formats
-                    </SelectItem>
-                    <SelectItem value="Video" className="text-[13px] py-1.5 min-h-[32px] rounded-[6px]">
-                      Video Call
-                    </SelectItem>
-                    <SelectItem value="Phone" className="text-[13px] py-1.5 min-h-[32px] rounded-[6px]">
-                      Phone
-                    </SelectItem>
-                    <SelectItem value="Onsite" className="text-[13px] py-1.5 min-h-[32px] rounded-[6px]">
-                      Onsite
-                    </SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
+          {/* Status Tabs + Search & Filters */}
+          <div className="flex flex-col gap-3">
+            {/* Filter Tabs */}
+            <div className="flex flex-wrap items-center gap-1.5 border-b border-border/60 pb-2">
+              <button
+                type="button"
+                onClick={() => setStatusTab('all')}
+                className={cn(
+                  'rounded-[var(--radius-sm)] border px-3 py-1 text-[12px] font-medium transition-colors cursor-pointer',
+                  statusTab === 'all'
+                    ? 'border-accent bg-accent/15 text-accent font-semibold'
+                    : 'border-border bg-surface-2 text-text-muted hover:text-text'
+                )}
+              >
+                All ({interviewCandidates.length})
+              </button>
+              <button
+                type="button"
+                onClick={() => setStatusTab('needs-scheduling')}
+                className={cn(
+                  'rounded-[var(--radius-sm)] border px-3 py-1 text-[12px] font-medium transition-colors cursor-pointer flex items-center gap-1.5',
+                  statusTab === 'needs-scheduling'
+                    ? 'border-warning/60 bg-warning/15 text-warning font-semibold'
+                    : 'border-border bg-surface-2 text-text-muted hover:text-text'
+                )}
+              >
+                <span>📞 Needs Call / Scheduling</span>
+                <span className="font-mono text-[10px] px-1.5 py-0.2 rounded-full bg-surface-1 border border-border">
+                  {unscheduledCandidates.length}
+                </span>
+              </button>
+              <button
+                type="button"
+                onClick={() => setStatusTab('scheduled')}
+                className={cn(
+                  'rounded-[var(--radius-sm)] border px-3 py-1 text-[12px] font-medium transition-colors cursor-pointer flex items-center gap-1.5',
+                  statusTab === 'scheduled'
+                    ? 'border-success/60 bg-success/15 text-success font-semibold'
+                    : 'border-border bg-surface-2 text-text-muted hover:text-text'
+                )}
+              >
+                <span>✓ Confirmed Slots</span>
+                <span className="font-mono text-[10px] px-1.5 py-0.2 rounded-full bg-surface-1 border border-border">
+                  {scheduledCandidates.length}
+                </span>
+              </button>
             </div>
 
-            <div className="text-text-muted text-[12px] font-medium">
-              Showing <span className="text-text font-semibold">{filteredInterviews.length}</span> of {interviewCandidates.length}
+            {/* Toolbar */}
+            <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+              <div className="flex flex-col sm:flex-row flex-1 items-stretch sm:items-center gap-2.5 sm:gap-3">
+                <div className="relative w-full sm:max-w-xs">
+                  <Search className="text-text-subtle absolute top-2.5 left-3 h-4 w-4 pointer-events-none" />
+                  <Input
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                    placeholder="Search candidate, role, phone, or notes..."
+                    className="h-9 pl-9 text-[13px] bg-surface-2/40 border-border/70 hover:border-border focus:bg-surface-1 rounded-[8px] transition-all shadow-2xs w-full"
+                  />
+                </div>
+
+                <div className="flex items-center gap-2">
+                  {/* Outcome Filter */}
+                  <Select value={outcomeFilter} onValueChange={setOutcomeFilter}>
+                    <SelectTrigger className="h-9 w-full sm:w-auto min-w-0 sm:min-w-[130px] gap-2 border-border/70 bg-surface-2/40 hover:bg-surface-2 text-text px-3 text-[13px] font-medium rounded-[8px] shadow-2xs">
+                      <SelectValue placeholder="All Outcomes" />
+                    </SelectTrigger>
+                    <SelectContent align="start" className="min-w-[150px]">
+                      <SelectItem value="all" className="text-[13px] py-1.5 min-h-[32px] rounded-[6px]">
+                        All Outcomes
+                      </SelectItem>
+                      <SelectItem value="Pending" className="text-[13px] py-1.5 min-h-[32px] rounded-[6px]">
+                        Pending
+                      </SelectItem>
+                      <SelectItem value="Selected" className="text-[13px] py-1.5 min-h-[32px] rounded-[6px]">
+                        Selected
+                      </SelectItem>
+                      <SelectItem value="Rejected" className="text-[13px] py-1.5 min-h-[32px] rounded-[6px]">
+                        Rejected
+                      </SelectItem>
+                      <SelectItem value="On Hold" className="text-[13px] py-1.5 min-h-[32px] rounded-[6px]">
+                        On Hold
+                      </SelectItem>
+                    </SelectContent>
+                  </Select>
+
+                  {/* Mode Filter */}
+                  <Select value={modeFilter} onValueChange={setModeFilter}>
+                    <SelectTrigger className="h-9 w-full sm:w-auto min-w-0 sm:min-w-[120px] gap-2 border-border/70 bg-surface-2/40 hover:bg-surface-2 text-text px-3 text-[13px] font-medium rounded-[8px] shadow-2xs">
+                      <SelectValue placeholder="All Modes" />
+                    </SelectTrigger>
+                    <SelectContent align="start" className="min-w-[140px]">
+                      <SelectItem value="all" className="text-[13px] py-1.5 min-h-[32px] rounded-[6px]">
+                        All Formats
+                      </SelectItem>
+                      <SelectItem value="Video" className="text-[13px] py-1.5 min-h-[32px] rounded-[6px]">
+                        Video Call
+                      </SelectItem>
+                      <SelectItem value="Phone" className="text-[13px] py-1.5 min-h-[32px] rounded-[6px]">
+                        Phone
+                      </SelectItem>
+                      <SelectItem value="Onsite" className="text-[13px] py-1.5 min-h-[32px] rounded-[6px]">
+                        Onsite
+                      </SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+              </div>
+
+              <div className="text-text-muted text-[12px] font-medium">
+                Showing <span className="text-text font-semibold">{filteredInterviews.length}</span> of {interviewCandidates.length}
+              </div>
             </div>
           </div>
 
@@ -265,6 +414,7 @@ export function InterviewsView() {
                 type="button"
                 onClick={() => {
                   setSearchQuery('');
+                  setStatusTab('all');
                   setOutcomeFilter('all');
                   setModeFilter('all');
                 }}
@@ -276,234 +426,351 @@ export function InterviewsView() {
           ) : (
             <div className="space-y-4">
               <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-              {visibleInterviews.map((candidate) => {
-            const outcomeConfig = {
-              Pending: {
-                dot: 'bg-amber-500 animate-pulse',
-                text: 'text-amber-600 dark:text-amber-400',
-                label: 'Pending',
-              },
-              Selected: {
-                dot: 'bg-emerald-500',
-                text: 'text-emerald-600 dark:text-emerald-400',
-                label: 'Selected',
-              },
-              Rejected: {
-                dot: 'bg-rose-500',
-                text: 'text-rose-600 dark:text-rose-400',
-                label: 'Rejected',
-              },
-              'On Hold': {
-                dot: 'bg-text-subtle',
-                text: 'text-text-muted',
-                label: 'On Hold',
-              },
-            }[candidate.interviewOutcome ?? 'Pending'] ?? {
-              dot: 'bg-amber-500',
-              text: 'text-amber-600 dark:text-amber-400',
-              label: candidate.interviewOutcome,
-            };
+                {visibleInterviews.map((candidate) => {
+                  const opening = openingsMap.get(candidate.openingId);
+                  const isScheduled = Boolean(candidate.interviewDate);
 
-            const isPhone = candidate.interviewMode === 'Phone';
-            const ModeIcon = isPhone ? Phone : VideoCameraIcon;
+                  const outcomeConfig = {
+                    Pending: {
+                      dot: 'bg-warning',
+                      text: 'text-warning',
+                      badgeBg: 'bg-warning/15 border-warning/30',
+                      label: 'Pending Outcome',
+                    },
+                    Selected: {
+                      dot: 'bg-success',
+                      text: 'text-success',
+                      badgeBg: 'bg-success/15 border-success/30',
+                      label: 'Selected',
+                    },
+                    Rejected: {
+                      dot: 'bg-danger',
+                      text: 'text-danger',
+                      badgeBg: 'bg-danger/15 border-danger/30',
+                      label: 'Rejected',
+                    },
+                    'On Hold': {
+                      dot: 'bg-text-subtle',
+                      text: 'text-text-muted',
+                      badgeBg: 'bg-surface-2 border-border',
+                      label: 'On Hold',
+                    },
+                  }[candidate.interviewOutcome ?? 'Pending'] ?? {
+                    dot: 'bg-warning',
+                    text: 'text-warning',
+                    badgeBg: 'bg-warning/15 border-warning/30',
+                    label: candidate.interviewOutcome,
+                  };
 
-            return (
-              <div
-                key={candidate.id}
-                className="group relative flex flex-col justify-between rounded-[8px] border border-border/80 bg-surface-1 p-3.5 shadow-2xs transition-all duration-150 hover:border-border-strong hover:shadow-xs select-none"
-              >
-                <div className="space-y-3">
-                  {/* 1. Header: Avatar + Candidate Name & Role + Boxless Status Badge */}
-                  <div className="flex items-center justify-between gap-3">
-                    <div className="flex items-center gap-2.5 min-w-0 flex-1">
-                      <Avatar className="h-9 w-9 shrink-0 border border-border/70 bg-surface-2 shadow-2xs">
-                        <AvatarFallback className="text-[11.5px] font-semibold text-text bg-surface-2 tracking-wide">
-                          {candidate.name.slice(0, 2).toUpperCase()}
-                        </AvatarFallback>
-                      </Avatar>
-                      <div className="min-w-0 flex-1">
-                        <h4 className="text-[13.5px] font-semibold text-text tracking-tight leading-snug truncate">
-                          {candidate.name}
-                        </h4>
-                        <p className="text-[11.5px] text-text-muted leading-tight truncate mt-0.5">
-                          <span className="font-medium text-text">{candidate.currentRole}</span>
-                          <span className="text-text-subtle/80 mx-1">at</span>
-                          <span className="font-medium text-text">{candidate.currentCompany}</span>
-                        </p>
+                  const isPhone = candidate.interviewMode === 'Phone';
+                  const isAudio = candidate.interviewMode === 'Phone';
+                  const ModeIcon = isAudio ? Phone : candidate.interviewMode === 'Onsite' ? Building2 : VideoCameraIcon;
+
+                  return (
+                    <div
+                      key={candidate.id}
+                      className="group relative flex flex-col justify-between rounded-[8px] border border-border/80 bg-surface-1 p-4 shadow-2xs transition-all duration-150 hover:border-border-strong hover:shadow-xs space-y-3.5"
+                    >
+                      <div className="space-y-3">
+                        {/* 1. Header: Avatar + Candidate Name & Role + Status Badge */}
+                        <div className="flex items-start justify-between gap-3">
+                          <div className="flex items-center gap-2.5 min-w-0 flex-1">
+                            <Avatar className="h-10 w-10 shrink-0 border border-border/70 bg-surface-2 shadow-2xs">
+                              <AvatarFallback className="text-[12px] font-semibold text-text bg-surface-2 tracking-wide">
+                                {candidate.name.slice(0, 2).toUpperCase()}
+                              </AvatarFallback>
+                            </Avatar>
+                            <div className="min-w-0 flex-1">
+                              <h4 className="text-[14px] font-semibold text-text tracking-tight leading-snug truncate">
+                                {candidate.name}
+                              </h4>
+                              <p className="text-[12px] text-text-muted leading-tight truncate mt-0.5">
+                                <span className="font-medium text-text">{candidate.currentRole}</span>
+                                <span className="text-text-subtle/80 mx-1">at</span>
+                                <span className="font-medium text-text">{candidate.currentCompany}</span>
+                              </p>
+                              {opening && (
+                                <p className="text-[11px] text-text-subtle truncate mt-0.5 flex items-center gap-1">
+                                  <Briefcase className="h-3 w-3 shrink-0" />
+                                  <span>Role:</span>
+                                  <span className="font-semibold text-text">{opening.title}</span>
+                                  <span>({opening.department})</span>
+                                </p>
+                              )}
+                            </div>
+                          </div>
+
+                          {/* Outcome / Scheduling Badge */}
+                          <div className="shrink-0 flex items-center gap-1.5">
+                            {candidate.interviewOutcome !== 'Pending' ? (
+                              <div className={cn('flex items-center gap-1.5 px-2 py-0.5 rounded-full border text-[11px] font-semibold', outcomeConfig.badgeBg)}>
+                                <span className={cn('h-1.5 w-1.5 rounded-full', outcomeConfig.dot)} />
+                                <span className={outcomeConfig.text}>{outcomeConfig.label}</span>
+                              </div>
+                            ) : !isScheduled ? (
+                              <span className="inline-flex items-center gap-1 rounded-full border border-warning/40 bg-warning/15 px-2 py-0.5 text-[10.5px] font-semibold text-warning">
+                                <Clock className="h-3 w-3" />
+                                <span>{isHr ? 'Needs HR Call' : 'HR Scheduling'}</span>
+                              </span>
+                            ) : (
+                              <span className="inline-flex items-center gap-1 rounded-full border border-success/40 bg-success/15 px-2 py-0.5 text-[10.5px] font-semibold text-success">
+                                <CheckCircle2 className="h-3 w-3" />
+                                <span>Slot Confirmed</span>
+                              </span>
+                            )}
+                          </div>
+                        </div>
+
+                        {/* 2. Direct Candidate Contact Card (Essential for HR Call & Coordination) */}
+                        <div className="rounded-[6px] border border-border/70 bg-surface-2/40 p-2.5 text-[12px] space-y-1.5">
+                          <div className="flex flex-wrap items-center justify-between gap-2 text-text font-medium">
+                            <div className="flex items-center gap-1.5">
+                              <Phone className="h-3.5 w-3.5 text-accent shrink-0" />
+                              <a
+                                href={`tel:${candidate.phone}`}
+                                className="text-text hover:text-accent font-semibold font-mono underline-offset-2 hover:underline"
+                                title="Click to call candidate"
+                              >
+                                {candidate.phone}
+                              </a>
+                            </div>
+
+                            <div className="flex items-center gap-1.5 text-text-muted">
+                              <Mail className="h-3.5 w-3.5 text-text-subtle shrink-0" />
+                              <a
+                                href={`mailto:${candidate.email}`}
+                                className="hover:text-text truncate max-w-[170px]"
+                                title={candidate.email}
+                              >
+                                {candidate.email}
+                              </a>
+                            </div>
+                          </div>
+
+                          <div className="flex items-center justify-between gap-2 text-[11px] text-text-subtle pt-1 border-t border-border/50">
+                            <span>Notice: <strong className="text-text font-normal">{candidate.noticePeriod}</strong></span>
+                            <span>Exp: <strong className="text-text font-normal">{candidate.experienceYears} yrs</strong></span>
+                            <span>Expected CTC: <strong className="text-text font-normal">{formatCtc(candidate.expectedCtc)}</strong></span>
+                          </div>
+                        </div>
+
+                        {/* 3. Interview Slot & Coordination Information */}
+                        <div className="rounded-[6px] border border-border/60 p-2.5 text-[12px] space-y-1.5 bg-surface-1">
+                          {isScheduled ? (
+                            <div className="space-y-1">
+                              <div className="flex items-center justify-between text-[12px]">
+                                <div className="flex items-center gap-1.5 font-semibold text-text">
+                                  <ModeIcon className="h-3.5 w-3.5 text-accent stroke-[1.75]" />
+                                  <span>{candidate.interviewMode ?? 'Video'} Interview</span>
+                                </div>
+                                <span className="font-mono text-text font-semibold text-[11.5px]">
+                                  {new Date(candidate.interviewDate!).toLocaleString(undefined, {
+                                    weekday: 'short',
+                                    month: 'short',
+                                    day: 'numeric',
+                                    hour: 'numeric',
+                                    minute: '2-digit',
+                                  })}
+                                </span>
+                              </div>
+
+                              {candidate.interviewNote && (
+                                <div className="pt-1 text-[11.5px] text-text-muted flex items-start gap-1.5">
+                                  <FileText className="h-3 w-3 text-text-subtle shrink-0 mt-0.5" />
+                                  <span>
+                                    <strong className="text-text font-medium">HR Note: </strong>
+                                    {candidate.interviewNote}
+                                  </span>
+                                </div>
+                              )}
+                            </div>
+                          ) : (
+                            <div className="text-[11.5px] text-text-muted py-0.5 flex items-center gap-1.5">
+                              <AlertCircle className="h-3.5 w-3.5 text-warning shrink-0" />
+                              <span>
+                                {isHr
+                                  ? 'Call candidate to discuss preferred availability and schedule the technical round.'
+                                  : 'Candidate shortlisted. HR is coordinating availability with the candidate.'}
+                              </span>
+                            </div>
+                          )}
+
+                          {/* Manager Shortlist Comment (if any) */}
+                          {candidate.managerComment && (
+                            <div className="pt-1 text-[11px] text-text-subtle border-t border-border/50">
+                              <strong className="text-text font-medium">Manager Shortlist Remark: </strong>
+                              {candidate.managerComment}
+                            </div>
+                          )}
+                        </div>
                       </div>
-                    </div>
 
-                    {/* Boxless Status Badge (Consistent with Candidate and Opening Cards) */}
-                    <div className="flex items-center gap-1.5 shrink-0 select-none">
-                      <span className={cn('h-1.5 w-1.5 rounded-full', outcomeConfig.dot)} />
-                      <span className={cn('text-[11.5px] font-semibold tabular-nums', outcomeConfig.text)}>
-                        {outcomeConfig.label}
-                      </span>
-                    </div>
-                  </div>
-
-                  {/* 2. Middle Body: Notes (Left) + Video Icon & Date/Time (Right side) */}
-                  <div className="border-t border-border/60 pt-2.5 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
-                    {/* Notes (Agenda word removed) */}
-                    <div className="space-y-0.5 min-w-0 flex-1">
-                      <span className="text-[11px] font-medium text-text-subtle tracking-wide uppercase">
-                        Notes
-                      </span>
-                      <p className="text-[12.5px] font-medium text-text leading-snug">
-                        {candidate.interviewNote ? (
-                          candidate.interviewNote
+                      {/* 4. Action Buttons Tailored by Persona */}
+                      <div className="flex items-center gap-2 pt-2 border-t border-border/60">
+                        {isHr ? (
+                          <>
+                            <Button
+                              variant={!isScheduled ? 'primary' : 'outline'}
+                              size="sm"
+                              onClick={() => handleOpenSchedule(candidate)}
+                              className="h-8 flex-1 gap-1.5 text-[12px] font-semibold rounded-[6px] cursor-pointer"
+                            >
+                              <Calendar className="h-3.5 w-3.5 shrink-0" />
+                              <span>{!isScheduled ? '📞 Call & Schedule Slot' : 'Reschedule Slot'}</span>
+                            </Button>
+                          </>
                         ) : (
-                          <span className="text-text-subtle italic">No notes specified</span>
+                          <>
+                            {isScheduled ? (
+                              <Button
+                                variant="primary"
+                                size="sm"
+                                onClick={() => handleOpenOutcome(candidate)}
+                                className="h-8 flex-1 gap-1.5 text-[12px] font-semibold rounded-[6px] cursor-pointer"
+                              >
+                                <CheckCircle2 className="h-3.5 w-3.5 shrink-0" />
+                                <span>Conduct & Record Outcome</span>
+                              </Button>
+                            ) : (
+                              <div className="flex-1 py-1 text-center text-[11.5px] text-text-subtle bg-surface-2/40 rounded-[6px] border border-border/60">
+                                ⏳ Waiting for HR to confirm interview slot
+                              </div>
+                            )}
+                          </>
                         )}
-                      </p>
+                      </div>
                     </div>
+                  );
+                })}
+              </div>
 
-                    {/* Video Icon & Time/Date on Right side */}
-                    <div className="flex flex-col sm:items-end gap-1 shrink-0 sm:text-right">
-                      <div className="flex items-center gap-1.5 text-[12px] font-semibold text-text">
-                        <ModeIcon className="h-3.5 w-3.5 text-accent stroke-[1.75]" />
-                        <span>{candidate.interviewMode ?? 'Video'} Interview</span>
-                      </div>
-                      <div className="flex items-center gap-1.5 text-[11.5px] font-normal text-text-muted">
-                        <Clock className="h-3 w-3 text-text-subtle shrink-0 stroke-[1.75]" />
-                        <span className="tabular-nums">
-                          {candidate.interviewDate
-                            ? new Date(candidate.interviewDate).toLocaleString(undefined, {
-                                weekday: 'short',
-                                month: 'short',
-                                day: 'numeric',
-                                year: 'numeric',
-                                hour: 'numeric',
-                                minute: '2-digit',
-                              })
-                            : 'Slot not assigned yet'}
-                        </span>
-                      </div>
-                    </div>
+              {/* Interviews Pagination Footer */}
+              {totalPages > 1 && (
+                <div className="flex items-center justify-between pt-3 border-t border-border/60 text-[12px] select-none">
+                  <span className="font-mono text-text-subtle text-[11.5px]">
+                    Showing {startIndex + 1}–{Math.min(startIndex + PAGE_SIZE, filteredInterviews.length)} of {filteredInterviews.length} interviews (Page {validPage} of {totalPages})
+                  </span>
+                  <div className="flex items-center gap-1.5">
+                    <button
+                      type="button"
+                      disabled={validPage <= 1}
+                      onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
+                      className="h-7 w-7 inline-flex items-center justify-center rounded-[6px] border border-border/70 bg-surface-1 text-text-muted hover:text-text hover:bg-surface-2 disabled:opacity-25 disabled:cursor-not-allowed transition-colors cursor-pointer"
+                      title="Previous page"
+                      aria-label="Previous page"
+                    >
+                      <ChevronLeft className="h-3.5 w-3.5" />
+                    </button>
+                    <button
+                      type="button"
+                      disabled={validPage >= totalPages}
+                      onClick={() => setCurrentPage((p) => Math.min(totalPages, p + 1))}
+                      className="h-7 w-7 inline-flex items-center justify-center rounded-[6px] border border-border/70 bg-surface-1 text-text-muted hover:text-text hover:bg-surface-2 disabled:opacity-25 disabled:cursor-not-allowed transition-colors cursor-pointer"
+                      title="Next page"
+                      aria-label="Next page"
+                    >
+                      <ChevronRight className="h-3.5 w-3.5" />
+                    </button>
                   </div>
                 </div>
-
-                {/* 3. Bottom Action Buttons */}
-                <div className="flex items-center gap-2 pt-3 border-t border-border/60 mt-3">
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    onClick={() => handleOpenSchedule(candidate)}
-                    className="h-8 flex-1 gap-1.5 text-[12px] font-medium border-border/80 hover:bg-surface-2 rounded-[6px]"
-                  >
-                    <Calendar className="h-3.5 w-3.5 shrink-0" />
-                    <span className="truncate">{candidate.interviewDate ? 'Reschedule' : 'Set Slot'}</span>
-                  </Button>
-
-                  <Button
-                    variant="primary"
-                    size="sm"
-                    onClick={() => handleOpenOutcome(candidate)}
-                    className="h-8 flex-1 gap-1.5 text-[12px] font-medium rounded-[6px]"
-                  >
-                    <CheckCircle2 className="h-3.5 w-3.5 shrink-0" />
-                    <span className="truncate">Record Outcome</span>
-                  </Button>
-                </div>
-              </div>
-            );
-          })}
-        </div>
-
-        {/* Interviews Pagination Footer */}
-        {totalPages > 1 && (
-          <div className="flex items-center justify-between pt-3 border-t border-border/60 text-[12px] select-none">
-            <span className="font-mono text-text-subtle text-[11.5px]">
-              Showing {startIndex + 1}–{Math.min(startIndex + PAGE_SIZE, filteredInterviews.length)} of {filteredInterviews.length} interviews (Page {validPage} of {totalPages})
-            </span>
-            <div className="flex items-center gap-1.5">
-              <button
-                type="button"
-                disabled={validPage <= 1}
-                onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
-                className="h-7 w-7 inline-flex items-center justify-center rounded-[6px] border border-border/70 bg-surface-1 text-text-muted hover:text-text hover:bg-surface-2 disabled:opacity-25 disabled:cursor-not-allowed transition-colors cursor-pointer"
-                title="Previous page"
-                aria-label="Previous page"
-              >
-                <ChevronLeft className="h-3.5 w-3.5" />
-              </button>
-              <button
-                type="button"
-                disabled={validPage >= totalPages}
-                onClick={() => setCurrentPage((p) => Math.min(totalPages, p + 1))}
-                className="h-7 w-7 inline-flex items-center justify-center rounded-[6px] border border-border/70 bg-surface-1 text-text-muted hover:text-text hover:bg-surface-2 disabled:opacity-25 disabled:cursor-not-allowed transition-colors cursor-pointer"
-                title="Next page"
-                aria-label="Next page"
-              >
-                <ChevronRight className="h-3.5 w-3.5" />
-              </button>
+              )}
             </div>
-          </div>
-        )}
-      </div>
-    )}
-  </div>
-)}
+          )}
+        </div>
+      )}
 
-      {/* Schedule Slot Dialog */}
+      {/* HR Schedule Slot Dialog */}
       <Dialog open={scheduleModalOpen} onOpenChange={setScheduleModalOpen}>
-        <DialogContent>
+        <DialogContent className="max-w-md">
           <DialogHeader>
             <DialogTitle>Schedule Technical Interview</DialogTitle>
             <DialogDescription>
-              Assign interview slot and meeting format for {selectedCandidate?.name}.
+              Confirm candidate availability and book the technical interview slot for the hiring manager.
             </DialogDescription>
           </DialogHeader>
 
-          <form onSubmit={handleSaveSchedule} className="space-y-4 py-2 text-[13px]">
-            <div className="space-y-1.5">
-              <label className="text-text text-[13px] font-medium">Interview Date & Time</label>
-              <DateTimePicker
-                value={interviewDate}
-                onChange={(val) => setInterviewDate(val)}
-              />
-            </div>
+          {selectedCandidate && (
+            <form onSubmit={handleSaveSchedule} className="space-y-4 py-2 text-[13px]">
+              {/* Quick candidate contact reminder */}
+              <div className="rounded-[8px] border border-border bg-surface-2/60 p-3 text-[12px] space-y-1">
+                <div className="font-semibold text-text">{selectedCandidate.name}</div>
+                <div className="text-text-muted text-[11.5px]">
+                  {selectedCandidate.currentRole} at {selectedCandidate.currentCompany}
+                </div>
+                <div className="flex items-center gap-3 pt-1 text-text font-medium">
+                  <span className="flex items-center gap-1">
+                    <Phone className="h-3 w-3 text-accent" />
+                    <a href={`tel:${selectedCandidate.phone}`} className="hover:underline">{selectedCandidate.phone}</a>
+                  </span>
+                  <span className="flex items-center gap-1 text-text-muted">
+                    <Mail className="h-3 w-3 text-text-subtle" />
+                    <span>{selectedCandidate.email}</span>
+                  </span>
+                </div>
+              </div>
 
-            <div className="space-y-1.5">
-              <label className="text-text text-[13px] font-medium">Interview Format</label>
-              <Select
-                value={interviewMode}
-                onValueChange={(val) => setInterviewMode(val as 'Video' | 'Phone' | 'Onsite')}
-              >
-                <SelectTrigger className="border-border bg-surface-2 hover:bg-surface-3 text-text h-9 w-full rounded-[var(--radius-sm)] border px-3 text-[13px] font-medium">
-                  <SelectValue placeholder="Select interview format" />
-                </SelectTrigger>
-                <SelectContent align="start" className="w-[var(--radix-select-trigger-width)] min-w-[240px]">
-                  <SelectItem value="Video" icon={VideoCameraIcon} className="text-[13px] py-2 min-h-[36px] rounded-[6px]">
-                    Google Meet / Video Call
-                  </SelectItem>
-                  <SelectItem value="Phone" icon={Phone} className="text-[13px] py-2 min-h-[36px] rounded-[6px]">
-                    Phone Discussion
-                  </SelectItem>
-                  <SelectItem value="Onsite" icon={Building2} className="text-[13px] py-2 min-h-[36px] rounded-[6px]">
-                    In-Person Technical Round
-                  </SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
+              <div className="space-y-1.5">
+                <label className="text-text text-[13px] font-medium">Interview Date & Time</label>
+                <DateTimePicker
+                  value={interviewDate}
+                  onChange={(val) => setInterviewDate(val)}
+                />
+              </div>
 
-            <DialogFooter className="pt-2">
-              <Button type="button" variant="outline" onClick={() => setScheduleModalOpen(false)}>
-                Cancel
-              </Button>
-              <Button type="submit" variant="primary" loading={scheduleInterview.isPending}>
-                Save Interview Slot
-              </Button>
-            </DialogFooter>
-          </form>
+              <div className="space-y-1.5">
+                <label className="text-text text-[13px] font-medium">Interview Format</label>
+                <Select
+                  value={interviewMode}
+                  onValueChange={(val) => setInterviewMode(val as 'Video' | 'Phone' | 'Onsite')}
+                >
+                  <SelectTrigger className="border-border bg-surface-2 hover:bg-surface-3 text-text h-9 w-full rounded-[var(--radius-sm)] border px-3 text-[13px] font-medium">
+                    <SelectValue placeholder="Select interview format" />
+                  </SelectTrigger>
+                  <SelectContent align="start" className="w-[var(--radix-select-trigger-width)] min-w-[240px]">
+                    <SelectItem value="Video" icon={VideoCameraIcon} className="text-[13px] py-2 min-h-[36px] rounded-[6px]">
+                      Google Meet / Video Call
+                    </SelectItem>
+                    <SelectItem value="Phone" icon={Phone} className="text-[13px] py-2 min-h-[36px] rounded-[6px]">
+                      Phone Discussion
+                    </SelectItem>
+                    <SelectItem value="Onsite" icon={Building2} className="text-[13px] py-2 min-h-[36px] rounded-[6px]">
+                      In-Person Technical Round
+                    </SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+
+              <div className="space-y-1.5">
+                <label className="text-text text-[13px] font-medium">
+                  Coordination Notes & Meeting Link (Optional)
+                </label>
+                <Textarea
+                  rows={2}
+                  value={scheduleNote}
+                  onChange={(e) => setScheduleNote(e.target.value)}
+                  placeholder="e.g. Candidate confirmed 11 AM. Google Meet link: meet.google.com/xyz-abcd-efg"
+                  className="rounded-[8px] text-[12.5px]"
+                />
+              </div>
+
+              <DialogFooter className="pt-2">
+                <Button type="button" variant="outline" onClick={() => setScheduleModalOpen(false)}>
+                  Cancel
+                </Button>
+                <Button type="submit" variant="primary" loading={scheduleInterview.isPending}>
+                  Confirm Slot & Notify Manager
+                </Button>
+              </DialogFooter>
+            </form>
+          )}
         </DialogContent>
       </Dialog>
 
-      {/* Record Outcome Dialog */}
+      {/* Manager Record Outcome Dialog */}
       <Dialog open={outcomeModalOpen} onOpenChange={setOutcomeModalOpen}>
-        <DialogContent>
+        <DialogContent className="max-w-md">
           <DialogHeader>
-            <DialogTitle>Record Interview Evaluation</DialogTitle>
+            <DialogTitle>Record Technical Evaluation</DialogTitle>
             <DialogDescription>
               Submit your technical evaluation and verdict for {selectedCandidate?.name}.
             </DialogDescription>
@@ -516,7 +783,7 @@ export function InterviewsView() {
                 rows={4}
                 value={outcomeNote}
                 onChange={(e) => setOutcomeNote(e.target.value)}
-                placeholder="Candidate demonstrated clean coding habits, solid React fundamentals, and clear problem solving..."
+                placeholder="Candidate demonstrated clean coding habits, solid technical fundamentals, and clear problem solving..."
               />
             </div>
 
