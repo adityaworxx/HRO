@@ -3,6 +3,7 @@ export * from './components/candidates-table';
 export * from './components/candidate-columns-view';
 export * from './components/candidate-detail-sheet';
 export * from './components/ai-candidate-matcher-sheet';
+export * from './components/manager-ai-analysis-sheet';
 export * from './components/shortlist-review';
 export * from './components/interviews-view';
 export * from './hooks';

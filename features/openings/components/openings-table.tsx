@@ -9,7 +9,11 @@ import type { OpeningStatus } from '@/lib/domain/status-transitions';
 import { getNextAllowedOpeningStatuses } from '@/lib/domain/status-transitions';
 import { useOpenings, useUpdateOpeningStatus } from '../hooks';
 import { useCandidates } from '@/features/candidates/hooks';
-import { AiCandidateMatcherSheet, CandidateDetailSheet } from '@/features/candidates';
+import {
+  AiCandidateMatcherSheet,
+  CandidateDetailSheet,
+  ManagerAiAnalysisSheet,
+} from '@/features/candidates';
 import type { Candidate } from '@/types/entities';
 import { DataTable } from '@/components/hro/data-table';
 import { StatusBadge } from '@/components/hro/status-badge';
@@ -49,6 +53,7 @@ import {
   List,
   SlidersHorizontal,
   Users,
+  Sparkles,
 } from 'lucide-react';
 import { useUiStore } from '@/lib/store';
 import { toast } from 'sonner';
@@ -65,6 +70,7 @@ export function OpeningsTable() {
   const [selectedStatus, setSelectedStatus] = React.useState<string>('all');
   const [selectedDepartment, setSelectedDepartment] = React.useState<string>('all');
   const [aiMatchOpening, setAiMatchOpening] = React.useState<Opening | null>(null);
+  const [aiReviewOpening, setAiReviewOpening] = React.useState<Opening | null>(null);
   const [inspectedCandidate, setInspectedCandidate] = React.useState<Candidate | null>(null);
   const [isCandidateSheetOpen, setIsCandidateSheetOpen] = React.useState(false);
 
@@ -218,14 +224,25 @@ export function OpeningsTable() {
               onClick={(e) => e.stopPropagation()}
             >
               {isManager ? (
-                <Link
-                  href={`/shortlist?openingId=${opening.id}`}
-                  className="inline-flex cursor-pointer items-center justify-center gap-1.5 rounded-[5px] border border-border/80 bg-surface-2 px-2.5 py-1 text-[11px] font-semibold text-text shadow-2xs transition-colors select-none hover:bg-surface-3 active:scale-95"
-                  title={`View ${shortlistedCount} candidate${shortlistedCount === 1 ? '' : 's'} shortlisted for ${opening.title}`}
-                >
-                  <Users className="h-3 w-3 text-text-subtle" />
-                  <span>Shortlisted ({shortlistedCount})</span>
-                </Link>
+                <>
+                  <Link
+                    href={`/shortlist?openingId=${opening.id}`}
+                    className="inline-flex cursor-pointer items-center justify-center gap-1.5 rounded-[5px] border border-border/80 bg-surface-2 px-2.5 py-1 text-[11px] font-semibold text-text shadow-2xs transition-colors select-none hover:bg-surface-3 active:scale-95"
+                    title={`View ${shortlistedCount} candidate${shortlistedCount === 1 ? '' : 's'} shortlisted for ${opening.title}`}
+                  >
+                    <Users className="h-3 w-3 text-text-subtle" />
+                    <span>Shortlisted ({shortlistedCount})</span>
+                  </Link>
+                  <button
+                    type="button"
+                    onClick={() => setAiReviewOpening(opening)}
+                    className="inline-flex cursor-pointer items-center justify-center gap-1 rounded-[5px] border-0 bg-blue-600 px-2 py-1 text-[11px] font-semibold text-white shadow-2xs transition-colors select-none hover:bg-blue-700 active:scale-95 active:bg-blue-800"
+                    title="Run Groq AI Resume Analysis"
+                  >
+                    <Sparkles className="h-3 w-3" />
+                    <span>AI Review</span>
+                  </button>
+                </>
               ) : (
                 <button
                   type="button"
@@ -422,8 +439,19 @@ export function OpeningsTable() {
           candidates={candidates}
           onStatusChange={handleStatusChange}
           onAiMatch={setAiMatchOpening}
+          onAiReview={setAiReviewOpening}
         />
       )}
+
+      {/* Groq AI Resume Intelligence Sheet for Managers */}
+      <ManagerAiAnalysisSheet
+        opening={aiReviewOpening}
+        open={Boolean(aiReviewOpening)}
+        onOpenChange={(isOpen) => {
+          if (!isOpen) setAiReviewOpening(null);
+        }}
+        candidates={candidates}
+      />
 
       {/* AI Candidate Matcher Drawer */}
       <AiCandidateMatcherSheet

@@ -37,6 +37,7 @@ export interface OpeningColumnsViewProps {
   candidates: Candidate[];
   onStatusChange: (id: string, newStatus: OpeningStatus, title: string) => void;
   onAiMatch?: (opening: Opening) => void;
+  onAiReview?: (opening: Opening) => void;
 }
 
 // Department Icon Map
@@ -66,6 +67,7 @@ export function OpeningColumnsView({
   candidates,
   onStatusChange,
   onAiMatch,
+  onAiReview,
 }: OpeningColumnsViewProps) {
   // Per-column pagination state: { [departmentId]: pageNumber }
   const [pageByDept, setPageByDept] = React.useState<Record<string, number>>({});
@@ -187,6 +189,7 @@ export function OpeningColumnsView({
                           candidatesCount={openingCandidates.length}
                           onStatusChange={onStatusChange}
                           onAiMatch={onAiMatch}
+                          onAiReview={onAiReview}
                         />
                       );
                     })

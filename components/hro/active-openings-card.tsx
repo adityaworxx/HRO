@@ -51,6 +51,7 @@ export interface ActiveOpeningsCardProps {
   className?: string;
   onReactivate?: (id: string, title: string) => void;
   onAiMatch?: (opening: Opening) => void;
+  onAiReview?: (opening: Opening) => void;
   pageSize?: number;
 }
 
@@ -66,6 +67,7 @@ export function ActiveOpeningsCard({
   className,
   onReactivate,
   onAiMatch,
+  onAiReview,
   pageSize = DEFAULT_CARDS_PER_COLUMN,
 }: ActiveOpeningsCardProps) {
   const [searchQuery, setSearchQuery] = React.useState<string>('');
@@ -251,6 +253,7 @@ export function ActiveOpeningsCard({
                             candidatesCount={openingCandidates.length}
                             onReactivate={onReactivate}
                             onAiMatch={onAiMatch}
+                            onAiReview={onAiReview}
                           />
                         );
                       })}

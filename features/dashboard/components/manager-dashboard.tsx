@@ -9,7 +9,11 @@ import { StatusBadge } from '@/components/hro/status-badge';
 import { MetaSeparator } from '@/components/hro/meta-separator';
 import { ActiveOpeningsCard } from '@/components/hro/active-openings-card';
 import { CompanyLogo } from '@/components/hro/company-logo';
-import { AiCandidateMatcherSheet, CandidateDetailSheet } from '@/features/candidates';
+import {
+  AiCandidateMatcherSheet,
+  CandidateDetailSheet,
+  ManagerAiAnalysisSheet,
+} from '@/features/candidates';
 import { Skeleton } from '@/components/ui/skeleton';
 import type { Candidate, Opening } from '@/types/entities';
 import {
@@ -48,6 +52,7 @@ export function ManagerDashboard() {
   const { data: candidates = [], isLoading: loadingCandidates } = useCandidates();
 
   const [aiMatchOpening, setAiMatchOpening] = React.useState<Opening | null>(null);
+  const [aiReviewOpening, setAiReviewOpening] = React.useState<Opening | null>(null);
   const [inspectedCandidate, setInspectedCandidate] = React.useState<Candidate | null>(null);
   const [isCandidateSheetOpen, setIsCandidateSheetOpen] = React.useState(false);
 
@@ -790,9 +795,20 @@ export function ManagerDashboard() {
             viewAllHref="/openings"
             isLoading={isInitialLoading}
             onAiMatch={setAiMatchOpening}
+            onAiReview={setAiReviewOpening}
           />
         </div>
       </div>
+
+      {/* Groq AI Resume Intelligence Sheet for Managers */}
+      <ManagerAiAnalysisSheet
+        opening={aiReviewOpening}
+        open={Boolean(aiReviewOpening)}
+        onOpenChange={(isOpen) => {
+          if (!isOpen) setAiReviewOpening(null);
+        }}
+        candidates={candidates}
+      />
 
       {/* AI Candidate Matcher Drawer */}
       <AiCandidateMatcherSheet

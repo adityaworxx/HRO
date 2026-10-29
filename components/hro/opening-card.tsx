@@ -16,6 +16,7 @@ import {
   Eye,
   Edit,
   ArrowRightCircle,
+  Sparkles,
 } from 'lucide-react';
 import type { Opening } from '@/types/entities';
 import type { OpeningStatus } from '@/lib/domain/status-transitions';
@@ -49,6 +50,7 @@ export interface OpeningCardProps {
   onStatusChange?: (id: string, newStatus: OpeningStatus, title: string) => void;
   onReactivate?: (id: string, title: string) => void;
   onAiMatch?: (opening: Opening) => void;
+  onAiReview?: (opening: Opening) => void;
   className?: string;
   actionText?: string;
 }
@@ -59,6 +61,7 @@ export function OpeningCard({
   onStatusChange,
   onReactivate,
   onAiMatch,
+  onAiReview,
   className,
   actionText,
 }: OpeningCardProps) {
@@ -212,17 +215,34 @@ export function OpeningCard({
 
         <div className="flex shrink-0 items-center gap-1.5">
           {isManager ? (
-            <Link
-              href={`/shortlist?openingId=${opening.id}`}
-              onClick={(e) => {
-                e.stopPropagation();
-              }}
-              className="inline-flex cursor-pointer items-center justify-center gap-1.5 rounded-[5px] border border-border/80 bg-surface-2 px-2.5 py-1 text-[11px] font-semibold text-text shadow-2xs transition-colors select-none hover:bg-surface-3 active:scale-95"
-              title={`View ${shortlistedCount} candidate${shortlistedCount === 1 ? '' : 's'} shortlisted for ${opening.title}`}
-            >
-              <Users className="h-3 w-3 text-text-subtle" />
-              <span>Shortlisted ({shortlistedCount})</span>
-            </Link>
+            <>
+              <Link
+                href={`/shortlist?openingId=${opening.id}`}
+                onClick={(e) => {
+                  e.stopPropagation();
+                }}
+                className="inline-flex cursor-pointer items-center justify-center gap-1.5 rounded-[5px] border border-border/80 bg-surface-2 px-2.5 py-1 text-[11px] font-semibold text-text shadow-2xs transition-colors select-none hover:bg-surface-3 active:scale-95"
+                title={`View ${shortlistedCount} candidate${shortlistedCount === 1 ? '' : 's'} shortlisted for ${opening.title}`}
+              >
+                <Users className="h-3 w-3 text-text-subtle" />
+                <span>Shortlisted ({shortlistedCount})</span>
+              </Link>
+              {onAiReview && (
+                <button
+                  type="button"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    onAiReview(opening);
+                  }}
+                  className="inline-flex cursor-pointer items-center justify-center gap-1 rounded-[5px] border-0 bg-blue-600 px-2 py-1 text-[11px] font-semibold text-white shadow-2xs transition-colors select-none hover:bg-blue-700 active:scale-95 active:bg-blue-800"
+                  title="Run Groq AI Resume Analysis"
+                >
+                  <Sparkles className="h-3 w-3" />
+                  <span>AI Review</span>
+                </button>
+              )}
+            </>
           ) : onAiMatch ? (
             <button
               type="button"

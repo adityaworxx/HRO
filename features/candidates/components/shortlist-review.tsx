@@ -24,6 +24,7 @@ import { CompanyLogo } from '@/components/hro/company-logo';
 import { CandidateAvatar } from '@/components/hro/candidate-avatar';
 
 import { EmptyState } from '@/components/hro/empty-state';
+import { ManagerAiAnalysisSheet } from './manager-ai-analysis-sheet';
 
 import { Sheet, SheetContent } from '@/components/ui/sheet';
 
@@ -123,6 +124,7 @@ export function ShortlistReview() {
   const [pageByDept, setPageByDept] = React.useState<Record<string, number>>({});
   const [selectedCandidate, setSelectedCandidate] = React.useState<Candidate | null>(null);
   const [isReviewSheetOpen, setIsReviewSheetOpen] = React.useState<boolean>(false);
+  const [isAiAnalysisOpen, setIsAiAnalysisOpen] = React.useState<boolean>(false);
   const [managerComment, setManagerComment] = React.useState<string>('');
   const [pendingDecision, setPendingDecision] = React.useState<'Shortlisted' | 'Rejected' | null>(
     null
@@ -478,22 +480,35 @@ export function ShortlistReview() {
               </Select>
             )}
 
-            {/* Active Requisition Filter Chip */}
+            {/* Active Requisition Filter Chip & AI Resume Analysis Trigger */}
             {selectedOpeningId !== 'all' && (
-              <div className="flex items-center gap-1.5 rounded-[6px] border border-border/80 bg-surface-2 px-2.5 py-1 text-[12px] font-medium text-text select-none">
-                <span className="text-text-muted">Role:</span>
-                <span className="font-semibold text-text truncate max-w-[180px]">
-                  {openingsMap.get(selectedOpeningId)?.title || 'Selected Role'}
-                </span>
-                <button
-                  type="button"
-                  onClick={() => handleOpeningChange('all')}
-                  className="text-text-subtle hover:text-text ml-0.5 cursor-pointer p-0.5 rounded hover:bg-surface-3 transition-colors"
-                  title="Clear role filter"
+              <>
+                <div className="flex items-center gap-1.5 rounded-[6px] border border-border/80 bg-surface-2 px-2.5 py-1 text-[12px] font-medium text-text select-none">
+                  <span className="text-text-muted">Role:</span>
+                  <span className="font-semibold text-text truncate max-w-[180px]">
+                    {openingsMap.get(selectedOpeningId)?.title || 'Selected Role'}
+                  </span>
+                  <button
+                    type="button"
+                    onClick={() => handleOpeningChange('all')}
+                    className="text-text-subtle hover:text-text ml-0.5 cursor-pointer p-0.5 rounded hover:bg-surface-3 transition-colors"
+                    title="Clear role filter"
+                  >
+                    <X className="h-3.5 w-3.5" />
+                  </button>
+                </div>
+
+                <Button
+                  size="sm"
+                  variant="outline"
+                  onClick={() => setIsAiAnalysisOpen(true)}
+                  className="h-9 gap-1.5 border-blue-500/30 bg-blue-500/10 text-blue-700 dark:text-blue-300 hover:bg-blue-500/20 px-3 text-[12.5px] font-semibold select-none cursor-pointer"
+                  title="Analyze shortlisted candidate resumes with Groq GPT-OSS 120B"
                 >
-                  <X className="h-3.5 w-3.5" />
-                </button>
-              </div>
+                  <Sparkles className="h-3.5 w-3.5 text-blue-600 dark:text-blue-400" />
+                  <span>AI Resume Review</span>
+                </Button>
+              </>
             )}
           </div>
         </div>
@@ -930,6 +945,14 @@ export function ShortlistReview() {
           )}
         </SheetContent>
       </Sheet>
+
+      {/* Groq AI Resume Intelligence Sheet */}
+      <ManagerAiAnalysisSheet
+        open={isAiAnalysisOpen}
+        onOpenChange={setIsAiAnalysisOpen}
+        opening={selectedOpeningId !== 'all' ? (openingsMap.get(selectedOpeningId) || null) : null}
+        candidates={candidates}
+      />
     </div>
   );
 }
