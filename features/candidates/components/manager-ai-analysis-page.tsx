@@ -9,8 +9,6 @@ import { Button } from '@/components/ui/button';
 import { Skeleton } from '@/components/ui/skeleton';
 import { CandidateAvatar } from '@/components/hro/candidate-avatar';
 import { CompanyLogo } from '@/components/hro/company-logo';
-import { SourceBadge } from '@/components/hro/source-badge';
-import { StatusBadge } from '@/components/hro/status-badge';
 import type { Candidate, Opening } from '@/types/entities';
 import { toast } from 'sonner';
 import { cn } from '@/lib/utils';
@@ -45,7 +43,6 @@ export function ManagerAiAnalysisPage({ openingId }: ManagerAiAnalysisPageProps)
 
   const [isLoading, setIsLoading] = React.useState(false);
   const [analysis, setAnalysis] = React.useState<AiAnalysisResponse | null>(null);
-  const [modelUsed, setModelUsed] = React.useState<string>('openai/gpt-oss-120b');
   const [error, setError] = React.useState<string | null>(null);
   const [copiedQuestionIdx, setCopiedQuestionIdx] = React.useState<string | null>(null);
   const [approvedIds, setApprovedIds] = React.useState<Set<string>>(new Set());
@@ -83,10 +80,9 @@ export function ManagerAiAnalysisPage({ openingId }: ManagerAiAnalysisPageProps)
       }
 
       setAnalysis(json.data);
-      if (json.modelUsed) setModelUsed(json.modelUsed);
     } catch (err: any) {
       console.error('Failed to run AI resume analysis:', err);
-      setError(err.message || 'Analysis failed. Please check Groq API configuration.');
+      setError(err.message || 'Resume analysis encountered an error. Please try again.');
     } finally {
       setIsLoading(false);
     }
@@ -104,7 +100,7 @@ export function ManagerAiAnalysisPage({ openingId }: ManagerAiAnalysisPageProps)
       {
         id: candidateId,
         decision: 'Shortlisted',
-        comment: 'Approved by hiring manager via Groq AI Resume Analysis',
+        comment: 'Approved by hiring manager via AI Resume Intelligence',
       },
       {
         onSuccess: () => {
@@ -121,18 +117,18 @@ export function ManagerAiAnalysisPage({ openingId }: ManagerAiAnalysisPageProps)
   const handleCopyQuestion = (text: string, key: string) => {
     navigator.clipboard.writeText(text);
     setCopiedQuestionIdx(key);
-    toast.success('Interview question copied to clipboard');
+    toast.success('Interview question copied');
     setTimeout(() => setCopiedQuestionIdx(null), 2000);
   };
 
   if (loadingOpening || loadingCandidates) {
     return (
-      <div className="space-y-4 w-full py-1">
-        <Skeleton className="h-28 w-full rounded-[12px]" />
-        <Skeleton className="h-36 w-full rounded-[12px]" />
+      <div className="space-y-5 w-full py-2">
+        <Skeleton className="h-36 w-full rounded-[14px]" />
+        <Skeleton className="h-32 w-full rounded-[14px]" />
         <div className="space-y-4">
-          <Skeleton className="h-56 w-full rounded-[12px]" />
-          <Skeleton className="h-56 w-full rounded-[12px]" />
+          <Skeleton className="h-64 w-full rounded-[16px]" />
+          <Skeleton className="h-64 w-full rounded-[16px]" />
         </div>
       </div>
     );
@@ -140,13 +136,13 @@ export function ManagerAiAnalysisPage({ openingId }: ManagerAiAnalysisPageProps)
 
   if (isError || !opening) {
     return (
-      <div className="border border-border/70 bg-surface-1 rounded-[12px] p-8 text-center select-none space-y-3">
+      <div className="border border-border/70 bg-surface-1 rounded-[14px] p-10 text-center select-none space-y-3">
         <h3 className="text-text text-[16px] font-semibold">Requisition Not Found</h3>
         <p className="text-text-muted text-[13px]">
-          Could not locate the requested requisition for AI Resume Review.
+          Could not locate the requested requisition for AI Resume Intelligence.
         </p>
         <div className="pt-2">
-          <Button asChild variant="outline" size="sm" className="rounded-[5px] text-[12px] font-medium h-8">
+          <Button asChild variant="outline" size="sm" className="rounded-[8px] text-[12px] font-medium h-8.5">
             <Link href="/openings">Back to Openings</Link>
           </Button>
         </div>
@@ -159,69 +155,40 @@ export function ManagerAiAnalysisPage({ openingId }: ManagerAiAnalysisPageProps)
     : null;
 
   return (
-    <div className="space-y-4 w-full pb-16">
-      {/* 1. Requisition Header Banner (No duplicate top breadcrumb header strip) */}
-      <div className="border-border/70 bg-surface-1 rounded-[12px] border p-4 shadow-2xs">
-        <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-3">
-          <div className="space-y-1.5 min-w-0">
-            {/* Title + Status Badge + Department & Location */}
-            <div className="flex items-center gap-2.5 flex-wrap">
-              <h1 className="text-text text-[20px] font-semibold tracking-tight">
-                {opening.title}
-              </h1>
-              <span className="inline-flex items-center gap-1.5 rounded-full border border-border/70 bg-surface-2 px-2.5 py-0.5 text-[11px] font-medium text-text select-none">
+    <div className="space-y-5 w-full pb-20">
+      {/* 1. Apple-Grade Requisition Intelligence Banner */}
+      <div className="border border-border/70 bg-surface-1 rounded-[16px] p-5 shadow-2xs space-y-4">
+        {/* Top Tier: Identity & Actions */}
+        <div className="flex flex-col md:flex-row md:items-start md:justify-between gap-4">
+          <div className="space-y-1">
+            <div className="flex items-center gap-2">
+              <span className="text-[10px] uppercase tracking-widest font-semibold text-text-subtle">
+                Requisition Dossier
+              </span>
+              <span className="text-text-subtle/50">&bull;</span>
+              <span className="inline-flex items-center gap-1.5 rounded-full border border-emerald-500/25 bg-emerald-500/10 px-2.5 py-0.5 text-[10.5px] font-medium text-emerald-600 dark:text-emerald-400 select-none">
                 <span className="h-1.5 w-1.5 rounded-full bg-emerald-500" />
                 {opening.status}
               </span>
-              <span className="text-text-muted text-[12px] font-normal">
-                {opening.department} &bull; {opening.location}
-              </span>
             </div>
 
-            {/* Positions • Experience • CTC Budget */}
-            <p className="text-text-muted text-[12px] flex items-center gap-2 flex-wrap">
-              <span className="text-text font-medium font-sans tabular-nums">
-                {opening.headcount} {opening.headcount === 1 ? 'position' : 'positions'}
-              </span>
-              <span className="text-text-subtle/60">&bull;</span>
-              <span className="font-sans tabular-nums">
-                {opening.experienceRange.min}–{opening.experienceRange.max}y required exp
-              </span>
-              <span className="text-text-subtle/60">&bull;</span>
-              <span className="font-sans tabular-nums">
-                {formatCtcRange(opening.budgetRange.min, opening.budgetRange.max)}
-              </span>
-            </p>
+            <h1 className="text-text text-[22px] font-semibold tracking-tight">
+              {opening.title}
+            </h1>
 
-            {/* Must-Have Skills (Clean inline strip without harsh divider) */}
-            {opening.mustHaveSkills && opening.mustHaveSkills.length > 0 && (
-              <div className="flex items-center gap-1.5 flex-wrap pt-0.5">
-                <span className="text-text-muted text-[11.5px] font-medium select-none">
-                  Must-have skills:
-                </span>
-                {opening.mustHaveSkills.map((skill) => (
-                  <span
-                    key={skill}
-                    className="bg-surface-2 text-text border border-border/70 rounded-[4px] px-2 py-0.5 text-[11px] font-medium select-none"
-                  >
-                    {skill}
-                  </span>
-                ))}
-              </div>
-            )}
+            <p className="text-text-muted text-[13px]">
+              {opening.department} &bull; {opening.location}
+            </p>
           </div>
 
-          <div className="flex items-center gap-2 shrink-0 flex-wrap">
-            <span className="text-text-muted text-[11px] font-medium select-none pr-1">
-              Powered by Groq {modelUsed.replace('openai/', '')}
-            </span>
-
+          {/* Actions: Re-analyze & Shortlist Queue */}
+          <div className="flex items-center gap-2.5 shrink-0 self-start md:self-auto">
             <Button
               variant="outline"
               size="sm"
               onClick={runAnalysis}
               disabled={isLoading || shortlistedCandidates.length === 0}
-              className="border-border/70 bg-surface-1 hover:bg-surface-2 text-text rounded-[5px] h-8 px-3 text-[12px] font-medium select-none cursor-pointer"
+              className="border-border/70 bg-surface-1 hover:bg-surface-2 text-text rounded-[8px] h-9 px-3.5 text-[12px] font-medium select-none cursor-pointer"
             >
               {isLoading ? 'Analyzing...' : 'Re-analyze'}
             </Button>
@@ -229,7 +196,7 @@ export function ManagerAiAnalysisPage({ openingId }: ManagerAiAnalysisPageProps)
             <Button
               asChild
               size="sm"
-              className="bg-emerald-600 hover:bg-emerald-700 text-white rounded-[5px] h-8 px-3 text-[12px] font-medium shadow-2xs cursor-pointer select-none"
+              className="bg-emerald-600 hover:bg-emerald-700 text-white rounded-[8px] h-9 px-4 text-[12.5px] font-semibold shadow-xs cursor-pointer select-none"
             >
               <Link href={`/shortlist?openingId=${opening.id}`}>
                 Shortlist Queue ({shortlistedCandidates.length})
@@ -237,52 +204,101 @@ export function ManagerAiAnalysisPage({ openingId }: ManagerAiAnalysisPageProps)
             </Button>
           </div>
         </div>
+
+        {/* Bottom Tier: Separate Modular Parameter Tiles */}
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-2.5 pt-1 border-t border-border/50">
+          <div className="rounded-[10px] border border-border/60 bg-surface-2/30 px-3.5 py-2.5">
+            <span className="text-[10px] uppercase tracking-wider text-text-subtle font-semibold block">
+              Headcount Target
+            </span>
+            <span className="text-[13px] font-semibold text-text font-sans tabular-nums mt-0.5 block">
+              {opening.headcount} {opening.headcount === 1 ? 'Position' : 'Positions'}
+            </span>
+          </div>
+
+          <div className="rounded-[10px] border border-border/60 bg-surface-2/30 px-3.5 py-2.5">
+            <span className="text-[10px] uppercase tracking-wider text-text-subtle font-semibold block">
+              Experience Required
+            </span>
+            <span className="text-[13px] font-semibold text-text font-sans tabular-nums mt-0.5 block">
+              {opening.experienceRange.min}–{opening.experienceRange.max} Years
+            </span>
+          </div>
+
+          <div className="rounded-[10px] border border-border/60 bg-surface-2/30 px-3.5 py-2.5">
+            <span className="text-[10px] uppercase tracking-wider text-text-subtle font-semibold block">
+              Annual Budget
+            </span>
+            <span className="text-[13px] font-semibold text-text font-sans tabular-nums mt-0.5 block">
+              {formatCtcRange(opening.budgetRange.min, opening.budgetRange.max)}
+            </span>
+          </div>
+
+          <div className="rounded-[10px] border border-border/60 bg-surface-2/30 px-3.5 py-2.5">
+            <span className="text-[10px] uppercase tracking-wider text-text-subtle font-semibold block">
+              Must-Have Skills
+            </span>
+            <div className="flex items-center gap-1.5 flex-wrap mt-1">
+              {opening.mustHaveSkills?.map((skill) => (
+                <span
+                  key={skill}
+                  className="rounded-[5px] bg-surface-1 border border-border/80 px-2 py-0.5 text-[11px] font-medium text-text select-none"
+                >
+                  {skill}
+                </span>
+              ))}
+            </div>
+          </div>
+        </div>
       </div>
 
       {/* 2. Empty State if no candidates */}
       {shortlistedCandidates.length === 0 ? (
-        <div className="border-border/70 bg-surface-1 rounded-[12px] border border-dashed py-14 text-center select-none shadow-2xs space-y-2">
+        <div className="border border-border/70 bg-surface-1 rounded-[16px] border-dashed py-16 text-center select-none shadow-2xs space-y-2.5">
           <h3 className="text-text text-[15px] font-semibold">
             No candidates shortlisted for {opening.title} yet
           </h3>
-          <p className="text-text-muted text-[12.5px] max-w-md mx-auto">
-            HR has not forwarded any screened profiles for this opening yet. Once candidates in the Sourced stage are shortlisted, Groq AI Resume Intelligence will cross-analyze them here.
+          <p className="text-text-muted text-[13px] max-w-md mx-auto">
+            Candidates screened by talent acquisition will appear here for automated comparative analysis and interview synthesis.
           </p>
           <div className="mt-4 flex items-center justify-center gap-2.5">
-            <Button asChild variant="outline" size="sm" className="rounded-[5px] text-[12px] font-medium h-8">
+            <Button asChild variant="outline" size="sm" className="rounded-[8px] text-[12px] font-medium h-8.5">
               <Link href="/openings">View Openings</Link>
             </Button>
-            <Button asChild size="sm" className="bg-blue-600 hover:bg-blue-700 text-white rounded-[5px] text-[12px] font-medium h-8">
+            <Button asChild size="sm" className="bg-blue-600 hover:bg-blue-700 text-white rounded-[8px] text-[12px] font-medium h-8.5">
               <Link href="/candidates">Candidates Pipeline</Link>
             </Button>
           </div>
         </div>
       ) : isLoading ? (
-        /* Loading Skeleton */
+        /* Loading Skeleton with Apple Intelligence Shimmer */
         <div className="space-y-4">
-          <div className="border-border/70 bg-surface-1 rounded-[12px] border p-5 space-y-2.5 shadow-2xs">
-            <span className="text-text text-[13px] font-semibold">
-              Groq GPT-OSS 120B analyzing resumes and synthesizing interview guides...
-            </span>
+          <div className="border border-border/70 bg-surface-1 rounded-[16px] p-6 space-y-3 shadow-2xs">
+            <div className="text-[11px] uppercase tracking-widest font-semibold text-text-subtle">
+              AI Resume Intelligence in Progress
+            </div>
+            <div className="text-text text-[14px] font-medium">
+              Cross-analyzing candidate resumes against requisition criteria...
+            </div>
             <Skeleton className="h-4 w-4/5" />
             <Skeleton className="h-4 w-3/5" />
           </div>
 
           <div className="space-y-4">
-            <Skeleton className="h-56 w-full rounded-[12px]" />
-            <Skeleton className="h-56 w-full rounded-[12px]" />
+            <Skeleton className="h-64 w-full rounded-[16px]" />
+            <Skeleton className="h-64 w-full rounded-[16px]" />
           </div>
         </div>
       ) : error ? (
-        <div className="border-border/70 bg-surface-1 rounded-[12px] border p-5 space-y-2 select-none shadow-2xs">
+        <div className="border border-border/70 bg-surface-1 rounded-[16px] p-6 space-y-2.5 select-none shadow-2xs">
           <div className="text-text text-[14px] font-semibold">Analysis Could Not Complete</div>
-          <p className="text-text-muted text-[12.5px] leading-relaxed">{error}</p>
-          <div className="pt-1">
+          <p className="text-text-muted text-[13px] leading-relaxed">{error}</p>
+          <div className="pt-2">
             <Button
               variant="outline"
               size="sm"
               onClick={runAnalysis}
-              className="border-border/70 bg-surface-1 hover:bg-surface-2 text-text rounded-[5px] h-8 text-[12px] font-medium"
+              className="border-border/70 bg-surface-1 hover:bg-surface-2 text-text rounded-[8px] h-8.5 text-[12px] font-medium"
             >
               Retry Analysis
             </Button>
@@ -290,38 +306,40 @@ export function ManagerAiAnalysisPage({ openingId }: ManagerAiAnalysisPageProps)
         </div>
       ) : analysis ? (
         <>
-          {/* 3. Executive Cohort Verdict Card (No trophy icon, no stars, standard typography) */}
-          <div className="border-border/70 bg-surface-1 rounded-[12px] border p-4 shadow-2xs space-y-2.5 select-none">
-            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 border-b border-border/50 pb-2.5">
+          {/* 3. Executive Cohort Verdict Card (Apple Editorial Style) */}
+          <div className="border border-border/70 bg-surface-1 rounded-[16px] p-5.5 shadow-2xs space-y-3 select-none">
+            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2.5 border-b border-border/50 pb-3">
               <div>
-                <h3 className="text-text text-[14px] font-semibold tracking-tight">
-                  Executive Cohort Verdict
+                <span className="text-[10px] uppercase tracking-widest font-semibold text-text-subtle block">
+                  Cohort Synthesis
+                </span>
+                <h3 className="text-text text-[15px] font-semibold tracking-tight mt-0.5">
+                  Executive Evaluation Verdict
                 </h3>
-                <p className="text-text-muted text-[11.5px] font-normal">
-                  Comparative analysis across {shortlistedCandidates.length} candidate resumes
-                </p>
               </div>
 
               {topPick && (
                 <div className="flex items-center gap-1.5 self-start sm:self-auto">
-                  <span className="text-text text-[11.5px] font-medium select-none">
-                    Recommended Pick: {topPick.name}
+                  <span className="inline-flex items-center rounded-full border border-blue-500/25 bg-blue-500/10 px-3 py-1 text-[11.5px] font-medium text-blue-600 dark:text-blue-400 select-none">
+                    Top Recommendation: {topPick.name}
                   </span>
                 </div>
               )}
             </div>
 
-            <p className="text-text text-[13px] leading-relaxed font-normal">
+            <p className="text-text text-[13.5px] leading-relaxed font-normal">
               {analysis.executiveSummary}
             </p>
           </div>
 
-          {/* 4. Detailed Candidate Dossiers Stack */}
+          {/* 4. Candidate Dossiers Section */}
           <div className="space-y-4">
-            <div className="flex items-center justify-between text-[13px] font-semibold text-text">
-              <span>Candidate Assessments & Tailored Guides ({analysis.candidates.length})</span>
-              <span className="text-text-muted text-[12px] font-normal">
-                Structured for hiring manager review
+            <div className="flex items-center justify-between text-[13px] text-text font-medium px-1">
+              <span className="font-semibold text-text">
+                Candidate Profiles & Tailored Interview Guides ({analysis.candidates.length})
+              </span>
+              <span className="text-text-muted text-[12px]">
+                Prepared for hiring manager review
               </span>
             </div>
 
@@ -335,66 +353,66 @@ export function ManagerAiAnalysisPage({ openingId }: ManagerAiAnalysisPageProps)
               return (
                 <div
                   key={analyzed.id}
-                  className="border-border/70 bg-surface-1 rounded-[12px] border shadow-2xs p-4 space-y-3.5 select-none"
+                  className="border border-border/70 bg-surface-1 rounded-[16px] border shadow-2xs p-5.5 space-y-4.5 select-none transition-all"
                 >
-                  {/* Candidate Header: Profile, Info, Fit Score, Forward Action */}
-                  <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-3 border-b border-border/50 pb-3.5">
-                    <div className="flex items-start gap-3 min-w-0">
+                  {/* Top Header: Candidate Identity & AI Match Score / Forward Action */}
+                  <div className="flex flex-col md:flex-row md:items-start md:justify-between gap-4 border-b border-border/50 pb-4">
+                    {/* Left: Identity (Avatar, Name, Role, Company, Verdict) */}
+                    <div className="flex items-start gap-3.5 min-w-0">
                       <CandidateAvatar
                         name={candidate.name}
-                        size="md"
+                        className="h-11 w-11 text-[14px] font-semibold rounded-full ring-2 ring-border/50 shrink-0"
                       />
                       <div className="min-w-0 space-y-1">
-                        {/* Line 1: Candidate Name + Top Pick + Verdict + SourceBadge */}
                         <div className="flex items-center gap-2 flex-wrap">
-                          <h4 className="text-text text-[15px] font-semibold tracking-tight">
+                          <h3 className="text-text text-[16px] font-semibold tracking-tight">
                             {candidate.name}
-                          </h4>
+                          </h3>
+
                           {isTopPick && (
-                            <span className="bg-surface-2 border border-border/80 text-text rounded-[4px] px-1.5 py-0.5 text-[10.5px] font-medium select-none">
+                            <span className="inline-flex items-center rounded-full border border-blue-500/25 bg-blue-500/10 px-2.5 py-0.5 text-[10.5px] font-semibold text-blue-600 dark:text-blue-400 select-none">
                               Top Pick
                             </span>
                           )}
-                          <span className="bg-surface-2 border border-border/70 text-text rounded-[4px] px-2 py-0.5 text-[11px] font-medium select-none">
+
+                          <span className="rounded-full border border-border/80 bg-surface-2 px-2.5 py-0.5 text-[11px] font-medium text-text select-none">
                             {analyzed.verdict}
                           </span>
-                          <SourceBadge source={candidate.source} />
                         </div>
 
-                        {/* Line 2: Role at [CompanyLogo] Company • Exp • CTC • Notice */}
-                        <div className="text-text-muted text-[12px] flex items-center gap-2 flex-wrap">
+                        {/* Current Role & Company (Clean, no boxy LinkedIn chip) */}
+                        <div className="text-text-muted text-[12.5px] flex items-center gap-1.5 flex-wrap">
                           <span className="text-text font-medium">{candidate.currentRole}</span>
-                          <span className="text-text-subtle/80">at</span>
+                          <span className="text-text-subtle">at</span>
                           <span className="text-text inline-flex items-center gap-1.5 font-medium">
                             <CompanyLogo
                               company={candidate.currentCompany}
-                              className="h-3.5 w-3.5 rounded-[3px] shadow-2xs"
+                              className="h-3.5 w-3.5 rounded-[3px] shadow-2xs inline-block"
                             />
                             <span>{candidate.currentCompany}</span>
                           </span>
-                          <span className="text-text-subtle/60">&bull;</span>
-                          <span className="font-sans tabular-nums">{candidate.experienceYears}y exp</span>
-                          <span className="text-text-subtle/60">&bull;</span>
-                          <span className="font-sans tabular-nums">{formatCtc(candidate.expectedCtc)}</span>
-                          <span className="text-text-subtle/60">&bull;</span>
-                          <span>{candidate.noticePeriod}</span>
+                          {candidate.source && (
+                            <span className="text-text-subtle/80 text-[11px] ml-1">
+                              via {candidate.source}
+                            </span>
+                          )}
                         </div>
                       </div>
                     </div>
 
-                    {/* Fit Score & Forward Button (Clean HRO styling, zero icons) */}
-                    <div className="flex items-center gap-4 self-end md:self-auto shrink-0">
+                    {/* Right: AI Match Score & Forward to Interview Action */}
+                    <div className="flex items-center gap-4.5 self-end md:self-auto shrink-0">
                       <div className="text-right">
-                        <span className="text-text font-semibold text-[17px] tabular-nums font-sans">
+                        <span className="text-text font-bold text-[22px] tabular-nums font-sans leading-none block">
                           {analyzed.fitScore}%
                         </span>
-                        <span className="text-text-muted block text-[10px] uppercase tracking-wider font-medium">
-                          Fit Score
+                        <span className="text-text-subtle block text-[10px] uppercase tracking-wider font-semibold mt-0.5">
+                          Match Index
                         </span>
                       </div>
 
                       {isApproved ? (
-                        <span className="text-emerald-600 dark:text-emerald-400 text-[12px] font-medium px-2 py-1 select-none">
+                        <span className="text-emerald-600 dark:text-emerald-400 text-[12px] font-medium px-3 py-1.5 rounded-[8px] bg-emerald-500/10 border border-emerald-500/20 select-none">
                           Forwarded to Interview
                         </span>
                       ) : (
@@ -402,7 +420,7 @@ export function ManagerAiAnalysisPage({ openingId }: ManagerAiAnalysisPageProps)
                           type="button"
                           onClick={() => handleForwardToInterview(candidate.id, candidate.name)}
                           disabled={recordDecision.isPending}
-                          className="inline-flex cursor-pointer items-center justify-center rounded-[5px] border-0 bg-blue-600 px-3.5 py-1.5 text-[12px] font-semibold text-white shadow-2xs transition-colors select-none hover:bg-blue-700 active:scale-95 active:bg-blue-800 disabled:opacity-50"
+                          className="inline-flex cursor-pointer items-center justify-center rounded-[8px] border-0 bg-blue-600 px-4 py-2 text-[12.5px] font-semibold text-white shadow-xs transition-all select-none hover:bg-blue-700 active:scale-95 disabled:opacity-50"
                         >
                           Forward to Interview
                         </button>
@@ -410,22 +428,66 @@ export function ManagerAiAnalysisPage({ openingId }: ManagerAiAnalysisPageProps)
                     </div>
                   </div>
 
-                  {/* Summary Quote */}
-                  <div className="border border-border/60 bg-surface-2/40 rounded-[8px] p-3 text-text text-[12.5px] leading-relaxed font-normal">
-                    &ldquo;{analyzed.summary}&rdquo;
+                  {/* Middle Tier: 4-Cell Candidate Vitals Grid (Separated & Spacious, NOT crammed) */}
+                  <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5">
+                    <div className="rounded-[10px] border border-border/60 bg-surface-2/30 px-3.5 py-2.5">
+                      <span className="text-[10px] uppercase tracking-wider text-text-subtle font-semibold block">
+                        Experience
+                      </span>
+                      <span className="text-[13px] font-semibold text-text font-sans tabular-nums mt-0.5 block">
+                        {candidate.experienceYears} Years
+                      </span>
+                    </div>
+
+                    <div className="rounded-[10px] border border-border/60 bg-surface-2/30 px-3.5 py-2.5">
+                      <span className="text-[10px] uppercase tracking-wider text-text-subtle font-semibold block">
+                        Expected CTC
+                      </span>
+                      <span className="text-[13px] font-semibold text-text font-sans tabular-nums mt-0.5 block">
+                        {formatCtc(candidate.expectedCtc)}
+                      </span>
+                    </div>
+
+                    <div className="rounded-[10px] border border-border/60 bg-surface-2/30 px-3.5 py-2.5">
+                      <span className="text-[10px] uppercase tracking-wider text-text-subtle font-semibold block">
+                        Notice Period
+                      </span>
+                      <span className="text-[13px] font-semibold text-text mt-0.5 block">
+                        {candidate.noticePeriod}
+                      </span>
+                    </div>
+
+                    <div className="rounded-[10px] border border-border/60 bg-surface-2/30 px-3.5 py-2.5">
+                      <span className="text-[10px] uppercase tracking-wider text-text-subtle font-semibold block">
+                        Contact Phone
+                      </span>
+                      <span className="text-[13px] font-semibold text-text font-sans mt-0.5 block truncate">
+                        {candidate.phone || 'Available on file'}
+                      </span>
+                    </div>
                   </div>
 
-                  {/* 2-Column: Strengths & Potential Gaps (Zero icons, clean bullet lists) */}
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                  {/* AI Synthesis Assessment Quote */}
+                  <div className="rounded-[10px] border border-border/60 bg-surface-2/40 p-3.5 space-y-1">
+                    <div className="text-[10px] uppercase tracking-widest text-text-subtle font-semibold">
+                      AI Profile Assessment
+                    </div>
+                    <p className="text-text text-[13px] leading-relaxed font-normal">
+                      &ldquo;{analyzed.summary}&rdquo;
+                    </p>
+                  </div>
+
+                  {/* 2-Column: Strengths & Potential Gaps */}
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-3.5">
                     {/* Strengths */}
-                    <div className="border border-border/70 bg-surface-2/20 rounded-[8px] p-3.5 space-y-2">
-                      <h5 className="text-text font-semibold text-[12px]">
+                    <div className="rounded-[10px] border border-border/60 bg-surface-2/20 p-4 space-y-2.5">
+                      <div className="text-text font-semibold text-[12.5px] tracking-tight">
                         Verified Technical Strengths
-                      </h5>
-                      <ul className="space-y-1.5">
+                      </div>
+                      <ul className="space-y-2">
                         {analyzed.strengths.map((str, i) => (
-                          <li key={i} className="text-text text-[12px] leading-relaxed flex items-start gap-2">
-                            <span className="text-text-muted select-none leading-none mt-1">•</span>
+                          <li key={i} className="text-text text-[12.5px] leading-relaxed flex items-start gap-2.5">
+                            <span className="text-text-subtle select-none mt-1 text-[11px]">&bull;</span>
                             <span>{str}</span>
                           </li>
                         ))}
@@ -433,14 +495,14 @@ export function ManagerAiAnalysisPage({ openingId }: ManagerAiAnalysisPageProps)
                     </div>
 
                     {/* Areas to Probe & Gaps */}
-                    <div className="border border-border/70 bg-surface-2/20 rounded-[8px] p-3.5 space-y-2">
-                      <h5 className="text-text font-semibold text-[12px]">
+                    <div className="rounded-[10px] border border-border/60 bg-surface-2/20 p-4 space-y-2.5">
+                      <div className="text-text font-semibold text-[12.5px] tracking-tight">
                         Areas to Probe & Potential Gaps
-                      </h5>
-                      <ul className="space-y-1.5">
+                      </div>
+                      <ul className="space-y-2">
                         {analyzed.gaps.map((gap, i) => (
-                          <li key={i} className="text-text text-[12px] leading-relaxed flex items-start gap-2">
-                            <span className="text-text-muted select-none leading-none mt-1">•</span>
+                          <li key={i} className="text-text text-[12.5px] leading-relaxed flex items-start gap-2.5">
+                            <span className="text-text-subtle select-none mt-1 text-[11px]">&bull;</span>
                             <span>{gap}</span>
                           </li>
                         ))}
@@ -448,36 +510,36 @@ export function ManagerAiAnalysisPage({ openingId }: ManagerAiAnalysisPageProps)
                     </div>
                   </div>
 
-                  {/* Tailored Technical Interview Questions (Plain text copy button, zero icons) */}
-                  <div className="border border-border/70 bg-surface-2/20 rounded-[8px] p-3.5 space-y-2.5">
+                  {/* Tailored Technical Interview Guide */}
+                  <div className="rounded-[10px] border border-border/60 bg-surface-2/20 p-4 space-y-3">
                     <div className="flex items-center justify-between">
-                      <h5 className="text-text font-semibold text-[12px]">
+                      <div className="text-text font-semibold text-[12.5px] tracking-tight">
                         Tailored Technical Interview Questions
-                      </h5>
-                      <span className="text-text-muted text-[11px] font-normal">
-                        Crafted for {candidate.name}
+                      </div>
+                      <span className="text-text-muted text-[11px]">
+                        Formulated specifically for {candidate.name}
                       </span>
                     </div>
 
-                    <div className="space-y-2">
+                    <div className="space-y-2.5">
                       {analyzed.interviewQuestions.map((q, idx) => {
                         const qKey = `${candidate.id}-q-${idx}`;
                         const isCopied = copiedQuestionIdx === qKey;
                         return (
                           <div
                             key={idx}
-                            className="border border-border/60 bg-surface-1 rounded-[6px] p-3 flex items-start justify-between gap-3 text-[12px]"
+                            className="rounded-[8px] border border-border/60 bg-surface-1 p-3.5 flex items-start justify-between gap-3 text-[12.5px] shadow-2xs hover:border-border transition-colors"
                           >
-                            <span className="text-text leading-relaxed font-normal">
-                              <span className="text-text-muted font-medium mr-1.5 select-none">
-                                Q{idx + 1}.
+                            <div className="text-text leading-relaxed font-normal flex items-start gap-2.5">
+                              <span className="text-text-subtle font-mono text-[11px] font-semibold select-none pt-0.5">
+                                0{idx + 1}
                               </span>
-                              {q}
-                            </span>
+                              <span>{q}</span>
+                            </div>
                             <button
                               type="button"
                               onClick={() => handleCopyQuestion(q, qKey)}
-                              className="text-text-muted hover:text-text text-[11px] font-medium h-6 px-2 rounded-[4px] border border-border/60 bg-surface-2/40 hover:bg-surface-2 select-none shrink-0 transition-colors cursor-pointer"
+                              className="text-text-muted hover:text-text text-[11px] font-medium h-6 px-2.5 rounded-[5px] border border-border/70 bg-surface-2/50 hover:bg-surface-2 select-none shrink-0 transition-colors cursor-pointer"
                               title="Copy question"
                             >
                               {isCopied ? 'Copied' : 'Copy'}
