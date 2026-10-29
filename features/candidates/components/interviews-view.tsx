@@ -1,6 +1,8 @@
 'use client';
 
 import * as React from 'react';
+import Link from 'next/link';
+import { useSearchParams, useRouter } from 'next/navigation';
 
 import { useCandidates, useScheduleInterview, useRecordInterviewOutcome } from '../hooks';
 
@@ -134,91 +136,118 @@ export function InterviewsView() {
     return new Map(openings.map((o) => [o.id, o]));
   }, [openings]);
 
-  // Candidates in Interview stage
+  const searchParams = useSearchParams();
+  const router = useRouter();
+  const urlOpeningId = searchParams?.get('openingId') || 'all';
 
+  const [selectedOpeningId, setSelectedOpeningId] = React.useState<string>(urlOpeningId);
+
+  React.useEffect(() => {
+    if (urlOpeningId && urlOpeningId !== selectedOpeningId) {
+      setSelectedOpeningId(urlOpeningId);
+    }
+  }, [urlOpeningId]);
+
+  const handleOpeningChange = (openingId: string) => {
+    setSelectedOpeningId(openingId);
+    const params = new URLSearchParams(searchParams?.toString() || '');
+    if (openingId === 'all') {
+      params.delete('openingId');
+    } else {
+      params.set('openingId', openingId);
+    }
+    const newQuery = params.toString();
+    router.replace(newQuery ? `/interviews?${newQuery}` : '/interviews');
+  };
+
+  // Candidates in Interview stage or shortlisted by manager
   const interviewCandidates = React.useMemo(() => {
-    return candidates.filter((c) => c.stage === 'Interview');
+    return candidates.filter(
+      (c) =>
+        c.stage === 'Interview' ||
+        (c.managerDecision === 'Shortlisted' &&
+          c.stage !== 'Rejected' &&
+          c.stage !== 'Joined')
+    );
   }, [candidates]);
 
-  // Count unscheduled vs scheduled
+  // Openings that have candidates in interview stage (or matches selectedOpeningId)
+  const relevantOpenings = React.useMemo(() => {
+    return openings
+      .filter(
+        (o) =>
+          interviewCandidates.some((c) => c.openingId === o.id) ||
+          o.id === selectedOpeningId
+      )
+      .sort((a, b) => a.title.localeCompare(b.title));
+  }, [openings, interviewCandidates, selectedOpeningId]);
 
+  // Candidates for the currently selected role
+  const roleCandidates = React.useMemo(() => {
+    if (selectedOpeningId === 'all') return interviewCandidates;
+    return interviewCandidates.filter((c) => c.openingId === selectedOpeningId);
+  }, [interviewCandidates, selectedOpeningId]);
+
+  // Count unscheduled vs scheduled within current role selection
   const unscheduledCandidates = React.useMemo(
-    () => interviewCandidates.filter((c) => !c.interviewDate),
-
-    [interviewCandidates]
+    () => roleCandidates.filter((c) => !c.interviewDate),
+    [roleCandidates]
   );
 
   const scheduledCandidates = React.useMemo(
-    () => interviewCandidates.filter((c) => Boolean(c.interviewDate)),
-
-    [interviewCandidates]
+    () => roleCandidates.filter((c) => Boolean(c.interviewDate)),
+    [roleCandidates]
   );
 
   // Filters & State
-
   const [searchQuery, setSearchQuery] = React.useState<string>('');
-
   const [statusTab, setStatusTab] = React.useState<'all' | 'needs-scheduling' | 'scheduled'>('all');
-
   const [departmentFilter, setDepartmentFilter] = React.useState<string>('all');
-
   const [outcomeFilter, setOutcomeFilter] = React.useState<string>('all');
-
   const [modeFilter, setModeFilter] = React.useState<string>('all');
-
   const [currentPage, setCurrentPage] = React.useState<number>(1);
-
   const PAGE_SIZE = 6;
 
-  // Extract all unique departments present across interview candidates
-
+  // Extract all unique departments present across interview candidates for selected role
   const departments = React.useMemo(() => {
     const set = new Set<string>();
-
-    interviewCandidates.forEach((c) => {
+    roleCandidates.forEach((c) => {
       const op = openingsMap.get(c.openingId);
-
       if (op?.department) set.add(op.department);
     });
-
     return Array.from(set).sort();
-  }, [interviewCandidates, openingsMap]);
+  }, [roleCandidates, openingsMap]);
 
   // Reset pagination when search or filters change
-
   React.useEffect(() => {
     setCurrentPage(1);
   }, [
     searchQuery,
+    selectedOpeningId,
     statusTab,
     departmentFilter,
     outcomeFilter,
     modeFilter,
-    interviewCandidates.length,
+    roleCandidates.length,
   ]);
 
   // Filtered interviews
-
   const filteredInterviews = React.useMemo(() => {
     const q = searchQuery.trim().toLowerCase();
 
-    return interviewCandidates.filter((c) => {
+    return roleCandidates.filter((c) => {
       // Tab filter
-
       if (statusTab === 'needs-scheduling' && c.interviewDate) return false;
-
       if (statusTab === 'scheduled' && !c.interviewDate) return false;
 
       const opening = openingsMap.get(c.openingId);
 
       // Department filter
-
       if (departmentFilter !== 'all' && opening?.department !== departmentFilter) {
         return false;
       }
 
       // Text search
-
       const matchesSearch =
         !q ||
         c.name.toLowerCase().includes(q) ||
@@ -238,7 +267,7 @@ export function InterviewsView() {
       return matchesSearch && matchesOutcome && matchesMode;
     });
   }, [
-    interviewCandidates,
+    roleCandidates,
     statusTab,
     departmentFilter,
     searchQuery,
@@ -249,6 +278,7 @@ export function InterviewsView() {
 
   const hasActiveFilters =
     Boolean(searchQuery.trim()) ||
+    selectedOpeningId !== 'all' ||
     statusTab !== 'all' ||
     departmentFilter !== 'all' ||
     outcomeFilter !== 'all' ||
@@ -256,6 +286,7 @@ export function InterviewsView() {
 
   const handleResetFilters = () => {
     setSearchQuery('');
+    handleOpeningChange('all');
 
     setStatusTab('all');
 
@@ -395,109 +426,207 @@ export function InterviewsView() {
   return (
     <div className="space-y-6">
       {/* KPI Overview */}
-
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
         <div className="border-border bg-surface-1 rounded-lg border p-4">
-          <span className="text-text-muted text-[12px] font-medium">In Interview Stage</span>
-
+          <span className="text-text-muted text-[12px] font-medium">
+            {selectedOpeningId !== 'all' ? 'In Role Interview Stage' : 'In Interview Stage'}
+          </span>
           <p className="text-text mt-1 font-sans text-2xl font-bold tabular-nums">
-            {interviewCandidates.length}
+            {roleCandidates.length}
           </p>
-
-          <span className="text-text-subtle mt-0.5 block text-[11px]">Active candidates</span>
+          <span className="text-text-subtle mt-0.5 block text-[11px]">
+            {selectedOpeningId !== 'all'
+              ? `${openingsMap.get(selectedOpeningId)?.title || 'Selected Role'} candidates`
+              : 'Active candidates'}
+          </span>
         </div>
 
         <div className="border-border bg-surface-1 rounded-lg border p-4">
-          <span className="text-text-muted text-[12px] font-medium">Awaiting HR Scheduling</span>
-
+          <span className="text-text-muted text-[12px] font-medium">Awaiting Scheduling</span>
           <p className="text-text mt-1 font-sans text-2xl font-bold tabular-nums">
             {unscheduledCandidates.length}
           </p>
-
           <span className="text-text-muted mt-0.5 block text-[11px] font-medium">
-            {unscheduledCandidates.length > 0 ? 'Action required: Call candidate' : 'All caught up'}
+            {unscheduledCandidates.length > 0 ? 'Action required: Book slot' : 'All caught up'}
           </span>
         </div>
 
         <div className="border-border bg-surface-1 rounded-lg border p-4">
           <span className="text-text-muted text-[12px] font-medium">Confirmed Slots</span>
-
           <p className="text-text mt-1 font-sans text-2xl font-bold tabular-nums">
             {scheduledCandidates.length}
           </p>
-
           <span className="text-text-muted mt-0.5 block text-[11px] font-medium">
-            Ready for Manager
+            Ready for Interview
           </span>
         </div>
       </div>
 
-      {interviewCandidates.length === 0 ? (
-        <EmptyState
-          icon={Calendar}
+      {roleCandidates.length === 0 ? (
+        <div className="space-y-4">
+          {/* If an opening was selected but has no interview candidates, still show the selector */}
+          {relevantOpenings.length > 0 && (
+            <div className="flex items-center gap-2.5 flex-wrap">
+              <Select value={selectedOpeningId} onValueChange={handleOpeningChange}>
+                <SelectTrigger className="border-border/70 bg-surface-2/40 hover:bg-surface-2 text-text h-8 w-auto min-w-[190px] gap-2 rounded-[6px] px-3 text-[12px] font-medium shadow-2xs">
+                  <Briefcase className="text-text-muted h-3.5 w-3.5 shrink-0" />
+                  <SelectValue placeholder="All Job Roles" />
+                </SelectTrigger>
+                <SelectContent align="start" className="min-w-[240px]">
+                  <SelectItem value="all" className="min-h-[32px] rounded-[6px] py-1.5 text-[12.5px]">
+                    All Job Roles ({interviewCandidates.length})
+                  </SelectItem>
+                  {relevantOpenings.map((op) => {
+                    const count = interviewCandidates.filter((c) => c.openingId === op.id).length;
+                    return (
+                      <SelectItem key={op.id} value={op.id} className="min-h-[32px] rounded-[6px] py-1.5 text-[12.5px]">
+                        {formatRoleTitle(op.title)} ({count})
+                      </SelectItem>
+                    );
+                  })}
+                </SelectContent>
+              </Select>
 
-          title="No Candidates in Interview Stage"
+              {selectedOpeningId !== 'all' && (
+                <button
+                  type="button"
+                  onClick={() => handleOpeningChange('all')}
+                  className="text-text-muted hover:text-text flex h-8 cursor-pointer items-center gap-1 px-2 text-[12px] font-medium select-none"
+                >
+                  <X className="h-3.5 w-3.5" />
+                  <span>View All Roles</span>
+                </button>
+              )}
+            </div>
+          )}
 
-          description="Candidates shortlisted by hiring managers will appear here for HR interview scheduling and technical evaluation."
-        />
+          <EmptyState
+            icon={Calendar}
+            title={
+              selectedOpeningId !== 'all'
+                ? `No Candidates in Interview Stage for "${openingsMap.get(selectedOpeningId)?.title || 'this role'}"`
+                : 'No Candidates in Interview Stage'
+            }
+            description={
+              selectedOpeningId !== 'all'
+                ? 'Candidates shortlisted for this role will appear here for interview scheduling and technical evaluation.'
+                : 'Candidates shortlisted by hiring managers will appear here for interview scheduling and technical evaluation.'
+            }
+            action={
+              selectedOpeningId !== 'all' ? (
+                <div className="flex items-center gap-2 mt-2">
+                  <Button asChild size="sm" variant="outline" className="text-[12px] h-8">
+                    <Link href={`/shortlist?openingId=${selectedOpeningId}`}>Check Shortlist Queue</Link>
+                  </Button>
+                  <Button size="sm" variant="ghost" onClick={() => handleOpeningChange('all')} className="text-[12px] h-8">
+                    View All Job Roles
+                  </Button>
+                </div>
+              ) : undefined
+            }
+          />
+        </div>
       ) : (
         <div className="space-y-4">
-          {/* Status Tabs + Search & Filters */}
+          {/* Active Job Role Context Banner */}
+          {selectedOpeningId !== 'all' && (
+            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 p-3.5 rounded-[10px] border border-blue-500/25 bg-blue-500/5 select-none">
+              <div className="space-y-0.5 min-w-0">
+                <div className="flex items-center gap-2 flex-wrap">
+                  <span className="text-[10px] uppercase tracking-wider font-semibold text-blue-600 dark:text-blue-400">
+                    Selected Job Role
+                  </span>
+                  <span className="text-text font-semibold text-[14px] truncate">
+                    {openingsMap.get(selectedOpeningId)?.title}
+                  </span>
+                  {openingsMap.get(selectedOpeningId)?.department && (
+                    <span className="text-text-muted text-[12px]">
+                      · {openingsMap.get(selectedOpeningId)?.department}
+                    </span>
+                  )}
+                </div>
+                <p className="text-text-muted text-[12px]">
+                  Showing {roleCandidates.length} candidate{roleCandidates.length === 1 ? '' : 's'} shortlisted for interview in this role.
+                </p>
+              </div>
 
+              <div className="flex items-center gap-2 shrink-0">
+                <Button
+                  asChild
+                  size="sm"
+                  variant="outline"
+                  className="h-7.5 border-blue-500/30 bg-blue-500/10 hover:bg-blue-500/20 text-blue-700 dark:text-blue-300 text-[11.5px] font-medium"
+                >
+                  <Link href={`/openings/${selectedOpeningId}/ai-review`}>
+                    AI Resume Review
+                  </Link>
+                </Button>
+                <Button
+                  asChild
+                  size="sm"
+                  variant="outline"
+                  className="h-7.5 border-border/70 bg-surface-1 hover:bg-surface-2 text-text text-[11.5px] font-medium"
+                >
+                  <Link href={`/shortlist?openingId=${selectedOpeningId}`}>
+                    Shortlist Queue
+                  </Link>
+                </Button>
+                <button
+                  type="button"
+                  onClick={() => handleOpeningChange('all')}
+                  className="h-7.5 px-2 rounded-[6px] border border-border/70 bg-surface-1 hover:bg-surface-2 text-text text-[11.5px] font-medium inline-flex items-center gap-1 cursor-pointer transition-colors"
+                  title="Show All Job Roles"
+                >
+                  <X className="h-3 w-3" />
+                  <span>Clear</span>
+                </button>
+              </div>
+            </div>
+          )}
+
+          {/* Status Tabs + Search & Filters */}
           <div className="space-y-3">
             {/* Row 1: Status Filter Tabs (Left) + Showing Count (Right) */}
-
             <div className="border-border/60 flex flex-col justify-between gap-3 border-b pb-2.5 sm:flex-row sm:items-center">
               <div className="flex flex-wrap items-center gap-2">
                 <button
                   type="button"
-
                   onClick={() => setStatusTab('all')}
-
                   className={cn(
                     'inline-flex h-8 cursor-pointer items-center gap-1.5 rounded-[6px] border px-3 text-[12px] font-medium transition-colors select-none',
-
                     statusTab === 'all'
                       ? 'border-accent bg-accent font-semibold text-white shadow-xs'
                       : 'border-border/70 bg-surface-1 text-text-muted hover:text-text hover:bg-surface-2'
                   )}
                 >
                   <span>All</span>
-
                   <span
                     className={cn(
                       'rounded-full px-1.5 py-0.5 font-sans text-[11px] font-semibold tabular-nums',
-
                       statusTab === 'all'
                         ? 'bg-white/20 text-white'
                         : 'bg-surface-2 text-text-subtle border-border/60 border'
                     )}
                   >
-                    {interviewCandidates.length}
+                    {roleCandidates.length}
                   </span>
                 </button>
 
                 <button
                   type="button"
-
                   onClick={() => setStatusTab('needs-scheduling')}
-
                   className={cn(
                     'inline-flex h-8 cursor-pointer items-center gap-1.5 rounded-[6px] border px-3 text-[12px] font-medium transition-colors select-none',
-
                     statusTab === 'needs-scheduling'
                       ? 'border-accent bg-accent font-semibold text-white shadow-xs'
                       : 'border-border/70 bg-surface-1 text-text-muted hover:text-text hover:bg-surface-2'
                   )}
                 >
                   <Phone className={cn('h-3 w-3 shrink-0', statusTab === 'needs-scheduling' ? 'text-white' : 'text-text-subtle')} />
-
                   <span>Needs Call / Scheduling</span>
-
                   <span
                     className={cn(
                       'rounded-full px-1.5 py-0.5 font-sans text-[11px] font-semibold tabular-nums',
-
                       statusTab === 'needs-scheduling'
                         ? 'bg-white/20 text-white'
                         : 'bg-surface-2 text-text-subtle border-border/60 border'
@@ -509,25 +638,19 @@ export function InterviewsView() {
 
                 <button
                   type="button"
-
                   onClick={() => setStatusTab('scheduled')}
-
                   className={cn(
                     'inline-flex h-8 cursor-pointer items-center gap-1.5 rounded-[6px] border px-3 text-[12px] font-medium transition-colors select-none',
-
                     statusTab === 'scheduled'
                       ? 'border-accent bg-accent font-semibold text-white shadow-xs'
                       : 'border-border/70 bg-surface-1 text-text-muted hover:text-text hover:bg-surface-2'
                   )}
                 >
                   <CheckCircle2 className={cn('h-3 w-3 shrink-0', statusTab === 'scheduled' ? 'text-white' : 'text-text-subtle')} />
-
                   <span>Confirmed Slots</span>
-
                   <span
                     className={cn(
                       'rounded-full px-1.5 py-0.5 font-sans text-[11px] font-semibold tabular-nums',
-
                       statusTab === 'scheduled'
                         ? 'bg-white/20 text-white'
                         : 'bg-surface-2 text-text-subtle border-border/60 border'
@@ -541,34 +664,59 @@ export function InterviewsView() {
               <div className="text-text-muted flex shrink-0 items-center text-[12px] font-medium">
                 Showing{' '}
                 <span className="text-text mx-1 font-semibold">{filteredInterviews.length}</span> of{' '}
-                {interviewCandidates.length} candidates
+                {roleCandidates.length} candidates
               </div>
             </div>
 
-            {/* Row 2: Search + Department Filter + Outcome Filter + Format Filter + Reset */}
-
+            {/* Row 2: Search + Job Role Filter + Department Filter + Outcome Filter + Format Filter + Reset */}
             <div className="flex flex-wrap items-center gap-2.5">
               <div className="relative min-w-[200px] flex-1 sm:max-w-xs">
                 <Search className="text-text-subtle pointer-events-none absolute top-1/2 left-2.5 h-3.5 w-3.5 -translate-y-1/2" />
-
                 <Input
                   value={searchQuery}
-
                   onChange={(e) => setSearchQuery(e.target.value)}
-
                   placeholder="Search candidate, role, phone, or notes..."
-
                   className="bg-surface-2/40 border-border/70 hover:border-border focus:bg-surface-1 h-8 w-full rounded-[6px] pl-8.5 text-[12px] shadow-2xs transition-all"
                 />
               </div>
 
-              {/* Department Filter */}
+              {/* Job Role / Opening Filter */}
+              {relevantOpenings.length > 0 && (
+                <Select value={selectedOpeningId} onValueChange={handleOpeningChange}>
+                  <SelectTrigger className="border-border/70 bg-surface-2/40 hover:bg-surface-2 text-text h-8 w-auto min-w-[190px] gap-2 rounded-[6px] px-3 text-[12px] font-medium shadow-2xs">
+                    <Briefcase className="text-text-muted h-3.5 w-3.5 shrink-0" />
+                    <SelectValue placeholder="All Job Roles" />
+                  </SelectTrigger>
 
+                  <SelectContent align="start" className="min-w-[240px]">
+                    <SelectItem
+                      value="all"
+                      className="min-h-[32px] rounded-[6px] py-1.5 text-[12.5px]"
+                    >
+                      All Job Roles ({interviewCandidates.length})
+                    </SelectItem>
+
+                    {relevantOpenings.map((op) => {
+                      const count = interviewCandidates.filter((c) => c.openingId === op.id).length;
+                      return (
+                        <SelectItem
+                          key={op.id}
+                          value={op.id}
+                          className="min-h-[32px] rounded-[6px] py-1.5 text-[12.5px]"
+                        >
+                          {formatRoleTitle(op.title)} ({count})
+                        </SelectItem>
+                      );
+                    })}
+                  </SelectContent>
+                </Select>
+              )}
+
+              {/* Department Filter */}
               {departments.length > 0 && (
                 <Select value={departmentFilter} onValueChange={setDepartmentFilter}>
                   <SelectTrigger className="border-border/70 bg-surface-2/40 hover:bg-surface-2 text-text h-8 w-auto min-w-[150px] gap-2 rounded-[6px] px-3 text-[12px] font-medium shadow-2xs">
                     <Building2 className="text-text-muted h-3.5 w-3.5 shrink-0" />
-
                     <SelectValue placeholder="All Departments" />
                   </SelectTrigger>
 
@@ -577,11 +725,11 @@ export function InterviewsView() {
                       value="all"
                       className="min-h-[32px] rounded-[6px] py-1.5 text-[12.5px]"
                     >
-                      All Departments ({interviewCandidates.length})
+                      All Departments ({roleCandidates.length})
                     </SelectItem>
 
                     {departments.map((dept) => {
-                      const count = interviewCandidates.filter(
+                      const count = roleCandidates.filter(
                         (c) => openingsMap.get(c.openingId)?.department === dept
                       ).length;
 
@@ -821,7 +969,6 @@ export function InterviewsView() {
 
                         <div className="border-border/50 flex items-start justify-between gap-3 border-t pt-2.5 text-[12px]">
                           {/* Left: Notes or Target Role */}
-
                           <div className="min-w-0 flex-1 space-y-1 pr-2">
                             <span className="text-text-subtle block text-[10px] font-semibold tracking-wider uppercase">
                               {candidate.interviewNote ? 'Notes' : 'Target Role'}
@@ -834,7 +981,6 @@ export function InterviewsView() {
                               {candidate.interviewNote || (
                                 <span>
                                   {formatRoleTitle(opening?.title)}
-
                                   {opening?.department ? (
                                     <span className="text-text-subtle font-normal">
                                       {' '}
@@ -844,22 +990,32 @@ export function InterviewsView() {
                                 </span>
                               )}
                             </p>
+
+                            {opening && (
+                              <div className="pt-0.5">
+                                <Link
+                                  href={`/openings/${opening.id}/ai-review`}
+                                  onClick={(e) => e.stopPropagation()}
+                                  className="text-blue-600 dark:text-blue-400 hover:underline text-[11px] font-semibold inline-flex items-center gap-1"
+                                  title="View AI candidate evaluation & tailored interview questions"
+                                >
+                                  <span>AI Interview Guide →</span>
+                                </Link>
+                              </div>
+                            )}
                           </div>
 
                           {/* Right: Mode & Scheduled Date/Time or Status Prompt */}
-
                           <div className="shrink-0 space-y-1 text-right">
                             {isScheduled ? (
                               <>
                                 <div className="text-text inline-flex items-center gap-1.5 text-[12px] font-semibold">
                                   <ModeIcon className="text-text-muted h-3.5 w-3.5 stroke-[1.75]" />
-
                                   <span>{candidate.interviewMode ?? 'Video'} Interview</span>
                                 </div>
 
                                 <div className="text-text-muted flex items-center justify-end gap-1 text-[11.5px] font-medium">
                                   <Clock className="text-text-subtle h-3 w-3 shrink-0" />
-
                                   <span>{formatInterviewDateTime(candidate.interviewDate!)}</span>
                                 </div>
                               </>
@@ -867,12 +1023,11 @@ export function InterviewsView() {
                               <>
                                 <div className="text-text inline-flex items-center gap-1.5 text-[12px] font-medium">
                                   <AlertCircle className="text-text-subtle h-3.5 w-3.5 stroke-[1.75]" />
-
                                   <span>Slot Unscheduled</span>
                                 </div>
 
                                 <div className="text-text-subtle text-[11.5px]">
-                                  {isHr ? 'Call candidate to book' : 'Awaiting HR booking'}
+                                  {isHr ? 'Call candidate to book' : 'Ready to schedule'}
                                 </div>
                               </>
                             )}
@@ -881,87 +1036,105 @@ export function InterviewsView() {
                       </div>
 
                       {/* 3. Footer Action Buttons */}
-
                       <div className="border-border/50 border-t pt-2.5">
                         {isHr ? (
                           !isScheduled ? (
                             <Button
                               variant="primary"
-
                               size="sm"
-
                               onClick={(e) => {
                                 e.stopPropagation();
-
                                 handleOpenSchedule(candidate);
                               }}
-
                               className="h-8 w-full cursor-pointer gap-1.5 rounded-[6px] text-[12px] font-semibold"
                             >
                               <Phone className="h-3.5 w-3.5" />
-
                               <span>Call & Schedule Slot</span>
                             </Button>
                           ) : (
                             <div className="flex w-full items-center gap-2">
                               <Button
                                 variant="outline"
-
                                 size="sm"
-
                                 onClick={(e) => {
                                   e.stopPropagation();
-
                                   handleOpenSchedule(candidate);
                                 }}
-
                                 className="h-8 flex-1 cursor-pointer gap-1.5 rounded-[6px] text-[12px] font-medium"
                               >
                                 <Calendar className="h-3.5 w-3.5" />
-
                                 <span>Reschedule</span>
                               </Button>
 
                               <Button
                                 variant="primary"
-
                                 size="sm"
-
                                 onClick={(e) => {
                                   e.stopPropagation();
-
                                   handleOpenOutcome(candidate);
                                 }}
-
                                 className="h-8 flex-1 cursor-pointer gap-1.5 rounded-[6px] text-[12px] font-semibold"
                               >
                                 <CheckCircle2 className="h-3.5 w-3.5" />
-
                                 <span>Record Outcome</span>
                               </Button>
                             </div>
                           )
                         ) : isScheduled ? (
-                          <Button
-                            variant="primary"
+                          <div className="flex w-full items-center gap-2">
+                            <Button
+                              variant="outline"
+                              size="sm"
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                handleOpenSchedule(candidate);
+                              }}
+                              className="h-8 flex-1 cursor-pointer gap-1.5 rounded-[6px] text-[12px] font-medium"
+                            >
+                              <Calendar className="h-3.5 w-3.5" />
+                              <span>Reschedule</span>
+                            </Button>
 
-                            size="sm"
-
-                            onClick={(e) => {
-                              e.stopPropagation();
-
-                              handleOpenOutcome(candidate);
-                            }}
-
-                            className="h-8 w-full cursor-pointer gap-1.5 rounded-[6px] text-[12px] font-semibold"
-                          >
-                            <CheckCircle2 className="h-3.5 w-3.5" />
-
-                            <span>Conduct & Record Outcome</span>
-                          </Button>
+                            <Button
+                              variant="primary"
+                              size="sm"
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                handleOpenOutcome(candidate);
+                              }}
+                              className="h-8 flex-1 cursor-pointer gap-1.5 rounded-[6px] text-[12px] font-semibold"
+                            >
+                              <CheckCircle2 className="h-3.5 w-3.5" />
+                              <span>Conduct & Record</span>
+                            </Button>
+                          </div>
                         ) : (
-                          <div className="text-text-subtle bg-surface-2/40 border-border/60 w-full rounded-[6px] border py-1.5 text-center text-[11.5px] select-none">
-                            ⏳ Waiting for HR to confirm interview slot
+                          <div className="flex w-full items-center gap-2">
+                            <Button
+                              variant="primary"
+                              size="sm"
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                handleOpenSchedule(candidate);
+                              }}
+                              className="h-8 flex-1 cursor-pointer gap-1.5 rounded-[6px] text-[12px] font-semibold"
+                            >
+                              <Calendar className="h-3.5 w-3.5" />
+                              <span>Schedule Interview</span>
+                            </Button>
+
+                            <Button
+                              variant="outline"
+                              size="sm"
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                handleOpenOutcome(candidate);
+                              }}
+                              className="h-8 flex-1 cursor-pointer gap-1.5 rounded-[6px] text-[12px] font-medium"
+                            >
+                              <CheckCircle2 className="h-3.5 w-3.5" />
+                              <span>Record Outcome</span>
+                            </Button>
                           </div>
                         )}
                       </div>

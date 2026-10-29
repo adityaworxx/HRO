@@ -391,8 +391,8 @@ export function CandidateDetailSheet({ candidate, open, onOpenChange }: Candidat
             </>
           )}
 
-          {/* Field: Interview Schedule Form (If Stage is Interview) */}
-          {candidate.stage === 'Interview' && (
+          {/* Field: Interview Schedule Form (If Stage is Interview or Shortlisted by Manager) */}
+          {(candidate.stage === 'Interview' || candidate.managerDecision === 'Shortlisted') && (
             <>
               <div className="border-border/80 border-t border-dashed" />
               <div className="border-border bg-surface-2/30 space-y-3 rounded-lg border p-3.5">
@@ -408,33 +408,31 @@ export function CandidateDetailSheet({ candidate, open, onOpenChange }: Candidat
                       </span>
                     ) : (
                       <span className="text-text text-[11.5px] font-medium select-none">
-                        {isHr ? 'Needs HR Call' : 'HR Scheduling'}
+                        {isHr ? 'Needs HR Call' : 'Awaiting Booking'}
                       </span>
                     )}
                   </div>
-                  {isHr ? (
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      onClick={() => {
-                        if (!showScheduleForm && !interviewDate) {
-                          setInterviewDate(
-                            candidate.interviewDate
-                              ? candidate.interviewDate.slice(0, 16)
-                              : getCurrentLocalDateTime()
-                          );
-                        }
-                        setShowScheduleForm(!showScheduleForm);
-                      }}
-                      className="h-7 cursor-pointer text-[12px]"
-                    >
-                      {candidate.interviewDate ? 'Reschedule Slot' : 'Call & Set Slot'}
-                    </Button>
-                  ) : (
-                    <span className="text-text-subtle text-[11px] font-medium">
-                      {candidate.interviewDate ? 'Scheduled by HR' : 'HR Scheduling in Progress'}
-                    </span>
-                  )}
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => {
+                      if (!showScheduleForm && !interviewDate) {
+                        setInterviewDate(
+                          candidate.interviewDate
+                            ? candidate.interviewDate.slice(0, 16)
+                            : getCurrentLocalDateTime()
+                        );
+                      }
+                      setShowScheduleForm(!showScheduleForm);
+                    }}
+                    className="h-7 cursor-pointer text-[12px]"
+                  >
+                    {candidate.interviewDate
+                      ? 'Reschedule Slot'
+                      : isHr
+                        ? 'Call & Set Slot'
+                        : 'Set Interview Slot'}
+                  </Button>
                 </div>
 
                 {candidate.interviewDate ? (

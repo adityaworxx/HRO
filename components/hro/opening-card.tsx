@@ -78,6 +78,17 @@ export function OpeningCard({
     ).length;
   }, [allCandidates, opening.id]);
 
+  const interviewCount = React.useMemo(() => {
+    return allCandidates.filter(
+      (c) =>
+        c.openingId === opening.id &&
+        (c.stage === 'Interview' ||
+          (c.managerDecision === 'Shortlisted' &&
+            c.stage !== 'Rejected' &&
+            c.stage !== 'Joined'))
+    ).length;
+  }, [allCandidates, opening.id]);
+
   const DeptIcon = DEPARTMENT_ICONS[opening.department] || Building2;
   const avatarColor = getAvatarColor(opening.title);
   const minBudget = opening.budgetRange?.min ?? 0;
@@ -216,6 +227,18 @@ export function OpeningCard({
         <div className="flex shrink-0 items-center gap-1.5">
           {isManager ? (
             <>
+              {interviewCount > 0 && (
+                <Link
+                  href={`/interviews?openingId=${opening.id}`}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                  }}
+                  className="inline-flex cursor-pointer items-center justify-center rounded-[5px] border border-border/70 bg-surface-2 px-2.5 py-1 text-[11px] font-semibold text-text shadow-2xs transition-colors select-none hover:bg-surface-3"
+                  title={`View ${interviewCount} candidate${interviewCount === 1 ? '' : 's'} in interview stage for ${opening.title}`}
+                >
+                  <span>Interviews ({interviewCount})</span>
+                </Link>
+              )}
               <Link
                 href={`/shortlist?openingId=${opening.id}`}
                 onClick={(e) => {
@@ -238,24 +261,40 @@ export function OpeningCard({
                 <span>AI Review</span>
               </Link>
             </>
-          ) : onAiMatch ? (
-            <button
-              type="button"
-              onClick={(e) => {
-                e.preventDefault();
-                e.stopPropagation();
-                onAiMatch(opening);
-              }}
-              className="inline-flex cursor-pointer items-center justify-center rounded-[5px] border-0 bg-blue-600 px-2.5 py-1 text-[11px] font-semibold text-white shadow-2xs transition-colors select-none hover:bg-blue-700 active:scale-95 active:bg-blue-800"
-              title="Scan & Match Candidates with AI"
-            >
-              <span>AI Match</span>
-            </button>
           ) : (
-            <span className="text-text-muted inline-flex items-center gap-1 text-[11px] font-medium select-none">
-              <Clock className="text-text-subtle h-3 w-3 stroke-[1.75]" />
-              <span>{opening.urgency} Priority</span>
-            </span>
+            <>
+              {interviewCount > 0 && (
+                <Link
+                  href={`/interviews?openingId=${opening.id}`}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                  }}
+                  className="inline-flex cursor-pointer items-center justify-center rounded-[5px] border border-border/70 bg-surface-2 px-2.5 py-1 text-[11px] font-semibold text-text shadow-2xs transition-colors select-none hover:bg-surface-3"
+                  title={`View ${interviewCount} candidate${interviewCount === 1 ? '' : 's'} in interview stage for ${opening.title}`}
+                >
+                  <span>Interviews ({interviewCount})</span>
+                </Link>
+              )}
+              {onAiMatch ? (
+                <button
+                  type="button"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    onAiMatch(opening);
+                  }}
+                  className="inline-flex cursor-pointer items-center justify-center rounded-[5px] border-0 bg-blue-600 px-2.5 py-1 text-[11px] font-semibold text-white shadow-2xs transition-colors select-none hover:bg-blue-700 active:scale-95 active:bg-blue-800"
+                  title="Scan & Match Candidates with AI"
+                >
+                  <span>AI Match</span>
+                </button>
+              ) : interviewCount === 0 ? (
+                <span className="text-text-muted inline-flex items-center gap-1 text-[11px] font-medium select-none">
+                  <Clock className="text-text-subtle h-3 w-3 stroke-[1.75]" />
+                  <span>{opening.urgency} Priority</span>
+                </span>
+              ) : null}
+            </>
           )}
         </div>
       </div>

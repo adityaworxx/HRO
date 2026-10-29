@@ -196,6 +196,17 @@ export function ManagerAiAnalysisPage({ openingId }: ManagerAiAnalysisPageProps)
           <Button
             asChild
             size="sm"
+            variant="outline"
+            className="border-border/70 bg-surface-1 hover:bg-surface-2 text-text rounded-[8px] h-8.5 px-3 text-[12px] font-medium shadow-2xs cursor-pointer select-none"
+          >
+            <Link href={`/interviews?openingId=${opening.id}`}>
+              Interview Roster
+            </Link>
+          </Button>
+
+          <Button
+            asChild
+            size="sm"
             className="bg-emerald-600 hover:bg-emerald-700 text-white rounded-[8px] h-8.5 px-3.5 text-[12px] font-semibold shadow-xs cursor-pointer select-none"
           >
             <Link href={`/shortlist?openingId=${opening.id}`}>
@@ -381,9 +392,17 @@ export function ManagerAiAnalysisPage({ openingId }: ManagerAiAnalysisPageProps)
 
                       <div className="flex flex-col items-center gap-1.5">
                         {isApproved ? (
-                          <span className="text-emerald-700 dark:text-emerald-300 text-[12px] font-semibold px-3 py-1.5 rounded-[8px] bg-emerald-500/20 border border-emerald-500/35 select-none">
-                            Forwarded to Interview
-                          </span>
+                          <div className="flex flex-col items-center gap-1">
+                            <span className="text-emerald-700 dark:text-emerald-300 text-[12px] font-semibold px-3 py-1.5 rounded-[8px] bg-emerald-500/20 border border-emerald-500/35 select-none">
+                              Forwarded to Interview
+                            </span>
+                            <Link
+                              href={`/interviews?openingId=${opening.id}`}
+                              className="text-blue-600 dark:text-blue-400 hover:underline text-[11px] font-semibold inline-flex items-center gap-1"
+                            >
+                              Schedule Slot →
+                            </Link>
+                          </div>
                         ) : (
                           <button
                             type="button"
