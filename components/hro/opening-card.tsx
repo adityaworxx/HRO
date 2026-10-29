@@ -221,27 +221,22 @@ export function OpeningCard({
                 onClick={(e) => {
                   e.stopPropagation();
                 }}
-                className="inline-flex cursor-pointer items-center justify-center gap-1.5 rounded-[5px] border border-border/80 bg-surface-2 px-2.5 py-1 text-[11px] font-semibold text-text shadow-2xs transition-colors select-none hover:bg-surface-3 active:scale-95"
+                className="inline-flex cursor-pointer items-center justify-center rounded-[5px] border-0 bg-emerald-600 px-2.5 py-1 text-[11px] font-semibold text-white shadow-2xs transition-colors select-none hover:bg-emerald-700 active:scale-95 active:bg-emerald-800"
                 title={`View ${shortlistedCount} candidate${shortlistedCount === 1 ? '' : 's'} shortlisted for ${opening.title}`}
               >
-                <Users className="h-3 w-3 text-text-subtle" />
                 <span>Shortlisted ({shortlistedCount})</span>
               </Link>
-              {onAiReview && (
-                <button
-                  type="button"
-                  onClick={(e) => {
-                    e.preventDefault();
-                    e.stopPropagation();
-                    onAiReview(opening);
-                  }}
-                  className="inline-flex cursor-pointer items-center justify-center gap-1 rounded-[5px] border-0 bg-blue-600 px-2 py-1 text-[11px] font-semibold text-white shadow-2xs transition-colors select-none hover:bg-blue-700 active:scale-95 active:bg-blue-800"
-                  title="Run Groq AI Resume Analysis"
-                >
-                  <Sparkles className="h-3 w-3" />
-                  <span>AI Review</span>
-                </button>
-              )}
+              <Link
+                href={`/openings/${opening.id}/ai-review`}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  if (onAiReview) onAiReview(opening);
+                }}
+                className="inline-flex cursor-pointer items-center justify-center rounded-[5px] border-0 bg-blue-600 px-2.5 py-1 text-[11px] font-semibold text-white shadow-2xs transition-colors select-none hover:bg-blue-700 active:scale-95 active:bg-blue-800"
+                title="Run Groq AI Resume Analysis (Full Page)"
+              >
+                <span>AI Review</span>
+              </Link>
             </>
           ) : onAiMatch ? (
             <button

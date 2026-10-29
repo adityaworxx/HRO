@@ -1,6 +1,7 @@
 'use client';
 
 import * as React from 'react';
+import Link from 'next/link';
 import { useSearchParams, useRouter } from 'next/navigation';
 
 import { useCandidates, useRecordManagerDecision } from '../hooks';
@@ -499,14 +500,15 @@ export function ShortlistReview() {
                 </div>
 
                 <Button
+                  asChild
                   size="sm"
                   variant="outline"
-                  onClick={() => setIsAiAnalysisOpen(true)}
-                  className="h-9 gap-1.5 border-blue-500/30 bg-blue-500/10 text-blue-700 dark:text-blue-300 hover:bg-blue-500/20 px-3 text-[12.5px] font-semibold select-none cursor-pointer"
-                  title="Analyze shortlisted candidate resumes with Groq GPT-OSS 120B"
+                  className="h-9 border-blue-500/30 bg-blue-500/10 text-blue-700 dark:text-blue-300 hover:bg-blue-500/20 px-3 text-[12.5px] font-semibold select-none cursor-pointer"
+                  title="Analyze shortlisted candidate resumes with Groq GPT-OSS 120B (Full Page)"
                 >
-                  <Sparkles className="h-3.5 w-3.5 text-blue-600 dark:text-blue-400" />
-                  <span>AI Resume Review</span>
+                  <Link href={`/openings/${selectedOpeningId}/ai-review`}>
+                    <span>AI Resume Review</span>
+                  </Link>
                 </Button>
               </>
             )}
