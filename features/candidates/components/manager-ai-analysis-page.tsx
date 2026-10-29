@@ -156,17 +156,11 @@ export function ManagerAiAnalysisPage({ openingId }: ManagerAiAnalysisPageProps)
 
   return (
     <div className="space-y-5 w-full pb-20">
-      {/* 1. Clean Requisition Header Bar (No KPI cards, no requisition details) */}
+      {/* 1. Clean Requisition Header Bar */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 pt-1 select-none">
-        <div className="flex items-center gap-3">
-          <h1 className="text-text text-[20px] font-semibold tracking-tight">
-            {opening.title}
-          </h1>
-          <span className="inline-flex items-center gap-1.5 rounded-full border border-emerald-500/25 bg-emerald-500/10 px-2.5 py-0.5 text-[10.5px] font-medium text-emerald-600 dark:text-emerald-400 select-none">
-            <span className="h-1.5 w-1.5 rounded-full bg-emerald-500" />
-            {opening.status}
-          </span>
-        </div>
+        <h1 className="text-text text-[20px] font-semibold tracking-tight">
+          {opening.title}
+        </h1>
 
         <div className="flex items-center gap-2.5 shrink-0">
           <Button
@@ -319,23 +313,35 @@ export function ManagerAiAnalysisPage({ openingId }: ManagerAiAnalysisPageProps)
                           </span>
                         </div>
 
-                        {/* Current Role & Company + Vitals (Exp, CTC, Notice) */}
-                        <div className="text-text-muted text-[12.5px] flex items-center gap-2 flex-wrap">
+                        {/* Current Role & Company */}
+                        <div className="text-text-muted text-[13px] flex items-center gap-1.5 pt-0.5">
                           <span className="text-text font-medium">{candidate.currentRole}</span>
                           <span className="text-text-subtle">at</span>
-                          <span className="text-text inline-flex items-center gap-1.5 font-medium">
+                          <span className="text-text inline-flex items-center gap-1.5 font-semibold">
                             <CompanyLogo
                               company={candidate.currentCompany}
                               className="h-3.5 w-3.5 rounded-[3px] shadow-2xs inline-block"
                             />
                             <span>{candidate.currentCompany}</span>
                           </span>
-                          <span className="text-text-subtle/60">&bull;</span>
-                          <span className="font-sans tabular-nums">{candidate.experienceYears}y exp</span>
-                          <span className="text-text-subtle/60">&bull;</span>
-                          <span className="font-sans tabular-nums">{formatCtc(candidate.expectedCtc)}</span>
-                          <span className="text-text-subtle/60">&bull;</span>
-                          <span>{candidate.noticePeriod}</span>
+                        </div>
+
+                        {/* Professional Vitals: Experience, Expected CTC, Notice Period */}
+                        <div className="flex items-center gap-2 flex-wrap pt-1">
+                          <span className="inline-flex items-center gap-1.5 rounded-[6px] border border-border/70 bg-surface-2/60 px-2.5 py-1 text-[11.5px] select-none">
+                            <span className="text-text-subtle text-[10px] uppercase tracking-wider font-semibold">Exp</span>
+                            <span className="text-text font-semibold font-sans tabular-nums">{candidate.experienceYears} Years</span>
+                          </span>
+
+                          <span className="inline-flex items-center gap-1.5 rounded-[6px] border border-border/70 bg-surface-2/60 px-2.5 py-1 text-[11.5px] select-none">
+                            <span className="text-text-subtle text-[10px] uppercase tracking-wider font-semibold">Expected CTC</span>
+                            <span className="text-text font-semibold font-sans tabular-nums">{formatCtc(candidate.expectedCtc)}</span>
+                          </span>
+
+                          <span className="inline-flex items-center gap-1.5 rounded-[6px] border border-border/70 bg-surface-2/60 px-2.5 py-1 text-[11.5px] select-none">
+                            <span className="text-text-subtle text-[10px] uppercase tracking-wider font-semibold">Notice</span>
+                            <span className="text-text font-semibold">{candidate.noticePeriod}</span>
+                          </span>
                         </div>
                       </div>
                     </div>
