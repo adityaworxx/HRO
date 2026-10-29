@@ -31,6 +31,26 @@ interface AiAnalysisResponse {
   candidates: CandidateAiAnalysis[];
 }
 
+function cleanExecutiveSummary(
+  text: string,
+  candidateList: Array<{ id: string; name: string }>
+): string {
+  if (!text) return '';
+  let cleaned = text;
+  for (const c of candidateList) {
+    cleaned = cleaned.replace(
+      new RegExp(`Candidate\\s+${c.id}\\s*\\(?${c.name}\\)?`, 'gi'),
+      c.name
+    );
+    cleaned = cleaned.replace(new RegExp(c.id, 'gi'), c.name);
+  }
+  cleaned = cleaned
+    .replace(/[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}/gi, '')
+    .replace(/\s{2,}/g, ' ')
+    .trim();
+  return cleaned;
+}
+
 interface ManagerAiAnalysisPageProps {
   openingId: string;
 }
@@ -261,7 +281,7 @@ export function ManagerAiAnalysisPage({ openingId }: ManagerAiAnalysisPageProps)
             </div>
 
             <p className="text-text text-[13.5px] leading-relaxed font-normal">
-              {analysis.executiveSummary}
+              {cleanExecutiveSummary(analysis.executiveSummary, shortlistedCandidates)}
             </p>
           </div>
 
@@ -304,15 +324,11 @@ export function ManagerAiAnalysisPage({ openingId }: ManagerAiAnalysisPageProps)
 
                           <span
                             className={cn(
-                              'rounded-full border px-2.5 py-0.5 text-[11px] font-bold select-none',
-                              analyzed.verdict === 'Strong Hire' &&
-                                'bg-emerald-500/20 border-emerald-500/40 text-emerald-900 dark:text-emerald-200',
-                              analyzed.verdict === 'Hire' &&
-                                'bg-blue-500/20 border-blue-500/40 text-blue-900 dark:text-blue-200',
-                              analyzed.verdict === 'Borderline' &&
-                                'bg-amber-500/20 border-amber-500/40 text-amber-900 dark:text-amber-200',
-                              analyzed.verdict === 'Do Not Hire' &&
-                                'bg-rose-500/20 border-rose-500/40 text-rose-900 dark:text-rose-200'
+                              'rounded-full px-2.5 py-0.5 text-[11px] font-bold select-none text-white shadow-2xs',
+                              analyzed.verdict === 'Strong Hire' && 'bg-emerald-600',
+                              analyzed.verdict === 'Hire' && 'bg-blue-600',
+                              analyzed.verdict === 'Borderline' && 'bg-amber-600',
+                              analyzed.verdict === 'Do Not Hire' && 'bg-rose-600'
                             )}
                           >
                             {analyzed.verdict}
@@ -332,21 +348,21 @@ export function ManagerAiAnalysisPage({ openingId }: ManagerAiAnalysisPageProps)
                           </span>
                         </div>
 
-                        {/* Professional Rich Dark Colored Vitals: Experience, Expected CTC, Notice Period */}
+                        {/* Professional Dark Filled Vitals Boxes: Experience, Expected CTC, Notice Period */}
                         <div className="flex items-center gap-2 flex-wrap pt-1">
-                          <span className="inline-flex items-center gap-1.5 rounded-[6px] border border-blue-500/40 bg-blue-500/20 px-2.5 py-1 text-[11.5px] select-none text-blue-900 dark:text-blue-200">
-                            <span className="text-blue-800 dark:text-blue-300 text-[10px] uppercase tracking-wider font-bold">Exp</span>
-                            <span className="font-bold font-sans tabular-nums">{candidate.experienceYears} Years</span>
+                          <span className="inline-flex items-center gap-1.5 rounded-[6px] bg-blue-600 text-white px-2.5 py-1 text-[11.5px] select-none shadow-2xs">
+                            <span className="text-blue-200 text-[10px] uppercase tracking-wider font-semibold">Exp</span>
+                            <span className="font-bold font-sans tabular-nums text-white">{candidate.experienceYears} Years</span>
                           </span>
 
-                          <span className="inline-flex items-center gap-1.5 rounded-[6px] border border-emerald-500/40 bg-emerald-500/20 px-2.5 py-1 text-[11.5px] select-none text-emerald-900 dark:text-emerald-200">
-                            <span className="text-emerald-800 dark:text-emerald-300 text-[10px] uppercase tracking-wider font-bold">Expected CTC</span>
-                            <span className="font-bold font-sans tabular-nums">{formatCtc(candidate.expectedCtc)}</span>
+                          <span className="inline-flex items-center gap-1.5 rounded-[6px] bg-emerald-600 text-white px-2.5 py-1 text-[11.5px] select-none shadow-2xs">
+                            <span className="text-emerald-200 text-[10px] uppercase tracking-wider font-semibold">Expected CTC</span>
+                            <span className="font-bold font-sans tabular-nums text-white">{formatCtc(candidate.expectedCtc)}</span>
                           </span>
 
-                          <span className="inline-flex items-center gap-1.5 rounded-[6px] border border-amber-500/40 bg-amber-500/20 px-2.5 py-1 text-[11.5px] select-none text-amber-900 dark:text-amber-200">
-                            <span className="text-amber-800 dark:text-amber-300 text-[10px] uppercase tracking-wider font-bold">Notice</span>
-                            <span className="font-bold">{candidate.noticePeriod}</span>
+                          <span className="inline-flex items-center gap-1.5 rounded-[6px] bg-amber-600 text-white px-2.5 py-1 text-[11.5px] select-none shadow-2xs">
+                            <span className="text-amber-200 text-[10px] uppercase tracking-wider font-semibold">Notice</span>
+                            <span className="font-bold text-white">{candidate.noticePeriod}</span>
                           </span>
                         </div>
                       </div>
@@ -380,7 +396,7 @@ export function ManagerAiAnalysisPage({ openingId }: ManagerAiAnalysisPageProps)
                         )}
 
                         {isTopPick && (
-                          <span className="inline-flex items-center rounded-full border border-violet-500/40 bg-violet-500/20 px-2.5 py-0.5 text-[10.5px] font-bold text-violet-800 dark:text-violet-200 select-none">
+                          <span className="inline-flex items-center rounded-full bg-violet-600 text-white px-2.5 py-0.5 text-[10.5px] font-bold select-none shadow-2xs">
                             Top Pick
                           </span>
                         )}

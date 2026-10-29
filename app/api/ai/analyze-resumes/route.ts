@@ -61,7 +61,7 @@ Evaluate their fit, technical strengths, potential risks/gaps, and formulate tai
 Return ONLY a valid JSON object without markdown formatting, code fences (\`\`\`), or extra commentary.
 The JSON must adhere to this exact structure:
 {
-  "executiveSummary": "A concise, executive-level summary comparing the cohort, highlighting who the strongest pick is and why.",
+  "executiveSummary": "A concise, executive-level summary comparing the cohort, highlighting who the strongest pick is and why. Always refer to candidates by their full names (never by raw IDs).",
   "recommendedCandidateId": "ID of the absolute best candidate",
   "candidates": [
     {
