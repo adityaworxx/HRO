@@ -1,6 +1,7 @@
 'use client';
 
 import * as React from 'react';
+import { useSearchParams, useRouter } from 'next/navigation';
 
 import { useCandidates, useRecordManagerDecision } from '../hooks';
 
@@ -112,52 +113,67 @@ export function ShortlistReview() {
   }, [openings]);
 
   // Search, filter, pagination, and sheet states
+  const searchParams = useSearchParams();
+  const router = useRouter();
+  const urlOpeningId = searchParams.get('openingId') || searchParams.get('opening') || searchParams.get('requisition') || '';
 
   const [searchQuery, setSearchQuery] = React.useState<string>('');
-
   const [selectedDepartment, setSelectedDepartment] = React.useState<string>('all');
-
-  const [selectedOpeningId, setSelectedOpeningId] = React.useState<string>('all');
-
+  const [selectedOpeningId, setSelectedOpeningId] = React.useState<string>(urlOpeningId || 'all');
   const [pageByDept, setPageByDept] = React.useState<Record<string, number>>({});
-
   const [selectedCandidate, setSelectedCandidate] = React.useState<Candidate | null>(null);
-
   const [isReviewSheetOpen, setIsReviewSheetOpen] = React.useState<boolean>(false);
-
   const [managerComment, setManagerComment] = React.useState<string>('');
-
   const [pendingDecision, setPendingDecision] = React.useState<'Shortlisted' | 'Rejected' | null>(
     null
   );
 
-  // Reset pagination when filters change
+  // Sync state if URL search param changes
+  React.useEffect(() => {
+    if (urlOpeningId && urlOpeningId !== selectedOpeningId) {
+      setSelectedOpeningId(urlOpeningId);
+    }
+  }, [urlOpeningId, selectedOpeningId]);
 
+  const handleOpeningChange = React.useCallback(
+    (newOpeningId: string) => {
+      setSelectedOpeningId(newOpeningId);
+      const params = new URLSearchParams(window.location.search);
+      if (newOpeningId === 'all') {
+        params.delete('openingId');
+        params.delete('opening');
+        params.delete('requisition');
+      } else {
+        params.set('openingId', newOpeningId);
+      }
+      const qs = params.toString();
+      router.replace(qs ? `/shortlist?${qs}` : '/shortlist', { scroll: false });
+    },
+    [router]
+  );
+
+  // Reset pagination when filters change
   React.useEffect(() => {
     setPageByDept({});
   }, [searchQuery, selectedDepartment, selectedOpeningId]);
 
   // Unique departments for filter
-
   const departments = React.useMemo(() => {
     const deptSet = new Set<string>();
-
     for (const c of pendingCandidates) {
       const opening = openingsMap.get(c.openingId);
-
       if (opening?.department) deptSet.add(opening.department);
     }
-
     return Array.from(deptSet).sort();
   }, [pendingCandidates, openingsMap]);
 
-  // Requisitions with pending candidate profiles
-
+  // Requisitions with pending candidate profiles, or currently selected opening
   const relevantOpenings = React.useMemo(() => {
-    const openingIds = new Set(pendingCandidates.map((c) => c.openingId));
-
-    return openings.filter((o) => openingIds.has(o.id));
-  }, [pendingCandidates, openings]);
+    const list = openings.filter(
+      (o) => pendingCandidates.some((c) => c.openingId === o.id) || o.id === selectedOpeningId
+    );
+    return list.length > 0 ? list : openings;
+  }, [pendingCandidates, openings, selectedOpeningId]);
 
   // Filter candidates by search query, department, and requisition
 
@@ -216,16 +232,25 @@ export function ShortlistReview() {
   // Group filtered candidates into department columns
 
   const departmentGroups = React.useMemo(() => {
-    // If a specific department is chosen, show only that column; otherwise, show all departments present in pendingCandidates
-
+    // If a specific opening is chosen, show only that opening's department column
     const deptSet = new Set<string>();
 
-    if (selectedDepartment !== 'all') {
+    if (selectedOpeningId !== 'all') {
+      const selectedOp = openingsMap.get(selectedOpeningId);
+      if (selectedOp?.department) {
+        deptSet.add(selectedOp.department);
+      } else {
+        for (const c of filteredCandidates) {
+          const opening = openingsMap.get(c.openingId);
+          deptSet.add(opening?.department || 'General');
+        }
+        if (deptSet.size === 0) deptSet.add('General');
+      }
+    } else if (selectedDepartment !== 'all') {
       deptSet.add(selectedDepartment);
     } else {
       for (const c of pendingCandidates) {
         const opening = openingsMap.get(c.openingId);
-
         deptSet.add(opening?.department || 'General');
       }
     }
@@ -423,12 +448,10 @@ export function ShortlistReview() {
             )}
 
             {/* Requisition Filter */}
-
             {relevantOpenings.length > 0 && (
               <Select
                 value={selectedOpeningId}
-
-                onValueChange={(val) => setSelectedOpeningId(val)}
+                onValueChange={handleOpeningChange}
               >
                 <SelectTrigger className="border-border/70 bg-surface-2/40 hover:bg-surface-2 text-text h-9 w-full min-w-0 gap-2 rounded-[8px] px-3 text-[13px] font-medium shadow-2xs sm:w-auto sm:min-w-[200px]">
                   <SelectValue placeholder={`All Requisitions (${relevantOpenings.length})`} />
@@ -436,20 +459,41 @@ export function ShortlistReview() {
 
                 <SelectContent align="start" className="min-w-[240px]">
                   <SelectItem value="all" className="min-h-[32px] rounded-[6px] py-1.5 text-[13px]">
-                    All Requisitions ({relevantOpenings.length})
+                    All Requisitions ({pendingCandidates.length})
                   </SelectItem>
 
-                  {relevantOpenings.map((opening) => (
-                    <SelectItem
-                      key={opening.id}
-                      value={opening.id}
-                      className="min-h-[32px] rounded-[6px] py-1.5 text-[13px]"
-                    >
-                      {formatRoleTitle(opening.title)} ({opening.department})
-                    </SelectItem>
-                  ))}
+                  {relevantOpenings.map((opening) => {
+                    const count = pendingCandidates.filter((c) => c.openingId === opening.id).length;
+                    return (
+                      <SelectItem
+                        key={opening.id}
+                        value={opening.id}
+                        className="min-h-[32px] rounded-[6px] py-1.5 text-[13px]"
+                      >
+                        {formatRoleTitle(opening.title)} ({count})
+                      </SelectItem>
+                    );
+                  })}
                 </SelectContent>
               </Select>
+            )}
+
+            {/* Active Requisition Filter Chip */}
+            {selectedOpeningId !== 'all' && (
+              <div className="flex items-center gap-1.5 rounded-[6px] border border-border/80 bg-surface-2 px-2.5 py-1 text-[12px] font-medium text-text select-none">
+                <span className="text-text-muted">Role:</span>
+                <span className="font-semibold text-text truncate max-w-[180px]">
+                  {openingsMap.get(selectedOpeningId)?.title || 'Selected Role'}
+                </span>
+                <button
+                  type="button"
+                  onClick={() => handleOpeningChange('all')}
+                  className="text-text-subtle hover:text-text ml-0.5 cursor-pointer p-0.5 rounded hover:bg-surface-3 transition-colors"
+                  title="Clear role filter"
+                >
+                  <X className="h-3.5 w-3.5" />
+                </button>
+              </div>
             )}
           </div>
         </div>
@@ -461,13 +505,10 @@ export function ShortlistReview() {
       </div>
 
       {/* 2. Main Content: Department Columns of Candidate Cards */}
-
       {pendingCandidates.length === 0 ? (
         <EmptyState
           icon={CheckCircle2}
-
           title="Review Queue Clear"
-
           description="All candidate profiles forwarded by talent acquisition have been reviewed. New submissions will appear here automatically."
         />
       ) : filteredCandidates.length === 0 ? (
@@ -475,27 +516,28 @@ export function ShortlistReview() {
           <Filter className="text-text-subtle mx-auto h-8 w-8" />
 
           <p className="text-text mt-3 text-[14px] font-semibold">
-            No candidates match your filters
+            {selectedOpeningId !== 'all'
+              ? `No candidates shortlisted for "${openingsMap.get(selectedOpeningId)?.title || 'this role'}"`
+              : 'No candidates match your filters'}
           </p>
 
           <p className="text-text-muted mt-1 text-[12.5px]">
-            Try adjusting your search query or selecting &quot;All Departments&quot;.
+            {selectedOpeningId !== 'all'
+              ? 'HR has not forwarded any shortlisted profiles for this requisition yet, or they have already been processed.'
+              : 'Try adjusting your search query or selecting "All Departments".'}
           </p>
 
           <button
             type="button"
-
             onClick={() => {
               setSearchQuery('');
-
               setSelectedDepartment('all');
-
-              setSelectedOpeningId('all');
+              handleOpeningChange('all');
             }}
-
-            className="text-accent mt-2 inline-block cursor-pointer text-[12px] font-medium hover:underline"
+            className="text-accent mt-3 inline-flex items-center gap-1.5 cursor-pointer text-[12px] font-medium hover:underline"
           >
-            Reset all filters
+            <span>View all shortlisted candidates</span>
+            <ArrowRight className="h-3 w-3" />
           </button>
         </div>
       ) : (

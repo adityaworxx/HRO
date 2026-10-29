@@ -31,6 +31,8 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
 } from '@/components/ui/dropdown-menu';
+import { useUiStore } from '@/lib/store';
+import { useCandidates } from '@/features/candidates/hooks';
 
 const DEPARTMENT_ICONS: Record<string, React.ElementType> = {
   Engineering: Code2,
@@ -60,6 +62,19 @@ export function OpeningCard({
   className,
   actionText,
 }: OpeningCardProps) {
+  const { role } = useUiStore();
+  const isManager = role === 'manager';
+  const { data: allCandidates = [] } = useCandidates();
+
+  const shortlistedCount = React.useMemo(() => {
+    return allCandidates.filter(
+      (c) =>
+        c.openingId === opening.id &&
+        c.stage === 'Shared with Manager' &&
+        c.managerDecision === 'Pending'
+    ).length;
+  }, [allCandidates, opening.id]);
+
   const DeptIcon = DEPARTMENT_ICONS[opening.department] || Building2;
   const avatarColor = getAvatarColor(opening.title);
   const minBudget = opening.budgetRange?.min ?? 0;
@@ -195,8 +210,20 @@ export function OpeningCard({
           <span className="text-text text-[11px] font-medium select-none">{opening.status}</span>
         )}
 
-        <div className="flex shrink-0 items-center">
-          {onAiMatch ? (
+        <div className="flex shrink-0 items-center gap-1.5">
+          {isManager ? (
+            <Link
+              href={`/shortlist?openingId=${opening.id}`}
+              onClick={(e) => {
+                e.stopPropagation();
+              }}
+              className="inline-flex cursor-pointer items-center justify-center gap-1.5 rounded-[5px] border border-border/80 bg-surface-2 px-2.5 py-1 text-[11px] font-semibold text-text shadow-2xs transition-colors select-none hover:bg-surface-3 active:scale-95"
+              title={`View ${shortlistedCount} candidate${shortlistedCount === 1 ? '' : 's'} shortlisted for ${opening.title}`}
+            >
+              <Users className="h-3 w-3 text-text-subtle" />
+              <span>Shortlisted ({shortlistedCount})</span>
+            </Link>
+          ) : onAiMatch ? (
             <button
               type="button"
               onClick={(e) => {

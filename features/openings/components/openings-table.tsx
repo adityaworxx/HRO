@@ -48,11 +48,15 @@ import {
   Columns3,
   List,
   SlidersHorizontal,
+  Users,
 } from 'lucide-react';
+import { useUiStore } from '@/lib/store';
 import { toast } from 'sonner';
 
 export function OpeningsTable() {
   const router = useRouter();
+  const { role } = useUiStore();
+  const isManager = role === 'manager';
   const { data: openings = [], isLoading, isError, refetch } = useOpenings();
   const { data: candidates = [] } = useCandidates();
   const updateStatus = useUpdateOpeningStatus();
@@ -201,20 +205,37 @@ export function OpeningsTable() {
         cell: ({ row }) => {
           const opening = row.original;
           const allowedTransitions = getNextAllowedOpeningStatuses(opening.status);
+          const shortlistedCount = candidates.filter(
+            (c) =>
+              c.openingId === opening.id &&
+              c.stage === 'Shared with Manager' &&
+              c.managerDecision === 'Pending'
+          ).length;
 
           return (
             <div
               className="flex items-center justify-end gap-1.5"
               onClick={(e) => e.stopPropagation()}
             >
-              <button
-                type="button"
-                onClick={() => setAiMatchOpening(opening)}
-                className="inline-flex cursor-pointer items-center justify-center rounded-[5px] border-0 bg-blue-600 px-2.5 py-1 text-[11px] font-semibold text-white shadow-2xs transition-colors select-none hover:bg-blue-700 active:scale-95 active:bg-blue-800"
-                title="Match candidates with AI"
-              >
-                <span>AI Match</span>
-              </button>
+              {isManager ? (
+                <Link
+                  href={`/shortlist?openingId=${opening.id}`}
+                  className="inline-flex cursor-pointer items-center justify-center gap-1.5 rounded-[5px] border border-border/80 bg-surface-2 px-2.5 py-1 text-[11px] font-semibold text-text shadow-2xs transition-colors select-none hover:bg-surface-3 active:scale-95"
+                  title={`View ${shortlistedCount} candidate${shortlistedCount === 1 ? '' : 's'} shortlisted for ${opening.title}`}
+                >
+                  <Users className="h-3 w-3 text-text-subtle" />
+                  <span>Shortlisted ({shortlistedCount})</span>
+                </Link>
+              ) : (
+                <button
+                  type="button"
+                  onClick={() => setAiMatchOpening(opening)}
+                  className="inline-flex cursor-pointer items-center justify-center rounded-[5px] border-0 bg-blue-600 px-2.5 py-1 text-[11px] font-semibold text-white shadow-2xs transition-colors select-none hover:bg-blue-700 active:scale-95 active:bg-blue-800"
+                  title="Match candidates with AI"
+                >
+                  <span>AI Match</span>
+                </button>
+              )}
 
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
