@@ -255,16 +255,15 @@ export function ManagerDashboard() {
               </Link>
             </div>
 
-            {/* Department Filter Pills (Clean Text, No Border Boxes) */}
-            {/* Department Filter Pills (Proper Orange When Selected, Matching Openings) */}
+            {/* Department Filter Pills (Solid Orange when Selected, matching design) */}
             <div className="no-scrollbar flex items-center gap-1.5 overflow-x-auto pt-3 pb-1">
               <button
                 type="button"
                 onClick={() => handleSelectReviewDept('all')}
                 className={cn(
-                  'inline-flex shrink-0 cursor-pointer items-center gap-1.5 rounded-[6px] px-2.5 py-1 text-[12.5px] font-medium transition-colors',
+                  'inline-flex shrink-0 cursor-pointer items-center gap-1.5 rounded-[6px] px-2.5 py-1 text-[12.5px] font-medium transition-colors select-none',
                   selectedReviewDept === 'all'
-                    ? 'border-border-strong bg-surface-3 text-text border font-semibold shadow-xs'
+                    ? 'border-accent bg-accent font-semibold text-white shadow-xs'
                     : 'bg-surface-2 text-text-muted hover:bg-surface-3 hover:text-text'
                 )}
               >
@@ -273,7 +272,7 @@ export function ManagerDashboard() {
                   className={cn(
                     'rounded-full px-1.5 font-sans text-[11px] font-semibold tabular-nums',
                     selectedReviewDept === 'all'
-                      ? 'border-border/80 bg-surface-1 text-text border'
+                      ? 'bg-white/20 text-white'
                       : 'bg-surface-3 text-text-subtle'
                   )}
                 >
@@ -289,19 +288,19 @@ export function ManagerDashboard() {
                     type="button"
                     onClick={() => handleSelectReviewDept(group.id)}
                     className={cn(
-                      'inline-flex shrink-0 cursor-pointer items-center gap-1.5 rounded-[6px] px-2.5 py-1 text-[12.5px] font-medium transition-colors',
+                      'inline-flex shrink-0 cursor-pointer items-center gap-1.5 rounded-[6px] px-2.5 py-1 text-[12.5px] font-medium transition-colors select-none',
                       isSelected
-                        ? 'border-border-strong bg-surface-3 text-text border font-semibold shadow-xs'
+                        ? 'border-accent bg-accent font-semibold text-white shadow-xs'
                         : 'bg-surface-2 text-text-muted hover:bg-surface-3 hover:text-text'
                     )}
                   >
-                    <GroupIcon className="h-3.5 w-3.5 shrink-0" />
+                    <GroupIcon className={cn('h-3.5 w-3.5 shrink-0', isSelected ? 'text-white' : 'text-text-subtle')} />
                     <span>{group.title}</span>
                     <span
                       className={cn(
                         'rounded-full px-1.5 font-sans text-[11px] font-semibold tabular-nums',
                         isSelected
-                          ? 'border-border/80 bg-surface-1 text-text border'
+                          ? 'bg-white/20 text-white'
                           : 'bg-surface-3 text-text-subtle'
                       )}
                     >
