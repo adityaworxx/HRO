@@ -14,3 +14,4 @@ export default function OpeningAiReviewPage() {
     </React.Suspense>
   );
 }
+

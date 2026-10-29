@@ -149,7 +149,7 @@ export function ManagerAiAnalysisPage({ openingId }: ManagerAiAnalysisPageProps)
 
   if (loadingOpening || loadingCandidates) {
     return (
-      <div className="space-y-6 max-w-7xl mx-auto py-2">
+      <div className="space-y-6 w-full py-2">
         <Skeleton className="h-8 w-48" />
         <Skeleton className="h-28 w-full rounded-[12px]" />
         <Skeleton className="h-44 w-full rounded-[12px]" />
@@ -163,7 +163,7 @@ export function ManagerAiAnalysisPage({ openingId }: ManagerAiAnalysisPageProps)
 
   if (isError || !opening) {
     return (
-      <div className="max-w-7xl mx-auto py-6">
+      <div className="w-full py-6">
         <EmptyState
           icon={AlertCircle}
           title="Requisition Not Found"
@@ -183,7 +183,7 @@ export function ManagerAiAnalysisPage({ openingId }: ManagerAiAnalysisPageProps)
     : null;
 
   return (
-    <div className="space-y-6 max-w-7xl mx-auto pb-16">
+    <div className="space-y-6 w-full pb-16">
       {/* 1. Navigation Breadcrumb & Back Link */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 pt-1 select-none">
         <div className="flex items-center gap-2">
@@ -589,3 +589,4 @@ export function ManagerAiAnalysisPage({ openingId }: ManagerAiAnalysisPageProps)
     </div>
   );
 }
+
