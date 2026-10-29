@@ -12,7 +12,7 @@ import { CompanyLogo } from '@/components/hro/company-logo';
 import type { Candidate, Opening } from '@/types/entities';
 import { toast } from 'sonner';
 import { cn } from '@/lib/utils';
-import { formatCtc, formatCtcRange } from '@/lib/format';
+import { formatCtc } from '@/lib/format';
 
 interface CandidateAiAnalysis {
   id: string;
@@ -156,99 +156,38 @@ export function ManagerAiAnalysisPage({ openingId }: ManagerAiAnalysisPageProps)
 
   return (
     <div className="space-y-5 w-full pb-20">
-      {/* 1. Apple-Grade Requisition Intelligence Banner */}
-      <div className="border border-border/70 bg-surface-1 rounded-[16px] p-5 shadow-2xs space-y-4">
-        {/* Top Tier: Identity & Actions */}
-        <div className="flex flex-col md:flex-row md:items-start md:justify-between gap-4">
-          <div className="space-y-1">
-            <div className="flex items-center gap-2">
-              <span className="text-[10px] uppercase tracking-widest font-semibold text-text-subtle">
-                Requisition Dossier
-              </span>
-              <span className="text-text-subtle/50">&bull;</span>
-              <span className="inline-flex items-center gap-1.5 rounded-full border border-emerald-500/25 bg-emerald-500/10 px-2.5 py-0.5 text-[10.5px] font-medium text-emerald-600 dark:text-emerald-400 select-none">
-                <span className="h-1.5 w-1.5 rounded-full bg-emerald-500" />
-                {opening.status}
-              </span>
-            </div>
-
-            <h1 className="text-text text-[22px] font-semibold tracking-tight">
-              {opening.title}
-            </h1>
-
-            <p className="text-text-muted text-[13px]">
-              {opening.department} &bull; {opening.location}
-            </p>
-          </div>
-
-          {/* Actions: Re-analyze & Shortlist Queue */}
-          <div className="flex items-center gap-2.5 shrink-0 self-start md:self-auto">
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={runAnalysis}
-              disabled={isLoading || shortlistedCandidates.length === 0}
-              className="border-border/70 bg-surface-1 hover:bg-surface-2 text-text rounded-[8px] h-9 px-3.5 text-[12px] font-medium select-none cursor-pointer"
-            >
-              {isLoading ? 'Analyzing...' : 'Re-analyze'}
-            </Button>
-
-            <Button
-              asChild
-              size="sm"
-              className="bg-emerald-600 hover:bg-emerald-700 text-white rounded-[8px] h-9 px-4 text-[12.5px] font-semibold shadow-xs cursor-pointer select-none"
-            >
-              <Link href={`/shortlist?openingId=${opening.id}`}>
-                Shortlist Queue ({shortlistedCandidates.length})
-              </Link>
-            </Button>
-          </div>
+      {/* 1. Clean Requisition Header Bar (No KPI cards, no requisition details) */}
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 pt-1 select-none">
+        <div className="flex items-center gap-3">
+          <h1 className="text-text text-[20px] font-semibold tracking-tight">
+            {opening.title}
+          </h1>
+          <span className="inline-flex items-center gap-1.5 rounded-full border border-emerald-500/25 bg-emerald-500/10 px-2.5 py-0.5 text-[10.5px] font-medium text-emerald-600 dark:text-emerald-400 select-none">
+            <span className="h-1.5 w-1.5 rounded-full bg-emerald-500" />
+            {opening.status}
+          </span>
         </div>
 
-        {/* Bottom Tier: Separate Modular Parameter Tiles */}
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-2.5 pt-1 border-t border-border/50">
-          <div className="rounded-[10px] border border-border/60 bg-surface-2/30 px-3.5 py-2.5">
-            <span className="text-[10px] uppercase tracking-wider text-text-subtle font-semibold block">
-              Headcount Target
-            </span>
-            <span className="text-[13px] font-semibold text-text font-sans tabular-nums mt-0.5 block">
-              {opening.headcount} {opening.headcount === 1 ? 'Position' : 'Positions'}
-            </span>
-          </div>
+        <div className="flex items-center gap-2.5 shrink-0">
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={runAnalysis}
+            disabled={isLoading || shortlistedCandidates.length === 0}
+            className="border-border/70 bg-surface-1 hover:bg-surface-2 text-text rounded-[8px] h-8.5 px-3 text-[12px] font-medium select-none cursor-pointer"
+          >
+            {isLoading ? 'Analyzing...' : 'Re-analyze'}
+          </Button>
 
-          <div className="rounded-[10px] border border-border/60 bg-surface-2/30 px-3.5 py-2.5">
-            <span className="text-[10px] uppercase tracking-wider text-text-subtle font-semibold block">
-              Experience Required
-            </span>
-            <span className="text-[13px] font-semibold text-text font-sans tabular-nums mt-0.5 block">
-              {opening.experienceRange.min}–{opening.experienceRange.max} Years
-            </span>
-          </div>
-
-          <div className="rounded-[10px] border border-border/60 bg-surface-2/30 px-3.5 py-2.5">
-            <span className="text-[10px] uppercase tracking-wider text-text-subtle font-semibold block">
-              Annual Budget
-            </span>
-            <span className="text-[13px] font-semibold text-text font-sans tabular-nums mt-0.5 block">
-              {formatCtcRange(opening.budgetRange.min, opening.budgetRange.max)}
-            </span>
-          </div>
-
-          <div className="rounded-[10px] border border-border/60 bg-surface-2/30 px-3.5 py-2.5">
-            <span className="text-[10px] uppercase tracking-wider text-text-subtle font-semibold block">
-              Must-Have Skills
-            </span>
-            <div className="flex items-center gap-1.5 flex-wrap mt-1">
-              {opening.mustHaveSkills?.map((skill) => (
-                <span
-                  key={skill}
-                  className="rounded-[5px] bg-surface-1 border border-border/80 px-2 py-0.5 text-[11px] font-medium text-text select-none"
-                >
-                  {skill}
-                </span>
-              ))}
-            </div>
-          </div>
+          <Button
+            asChild
+            size="sm"
+            className="bg-emerald-600 hover:bg-emerald-700 text-white rounded-[8px] h-8.5 px-3.5 text-[12px] font-semibold shadow-xs cursor-pointer select-none"
+          >
+            <Link href={`/shortlist?openingId=${opening.id}`}>
+              Shortlist Queue ({shortlistedCandidates.length})
+            </Link>
+          </Button>
         </div>
       </div>
 
@@ -380,8 +319,8 @@ export function ManagerAiAnalysisPage({ openingId }: ManagerAiAnalysisPageProps)
                           </span>
                         </div>
 
-                        {/* Current Role & Company (Clean, no boxy LinkedIn chip) */}
-                        <div className="text-text-muted text-[12.5px] flex items-center gap-1.5 flex-wrap">
+                        {/* Current Role & Company + Vitals (Exp, CTC, Notice) */}
+                        <div className="text-text-muted text-[12.5px] flex items-center gap-2 flex-wrap">
                           <span className="text-text font-medium">{candidate.currentRole}</span>
                           <span className="text-text-subtle">at</span>
                           <span className="text-text inline-flex items-center gap-1.5 font-medium">
@@ -391,11 +330,12 @@ export function ManagerAiAnalysisPage({ openingId }: ManagerAiAnalysisPageProps)
                             />
                             <span>{candidate.currentCompany}</span>
                           </span>
-                          {candidate.source && (
-                            <span className="text-text-subtle/80 text-[11px] ml-1">
-                              via {candidate.source}
-                            </span>
-                          )}
+                          <span className="text-text-subtle/60">&bull;</span>
+                          <span className="font-sans tabular-nums">{candidate.experienceYears}y exp</span>
+                          <span className="text-text-subtle/60">&bull;</span>
+                          <span className="font-sans tabular-nums">{formatCtc(candidate.expectedCtc)}</span>
+                          <span className="text-text-subtle/60">&bull;</span>
+                          <span>{candidate.noticePeriod}</span>
                         </div>
                       </div>
                     </div>
@@ -425,45 +365,6 @@ export function ManagerAiAnalysisPage({ openingId }: ManagerAiAnalysisPageProps)
                           Forward to Interview
                         </button>
                       )}
-                    </div>
-                  </div>
-
-                  {/* Middle Tier: 4-Cell Candidate Vitals Grid (Separated & Spacious, NOT crammed) */}
-                  <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5">
-                    <div className="rounded-[10px] border border-border/60 bg-surface-2/30 px-3.5 py-2.5">
-                      <span className="text-[10px] uppercase tracking-wider text-text-subtle font-semibold block">
-                        Experience
-                      </span>
-                      <span className="text-[13px] font-semibold text-text font-sans tabular-nums mt-0.5 block">
-                        {candidate.experienceYears} Years
-                      </span>
-                    </div>
-
-                    <div className="rounded-[10px] border border-border/60 bg-surface-2/30 px-3.5 py-2.5">
-                      <span className="text-[10px] uppercase tracking-wider text-text-subtle font-semibold block">
-                        Expected CTC
-                      </span>
-                      <span className="text-[13px] font-semibold text-text font-sans tabular-nums mt-0.5 block">
-                        {formatCtc(candidate.expectedCtc)}
-                      </span>
-                    </div>
-
-                    <div className="rounded-[10px] border border-border/60 bg-surface-2/30 px-3.5 py-2.5">
-                      <span className="text-[10px] uppercase tracking-wider text-text-subtle font-semibold block">
-                        Notice Period
-                      </span>
-                      <span className="text-[13px] font-semibold text-text mt-0.5 block">
-                        {candidate.noticePeriod}
-                      </span>
-                    </div>
-
-                    <div className="rounded-[10px] border border-border/60 bg-surface-2/30 px-3.5 py-2.5">
-                      <span className="text-[10px] uppercase tracking-wider text-text-subtle font-semibold block">
-                        Contact Phone
-                      </span>
-                      <span className="text-[13px] font-semibold text-text font-sans mt-0.5 block truncate">
-                        {candidate.phone || 'Available on file'}
-                      </span>
                     </div>
                   </div>
 
