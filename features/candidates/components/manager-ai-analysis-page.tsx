@@ -163,32 +163,52 @@ export function ManagerAiAnalysisPage({ openingId }: ManagerAiAnalysisPageProps)
       {/* 1. Requisition Header Banner (No duplicate top breadcrumb header strip) */}
       <div className="border-border/70 bg-surface-1 rounded-[12px] border p-4 shadow-2xs">
         <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-3">
-          <div className="space-y-1">
+          <div className="space-y-1.5 min-w-0">
+            {/* Title + Status Badge + Department & Location */}
             <div className="flex items-center gap-2.5 flex-wrap">
               <h1 className="text-text text-[20px] font-semibold tracking-tight">
                 {opening.title}
               </h1>
-              <span className="text-text text-[11px] font-medium select-none">
+              <span className="inline-flex items-center gap-1.5 rounded-full border border-border/70 bg-surface-2 px-2.5 py-0.5 text-[11px] font-medium text-text select-none">
+                <span className="h-1.5 w-1.5 rounded-full bg-emerald-500" />
                 {opening.status}
               </span>
+              <span className="text-text-muted text-[12px] font-normal">
+                {opening.department} &bull; {opening.location}
+              </span>
             </div>
-            <p className="text-text-muted text-[12.5px] flex items-center gap-2 flex-wrap">
-              <span className="font-medium text-text">{opening.department}</span>
-              <span>&bull;</span>
-              <span>{opening.location}</span>
-              <span>&bull;</span>
-              <span>
+
+            {/* Positions • Experience • CTC Budget */}
+            <p className="text-text-muted text-[12px] flex items-center gap-2 flex-wrap">
+              <span className="text-text font-medium font-sans tabular-nums">
                 {opening.headcount} {opening.headcount === 1 ? 'position' : 'positions'}
               </span>
-              <span>&bull;</span>
-              <span className="font-sans tabular-nums">
-                {formatCtcRange(opening.budgetRange.min, opening.budgetRange.max)}
-              </span>
-              <span>&bull;</span>
+              <span className="text-text-subtle/60">&bull;</span>
               <span className="font-sans tabular-nums">
                 {opening.experienceRange.min}–{opening.experienceRange.max}y required exp
               </span>
+              <span className="text-text-subtle/60">&bull;</span>
+              <span className="font-sans tabular-nums">
+                {formatCtcRange(opening.budgetRange.min, opening.budgetRange.max)}
+              </span>
             </p>
+
+            {/* Must-Have Skills (Clean inline strip without harsh divider) */}
+            {opening.mustHaveSkills && opening.mustHaveSkills.length > 0 && (
+              <div className="flex items-center gap-1.5 flex-wrap pt-0.5">
+                <span className="text-text-muted text-[11.5px] font-medium select-none">
+                  Must-have skills:
+                </span>
+                {opening.mustHaveSkills.map((skill) => (
+                  <span
+                    key={skill}
+                    className="bg-surface-2 text-text border border-border/70 rounded-[4px] px-2 py-0.5 text-[11px] font-medium select-none"
+                  >
+                    {skill}
+                  </span>
+                ))}
+              </div>
+            )}
           </div>
 
           <div className="flex items-center gap-2 shrink-0 flex-wrap">
@@ -217,21 +237,6 @@ export function ManagerAiAnalysisPage({ openingId }: ManagerAiAnalysisPageProps)
             </Button>
           </div>
         </div>
-
-        {/* Must-Have Skills Strip */}
-        {opening.mustHaveSkills && opening.mustHaveSkills.length > 0 && (
-          <div className="border-border/50 mt-3 flex items-center gap-2 border-t pt-2.5 flex-wrap">
-            <span className="text-text-muted text-[11.5px] font-medium select-none">Must-have skills:</span>
-            {opening.mustHaveSkills.map((skill) => (
-              <span
-                key={skill}
-                className="bg-surface-2 text-text border border-border/70 rounded-[5px] px-2 py-0.5 text-[11px] font-medium select-none"
-              >
-                {skill}
-              </span>
-            ))}
-          </div>
-        )}
       </div>
 
       {/* 2. Empty State if no candidates */}
@@ -340,37 +345,40 @@ export function ManagerAiAnalysisPage({ openingId }: ManagerAiAnalysisPageProps)
                         size="md"
                       />
                       <div className="min-w-0 space-y-1">
+                        {/* Line 1: Candidate Name + Top Pick + Verdict + SourceBadge */}
                         <div className="flex items-center gap-2 flex-wrap">
                           <h4 className="text-text text-[15px] font-semibold tracking-tight">
                             {candidate.name}
                           </h4>
                           {isTopPick && (
-                            <span className="text-text text-[11px] font-medium select-none">
+                            <span className="bg-surface-2 border border-border/80 text-text rounded-[4px] px-1.5 py-0.5 text-[10.5px] font-medium select-none">
                               Top Pick
                             </span>
                           )}
-                          <span className="bg-surface-2 border border-border/70 text-text rounded-[5px] px-2 py-0.5 text-[11px] font-medium select-none">
+                          <span className="bg-surface-2 border border-border/70 text-text rounded-[4px] px-2 py-0.5 text-[11px] font-medium select-none">
                             {analyzed.verdict}
                           </span>
+                          <SourceBadge source={candidate.source} />
                         </div>
 
-                        <p className="text-text-muted text-[12px] flex items-center gap-2 flex-wrap">
-                          <CompanyLogo
-                            company={candidate.currentCompany}
-                            className="h-4 w-4 rounded-[3px] shadow-2xs"
-                          />
-                          <span className="font-medium text-text">
-                            {candidate.currentRole} @ {candidate.currentCompany}
+                        {/* Line 2: Role at [CompanyLogo] Company • Exp • CTC • Notice */}
+                        <div className="text-text-muted text-[12px] flex items-center gap-2 flex-wrap">
+                          <span className="text-text font-medium">{candidate.currentRole}</span>
+                          <span className="text-text-subtle/80">at</span>
+                          <span className="text-text inline-flex items-center gap-1.5 font-medium">
+                            <CompanyLogo
+                              company={candidate.currentCompany}
+                              className="h-3.5 w-3.5 rounded-[3px] shadow-2xs"
+                            />
+                            <span>{candidate.currentCompany}</span>
                           </span>
-                          <span>&bull;</span>
+                          <span className="text-text-subtle/60">&bull;</span>
                           <span className="font-sans tabular-nums">{candidate.experienceYears}y exp</span>
-                          <span>&bull;</span>
+                          <span className="text-text-subtle/60">&bull;</span>
                           <span className="font-sans tabular-nums">{formatCtc(candidate.expectedCtc)}</span>
-                          <span>&bull;</span>
+                          <span className="text-text-subtle/60">&bull;</span>
                           <span>{candidate.noticePeriod}</span>
-                          <span>&bull;</span>
-                          <SourceBadge source={candidate.source} />
-                        </p>
+                        </div>
                       </div>
                     </div>
 
