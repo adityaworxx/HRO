@@ -530,10 +530,10 @@ export function InterviewsView() {
         <div className="space-y-4">
           {/* Active Job Role Context Banner */}
           {selectedOpeningId !== 'all' && (
-            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 p-3.5 rounded-[10px] border border-blue-500/25 bg-blue-500/5 select-none">
+            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 p-3.5 rounded-[10px] border border-purple-500/30 bg-purple-500/10 select-none">
               <div className="space-y-0.5 min-w-0">
                 <div className="flex items-center gap-2 flex-wrap">
-                  <span className="text-[10px] uppercase tracking-wider font-semibold text-blue-600 dark:text-blue-400">
+                  <span className="text-[10px] uppercase tracking-wider font-semibold text-purple-700 dark:text-purple-300">
                     Selected Job Role
                   </span>
                   <span className="text-text font-semibold text-[14px] truncate">
@@ -554,8 +554,7 @@ export function InterviewsView() {
                 <Button
                   asChild
                   size="sm"
-                  variant="outline"
-                  className="h-7.5 border-blue-500/30 bg-blue-500/10 hover:bg-blue-500/20 text-blue-700 dark:text-blue-300 text-[11.5px] font-medium"
+                  className="h-7.5 bg-blue-600 hover:bg-blue-700 text-white text-[11.5px] font-semibold border-0 shadow-2xs"
                 >
                   <Link href={`/openings/${selectedOpeningId}/ai-review`}>
                     AI Resume Review
@@ -564,8 +563,7 @@ export function InterviewsView() {
                 <Button
                   asChild
                   size="sm"
-                  variant="outline"
-                  className="h-7.5 border-border/70 bg-surface-1 hover:bg-surface-2 text-text text-[11.5px] font-medium"
+                  className="h-7.5 bg-emerald-600 hover:bg-emerald-700 text-white text-[11.5px] font-semibold border-0 shadow-2xs"
                 >
                   <Link href={`/shortlist?openingId=${selectedOpeningId}`}>
                     Shortlist Queue
@@ -574,7 +572,7 @@ export function InterviewsView() {
                 <button
                   type="button"
                   onClick={() => handleOpeningChange('all')}
-                  className="h-7.5 px-2 rounded-[6px] border border-border/70 bg-surface-1 hover:bg-surface-2 text-text text-[11.5px] font-medium inline-flex items-center gap-1 cursor-pointer transition-colors"
+                  className="h-7.5 px-2.5 rounded-[6px] border border-border/70 bg-surface-1 hover:bg-surface-2 text-text text-[11.5px] font-medium inline-flex items-center gap-1 cursor-pointer transition-colors"
                   title="Show All Job Roles"
                 >
                   <X className="h-3 w-3" />
@@ -595,7 +593,7 @@ export function InterviewsView() {
                   className={cn(
                     'inline-flex h-8 cursor-pointer items-center gap-1.5 rounded-[6px] border px-3 text-[12px] font-medium transition-colors select-none',
                     statusTab === 'all'
-                      ? 'border-accent bg-accent font-semibold text-white shadow-xs'
+                      ? 'border-purple-600 bg-purple-600 font-semibold text-white shadow-xs'
                       : 'border-border/70 bg-surface-1 text-text-muted hover:text-text hover:bg-surface-2'
                   )}
                 >
@@ -618,7 +616,7 @@ export function InterviewsView() {
                   className={cn(
                     'inline-flex h-8 cursor-pointer items-center gap-1.5 rounded-[6px] border px-3 text-[12px] font-medium transition-colors select-none',
                     statusTab === 'needs-scheduling'
-                      ? 'border-accent bg-accent font-semibold text-white shadow-xs'
+                      ? 'border-amber-600 bg-amber-600 font-semibold text-white shadow-xs'
                       : 'border-border/70 bg-surface-1 text-text-muted hover:text-text hover:bg-surface-2'
                   )}
                 >
@@ -642,7 +640,7 @@ export function InterviewsView() {
                   className={cn(
                     'inline-flex h-8 cursor-pointer items-center gap-1.5 rounded-[6px] border px-3 text-[12px] font-medium transition-colors select-none',
                     statusTab === 'scheduled'
-                      ? 'border-accent bg-accent font-semibold text-white shadow-xs'
+                      ? 'border-purple-600 bg-purple-600 font-semibold text-white shadow-xs'
                       : 'border-border/70 bg-surface-1 text-text-muted hover:text-text hover:bg-surface-2'
                   )}
                 >
@@ -874,26 +872,27 @@ export function InterviewsView() {
 
                   const outcomeConfig = {
                     Pending: {
-                      text: 'text-text',
+                      badgeClass: isScheduled
+                        ? 'bg-purple-600 text-white'
+                        : isHr
+                          ? 'bg-amber-600 text-white'
+                          : 'bg-zinc-700 text-white',
                       label: isScheduled ? 'Slot Confirmed' : isHr ? 'Needs HR Call' : 'Pending',
                     },
-
                     Selected: {
-                      text: 'text-text',
+                      badgeClass: 'bg-emerald-600 text-white',
                       label: 'Selected',
                     },
-
                     Rejected: {
-                      text: 'text-text',
+                      badgeClass: 'bg-rose-600 text-white',
                       label: 'Rejected',
                     },
-
                     'On Hold': {
-                      text: 'text-text',
+                      badgeClass: 'bg-zinc-700 text-white',
                       label: 'On Hold',
                     },
                   }[candidate.interviewOutcome ?? 'Pending'] ?? {
-                    text: 'text-text',
+                    badgeClass: 'bg-purple-600 text-white',
                     label: candidate.interviewOutcome,
                   };
 
@@ -956,10 +955,14 @@ export function InterviewsView() {
                             </div>
                           </div>
 
-                          {/* Status Label (Clean unboxed, without dot) */}
-
+                          {/* Status Label (Solid dark badge with white text) */}
                           <div className="shrink-0 pt-0.5 select-none">
-                            <span className="text-text text-[12px] font-medium">
+                            <span
+                              className={cn(
+                                'rounded-full px-2.5 py-0.5 text-[11px] font-bold select-none text-white shadow-2xs',
+                                outcomeConfig.badgeClass
+                              )}
+                            >
                               {outcomeConfig.label}
                             </span>
                           </div>
@@ -1040,13 +1043,12 @@ export function InterviewsView() {
                         {isHr ? (
                           !isScheduled ? (
                             <Button
-                              variant="primary"
                               size="sm"
                               onClick={(e) => {
                                 e.stopPropagation();
                                 handleOpenSchedule(candidate);
                               }}
-                              className="h-8 w-full cursor-pointer gap-1.5 rounded-[6px] text-[12px] font-semibold"
+                              className="h-8 w-full cursor-pointer gap-1.5 rounded-[6px] text-[12px] font-semibold bg-purple-600 hover:bg-purple-700 text-white shadow-2xs border-0"
                             >
                               <Phone className="h-3.5 w-3.5" />
                               <span>Call & Schedule Slot</span>
@@ -1067,13 +1069,12 @@ export function InterviewsView() {
                               </Button>
 
                               <Button
-                                variant="primary"
                                 size="sm"
                                 onClick={(e) => {
                                   e.stopPropagation();
                                   handleOpenOutcome(candidate);
                                 }}
-                                className="h-8 flex-1 cursor-pointer gap-1.5 rounded-[6px] text-[12px] font-semibold"
+                                className="h-8 flex-1 cursor-pointer gap-1.5 rounded-[6px] text-[12px] font-semibold bg-emerald-600 hover:bg-emerald-700 text-white shadow-2xs border-0"
                               >
                                 <CheckCircle2 className="h-3.5 w-3.5" />
                                 <span>Record Outcome</span>
@@ -1096,13 +1097,12 @@ export function InterviewsView() {
                             </Button>
 
                             <Button
-                              variant="primary"
                               size="sm"
                               onClick={(e) => {
                                 e.stopPropagation();
                                 handleOpenOutcome(candidate);
                               }}
-                              className="h-8 flex-1 cursor-pointer gap-1.5 rounded-[6px] text-[12px] font-semibold"
+                              className="h-8 flex-1 cursor-pointer gap-1.5 rounded-[6px] text-[12px] font-semibold bg-purple-600 hover:bg-purple-700 text-white shadow-2xs border-0"
                             >
                               <CheckCircle2 className="h-3.5 w-3.5" />
                               <span>Conduct & Record</span>
@@ -1111,26 +1111,24 @@ export function InterviewsView() {
                         ) : (
                           <div className="flex w-full items-center gap-2">
                             <Button
-                              variant="primary"
                               size="sm"
                               onClick={(e) => {
                                 e.stopPropagation();
                                 handleOpenSchedule(candidate);
                               }}
-                              className="h-8 flex-1 cursor-pointer gap-1.5 rounded-[6px] text-[12px] font-semibold"
+                              className="h-8 flex-1 cursor-pointer gap-1.5 rounded-[6px] text-[12px] font-semibold bg-purple-600 hover:bg-purple-700 text-white shadow-2xs border-0"
                             >
                               <Calendar className="h-3.5 w-3.5" />
                               <span>Schedule Interview</span>
                             </Button>
 
                             <Button
-                              variant="outline"
                               size="sm"
                               onClick={(e) => {
                                 e.stopPropagation();
                                 handleOpenOutcome(candidate);
                               }}
-                              className="h-8 flex-1 cursor-pointer gap-1.5 rounded-[6px] text-[12px] font-medium"
+                              className="h-8 flex-1 cursor-pointer gap-1.5 rounded-[6px] text-[12px] font-semibold bg-emerald-600 hover:bg-emerald-700 text-white shadow-2xs border-0"
                             >
                               <CheckCircle2 className="h-3.5 w-3.5" />
                               <span>Record Outcome</span>

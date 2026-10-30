@@ -233,7 +233,7 @@ export function OpeningCard({
                   onClick={(e) => {
                     e.stopPropagation();
                   }}
-                  className="inline-flex cursor-pointer items-center justify-center rounded-[5px] border border-border/70 bg-surface-2 px-2.5 py-1 text-[11px] font-semibold text-text shadow-2xs transition-colors select-none hover:bg-surface-3"
+                  className="inline-flex cursor-pointer items-center justify-center rounded-[5px] border-0 bg-purple-600 px-2.5 py-1 text-[11px] font-semibold text-white shadow-2xs transition-colors select-none hover:bg-purple-700 active:scale-95 active:bg-purple-800"
                   title={`View ${interviewCount} candidate${interviewCount === 1 ? '' : 's'} in interview stage for ${opening.title}`}
                 >
                   <span>Interviews ({interviewCount})</span>
@@ -269,7 +269,7 @@ export function OpeningCard({
                   onClick={(e) => {
                     e.stopPropagation();
                   }}
-                  className="inline-flex cursor-pointer items-center justify-center rounded-[5px] border border-border/70 bg-surface-2 px-2.5 py-1 text-[11px] font-semibold text-text shadow-2xs transition-colors select-none hover:bg-surface-3"
+                  className="inline-flex cursor-pointer items-center justify-center rounded-[5px] border-0 bg-purple-600 px-2.5 py-1 text-[11px] font-semibold text-white shadow-2xs transition-colors select-none hover:bg-purple-700 active:scale-95 active:bg-purple-800"
                   title={`View ${interviewCount} candidate${interviewCount === 1 ? '' : 's'} in interview stage for ${opening.title}`}
                 >
                   <span>Interviews ({interviewCount})</span>
