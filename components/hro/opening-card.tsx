@@ -224,7 +224,7 @@ export function OpeningCard({
           <span className="text-text text-[11px] font-medium select-none">{opening.status}</span>
         )}
 
-        <div className="flex shrink-0 items-center gap-1.5">
+        <div className="flex shrink-0 items-center gap-2">
           {isManager ? (
             <>
               {interviewCount > 0 && (
@@ -233,7 +233,7 @@ export function OpeningCard({
                   onClick={(e) => {
                     e.stopPropagation();
                   }}
-                  className="inline-flex cursor-pointer items-center justify-center rounded px-1.5 py-0.5 text-[11px] font-bold text-purple-800 hover:text-purple-950 dark:text-purple-300 dark:hover:text-purple-200 transition-colors select-none hover:bg-purple-500/10"
+                  className="inline-flex cursor-pointer items-center justify-center rounded px-1.5 py-0.5 text-[11px] font-bold text-amber-800 hover:text-amber-950 dark:text-amber-400 dark:hover:text-amber-300 transition-colors select-none hover:bg-amber-500/10"
                   title={`View ${interviewCount} candidate${interviewCount === 1 ? '' : 's'} in interview stage for ${opening.title}`}
                 >
                   <span>Interviews ({interviewCount})</span>
@@ -244,7 +244,7 @@ export function OpeningCard({
                 onClick={(e) => {
                   e.stopPropagation();
                 }}
-                className="inline-flex cursor-pointer items-center justify-center rounded px-1.5 py-0.5 text-[11px] font-bold text-emerald-800 hover:text-emerald-950 dark:text-emerald-300 dark:hover:text-emerald-200 transition-colors select-none hover:bg-emerald-500/10"
+                className="inline-flex cursor-pointer items-center justify-center rounded px-1.5 py-0.5 text-[11px] font-bold text-emerald-800 hover:text-emerald-950 dark:text-emerald-400 dark:hover:text-emerald-300 transition-colors select-none hover:bg-emerald-500/10"
                 title={`View ${shortlistedCount} candidate${shortlistedCount === 1 ? '' : 's'} shortlisted for ${opening.title}`}
               >
                 <span>Shortlisted ({shortlistedCount})</span>
@@ -255,7 +255,7 @@ export function OpeningCard({
                   e.stopPropagation();
                   if (onAiReview) onAiReview(opening);
                 }}
-                className="inline-flex cursor-pointer items-center justify-center rounded px-1.5 py-0.5 text-[11px] font-bold text-blue-800 hover:text-blue-950 dark:text-blue-300 dark:hover:text-blue-200 transition-colors select-none hover:bg-blue-500/10"
+                className="inline-flex cursor-pointer items-center justify-center rounded px-1.5 py-0.5 text-[11px] font-bold text-blue-800 hover:text-blue-950 dark:text-blue-400 dark:hover:text-blue-300 transition-colors select-none hover:bg-blue-500/10"
                 title="Run AI Resume Review (Full Page)"
               >
                 <span>AI Review</span>
@@ -269,7 +269,7 @@ export function OpeningCard({
                   onClick={(e) => {
                     e.stopPropagation();
                   }}
-                  className="inline-flex cursor-pointer items-center justify-center rounded px-1.5 py-0.5 text-[11px] font-bold text-purple-800 hover:text-purple-950 dark:text-purple-300 dark:hover:text-purple-200 transition-colors select-none hover:bg-purple-500/10"
+                  className="inline-flex cursor-pointer items-center justify-center rounded px-1.5 py-0.5 text-[11px] font-bold text-amber-800 hover:text-amber-950 dark:text-amber-400 dark:hover:text-amber-300 transition-colors select-none hover:bg-amber-500/10"
                   title={`View ${interviewCount} candidate${interviewCount === 1 ? '' : 's'} in interview stage for ${opening.title}`}
                 >
                   <span>Interviews ({interviewCount})</span>
@@ -283,7 +283,7 @@ export function OpeningCard({
                     e.stopPropagation();
                     onAiMatch(opening);
                   }}
-                  className="inline-flex cursor-pointer items-center justify-center rounded px-1.5 py-0.5 text-[11px] font-bold text-blue-800 hover:text-blue-950 dark:text-blue-300 dark:hover:text-blue-200 transition-colors select-none hover:bg-blue-500/10"
+                  className="inline-flex cursor-pointer items-center justify-center rounded px-1.5 py-0.5 text-[11px] font-bold text-blue-800 hover:text-blue-950 dark:text-blue-400 dark:hover:text-blue-300 transition-colors select-none hover:bg-blue-500/10"
                   title="Scan & Match Candidates with AI"
                 >
                   <span>AI Match</span>
