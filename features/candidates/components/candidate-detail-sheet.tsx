@@ -403,16 +403,17 @@ export function CandidateDetailSheet({ candidate, open, onOpenChange }: Candidat
                       <span>Interview Schedule</span>
                     </h4>
                     {candidate.interviewDate ? (
-                      <span className="rounded-full bg-purple-600 px-2.5 py-0.5 text-[11px] font-bold text-white select-none shadow-2xs">
+                      <span className="text-text text-[11.5px] font-medium select-none">
                         Slot Confirmed
                       </span>
                     ) : (
-                      <span className="rounded-full bg-amber-600 px-2.5 py-0.5 text-[11px] font-bold text-white select-none shadow-2xs">
+                      <span className="text-text text-[11.5px] font-medium select-none">
                         {isHr ? 'Needs HR Call' : 'Awaiting Booking'}
                       </span>
                     )}
                   </div>
                   <Button
+                    variant="outline"
                     size="sm"
                     onClick={() => {
                       if (!showScheduleForm && !interviewDate) {
@@ -424,7 +425,7 @@ export function CandidateDetailSheet({ candidate, open, onOpenChange }: Candidat
                       }
                       setShowScheduleForm(!showScheduleForm);
                     }}
-                    className="h-7 cursor-pointer text-[12px] bg-purple-600 hover:bg-purple-700 text-white font-semibold border-0 shadow-2xs"
+                    className="h-7 cursor-pointer text-[12px]"
                   >
                     {candidate.interviewDate
                       ? 'Reschedule Slot'
